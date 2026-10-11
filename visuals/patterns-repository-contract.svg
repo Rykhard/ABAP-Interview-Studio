@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1036) scale(1,-1)">A useful seam must preserve the right state</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)">Worked RAP fixture: Order 4711 changes from 100 EUR to 120 EUR before save</text>
+			<rect x="36" y="405" width="228.39999999999998" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="46" y="418" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,836) scale(1,-1)">Persistence read</text>
+			<rect x="266.4" y="405" width="151.60000000000002" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="276.4" y="418" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,836) scale(1,-1)">Amount</text>
+			<rect x="36" y="360" width="228.39999999999998" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="46" y="373" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,746) scale(1,-1)">Order 4711</text>
+			<rect x="266.4" y="360" width="151.60000000000002" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="276.4" y="373" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,746) scale(1,-1)">100 EUR</text>
+			<rect x="460" y="405" width="239.77777777777771" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="470" y="418" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,836) scale(1,-1)">Transactional BO read</text>
+			<rect x="701.7777777777777" y="405" width="140.22222222222217" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="711.7777777777777" y="418" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,836) scale(1,-1)">Amount</text>
+			<rect x="460" y="360" width="239.77777777777771" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="470" y="373" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,746) scale(1,-1)">Order 4711</text>
+			<rect x="701.7777777777777" y="360" width="140.22222222222217" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="711.7777777777777" y="373" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,746) scale(1,-1)">120 EUR</text>
+			<path d="M 429,381 L 452,381 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="452 381, 442 376, 442 386" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<rect x="37" y="215" width="806" height="114" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="53" y="299" style="font-family: Helvetica-Bold; font-size: 18px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,598) scale(1,-1)">Repository contract: which view does this caller require?</text>
+			<text x="53" y="270" style="font-family: Helvetica; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,540) scale(1,-1)">Inside a rule after update: the current transactional view may be required.</text>
+			<text x="53" y="246" style="font-family: Helvetica; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,492) scale(1,-1)">Persisted reporting read: a different explicit contract may be appropriate.</text>
+			<text x="53" y="222" style="font-family: Helvetica; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,444) scale(1,-1)">A double returning 120 does not prove the real adapter reads the buffer.</text>
+			<rect x="37" y="164" width="374.59999999999997" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="47" y="177" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,354) scale(1,-1)">Design force</text>
+			<rect x="413.59999999999997" y="164" width="428.40000000000003" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="423.59999999999997" y="177" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,354) scale(1,-1)">Smallest useful response</text>
+			<rect x="37" y="135" width="374.59999999999997" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="47" y="148" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,296) scale(1,-1)">External dependency blocks a test</text>
+			<rect x="413.59999999999997" y="135" width="428.40000000000003" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="423.59999999999997" y="148" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,296) scale(1,-1)">Introduce a meaningful seam</text>
+			<rect x="37" y="106" width="374.59999999999997" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="47" y="119" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,238) scale(1,-1)">One pure, stable calculation</text>
+			<rect x="413.59999999999997" y="106" width="428.40000000000003" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="423.59999999999997" y="119" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,238) scale(1,-1)">A focused method may be sufficient</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)">Do not bypass managed RAP with repository table writes. Pattern count is not a quality metric; verify</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)">unsaved reads, rollback and production wiring.</text>
+		</g>
+	</g>
+</svg>

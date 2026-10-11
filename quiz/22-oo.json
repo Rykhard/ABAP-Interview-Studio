@@ -1,0 +1,338 @@
+[
+  {
+    "id": "QUIZ-OODEEP-01",
+    "questionId": "OODEEP-01",
+    "prompt": "Two implementations of reserve share a signature. One buffers a reservation; the other commits it immediately. The caller expects to reserve two items atomically. What is the main issue?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The return type must be different for each implementation.",
+        "explanation": "A different return type is not the essential issue; persistence behavior violates caller expectations."
+      },
+      {
+        "id": "b",
+        "text": "The implementations disagree about transaction behavior in the contract.",
+        "explanation": "The caller cannot safely compose them while commit ownership differs."
+      },
+      {
+        "id": "c",
+        "text": "An interface call always buffers data, so the second implementation cannot commit.",
+        "explanation": "ABAP interface dispatch does not itself impose that transaction behavior."
+      },
+      {
+        "id": "d",
+        "text": "The problem is resolved by returning a reservation ID earlier.",
+        "explanation": "An identifier does not establish the required persistence boundary."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-OODEEP-02",
+    "questionId": "OODEEP-02",
+    "prompt": "A quote interface accepts every positive quantity. A new implementation rejects quantity 1 and accepts only 10 or more. What best describes the change?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Compatible, because both methods have identical parameter types.",
+        "explanation": "Type compatibility does not prove the accepted-input contract is preserved."
+      },
+      {
+        "id": "b",
+        "text": "Compatible, because callers can inspect the concrete class first.",
+        "explanation": "Requiring such checks defeats the shared substitutable contract."
+      },
+      {
+        "id": "c",
+        "text": "Incompatible with the stated contract because it narrows valid inputs.",
+        "explanation": "The implementation imposes a stronger precondition than existing callers owe."
+      },
+      {
+        "id": "d",
+        "text": "Incompatible only if the implementation uses inheritance.",
+        "explanation": "The same behavioral obligation applies when implementing an interface directly."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-OODEEP-03",
+    "questionId": "OODEEP-03",
+    "prompt": "An exporter and notifier share cancel behavior, have unrelated lifecycles, and one already inherits a framework class. What is the strongest starting design?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A narrow cancellation interface with shared policy composed as needed.",
+        "explanation": "It shares the client capability without imposing an unrelated class hierarchy."
+      },
+      {
+        "id": "b",
+        "text": "A common abstract superclass primarily to reuse a validation helper.",
+        "explanation": "The scenario lacks the shared lifecycle or is-a relationship that would justify this coupling."
+      },
+      {
+        "id": "c",
+        "text": "A concrete-class switch in each caller invoking unrelated methods.",
+        "explanation": "This spreads implementation knowledge and misses the common capability contract."
+      },
+      {
+        "id": "d",
+        "text": "A single static class that stores both objects' mutable state.",
+        "explanation": "Combining unrelated state does not solve the capability or lifetime boundaries."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-OODEEP-04",
+    "questionId": "OODEEP-04",
+    "prompt": "A subclass redefines an inherited format method but wants an additional mandatory parameter. Which approach respects ABAP method rules?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add the parameter in REDEFINITION; base callers receive an initial value.",
+        "explanation": "Redefinition must preserve the inherited interface."
+      },
+      {
+        "id": "b",
+        "text": "Declare another format method with the same name and a different signature.",
+        "explanation": "ABAP does not offer ordinary same-name signature overloading for this."
+      },
+      {
+        "id": "c",
+        "text": "Change the inherited method to static only in the subclass.",
+        "explanation": "Static methods cannot be substituted for an inherited instance method this way."
+      },
+      {
+        "id": "d",
+        "text": "Keep the inherited contract and add a distinct operation if needed.",
+        "explanation": "A different contract needs an explicit operation or managed compatible evolution."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-OODEEP-05",
+    "questionId": "OODEEP-05",
+    "prompt": "Class A grants friendship to final class B. A has subclass A_CHILD. Which access follows automatically?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A can access B's private components.",
+        "explanation": "Friendship is unilateral; B must grant the reverse access separately."
+      },
+      {
+        "id": "b",
+        "text": "B can access A's private components, but not A_CHILD's newly private components.",
+        "explanation": "The grant covers A; being a friend of A does not make B a friend of its subclass."
+      },
+      {
+        "id": "c",
+        "text": "Every ordinary caller of B can access A's private components.",
+        "explanation": "Calling a friend does not transfer friendship to the caller."
+      },
+      {
+        "id": "d",
+        "text": "A_CHILD must grant B the same friendship to preserve inheritance.",
+        "explanation": "The granting class's friendship is not automatically a requirement on its subclass."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-OODEEP-06",
+    "questionId": "OODEEP-06",
+    "prompt": "References first and second point to the same object. CLEAR first is executed; second remains valid. Which conclusion is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The object is destroyed, so second becomes a dangling reference.",
+        "explanation": "The remaining reference keeps the object reachable."
+      },
+      {
+        "id": "b",
+        "text": "The object's close method must execute automatically.",
+        "explanation": "Clearing a reference does not invoke an application-defined close protocol."
+      },
+      {
+        "id": "c",
+        "text": "Only first is reset; the object is still accessible through second.",
+        "explanation": "Reference variables and the shared referent have distinct lifetimes."
+      },
+      {
+        "id": "d",
+        "text": "All instance attributes are reinitialized because one reference was cleared.",
+        "explanation": "Resetting a reference variable does not reset the object's state."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-OODEEP-07",
+    "questionId": "OODEEP-07",
+    "prompt": "An approval service requires a repository but currently allows construction without one. Which change best establishes a usable object?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Require and validate the repository during controlled construction.",
+        "explanation": "The object can reject invalid setup before normal business use."
+      },
+      {
+        "id": "b",
+        "text": "Keep an initial repository and check only after the first posting.",
+        "explanation": "This allows the invalid state to persist too long and can expose side effects first."
+      },
+      {
+        "id": "c",
+        "text": "Move the repository to public CLASS-DATA for callers to assign later.",
+        "explanation": "This hides ordering requirements and introduces shared mutable state."
+      },
+      {
+        "id": "d",
+        "text": "Catch any later dereference failure and return approval success.",
+        "explanation": "A construction defect must not be transformed into a false business success."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-OODEEP-08",
+    "questionId": "OODEEP-08",
+    "prompt": "Test B passes alone but fails after test A changes a mutable class cache. B creates a new service instance. What is the most likely isolation problem?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An instance constructor cannot be called during ABAP Unit.",
+        "explanation": "Ordinary construction in tests is allowed; static state remains the concern."
+      },
+      {
+        "id": "b",
+        "text": "Each NEW necessarily creates a second internal session.",
+        "explanation": "Object construction does not provide that isolation."
+      },
+      {
+        "id": "c",
+        "text": "The class cache must be shared globally with all application servers.",
+        "explanation": "CLASS-DATA does not establish globally synchronized state."
+      },
+      {
+        "id": "d",
+        "text": "The new instance still sees class-level state left by the earlier test.",
+        "explanation": "Creating an instance does not reset its class's static attributes."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-OODEEP-09",
+    "questionId": "OODEEP-09",
+    "prompt": "A price lookup returns an empty result for both missing price and database connection failure. What is the best correction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use CX_ROOT handling everywhere and retain the same empty result.",
+        "explanation": "Broad handling does not repair the loss of meaning."
+      },
+      {
+        "id": "b",
+        "text": "Distinguish absence from failure and preserve the technical cause when translating.",
+        "explanation": "The caller can act appropriately without mistaking unavailable data for a valid business fact."
+      },
+      {
+        "id": "c",
+        "text": "Return price zero for connection failure to keep processing predictable.",
+        "explanation": "Zero may be interpreted as a valid free price and is misleading."
+      },
+      {
+        "id": "d",
+        "text": "Expose the raw technical exception as the only contract for every client.",
+        "explanation": "A meaningful abstraction can translate errors while retaining the original cause."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-OODEEP-10",
+    "questionId": "OODEEP-10",
+    "prompt": "A cart enforces positive quantities in add_item but exposes a writable reference to its actual item table. Which redesign best protects that invariant?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Keep the reference private but return it through a getter.",
+        "explanation": "The getter still exposes the same mutable table to callers."
+      },
+      {
+        "id": "b",
+        "text": "Rename the getter read_items and document callers as trusted.",
+        "explanation": "A name does not remove the mutation capability or enforce the invariant."
+      },
+      {
+        "id": "c",
+        "text": "Return suitable value data and route mutations through validated cart operations.",
+        "explanation": "This removes the direct table alias while preserving an explicit mutation boundary."
+      },
+      {
+        "id": "d",
+        "text": "Copy only the reference into a new local variable before returning it.",
+        "explanation": "Copying the reference still targets the same table."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-OODEEP-11",
+    "questionId": "OODEEP-11",
+    "prompt": "An existing provider cannot simulate prices. The common interface is being extended with simulate. What best avoids dishonest success?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Model simulation as an explicit optional capability with defined unsupported handling.",
+        "explanation": "Interested clients can require that capability without forcing fake behavior on all providers."
+      },
+      {
+        "id": "b",
+        "text": "Return an empty successful simulation from providers that cannot support it.",
+        "explanation": "Empty success falsely claims the new contract was fulfilled."
+      },
+      {
+        "id": "c",
+        "text": "Add simulate without checking any existing implementation.",
+        "explanation": "Implementer compatibility and activation consequences must be assessed."
+      },
+      {
+        "id": "d",
+        "text": "Make callers catch every exception and interpret it as simulation success.",
+        "explanation": "This erases the distinction between unsupported, failed, and successful simulation."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-OODEEP-12",
+    "questionId": "OODEEP-12",
+    "prompt": "A test intends to verify a discount threshold but replaces calculate_discount itself with a configured result. What should change?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add more assertions against the configured result.",
+        "explanation": "Those assertions still do not exercise the discount rule."
+      },
+      {
+        "id": "b",
+        "text": "Run the same mocked test in a different order.",
+        "explanation": "Order variation does not restore the replaced calculation behavior."
+      },
+      {
+        "id": "c",
+        "text": "Mock the caller too so both sides agree on the expected value.",
+        "explanation": "Replacing more behavior weakens evidence about the actual discount rule."
+      },
+      {
+        "id": "d",
+        "text": "Keep calculate_discount real and control its external dependencies.",
+        "explanation": "The test can then detect a broken threshold through independent expected results."
+      }
+    ],
+    "correctOption": "d"
+  }
+]

@@ -1,0 +1,264 @@
+{
+  "id": "13-http-rest-formats",
+  "title": "HTTP, REST, JSON and XML",
+  "intro": "Explain the protocol, architectural style and payload independently. Practice concrete requests, payload edge cases and ABAP integration failure handling.",
+  "sources": [
+    {
+      "title": "HTTP semantics: IETF RFC 9110",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html"
+    },
+    {
+      "title": "PATCH method: IETF RFC 5789",
+      "url": "https://www.rfc-editor.org/rfc/rfc5789.html"
+    },
+    {
+      "title": "HTTP status reference: MDN",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status"
+    },
+    {
+      "title": "JSON format: IETF RFC 8259",
+      "url": "https://www.rfc-editor.org/rfc/rfc8259"
+    },
+    {
+      "title": "XML specification: W3C",
+      "url": "https://www.w3.org/TR/xml/"
+    },
+    {
+      "title": "REST constraints: Fielding dissertation",
+      "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
+    },
+    {
+      "title": "CORS: MDN",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"
+    },
+    {
+      "title": "SAP JSON transformations",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/json-transformations-abencall_trafo_json_abexa"
+    },
+    {
+      "title": "SAP sXML parsing",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/sxml-parsing"
+    },
+    {
+      "title": "SAP ABAP integration and connectivity",
+      "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf"
+    }
+  ],
+  "questions": [
+    {
+      "id": "HTTP-01",
+      "question": "What is the difference between HTTP, REST, OData and a payload format?",
+      "answer": "HTTP supplies request/response semantics. REST is an architectural style with constraints such as stateless interactions and a uniform interface. OData specifies conventions for data services. JSON and XML represent data; neither makes an endpoint RESTful.",
+      "detail": "Explain four separate choices for an order API: transport semantics, architectural constraints, service conventions, and representation. In REST, stateless means each request carries the context needed to understand it, not that business data cannot persist.",
+      "pitfall": "Do not use REST, HTTP and JSON as interchangeable names.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "HTTP semantics: IETF RFC 9110",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        },
+        {
+          "title": "REST constraints: Fielding dissertation",
+          "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-02",
+      "question": "What is inside an HTTP request and response?",
+      "answer": "A request identifies a method and target, carries headers, and may contain a body. A response carries a status, headers and optional content. HTTPS adds transport protection; the business contract still determines what the operation means.",
+      "detail": "For an order update, inspect the target resource, method, credentials, Content-Type, conditional headers, body and resulting status. The familiar HTTP/1.1 text layout is a teaching model; HTTP/2 and HTTP/3 frame messages differently.",
+      "pitfall": "A successful TCP/TLS connection does not prove that the business request succeeded.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "HTTP semantics: IETF RFC 9110",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-03",
+      "question": "How do GET, POST, PUT, PATCH and DELETE differ?",
+      "answer": "GET retrieves a representation. POST submits content for resource-specific processing. PUT creates or replaces the state of the identified target under its contract. PATCH applies a described modification. DELETE requests removal of the target resource association.",
+      "detail": "For a partial update, inspect the accepted patch document or service-specific update contract. An omitted field, an explicit null and an empty string can mean different things. PATCH is not inherently idempotent; a particular patch can be designed to be.",
+      "pitfall": "Do not treat PUT as an arbitrary partial update or assume that every POST creates exactly one row.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "HTTP semantics: IETF RFC 9110",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        },
+        {
+          "title": "PATCH method: IETF RFC 5789",
+          "url": "https://www.rfc-editor.org/rfc/rfc5789.html",
+          "note": "Defines PATCH, including its relationship to PUT and the conditions under which a patch can be idempotent."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-04",
+      "question": "What do safe and idempotent mean, and how do they affect retries?",
+      "answer": "Safe methods have read-oriented requested semantics. Idempotency concerns the intended effect of repeated identical requests, not identical response codes. PUT and DELETE are idempotent by their HTTP semantics; POST and PATCH need specific application guarantees for safe repetition.",
+      "detail": "After a timeout on CreateOrder, the client may not know whether the server committed. Use a documented idempotency mechanism or query a stable business correlation before retrying. Repeated DELETE can return different statuses while the final resource state remains absent.",
+      "pitfall": "Do not blindly retry a potentially committed business creation because the response was lost.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "HTTP semantics: IETF RFC 9110",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        },
+        {
+          "title": "PATCH method: IETF RFC 5789",
+          "url": "https://www.rfc-editor.org/rfc/rfc5789.html",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-05",
+      "question": "Which HTTP statuses should an ABAP API developer explain?",
+      "answer": "Distinguish 200 success, 201 creation, 202 accepted but not completed, and 204 success without response content. Typical failures include 400 invalid request, 401 missing or invalid authentication, 403 refusal, 404 unavailable resource, 409 conflict, 412 failed precondition and 415 unsupported media type.",
+      "detail": "A 429 or 503 can justify a bounded delayed retry under the service contract, sometimes using Retry-After. A 500 needs diagnosis. Record a correlation identifier and inspect the business error payload without exposing credentials. For asynchronous 202, explain how the caller learns the eventual outcome.",
+      "pitfall": "HTTP 200 on a batch envelope does not prove every contained operation succeeded.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "HTTP status reference: MDN",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-06",
+      "question": "How do Accept and Content-Type differ?",
+      "answer": "Content-Type describes the representation actually carried in a message. Accept states which response media types the client can handle. They are separate from authentication and from the URL of the resource.",
+      "detail": "A client can send application/json and request an application/json response. A server can reject unsupported request content with 415 or an unacceptable response representation with 406. Always inspect the actual response type before deserializing an error page as business JSON.",
+      "pitfall": "Changing Content-Type does not convert an XML body into JSON.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "HTTP semantics: IETF RFC 9110",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-07",
+      "question": "What must you preserve when mapping JSON to ABAP?",
+      "answer": "JSON supports objects, arrays, strings, numbers, booleans and null. Preserve the API contract for property names, missing versus null values, number precision and ordered array entries. Do not depend on object member ordering or duplicate member names.",
+      "detail": "Model an identifier such as \"0004711\" as a string. Decide deliberately whether a monetary value is represented as a decimal number or a string under the contract; retain currency and precision. Standard JSON has no native date type, comments, NaN or Infinity.",
+      "pitfall": "Do not coerce every missing or null property into the same initial ABAP value without considering update semantics.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "JSON format: IETF RFC 8259",
+          "url": "https://www.rfc-editor.org/rfc/rfc8259",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        },
+        {
+          "title": "SAP JSON transformations",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/json-transformations-abencall_trafo_json_abexa",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-08",
+      "question": "What XML concepts matter in an integration interview?",
+      "answer": "XML is a structured representation with elements, attributes and nested content. Well-formedness checks syntax; schema validation checks additional declared constraints. A namespace is identified by its namespace URI. An element or attribute's expanded name combines its namespace name, if any, with its local name; the chosen prefix spelling is only an alias.",
+      "detail": "Two partners can use different prefixes for the same namespace, so parse by expanded name. A default namespace applies to unprefixed element names, not unprefixed attribute names. An empty element, an absent element and an explicit schema-defined nil value may differ. Escaping, encoding and parser security settings belong to the implementation contract.",
+      "pitfall": "Do not process arbitrary XML with string splitting or assume that well-formed XML is business-valid.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "XML specification: W3C",
+          "url": "https://www.w3.org/TR/xml/",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        },
+        {
+          "title": "SAP sXML parsing",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/sxml-parsing",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        },
+        {
+          "title": "W3C Namespaces in XML",
+          "url": "https://www.w3.org/TR/xml-names/",
+          "note": "Sections 2.1 and 6.2 distinguish namespace identity, expanded names and default namespace behavior for elements and attributes."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-09",
+      "question": "How do you choose ABAP JSON and XML processing tools?",
+      "answer": "Choose a serializer/parser or transformation supported and released in the target environment. CALL TRANSFORMATION, the sXML interfaces and applicable JSON libraries solve different mapping and streaming needs. Verify naming rules, types and error handling with representative payloads.",
+      "detail": "The identity transformation uses canonical ABAP representations such as asXML/asJSON; that is not automatically the same shape as an arbitrary partner API. For a large XML stream, compare a serial parser with a full DOM approach. Avoid manual concatenation of unescaped values.",
+      "pitfall": "Do not promise that a familiar on-premise helper class is released for ABAP Cloud.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP JSON transformations",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/json-transformations-abencall_trafo_json_abexa",
+          "note": "SAP transformation/parsing background. Verify API release eligibility in ADT for the target ABAP language version; documentation presence alone is not a release guarantee."
+        },
+        {
+          "title": "SAP sXML parsing",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/sxml-parsing",
+          "note": "SAP transformation/parsing background. Verify API release eligibility in ADT for the target ABAP language version; documentation presence alone is not a release guarantee."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-10",
+      "question": "How would you implement and troubleshoot an outbound HTTP call in ABAP?",
+      "answer": "Use the permitted destination and HTTP client APIs, configure credentials outside source, send the contractually correct request, handle transport exceptions and HTTP failures separately, then deserialize and validate the response. Apply timeouts and an explicit retry policy.",
+      "detail": "In a suitable ABAP Cloud environment, released HTTP destination/client APIs and communication configuration establish the boundary; classic landscapes may use other client APIs. Diagnose DNS, TLS trust, destination, authentication, headers, payload and application logs in order. Redact secrets and sensitive business data.",
+      "pitfall": "Do not hard-code a password, suppress all exceptions, or assume a remote call shares the local rollback.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP ABAP integration and connectivity",
+          "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-11",
+      "question": "How do authentication, authorization, CORS and CSRF differ?",
+      "answer": "Authentication establishes identity and authorization governs permitted actions. CORS is a browser-enforced cross-origin access mechanism. CSRF defenses address forged requests in relevant credential-bearing browser flows. These mechanisms solve different problems.",
+      "detail": "An HTTP call working in an ABAP backend but failing in a browser can involve CORS or preflight handling. Conversely, allowing an origin does not authorize its users to approve orders. Never fix a CORS issue by removing business authorization checks.",
+      "pitfall": "CORS is not a general server-to-server firewall or a replacement for authentication.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "CORS: MDN",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-12",
+      "question": "How would you test an HTTP integration contract?",
+      "answer": "Test both structure and behavior: valid payload, malformed input, missing/null fields, precision, time zones, unexpected content type, business errors, expired credentials, timeouts, duplicate requests and concurrency. Include the real destination and authorization setup in integration tests.",
+      "detail": "Use a controlled double for deterministic error cases, then a target-system check for actual TLS, identity, serialization and service behavior. A creation timeout test should verify that retry does not create a second business document. Preserve a redacted request, correlation and outcome as evidence.",
+      "pitfall": "A serializer round-trip test alone does not prove that the partner accepts your representation.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "HTTP semantics: IETF RFC 9110",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+          "note": "Use the protocol or format contract to verify semantics independently of the ABAP implementation."
+        }
+      ]
+    }
+  ]
+}

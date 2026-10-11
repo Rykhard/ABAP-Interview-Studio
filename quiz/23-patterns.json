@@ -1,0 +1,338 @@
+[
+  {
+    "id": "QUIZ-PAT-01",
+    "questionId": "PAT-01",
+    "prompt": "Country approval calculations must be replaceable while the coordinator's class remains unchanged. Which design best matches this requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Inject an approval Strategy selected for the current country.",
+        "explanation": "The varying calculation is composed into a stable coordinator through a common contract."
+      },
+      {
+        "id": "b",
+        "text": "Subclass the coordinator for every country and UI channel.",
+        "explanation": "This combines independent variations and couples policy changes to the coordinator hierarchy."
+      },
+      {
+        "id": "c",
+        "text": "Put the current country in a mutable singleton coordinator.",
+        "explanation": "Hidden session state does not provide a replaceable calculation contract and complicates tests."
+      },
+      {
+        "id": "d",
+        "text": "Use Template Method because any reused algorithm requires inheritance.",
+        "explanation": "A subclass template can fit a stable extension skeleton, but inheritance is not required here."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-PAT-02",
+    "questionId": "PAT-02",
+    "prompt": "Two providers each require a compatible serializer and sender. Which design directly expresses that family constraint?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add an unrelated static creation method to each component.",
+        "explanation": "Independent construction does not itself prevent callers from combining incompatible providers."
+      },
+      {
+        "id": "b",
+        "text": "Provide a provider-specific Abstract Factory for related components.",
+        "explanation": "It centralizes creation of compatible families while hiding their concrete implementations."
+      },
+      {
+        "id": "c",
+        "text": "Let each sender dynamically cast any serializer at runtime.",
+        "explanation": "Late type inspection defers the compatibility error rather than protecting the construction boundary."
+      },
+      {
+        "id": "d",
+        "text": "Subclass a single serializer and call that Abstract Factory.",
+        "explanation": "Subclassing one product does not express creation of a related product family."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-PAT-03",
+    "questionId": "PAT-03",
+    "prompt": "A legacy subsystem exposes three operations and incompatible data shapes. Which statement separates Adapter and Facade correctly?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Adapter owns commits; Facade guarantees authorization across all calls.",
+        "explanation": "Neither pattern supplies transaction ownership or security guarantees by its name."
+      },
+      {
+        "id": "b",
+        "text": "Adapter releases the dependency; Facade makes its failures recoverable.",
+        "explanation": "API release and failure semantics require actual platform and dependency contracts."
+      },
+      {
+        "id": "c",
+        "text": "Adapter translates contracts; Facade offers simpler subsystem orchestration.",
+        "explanation": "The responsibilities differ even when one implementation combines them."
+      },
+      {
+        "id": "d",
+        "text": "Adapter simplifies method names; Facade must preserve every legacy parameter.",
+        "explanation": "Their purpose concerns usable contracts and orchestration, not these arbitrary signature rules."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-PAT-04",
+    "questionId": "PAT-04",
+    "prompt": "A logging decorator wraps a retry decorator around an idempotent read client. What should the team clarify first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assume diagnostic decorators may swallow wrapped-client exceptions without changing the service contract.",
+        "explanation": "Swallowing an exception can change observable behavior and break the wrapped service contract. Diagnostic decoration must preserve the agreed semantics."
+      },
+      {
+        "id": "b",
+        "text": "Whether the retry decorator makes every future write idempotent.",
+        "explanation": "A wrapper cannot create business idempotency for arbitrary remote writes."
+      },
+      {
+        "id": "c",
+        "text": "Whether all decorators must inherit the client's concrete class.",
+        "explanation": "Decorators can wrap an interface-compatible object without that inheritance requirement."
+      },
+      {
+        "id": "d",
+        "text": "Whether logs represent logical calls or individual retry attempts.",
+        "explanation": "Wrapper order affects which executions are observed and how diagnostics should be correlated."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-PAT-05",
+    "questionId": "PAT-05",
+    "prompt": "Approval routing requires the first matching rule, with an explicit error when none matches. Which contract is strongest?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Distinguish handled, not applicable and failed, with defined precedence.",
+        "explanation": "This makes routing and failure behavior explicit and testable."
+      },
+      {
+        "id": "b",
+        "text": "Treat every handler exception as not applicable and continue.",
+        "explanation": "A technical or business failure must not silently become permission to choose another route."
+      },
+      {
+        "id": "c",
+        "text": "Execute every handler and keep whichever result arrives last.",
+        "explanation": "This contradicts first-match precedence and can produce unintended routing."
+      },
+      {
+        "id": "d",
+        "text": "Stop after the first handler regardless of its applicability.",
+        "explanation": "That prevents later valid rules from handling requests outside the first rule's scope."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-PAT-06",
+    "questionId": "PAT-06",
+    "prompt": "An ABAP OO event currently refreshes an ALV. A new listener must start a workflow after commit. What additional design is required?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Another SET HANDLER registration with a static receiver method.",
+        "explanation": "Registration changes the local listener arrangement, not its durability guarantees."
+      },
+      {
+        "id": "b",
+        "text": "Transactional publication plus durable consumer retry and correlation.",
+        "explanation": "Local observation alone does not provide committed, recoverable external delivery."
+      },
+      {
+        "id": "c",
+        "text": "A singleton listener shared by all callers in the session.",
+        "explanation": "Session-lifetime state cannot substitute for persistent delivery and recovery."
+      },
+      {
+        "id": "d",
+        "text": "Raising the same event twice to ensure at least one delivery.",
+        "explanation": "Repeated local callbacks can duplicate effects without proving durable publication."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-PAT-07",
+    "questionId": "PAT-07",
+    "prompt": "A persisted Submit command is replayed after its response was lost. What prevents a second effective submission?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An execute method that belongs to a dedicated command class.",
+        "explanation": "Encapsulating execution does not make repeated execution idempotent."
+      },
+      {
+        "id": "b",
+        "text": "A new command object created for every delivery attempt.",
+        "explanation": "Fresh objects do not recognize that an earlier attempt already completed."
+      },
+      {
+        "id": "c",
+        "text": "A durable operation identity with a defined replay outcome.",
+        "explanation": "The application must coordinate identity and state, independently of using the Command pattern."
+      },
+      {
+        "id": "d",
+        "text": "An undo method that deletes any duplicate after detection.",
+        "explanation": "Compensation may be necessary but does not prevent duplicates or guarantee a valid inverse."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-PAT-08",
+    "questionId": "PAT-08",
+    "prompt": "A repository used inside a RAP action reads the database after an unsaved EML update. Its result is stale. What is the appropriate correction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Commit inside the repository before selecting its data.",
+        "explanation": "That violates behavior transaction ownership rather than fixing the repository contract."
+      },
+      {
+        "id": "b",
+        "text": "Store a second mutable cache for every managed BO field.",
+        "explanation": "Duplicating RAP buffering introduces synchronization and cleanup risks without a justified contract."
+      },
+      {
+        "id": "c",
+        "text": "Keep the implementation because its interface is easy to mock.",
+        "explanation": "Mockability does not prove correct transactional behavior."
+      },
+      {
+        "id": "d",
+        "text": "Define transactional-read semantics and use appropriate BO access.",
+        "explanation": "EML access can observe the relevant buffered state that direct persistence reads miss."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-PAT-09",
+    "questionId": "PAT-09",
+    "prompt": "A singleton caches the current approver and test results depend on execution order. What is the most direct design improvement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Make request context explicit and align service lifetime with it.",
+        "explanation": "The cached value's scope must match its use; fresh services or deliberate caches improve isolation."
+      },
+      {
+        "id": "b",
+        "text": "Run the approving test first in every suite.",
+        "explanation": "Ordering tests hides leaked state and leaves the production lifetime defect unchanged."
+      },
+      {
+        "id": "c",
+        "text": "Make the cache static so all test classes see one value.",
+        "explanation": "That reinforces shared mutable state instead of removing the hidden dependency."
+      },
+      {
+        "id": "d",
+        "text": "Assume a singleton is globally unique across all SAP users.",
+        "explanation": "A conventional ABAP singleton normally has internal-session scope, not landscape-wide scope."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-PAT-10",
+    "questionId": "PAT-10",
+    "prompt": "A framework-created handler needs a testable posting service, but its constructor is not yours to change. What is a practical approach?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add unsupported constructor arguments to the generated handler contract.",
+        "explanation": "Invented framework signatures are not a reliable injection mechanism."
+      },
+      {
+        "id": "b",
+        "text": "Delegate to an explicitly wired service using a supported seam.",
+        "explanation": "Framework constraints can be respected while application dependencies remain replaceable."
+      },
+      {
+        "id": "c",
+        "text": "Resolve every collaborator from a global factory in each method.",
+        "explanation": "Repeated lookup hides dependencies and risks accidental live access during tests."
+      },
+      {
+        "id": "d",
+        "text": "Create a generic DI container before writing the first business test.",
+        "explanation": "A container may be useful at scale but is not required for this small boundary."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-PAT-11",
+    "questionId": "PAT-11",
+    "prompt": "A pure report calculation has one stable rule and no external dependencies. What best justifies delaying a Strategy hierarchy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Patterns are incompatible with classic ABAP reports.",
+        "explanation": "Classic ABAP can use patterns; suitability depends on the design problem."
+      },
+      {
+        "id": "b",
+        "text": "Unit tests require all calculations to stay in one large method.",
+        "explanation": "Focused methods and tests are compatible without a hierarchy."
+      },
+      {
+        "id": "c",
+        "text": "No actual variation or test obstacle currently requires the abstraction.",
+        "explanation": "A small explicit method can meet the requirement; a concrete future variation can trigger extraction."
+      },
+      {
+        "id": "d",
+        "text": "Only performance measurements can justify any new interface.",
+        "explanation": "Interfaces may serve variation and dependency isolation independently of runtime performance."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-PAT-12",
+    "questionId": "PAT-12",
+    "prompt": "A configured country has no registered approval Strategy. Which behavior protects the factory/strategy contract?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Default to the Strategy that approves the largest number of requests.",
+        "explanation": "That creates a business authorization risk from missing configuration."
+      },
+      {
+        "id": "b",
+        "text": "Interpret the country value as any dynamically constructed class name.",
+        "explanation": "Uncontrolled class selection is not a safe implementation registry or release boundary."
+      },
+      {
+        "id": "c",
+        "text": "Return an empty successful decision and let the UI decide.",
+        "explanation": "The backend would lose a trustworthy business outcome and allow inconsistent consumers."
+      },
+      {
+        "id": "d",
+        "text": "Reject unsupported configuration with a clear diagnosable outcome.",
+        "explanation": "Failing explicitly prevents an accidental permissive decision and separates selection from rejection."
+      }
+    ],
+    "correctOption": "d"
+  }
+]

@@ -1,0 +1,291 @@
+{
+  "id": "05-rap-foundations",
+  "title": "RAP foundations and transactions",
+  "intro": "Start with the business-object boundary and transaction owner. Explain how the consumer changes the transactional buffer, how business rules run, and when the framework persists the result. These distinctions prevent the most serious mistakes in the original notes.",
+  "sources": [
+    {
+      "title": "SAP Learning on behavior implementation options",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/exploring-the-behavior-implementation-options"
+    },
+    {
+      "title": "SAP Learning on EML and transaction ownership",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects"
+    },
+    {
+      "title": "SAP Learning on numbering and determinations",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/setting-values-using-numbering-and-determinations"
+    },
+    {
+      "title": "SAP Learning on draft",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/understanding-the-draft-concept"
+    },
+    {
+      "title": "SAP RAP BO contract",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract"
+    },
+    {
+      "title": "SAP RAP determinations and unmanaged scope",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/determinations"
+    },
+    {
+      "title": "SAP RAP late-numbering mapping",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/adjust-numbers"
+    },
+    {
+      "title": "SAP BAPI consumption in RAP: late numbering and save sequence",
+      "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US"
+    }
+  ],
+  "questions": [
+    {
+      "id": "RAP-01",
+      "level": "Core",
+      "question": "What are the building blocks of a RAP application?",
+      "answer": "Persistence and CDS describe the data and BO composition. The behavior definition declares operations and rules; behavior implementation supplies application logic. Projections tailor the model and behavior. A service definition exposes entities, and a service binding chooses the protocol and service type. DCL and UI metadata complete relevant concerns.",
+      "detail": "Trace one Submit request from Fiori through the service and projection to the BO action, transactional buffer and save sequence. Distinguish generated framework operations from business logic you implement.",
+      "pitfall": "Behavior is not implemented by the service definition, and a binding alone does not make the endpoint production-ready.",
+      "references": [
+        {
+          "title": "SAP Learning on behavior implementation options",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/exploring-the-behavior-implementation-options",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-02",
+      "level": "Core",
+      "question": "How do you choose managed versus unmanaged RAP?",
+      "answer": "Managed RAP supplies the transactional buffer and standard persistence handling for a suitable data model. Unmanaged RAP lets existing business logic supply interaction and save implementations while still obeying RAP's transaction contract. Managed with unmanaged save keeps managed interaction but delegates persistence. Choose by ownership of behavior and persistence, not application age alone.",
+      "detail": "A new request app with simple owned tables is a managed candidate. A proven transaction-consistent legacy API may justify unmanaged save. Inspect the API's commit behavior before integrating it.",
+      "pitfall": "Unmanaged does not permit arbitrary COMMIT WORK or database changes anywhere in a handler.",
+      "references": [
+        {
+          "title": "SAP Learning on behavior implementation options",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/exploring-the-behavior-implementation-options",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-03",
+      "level": "Core",
+      "question": "What is the transactional buffer?",
+      "answer": "It holds the current BO state and uncommitted changes for the RAP transaction. EML operates through business behavior and can see buffered state. Direct SQL reads persistence and can therefore miss unsaved changes. Managed and unmanaged implementations differ in who implements buffer management.",
+      "detail": "After changing an item quantity, a determination should calculate totals from the transaction's current state, not just a database snapshot that excludes the change.",
+      "pitfall": "The buffer is not a durable draft store and does not survive arbitrary stateless HTTP requests.",
+      "references": [
+        {
+          "title": "SAP Learning on EML and transaction ownership",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-04",
+      "level": "Core",
+      "question": "Where may COMMIT ENTITIES be called?",
+      "answer": "An external ABAP EML consumer can use COMMIT ENTITIES to trigger the save sequence. Inside a RAP behavior implementation, the framework owns commit and rollback. Do not call COMMIT ENTITIES or COMMIT WORK in actions, validations, determinations or saver methods; violating the contract can cause a runtime error.",
+      "detail": "A standalone consumer collects modification responses, checks failures and commits at the transaction boundary. An OData consumer lets the RAP request framework manage that boundary.",
+      "pitfall": "Moving the commit from validation into SAVE or CANCEL does not make it valid.",
+      "references": [
+        {
+          "title": "SAP Learning on EML and transaction ownership",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        },
+        {
+          "title": "SAP RAP BO contract",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-05",
+      "level": "Advanced",
+      "question": "How do you explain the RAP save sequence?",
+      "answer": "The interaction phase processes operations against the transactional buffer. The save sequence finalizes and checks the transaction, performs configured numbering, and persists changes. Detect predictable business failures during early save checks. Ordinary late-save processing assumes a consistent transaction; documented failure-capable saver variants for specific BAPI integration scenarios are an exception whose availability and contract must be verified for the target release.",
+      "detail": "For a legacy API, separate validation from actual persistence and verify that the API fits RAP's save contract. Additional save is a scenario-specific hook, not a universal stage every BO implements.",
+      "pitfall": "Do not present a memorized list of saver methods as universally identical for managed and unmanaged BOs.",
+      "references": [
+        {
+          "title": "SAP RAP BO contract",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        },
+        {
+          "title": "SAP BAPI consumption in RAP: late numbering and save sequence",
+          "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-06",
+      "level": "Core",
+      "question": "Determination validation action or precheck?",
+      "answer": "A determination derives data automatically from declared triggers. A validation checks consistency and can reject saving. An action is an explicitly invoked business operation. A precheck rejects unsuitable incoming modifications before they enter the transactional buffer. Choose based on timing and responsibility.",
+      "detail": "Default currency in a determination; reject an invalid date range in a validation; submit a request through an action; reject an unauthorized proposed field value in a suitable precheck. In unmanaged scenarios, BDEF determinations and validations apply to draft instances; active-instance consistency is implemented in the appropriate unmanaged handlers and save checks.",
+      "pitfall": "An action is not simply another name for a CRUD event, and validations should not modify business data.",
+      "references": [
+        {
+          "title": "SAP Learning on numbering and determinations",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/setting-values-using-numbering-and-determinations",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        },
+        {
+          "title": "SAP RAP determinations and unmanaged scope",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/determinations",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-07",
+      "level": "Core",
+      "question": "How do FAILED REPORTED and MAPPED differ?",
+      "answer": "FAILED identifies instances or operations that failed. REPORTED carries messages and their context, including severity and field references. MAPPED returns identity mappings where the operation contract supports them, for example creation. A message alone does not necessarily reject the operation.",
+      "detail": "For a rejected validation, populate the failed instance and a useful reported message. For a successful create, preserve the correlation between the consumer's content ID and the created identity.",
+      "pitfall": "Error severity in REPORTED is not a substitute for FAILED; determinations do not expose FAILED.",
+      "references": [
+        {
+          "title": "SAP Learning on EML and transaction ownership",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-08",
+      "level": "Core",
+      "question": "What is EML and when do you use it instead of SQL?",
+      "answer": "Entity Manipulation Language is ABAP's typed interface to RAP business objects. READ and MODIFY ENTITIES access BO behavior and transactional state, including supported actions and associations. SQL accesses a database result and does not execute the BO's transactional contract. Use EML when consuming business operations.",
+      "detail": "Updating a table directly can skip validations, authorization and lock handling. A report that invokes Submit should call the exposed BO action and process both interaction and save responses.",
+      "pitfall": "EML does not mean that every read is automatically the best performance choice; use the correct semantic interface.",
+      "references": [
+        {
+          "title": "SAP Learning on EML and transaction ownership",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-09",
+      "level": "Advanced",
+      "question": "What does IN LOCAL MODE mean?",
+      "answer": "It is intended for internal consumption of a BO within its own behavior implementation. Depending on the EML operation it bypasses controls such as authorization, feature control and prechecks so internal logic can maintain its own state. It remains part of the RAP transaction and does not bypass the BO contract.",
+      "detail": "A determination may update a calculated readonly field through internal EML. Keep that logic behind the public operation's checks and review cross-BO calls separately.",
+      "pitfall": "It is not a general-purpose option for external callers to disable security on any BO.",
+      "references": [
+        {
+          "title": "SAP Learning on EML and transaction ownership",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-10",
+      "level": "Core",
+      "question": "What do %cid %cid_ref %tky and %pid mean?",
+      "answer": "%cid correlates a created instance within a request. %cid_ref refers to a related creation by that content ID. %tky is the transactional key, including the relevant identity context such as draft state. %pid is a preliminary identifier used in late-numbering scenarios. They have different lifetimes and purposes.",
+      "detail": "When creating a header and items, correlate the parent creation for create-by-association. In handlers, return the supplied transactional identity rather than reconstructing only a subset of key fields. Late numbering in ADJUST_NUMBERS maps preliminary identification in %pre to the final %key.",
+      "pitfall": "%tky means transactional key, not temporary key; %cid is not a persisted business document number.",
+      "references": [
+        {
+          "title": "SAP Learning on EML and transaction ownership",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-11",
+      "level": "Advanced",
+      "question": "Early numbering versus late numbering?",
+      "answer": "Early numbering supplies the final key during interaction, either by the consumer or implementation as supported. Late numbering assigns final identifiers late in save, after preliminary identity has been used. Managed UUID numbering is a common technical-key option. Business numbering and technical identity may be separate requirements.",
+      "detail": "Late numbering can reduce numbers consumed by rejected transactions. A legally gap-free document sequence still needs a suitable number-range design, transaction guarantees and handling of failures and cancellations.",
+      "pitfall": "Late numbering alone does not guarantee a gap-free sequence, and SELECT MAX plus one is unsafe under concurrency.",
+      "references": [
+        {
+          "title": "SAP Learning on numbering and determinations",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/setting-values-using-numbering-and-determinations",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        },
+        {
+          "title": "SAP RAP late-numbering mapping",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/adjust-numbers",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-12",
+      "level": "Core",
+      "question": "What problem does draft solve?",
+      "answer": "Draft persists an incomplete editing state across stateless requests and interruptions, separately from active business data. The framework provides a draft lifecycle with operations such as Edit, Activate, Discard and Resume; Prepare can run designated checks and determinations. Draft and active identities must be distinguished.",
+      "detail": "A user can return to a partly completed request. Activation transfers valid draft changes into active processing, while the request's save sequence still completes the transaction.",
+      "pitfall": "Every BO is not automatically draft-enabled, and a custom Submit action is not automatically draft activation.",
+      "references": [
+        {
+          "title": "SAP Learning on draft",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/understanding-the-draft-concept",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-13",
+      "level": "Advanced",
+      "question": "Can you rely on determination and validation order?",
+      "answer": "Do not create hidden dependencies on an arbitrary order among independent determinations or validations. Model trigger conditions and explicit business dependencies; make derivations consistent and safe to repeat. Framework phase ordering exists, but that is different from a promise about a specific handler order.",
+      "detail": "If total calculation depends on currency conversion, put the dependent calculation in a coherent operation or derive both from stable current data. Test repeated updates and cycles.",
+      "pitfall": "Calling the order random is imprecise; the important point is that an unsupported ordering assumption is unsafe.",
+      "references": [
+        {
+          "title": "SAP RAP determinations and unmanaged scope",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/determinations",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-14",
+      "level": "Core",
+      "question": "How does persistent field mapping work?",
+      "answer": "Behavior mapping associates CDS element names with persistence fields when names differ. It is a structural correspondence used by the selected persistence implementation. It does not transform data arbitrarily or replace semantic modeling. Projections and operation-derived types also have their own identity and naming contracts.",
+      "detail": "A CDS element RequestUUID may map to request_uuid in the table. Currency conversion belongs in supported business or query logic, not in a field-name mapping declaration.",
+      "pitfall": "Mapping is not a database join or a universal value-conversion mechanism.",
+      "references": [
+        {
+          "title": "SAP Learning on behavior implementation options",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/exploring-the-behavior-implementation-options",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        }
+      ]
+    },
+    {
+      "id": "RAP-15",
+      "level": "Advanced",
+      "question": "What should be checked before wrapping a BAPI in RAP?",
+      "answer": "Check API availability and release classification, transaction consistency, locks, validation and save separation, update-task behavior, authorization checks and any implicit or explicit commit. Then choose a compatible RAP implementation scenario and map messages and failures. A callable function module is not automatically a valid RAP save implementation.",
+      "detail": "Prototype failure and rollback behavior with the real API. Verify that a later failure cannot leave the external document committed while the RAP transaction reports failure. For BAPI authorization checks that conflict with phase restrictions, use the supported authorization-context pattern together with RAP authorization handlers. Perform the actual authorization decision at the allowed operation boundary; disabling a repeated check in validation or late save must not remove the underlying protection.",
+      "pitfall": "A wrapper changes the interface; it does not erase the underlying API's transaction behavior or Clean Core classification.",
+      "references": [
+        {
+          "title": "SAP BAPI consumption in RAP: late numbering and save sequence",
+          "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US",
+          "note": "Check the exact RAP implementation scenario and transaction phase."
+        },
+        {
+          "title": "SAP BAPI consumption in RAP: Authorizations",
+          "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-authorizations",
+          "note": "Check the documented authorization-context pattern and RAP authorization handler together. Suppressing a phase-restricted check must not remove the actual permission decision."
+        }
+      ]
+    }
+  ]
+}

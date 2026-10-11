@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1036) scale(1,-1)">Construction must protect a real invariant</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)">Worked family: provider A serializer must be paired with provider A sender</text>
+			<rect x="35" y="410" width="187.5744680851064" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="45" y="423" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,846) scale(1,-1)">Approach</text>
+			<rect x="224.5744680851064" y="410" width="290.9787234042554" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="234.5744680851064" y="423" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,846) scale(1,-1)">Construction decision</text>
+			<rect x="517.5531914893618" y="410" width="325.4468085106382" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="527.5531914893618" y="423" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,846) scale(1,-1)">Use when</text>
+			<rect x="35" y="367" width="187.5744680851064" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="45" y="380" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,760) scale(1,-1)">Simple factory</text>
+			<rect x="224.5744680851064" y="367" width="290.9787234042554" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="234.5744680851064" y="380" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,760) scale(1,-1)">Explicit supported choice</text>
+			<rect x="517.5531914893618" y="367" width="325.4468085106382" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="527.5531914893618" y="380" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,760) scale(1,-1)">Small, stable implementation set</text>
+			<rect x="35" y="324" width="187.5744680851064" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="45" y="337" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,674) scale(1,-1)">Factory Method</text>
+			<rect x="224.5744680851064" y="324" width="290.9787234042554" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="234.5744680851064" y="337" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,674) scale(1,-1)">Creator subclass supplies object</text>
+			<rect x="517.5531914893618" y="324" width="325.4468085106382" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="527.5531914893618" y="337" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,674) scale(1,-1)">Creator extension is intentional</text>
+			<rect x="35" y="281" width="187.5744680851064" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="45" y="294" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,588) scale(1,-1)">Abstract Factory</text>
+			<rect x="224.5744680851064" y="281" width="290.9787234042554" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="234.5744680851064" y="294" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,588) scale(1,-1)">Factory supplies related family</text>
+			<rect x="517.5531914893618" y="281" width="325.4468085106382" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="527.5531914893618" y="294" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,588) scale(1,-1)">Products must remain compatible</text>
+			<rect x="36" y="139" width="383" height="104" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="51" y="218" style="font-family: Helvetica-Bold; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,436) scale(1,-1)">PROVIDER A FAMILY</text>
+			<text x="51" y="187" style="font-family: Helvetica; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,374) scale(1,-1)">Serializer</text>
+			<path d="M 147,190 L 279,190 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="279 190, 269 185, 269 195" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="296" y="187" style="font-family: Helvetica; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,374) scale(1,-1)">Sender</text>
+			<text x="51" y="160" style="font-family: Helvetica; font-size: 12px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,320) scale(1,-1)">Validate family; reject unsupported provider.</text>
+			<rect x="460" y="139" width="383" height="104" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="475" y="218" style="font-family: Helvetica-Bold; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,436) scale(1,-1)">PROVIDER B FAMILY</text>
+			<text x="475" y="187" style="font-family: Helvetica; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,374) scale(1,-1)">Serializer</text>
+			<path d="M 571,190 L 703,190 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="703 190, 693 185, 693 195" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="720" y="187" style="font-family: Helvetica; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,374) scale(1,-1)">Sender</text>
+			<text x="475" y="160" style="font-family: Helvetica; font-size: 12px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,320) scale(1,-1)">Validate family; reject unsupported provider.</text>
+			<path d="M 416,195 L 460,195 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 2; stroke-dasharray: 4, 3;"/>
+			<text x="423" y="177" style="font-family: Helvetica-Bold; font-size: 22px;fill: rgb(74%,32%,12%); stroke:none;" transform="translate(0,354) scale(1,-1)">X</text>
+			<text x="38" y="108" style="font-family: Helvetica-Bold; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,216) scale(1,-1)">A factory is useful here because an A/B mixed pair is invalid.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)">A static method returning an object is not automatically Factory Method. Do not create a product-family</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)">abstraction when there is only one trivial product.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1036) scale(1,-1)">A service is a stack of contracts</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)">RAP artifacts: each layer has a different job</text>
+			<rect x="42" y="409" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="55" y="437" style="font-family: Helvetica-Bold; font-size: 14px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,874) scale(1,-1)">Fiori UI / API client</text>
+			<text x="55" y="418" style="font-family: Helvetica; font-size: 12px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,836) scale(1,-1)">Consume metadata, data and operations</text>
+			<path d="M 820,409 L 820,401 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="820 401, 815 411, 825 411" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<rect x="42" y="354" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="55" y="382" style="font-family: Helvetica-Bold; font-size: 14px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,764) scale(1,-1)">Service binding</text>
+			<text x="55" y="363" style="font-family: Helvetica; font-size: 12px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,726) scale(1,-1)">Choose protocol and exposure configuration</text>
+			<path d="M 820,354 L 820,346 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="820 346, 815 356, 825 356" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<rect x="42" y="299" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="55" y="327" style="font-family: Helvetica-Bold; font-size: 14px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,654) scale(1,-1)">Service definition</text>
+			<text x="55" y="308" style="font-family: Helvetica; font-size: 12px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,616) scale(1,-1)">Select the entities to expose</text>
+			<path d="M 820,299 L 820,291 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="820 291, 815 301, 825 301" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<rect x="42" y="244" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="55" y="272" style="font-family: Helvetica-Bold; font-size: 14px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,544) scale(1,-1)">Projection + projected behavior</text>
+			<text x="55" y="253" style="font-family: Helvetica; font-size: 12px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,506) scale(1,-1)">Shape the consumer contract</text>
+			<path d="M 820,244 L 820,236 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="820 236, 815 246, 825 246" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<rect x="42" y="189" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="55" y="217" style="font-family: Helvetica-Bold; font-size: 14px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,434) scale(1,-1)">Root / child CDS + behavior definition</text>
+			<text x="55" y="198" style="font-family: Helvetica; font-size: 12px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,396) scale(1,-1)">Model identity, composition and permitted behavior</text>
+			<path d="M 820,189 L 820,181 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="820 181, 815 191, 825 191" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<rect x="42" y="134" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="55" y="162" style="font-family: Helvetica-Bold; font-size: 14px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,324) scale(1,-1)">Behavior implementation + persistence</text>
+			<text x="55" y="143" style="font-family: Helvetica; font-size: 12px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,286) scale(1,-1)">Execute business rules; persist through the selected scenario</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)">A CDS entity alone is not a complete transactional service. A binding is not a behavior implementation.</text>
+		</g>
+	</g>
+</svg>

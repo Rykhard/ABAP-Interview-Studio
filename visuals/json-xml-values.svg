@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1036) scale(1,-1)">Same business values, two representation contracts</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)">Do not confuse an identifier with a number or an absent value with null</text>
+			<rect x="35" y="233" width="395" height="211" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<rect x="35" y="405" width="395" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="49" y="418" style="font-family: Helvetica-Bold; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,836) scale(1,-1)">JSON example</text>
+			<rect x="455" y="233" width="390" height="211" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<rect x="455" y="405" width="390" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="469" y="418" style="font-family: Helvetica-Bold; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,836) scale(1,-1)">XML example</text>
+			<text x="54" y="376" style="font-family: Helvetica; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,752) scale(1,-1)">{</text>
+			<text x="54" y="348" style="font-family: Helvetica; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,696) scale(1,-1)">  &quot;id&quot;: &quot;0004711&quot;,</text>
+			<text x="54" y="320" style="font-family: Helvetica; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,640) scale(1,-1)">  &quot;currency&quot;: &quot;EUR&quot;,</text>
+			<text x="54" y="292" style="font-family: Helvetica; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,584) scale(1,-1)">  &quot;amount&quot;: &quot;120.50&quot;</text>
+			<text x="54" y="264" style="font-family: Helvetica; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,528) scale(1,-1)">}</text>
+			<text x="474" y="376" style="font-family: Helvetica; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,752) scale(1,-1)">&lt;order id=&quot;0004711&quot;&gt;</text>
+			<text x="474" y="348" style="font-family: Helvetica; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,696) scale(1,-1)">  &lt;currency&gt;EUR&lt;/currency&gt;</text>
+			<text x="474" y="320" style="font-family: Helvetica; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,640) scale(1,-1)">  &lt;amount&gt;120.50&lt;/amount&gt;</text>
+			<text x="474" y="292" style="font-family: Helvetica; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,584) scale(1,-1)">&lt;/order&gt;</text>
+			<rect x="48" y="168" width="235.93023255813955" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="58" y="181" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,362) scale(1,-1)">Case</text>
+			<rect x="285.93023255813955" y="168" width="547.0697674418604" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="295.93023255813955" y="181" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,362) scale(1,-1)">Required decision</text>
+			<rect x="48" y="134" width="235.93023255813955" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="58" y="147" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,294) scale(1,-1)">&quot;0004711&quot;</text>
+			<rect x="285.93023255813955" y="134" width="547.0697674418604" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="295.93023255813955" y="147" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,294) scale(1,-1)">Keep the leading zeros: this is an identifier</text>
+			<rect x="48" y="100" width="235.93023255813955" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="58" y="113" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,226) scale(1,-1)">Missing / null / empty</text>
+			<rect x="285.93023255813955" y="100" width="547.0697674418604" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="295.93023255813955" y="113" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,226) scale(1,-1)">Specify their meanings, especially for partial updates</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)">The amount is a string in this example by contract. Neither JSON nor XML automatically defines business</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)">precision or validation.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,632 @@
+/* Practice setup keeps the scope, format and next action in one place. */
+#practiceSetup {
+  padding: 24px;
+  margin: 18px 0 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+#practiceSetup .practice-intro h3 {
+  margin: 0 0 4px;
+  font-size: 23px;
+  letter-spacing: -.3px;
+}
+
+#practiceSetup .practice-intro p {
+  margin: 0;
+  max-width: 76ch;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+#practiceSetup .format-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+#practiceSetup .format-card {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  padding: 15px 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  text-align: left;
+  background: #fff;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+#practiceSetup .format-card strong {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+#practiceSetup .format-card span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+#practiceSetup .format-card small {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--green);
+}
+
+#practiceSetup .format-card[aria-pressed="true"] {
+  border-color: var(--green);
+  box-shadow: inset 0 0 0 1px var(--green);
+  background: #edf5f0;
+}
+
+#practiceSetup .format-card:hover {
+  border-color: var(--green);
+  background: #f5f9f6;
+}
+
+#practiceSetup #practiceFiltersHost #filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 15px;
+}
+
+#practiceSetup #practiceFiltersHost #filters select {
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  flex: 1 1 200px;
+  font-size: 14px;
+}
+
+#practiceSetup #practiceFiltersHost #clearFilters {
+  align-self: center;
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  font-size: 12px;
+  background: transparent;
+}
+
+#practiceSetup .practice-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 12px 18px;
+  margin: 15px 0;
+}
+
+#practiceSetup .practice-fields > *,
+#practiceSetup .advanced-fields > * {
+  min-width: 0;
+}
+
+#practiceSetup .practice-fields label,
+#practiceSetup .advanced-fields label {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+#practiceSetup .practice-fields select,
+#practiceSetup .advanced-fields select,
+#practiceSetup #practiceSearchHost input {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+#practiceSetup .practice-coverage {
+  margin: 12px 0;
+  padding: 10px 13px;
+  border-radius: 7px;
+  background: #f3f6f3;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+#practiceSetup .practice-coverage p {
+  margin: 0;
+}
+
+#practiceSetup .practice-coverage button {
+  padding: 0 2px;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: #12618a;
+  font-size: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+#practiceSetup #advancedSettings,
+#practiceSetup .practice-help {
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+
+#practiceSetup #advancedSettings > summary,
+#practiceSetup .practice-help > summary {
+  width: fit-content;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 550;
+}
+
+#practiceSetup .advanced-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(130px, 1fr);
+  align-items: end;
+  gap: 12px 18px;
+  margin: 14px 0 6px;
+}
+
+#practiceSetup .practice-start {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-top: 20px;
+}
+
+#practiceSetup .practice-start > button {
+  min-height: 46px;
+  padding: 10px 24px;
+  font-weight: 650;
+}
+
+#practiceSetup #practiceSummary {
+  flex: 1 1 220px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+#practiceSetup .practice-help p {
+  max-width: 85ch;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* A session shows one decision at a time, with restrained progress and feedback. */
+#view .session-shell {
+  max-width: 1040px;
+  margin: 24px auto;
+  min-width: 0;
+}
+
+#view .session-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-bottom: 14px;
+}
+
+#view .session-bar > div {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+#view .session-bar h3 {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+#view .session-bar .small {
+  margin: 3px 0 0;
+  color: var(--muted);
+}
+
+#view .session-bar button {
+  margin-left: auto;
+  padding: 7px 12px;
+  font-size: 12px;
+  background: transparent;
+}
+
+#view .session-progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  margin: 0;
+  accent-color: var(--green);
+  border: 0;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+#view .session-progress::-webkit-progress-bar {
+  background: #e1e8e3;
+}
+
+#view .session-progress::-webkit-progress-value {
+  background: var(--green);
+}
+
+#view .session-count {
+  margin: 8px 0 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#view .session-card {
+  min-width: 0;
+  margin: 14px 0;
+  padding: 25px;
+  box-shadow: none;
+}
+
+#view .session-card > h3 {
+  margin: 10px 0 20px;
+  font-size: 23px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+#view .session-card .quiz-option {
+  min-height: 52px;
+  margin: 9px 0;
+  padding: 13px 16px;
+  border-radius: 9px;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+#view .session-card .quiz-option .choice-letter {
+  min-width: 20px;
+  color: var(--muted);
+}
+
+#view .session-card .quiz-option.selected .choice-letter,
+#view .session-card .quiz-option.correct .choice-letter,
+#view .session-card .quiz-option.incorrect .choice-letter {
+  color: inherit;
+}
+
+#view .session-card .quiz-option:disabled {
+  opacity: 1;
+}
+
+#view .session-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0 0;
+}
+
+#view .session-actions button {
+  min-height: 44px;
+}
+
+#view .session-actions .primary {
+  min-width: 150px;
+  font-weight: 650;
+}
+
+#view .session-feedback {
+  margin: 20px 0 12px;
+  padding: 13px 16px;
+  border: 1px solid #c3dccb;
+  border-left: 4px solid var(--green);
+  border-radius: 7px;
+  background: #edf6ef;
+  font-size: 14px;
+}
+
+#view .session-feedback.wrong,
+#view .session-feedback.incorrect {
+  border-color: #ead4c6;
+  border-left-color: #b75f33;
+  background: #fff4ec;
+}
+
+#view .session-feedback p {
+  margin: 5px 0;
+}
+
+#view .answer-choice-feedback {
+  margin: 6px 0 14px;
+  padding: 0 4px 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+#view .review-answer {
+  margin-top: 22px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+
+#view .review-answer > summary {
+  font-size: 14px;
+  color: #12618a;
+}
+
+#view .review-answer[open] > summary {
+  margin-bottom: 20px;
+}
+
+#view .recall-prompt {
+  margin: 16px 0;
+  padding: 14px 17px;
+  background: #f3f6f3;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+#view .recall-prompt p {
+  margin: 0;
+}
+
+#view .self-rating-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 10px;
+  margin: 16px 0 0;
+}
+
+#view .self-rating-buttons button {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 12px 15px;
+  text-align: left;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+#view .self-rating-buttons strong {
+  font-size: 14px;
+}
+
+#view .self-rating-buttons small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+#view .self-rating-buttons button.selected,
+#view .self-rating-buttons button[aria-pressed="true"] {
+  border-color: var(--green);
+  background: #edf5f0;
+}
+
+/* Results separate the current session from the cumulative study record. */
+#view .session-results {
+  max-width: 1040px;
+  margin: 24px auto;
+  min-width: 0;
+}
+
+#view .session-results > h3 {
+  margin-bottom: 8px;
+  font-size: 25px;
+}
+
+#view .session-results .result-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+#view .result-metrics > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 15px 17px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+}
+
+#view .result-metrics strong {
+  font-size: 26px;
+  line-height: 1.3;
+}
+
+#view .result-metrics span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#view .result-list {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  margin: 20px 0;
+  list-style: none;
+}
+
+#view .result-list .status {
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: #e9eee9;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+#view .result-list .status.correct,
+#view .result-list .status.ready {
+  background: #e4f1e8;
+  color: var(--green);
+}
+
+#view .result-list .status.incorrect,
+#view .result-list .status.retry {
+  background: #fff0e5;
+  color: #984920;
+}
+
+#view .result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 12px;
+}
+
+#view .result-actions button {
+  min-height: 44px;
+}
+
+#view .progress-quiet,
+#practiceSetup .progress-quiet {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+#practiceSetup :is(button, input, select, summary):focus-visible,
+#view .session-shell :is(button, input, select, summary, a):focus-visible,
+#view .session-results :is(button, summary, a):focus-visible {
+  outline: 3px solid #12618a;
+  outline-offset: 3px;
+}
+
+#practiceSetup button:disabled,
+#view .session-actions button:disabled,
+#view .self-rating-buttons button:disabled,
+#view .result-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+
+@media (max-width: 650px) {
+  #practiceSetup {
+    padding: 18px;
+  }
+
+  #practiceSetup .format-picker {
+    gap: 9px;
+  }
+
+  #practiceSetup .format-card {
+    padding: 12px;
+  }
+
+  #practiceSetup .format-card strong {
+    font-size: 14px;
+  }
+
+  #practiceSetup .format-card span,
+  #practiceSetup .format-card small {
+    font-size: 12px;
+  }
+
+  #practiceSetup .advanced-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #practiceSetup #practiceFiltersHost #filters select {
+    flex-basis: 100%;
+  }
+
+  #practiceSetup #practiceFiltersHost #clearFilters {
+    margin-left: auto;
+  }
+
+  #practiceSetup .practice-start > button {
+    width: 100%;
+  }
+
+  #practiceSetup #practiceSummary {
+    flex-basis: 100%;
+  }
+
+  #view .session-card {
+    padding: 18px;
+  }
+
+  #view .session-card > h3 {
+    font-size: 20px;
+  }
+
+  #view .session-card .quiz-option {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  #view .session-actions > button,
+  #view .result-actions > button {
+    flex: 1 1 150px;
+  }
+
+  #view .self-rating-buttons {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #view .session-results .result-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  #view .result-metrics > div {
+    padding: 12px;
+  }
+
+  #view .result-metrics strong {
+    font-size: 23px;
+  }
+}
+
+@media (max-width: 370px) {
+  #practiceSetup .format-picker {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #view .session-shell,
+  #view .session-results {
+    scroll-behavior: auto;
+  }
+}
+
+@media print {
+  #practiceSetup,
+  #view .session-bar button,
+  #view .session-actions,
+  #view .result-actions,
+  #view .self-rating-buttons {
+    display: none;
+  }
+}
+
+#view .result-item { min-width: 0; padding: 14px 0; border-bottom: 1px solid var(--line); }
+#view .result-item > summary { display: flex; gap: 12px; align-items: baseline; font-size: 14px; }
+#view .result-item > summary .status { flex: 0 0 auto; }
+#view .result-item[open] > summary { margin-bottom: 18px; }
+#practiceSetup label { margin-bottom: 6px !important; }
+
+/* Keep the active question ahead of general guidance on smaller screens. */
+main.in-session #intro, main.in-session > #progress, #notice:empty { display: none; }
+main.in-session .modes { margin-top: 12px; }
+main.in-session header h2 { font-size: 25px; }
+#view .result-item > summary::before { content: "\25B8"; color: var(--muted); }
+#view .result-item[open] > summary::before { content: "\25BE"; }
+#sessionQuestion:focus, #resultsTitle:focus, .answer-summary:focus { outline: none; }

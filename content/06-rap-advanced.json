@@ -1,0 +1,250 @@
+{
+  "id": "06-rap-advanced",
+  "title": "RAP service design and advanced behavior",
+  "intro": "Use this segment for deeper follow-up questions. Connect each feature to a concrete requirement and explain its limits. Release-specific BDL syntax and UI behavior must be checked against the employer's ABAP and SAPUI5 versions.",
+  "sources": [
+    {
+      "title": "SAP Learning on authorization",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks"
+    },
+    {
+      "title": "SAP service binding documentation",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/service-binding"
+    },
+    {
+      "title": "SAP draft concept",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/understanding-the-draft-concept"
+    },
+    {
+      "title": "SAP RAP documentation",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap"
+    },
+    {
+      "title": "SAP operation augmentation",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/operation-augmentation"
+    },
+    {
+      "title": "SAP action definitions",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/action-definition"
+    },
+    {
+      "title": "SAP feature control",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/feature-control"
+    },
+    {
+      "title": "SAP RAP side effects",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/side-effects"
+    },
+    {
+      "title": "SAP RAP state messages",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/state-messages"
+    }
+  ],
+  "questions": [
+    {
+      "id": "ADV-01",
+      "level": "Core",
+      "question": "How do pessimistic locks and ETags complement each other?",
+      "answer": "A pessimistic lock prevents conflicting processing for a time. An ETag detects whether the version a client read is still current when it writes. RAP defines lock ownership and optimistic concurrency through behavior. Draft scenarios also need total-ETag handling for relevant active-data changes.",
+      "detail": "Two users read a request. After one saves, the other's stale If-Match must not silently overwrite it. A draft lock and an active-data version check solve different parts of this problem.",
+      "pitfall": "Locking and logging are different concepts; an ETag is not a log and does not reserve the object.",
+      "references": [
+        {
+          "title": "SAP draft concept",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/understanding-the-draft-concept",
+          "note": "Check the supported RAP behavior and consumer/version contract."
+        }
+      ]
+    },
+    {
+      "id": "ADV-02",
+      "level": "Advanced",
+      "question": "Global authorization instance authorization or feature control?",
+      "answer": "Global authorization checks permissions independent of a specific instance. Instance authorization considers an instance's context. Feature control enables operations or fields according to business state. UI availability and feature control help consumers, but authorization must enforce who may perform the operation.",
+      "detail": "A submitted request may be readonly for everyone as a feature rule; approval may additionally require the assigned approver's authority. Test a direct API request as well as the disabled UI button.",
+      "pitfall": "Hiding or disabling a button is not an authorization check.",
+      "references": [
+        {
+          "title": "SAP Learning on authorization",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks",
+          "note": "Check the supported RAP behavior and consumer/version contract."
+        }
+      ]
+    },
+    {
+      "id": "ADV-03",
+      "level": "Advanced",
+      "question": "What does authorization none on an action mean?",
+      "answer": "Where supported, authorization: none exempts that action from the RAP authorization checks specified for it. It does not remove authentication at the service boundary or every authorization check in downstream code. Use it only with a deliberate security model and the exact supported behavior syntax.",
+      "detail": "An action that needs no object-specific authorization may still operate through an authenticated service and call another API that performs its own checks. Document why the exemption is justified.",
+      "pitfall": "Do not propose it as a universal fix for authorization errors or expose a sensitive action by accident.",
+      "references": [
+        {
+          "title": "SAP Learning on authorization",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks",
+          "note": "Check the supported RAP behavior and consumer/version contract."
+        }
+      ]
+    },
+    {
+      "id": "ADV-04",
+      "level": "Core",
+      "question": "Instance static and factory actions?",
+      "answer": "An instance action operates on identified instances. A static action belongs to the entity without requiring an existing instance. A factory action creates instances and returns the appropriate creation mapping. Their inputs, results and identity handling differ, so choose according to the business operation.",
+      "detail": "Approve acts on a request, CalculatePreview may be static, and CopyRequest can be a factory action. A normal instance action returning $self is not automatically a factory action.",
+      "pitfall": "Static does not mean a static ABAP method that can ignore RAP identity and response contracts.",
+      "references": [
+        {
+          "title": "SAP action definitions",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/action-definition",
+          "note": "Check the supported RAP behavior and consumer/version contract."
+        }
+      ]
+    },
+    {
+      "id": "ADV-05",
+      "level": "Advanced",
+      "question": "How do action parameters and results work?",
+      "answer": "Define a supported parameter and result shape in the behavior contract, often using a CDS abstract entity for structured input. Implement the generated handler signature and populate the requested result and response structures correctly. Cardinality and binding to instances are part of the contract.",
+      "detail": "Submit may accept a comment; CalculatePreview may return totals without persisting an object. The UI may generate a dialog from the parameter metadata, subject to consumer support.",
+      "pitfall": "Parameters are not defined by putting an action inside an abstract entity.",
+      "references": [
+        {
+          "title": "SAP action definitions",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/action-definition",
+          "note": "Check the supported RAP behavior and consumer/version contract."
+        }
+      ]
+    },
+    {
+      "id": "ADV-06",
+      "level": "Advanced",
+      "question": "What is augmentation and how does it differ from additional save?",
+      "answer": "Augmentation adapts supported modifying operations at a RAP projection boundary, allowing projection-specific input to be enriched or translated. Additional save adds persistence-related work alongside a managed save scenario. They run for different purposes and are not interchangeable hooks.",
+      "detail": "A projection may transform consumer-specific input into changes understood by the underlying BO. Audit records associated with managed persistence may instead need an additional-save design compatible with the transaction.",
+      "pitfall": "Augmentation is not a generic before-save hook for copying every virtual element into a table.",
+      "references": [
+        {
+          "title": "SAP operation augmentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/operation-augmentation",
+          "note": "Check the supported RAP behavior and consumer/version contract."
+        }
+      ]
+    },
+    {
+      "id": "ADV-07",
+      "level": "Advanced",
+      "question": "What are side effects in a RAP UI?",
+      "answer": "Side-effect metadata tells a capable consumer which values, messages or permissions to refresh after a relevant change or action. The backend must still compute correct results; the metadata coordinates refresh behavior. Backend release, service metadata and SAPUI5 support determine which declarations are available.",
+      "detail": "After changing quantity, refresh total amount and action availability. Verify network requests and the displayed values, especially after an action result or draft update.",
+      "pitfall": "A side-effect declaration does not implement the calculation or force all non-UI consumers to issue extra reads.",
+      "references": [
+        {
+          "title": "SAP RAP side effects",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/side-effects",
+          "note": "Read the field/action trigger and refresh-target contract; verify the actual UI consumer support."
+        }
+      ]
+    },
+    {
+      "id": "ADV-08",
+      "level": "Advanced",
+      "question": "State messages versus transition messages?",
+      "answer": "A state message describes an invalid state of an instance and may persist in a supported draft scenario until revalidated. A transition message relates to the current operation or request. Use the appropriate state area and instance or field references and clear obsolete state correctly.",
+      "detail": "A missing mandatory date can remain highlighted while editing a draft. A successful one-time submission notification should not reappear forever as a stale state error.",
+      "pitfall": "Every error should not be stored as a persistent state message, and REPORTED alone does not block saving.",
+      "references": [
+        {
+          "title": "SAP RAP state messages",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/state-messages",
+          "note": "Compare persistent state-related messages with transition messages, instance identity and message invalidation."
+        }
+      ]
+    },
+    {
+      "id": "ADV-09",
+      "level": "Core",
+      "question": "Service definition versus binding and UI versus Web API?",
+      "answer": "A service definition selects exposed entities and names. A binding attaches a protocol and service type, such as OData V4 UI or Web API. UI services support relevant UI semantics; Web APIs target programmatic consumers. Activation, local publication, authorization and deployment are separate concerns.",
+      "detail": "Choose the consumer first, then inspect generated metadata and test the actual endpoint. A local ADT preview is useful, but transport and production communication setup still need validation.",
+      "pitfall": "VDM.viewType: #COMPOSITE neither creates nor activates a service binding.",
+      "references": [
+        {
+          "title": "SAP service binding documentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/service-binding",
+          "note": "Check the supported RAP behavior and consumer/version contract."
+        }
+      ]
+    },
+    {
+      "id": "ADV-10",
+      "level": "Advanced",
+      "question": "What must a custom query provider implement?",
+      "answer": "A provider supplies data according to the requested query contract, including applicable filtering, ordering, paging, selected elements and total count. It should process only requested information and preserve authorization. Unsupported query options must be handled deliberately. Remote sources add latency, consistency and error-mapping concerns.",
+      "detail": "Handle data and total-count requests independently: a count-only request must not depend on a data-request branch. Compute count over the same authorized, filtered result before paging, and use deterministic ordering for data. A zero page size requests no rows; distinguish it from IF_RAP_QUERY_PAGING=>PAGE_SIZE_UNLIMITED. Do not accidentally translate zero into an unrestricted SQL read. Test count-only, empty-page and unlimited requests as well as ordinary pages.",
+      "pitfall": "Returning any internal table is not a correct implementation of IF_RAP_QUERY_PROVIDER.",
+      "references": [
+        {
+          "title": "SAP: Implementing an Unmanaged Query",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-unmanaged-query",
+          "note": "Check the supported request contract and target release. Scenario-specific bulk access and caching decisions still need their own correctness and performance evidence."
+        },
+        {
+          "title": "SAP: Requesting and Setting Data or Count",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/requesting-and-setting-data-or-count-in-unmanaged-query",
+          "note": "Handle data and count requests independently. Apply the same authorization and filtering to both; test count-only requests."
+        },
+        {
+          "title": "SAP: Interface IF_RAP_QUERY_PAGING",
+          "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/c9e191cc92e54ca2bfec677037780c03.html?locale=en-us",
+          "note": "Distinguish offset, zero page size and PAGE_SIZE_UNLIMITED. The paging interface does not itself provide a cross-request snapshot."
+        }
+      ]
+    },
+    {
+      "id": "ADV-11",
+      "level": "Advanced",
+      "question": "How do RAP business events differ from ABAP Objects events?",
+      "answer": "ABAP Objects events use event handlers within the ABAP execution context. RAP business events describe business occurrences under RAP's event contract; supported local or remote consumption has its own lifecycle. Remote enterprise events require configured infrastructure and transactional publication, with retry and idempotency designed explicitly.",
+      "detail": "Use an integration event after a request is durably submitted. A remote consumer should tolerate duplicate delivery and should not approve a request merely because it received an uncommitted local callback.",
+      "pitfall": "Do not collapse every locally consumed RAP event into synchronous SET HANDLER semantics or promise universal ordering.",
+      "references": [
+        {
+          "title": "SAP: Develop Business Events",
+          "url": "https://help.sap.com/docs/btp/fc4c71aa50014fd1b43721701471913d/e23776500eb8463f957134e682b76fba.html?version=202310.002",
+          "note": "Release-specific RAP event documentation. Check the event definition, publication and supported consumption contract on the target release; infrastructure and delivery semantics need separate verification."
+        }
+      ]
+    },
+    {
+      "id": "ADV-12",
+      "level": "Advanced",
+      "question": "How do you extend an existing RAP BO safely?",
+      "answer": "Inspect its released extension contract and supported extension points before adding fields or behavior. Check model, projection, metadata, authorization, save and service implications. Extension support depends on the BO and release; an accessible source object is not necessarily released for extension.",
+      "detail": "For an extra approval reference, verify persistence extension, exposure, validation, update behavior and consumer compatibility end to end. Test the standard flow without the new field as well.",
+      "pitfall": "Being able to create a CDS extension does not prove every BO behavior or API contract is extensible.",
+      "references": [
+        {
+          "title": "SAP: RAP Extensibility Enablement",
+          "url": "https://help.sap.com/docs/ABAP_Cloud/abap-rap/rap-extensibility-enablement",
+          "note": "Verify explicit extensibility enablement and the released extension contract for each affected layer on the target release."
+        }
+      ]
+    },
+    {
+      "id": "ADV-13",
+      "question": "How do static and dynamic feature controls differ?",
+      "answer": "Static restrictions are declared in the behavior definition, for example a readonly or mandatory field. Dynamic controls determine supported operation or field availability from global or instance context. They express business availability, while authorization remains separate. Check which controls the operation and target release support.",
+      "detail": "An approved request may dynamically forbid editing. A generated UUID may be statically readonly. Global and instance feature control cannot both be declared for the same operation; choose the applicable contract and implement its generated handler.",
+      "pitfall": "A dynamic UI state does not prove security, and mandatory metadata does not replace all backend business validations.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP feature control",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/feature-control",
+          "note": "Check the supported RAP behavior and consumer/version contract."
+        }
+      ]
+    }
+  ]
+}

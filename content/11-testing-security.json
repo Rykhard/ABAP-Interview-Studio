@@ -1,0 +1,175 @@
+{
+  "id": "11-testing-security",
+  "title": "Testing security and delivery",
+  "intro": "Strong candidates explain how they know a solution works. Distinguish isolated unit tests, database or CDS tests, BO integration tests and real UI or service tests. State precisely which environment and behavior each result covers.",
+  "sources": [
+    {
+      "title": "SAP Clean ABAP testing guidance",
+      "url": "https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md"
+    },
+    {
+      "title": "SAP Learning on RAP authorization",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks"
+    },
+    {
+      "title": "SAP RAP documentation",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap"
+    },
+    {
+      "title": "SAP ABAP Unit documentation",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/abap-unit"
+    }
+  ],
+  "questions": [
+    {
+      "id": "TEST-01",
+      "level": "Core",
+      "question": "What makes a useful ABAP Unit test?",
+      "answer": "Test observable behavior with controlled inputs and explicit expected results. Keep tests deterministic, isolated and understandable. Replace external dependencies at deliberate boundaries rather than relying on shared production data. Include relevant negative and boundary cases, not just successful construction or trivial getters.",
+      "detail": "For a date validator, test a valid interval, equal dates and an invalid interval. Name the test after the business rule so a failure explains what broke.",
+      "pitfall": "High statement coverage alone does not prove that assertions or business cases are meaningful.",
+      "references": [
+        {
+          "title": "SAP ABAP Unit documentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/abap-unit",
+          "note": "Verify what the test or check proves, and which runtime behavior still needs separate evidence."
+        }
+      ]
+    },
+    {
+      "id": "TEST-02",
+      "level": "Core",
+      "question": "How does dependency injection help?",
+      "answer": "An object receives collaborators through a defined interface instead of creating all dependencies internally. Tests can supply a fake repository, clock or service client, while production supplies the real implementation. The interface should express the required behavior, not merely reproduce a large concrete class.",
+      "detail": "A retry policy can be tested with a client that returns a timeout followed by success, without calling a live service or waiting real minutes.",
+      "pitfall": "Mocking everything, including the object being tested, removes the behavior the test should verify.",
+      "references": [
+        {
+          "title": "SAP Clean ABAP testing guidance",
+          "url": "https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md",
+          "note": "Verify what the test or check proves, and which runtime behavior still needs separate evidence."
+        }
+      ]
+    },
+    {
+      "id": "TEST-03",
+      "level": "Advanced",
+      "question": "How would you test a RAP business object?",
+      "answer": "Use suitable EML-driven tests to exercise the real BO behavior with controlled persistence and dependencies. Cover allowed and rejected operations, response messages, save failures, authorization and concurrency where appropriate. Add service-level tests for protocol behavior and UI tests for user flows. Framework availability depends on the target release.",
+      "detail": "A Submit test checks final state, FAILED and REPORTED, and persistence only after the intended save. A separate test confirms that an invalid request does not persist.",
+      "pitfall": "A mock Fiori success or a doubled BO does not establish that the real RAP implementation works.",
+      "references": [
+        {
+          "title": "SAP RAP documentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap",
+          "note": "Documentation navigation starting point, not direct evidence for every statement. Find the named feature and target release; the scenario decision and verification plan are original analysis."
+        }
+      ]
+    },
+    {
+      "id": "TEST-04",
+      "level": "Advanced",
+      "question": "How do SQL and CDS test doubles help?",
+      "answer": "SQL and CDS test-double frameworks isolate supported database dependencies and allow deterministic fixtures. Choose the framework matching the component under test, configure dependencies accurately and clean up the environment. They do not automatically cover authorization, network protocols or real database performance.",
+      "detail": "For a CDS aggregation, insert a small dataset with multiple currencies and duplicate join targets to expose modeling errors. Verify both expected rows and absence of unwanted rows.",
+      "pitfall": "Passing a double-based test is not a HANA execution-plan benchmark.",
+      "references": [
+        {
+          "title": "SAP ABAP Unit documentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/abap-unit",
+          "note": "Verify what the test or check proves, and which runtime behavior still needs separate evidence."
+        }
+      ]
+    },
+    {
+      "id": "TEST-05",
+      "level": "Core",
+      "question": "What does ATC cover and what remains outside it?",
+      "answer": "ATC performs configured static quality checks and can govern supported API and enhancement usage. Its findings depend on check variants and available components. Runtime correctness, business acceptance, deployment and full security still need other evidence. Review exemptions and update checks for target releases.",
+      "detail": "Keep syntax and activation checks, unit tests, ATC and end-to-end acceptance as separate results so each failure has a clear owner and meaning.",
+      "pitfall": "Do not say that an ATC pass proves an application is error-free or fully Clean Core compliant.",
+      "references": [
+        {
+          "title": "SAP RAP documentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap",
+          "note": "Documentation navigation starting point, not direct evidence for every statement. Find the named feature and target release; the scenario decision and verification plan are original analysis."
+        }
+      ]
+    },
+    {
+      "id": "TEST-06",
+      "level": "Core",
+      "question": "What security tests would you include?",
+      "answer": "Test both permitted and forbidden reads and operations with realistic user roles and organizational scopes. Check direct API calls, mass operations and hidden fields, not only the UI. Verify authentication, DCL and behavior authorization separately and inspect error messages for unintended data exposure.",
+      "detail": "A user from company code A must not retrieve B's records by changing a URL or use an action on B's known key.",
+      "pitfall": "Feature control, UI.hidden and disabled buttons are not sufficient security boundaries.",
+      "references": [
+        {
+          "title": "SAP Learning on RAP authorization",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks",
+          "note": "Verify what the test or check proves, and which runtime behavior still needs separate evidence."
+        }
+      ]
+    },
+    {
+      "id": "TEST-07",
+      "level": "Advanced",
+      "question": "How do you test concurrency and rollback?",
+      "answer": "Reproduce conflicting edits with independent consumers and verify stale-version rejection and lock behavior. Inject an expected failure before persistence and confirm no unintended partial result. For remote dependencies test timeout, retry and compensation separately because local rollback cannot undo all external effects.",
+      "detail": "Read the same ETag twice, save from one client and submit the other write. Then simulate a failed child operation within the intended atomic group.",
+      "pitfall": "Sequential happy-path tests cannot establish concurrency safety.",
+      "references": [
+        {
+          "title": "SAP RAP documentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap",
+          "note": "Documentation navigation starting point, not direct evidence for every statement. Find the named feature and target release; the scenario decision and verification plan are original analysis."
+        }
+      ]
+    },
+    {
+      "id": "TEST-08",
+      "level": "Core",
+      "question": "What would you include in a transport and deployment handoff?",
+      "answer": "Identify repository objects, dependencies, configuration, authorization and service activation or communication steps. State target versions, checks executed and pending acceptance. Preserve the deployed source revision and rollback or recovery approach. A transport import is one step in delivery rather than the complete user experience.",
+      "detail": "For a RAP service, include DCL, behavior, metadata and binding dependencies plus the UI deployment and role setup. Verify the actual production-like endpoint after import.",
+      "pitfall": "Local binding publication or a successful source copy is not proof of cross-system deployment.",
+      "references": [
+        {
+          "title": "SAP RAP documentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap",
+          "note": "Documentation navigation starting point, not direct evidence for every statement. Find the named feature and target release; the scenario decision and verification plan are original analysis."
+        }
+      ]
+    },
+    {
+      "id": "TEST-09",
+      "level": "Advanced",
+      "question": "How would you investigate a production defect?",
+      "answer": "Capture the symptom, scope, timing, affected revision and reproducible input. Use authorized logs, dumps and traces to isolate the failing layer, preserving sensitive data. Reproduce safely, add a regression case, implement the smallest sound fix and compare behavior before rollout.",
+      "detail": "For an intermittent duplicate document, examine retries and transaction boundaries rather than immediately adding a UI delay. Distinguish a code defect from configuration or data issues.",
+      "pitfall": "A plausible explanation without evidence should not be presented as a confirmed root cause.",
+      "references": [
+        {
+          "title": "SAP RAP documentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap",
+          "note": "Documentation navigation starting point, not direct evidence for every statement. Find the named feature and target release; the scenario decision and verification plan are original analysis."
+        }
+      ]
+    },
+    {
+      "id": "TEST-10",
+      "level": "Core",
+      "question": "How should you describe tests you have not run?",
+      "answer": "Separate prepared test cases from executed results. State the environment, revision, actual outcome and remaining validation. If you only inspected source locally, say so. This makes the handoff actionable and shows engineering judgment rather than overstating confidence.",
+      "detail": "A sample answer can say: I prepared EML scenarios and reviewed the source; activation, ABAP Unit and ATC still need the target SAP system.",
+      "pitfall": "Never claim a passing SAP syntax check, measured coverage or successful activation without an actual run.",
+      "references": [
+        {
+          "title": "SAP ABAP Unit documentation",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/abap-unit",
+          "note": "Verify what the test or check proves, and which runtime behavior still needs separate evidence."
+        }
+      ]
+    }
+  ]
+}

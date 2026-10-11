@@ -1,0 +1,1055 @@
+[
+  {
+    "id": "clean-core-levels",
+    "title": "Clean Core levels A-D",
+    "questions": [
+      "CORE-01",
+      "CORE-02",
+      "CORE-03",
+      "CORE-04",
+      "CORE-05",
+      "CORE-06",
+      "CORE-09",
+      "CORE-13",
+      "CORE-16",
+      "CORE-18",
+      "GOV-01",
+      "GOV-05",
+      "GOV-06",
+      "GOV-14",
+      "GOV-15",
+      "GOV-16",
+      "GOV-18"
+    ],
+    "caption": "Read each level as a classification of the actual SAP dependency or extension technology.",
+    "recall": "Which configured Clean Core finding priority corresponds to levels B, C and D?",
+    "limit": "This mapping is specific to Clean Core usage checks; it does not classify every ATC finding.",
+    "image": "visuals/clean-core-levels.svg"
+  },
+  {
+    "id": "rap-transaction",
+    "title": "RAP transaction and workflow boundary",
+    "questions": [
+      "RAP-04",
+      "RAP-05",
+      "RAP-15",
+      "RICEFW-11",
+      "RICEFW-12",
+      "RICEFW-14",
+      "SRAP-02",
+      "SRAP-03",
+      "SRAP-15",
+      "SRAP-18"
+    ],
+    "caption": "Separate the local transaction from event delivery and the later workflow callback.",
+    "recall": "What is lost if a handler calls a committing legacy API?",
+    "limit": "Exact RAP save methods and supported event infrastructure depend on scenario and release.",
+    "image": "visuals/rap-transaction.svg"
+  },
+  {
+    "id": "extensibility-decision",
+    "title": "Extension placement decision",
+    "questions": [
+      "CORE-10",
+      "CORE-11",
+      "CORE-15",
+      "CORE-18",
+      "BTP-01",
+      "CLOUD-01",
+      "CLOUD-09",
+      "CLOUD-14",
+      "GOV-07",
+      "GOV-08"
+    ],
+    "caption": "Start from the business need and transaction boundary before choosing an extension location.",
+    "recall": "When would local transactional consistency favor an on-stack extension?",
+    "limit": "Placement does not establish Clean Core level or availability in a specific edition.",
+    "image": "visuals/extensibility-decision.svg"
+  },
+  {
+    "id": "classic-internal-table-lookup",
+    "title": "Internal table lookup",
+    "questions": [
+      "ABAP-01",
+      "ABAP-02",
+      "ABAP-03"
+    ],
+    "caption": "A free-key linear search, an ordered lookup, and a complete hashed-key lookup find the same record through different access paths.",
+    "recall": "What changes if I need all rows in a key range, or preserve input order?",
+    "limit": "A standard table can use secondary keys; a hash lookup requires a suitable complete key. Hash storage and probe order are schematic, not SAP implementation guarantees.",
+    "image": "visuals/classic-internal-table-lookup.svg"
+  },
+  {
+    "id": "classic-ddic-layers",
+    "title": "DDIC technical and semantic layers",
+    "questions": [
+      "ABAP-05",
+      "ABAP-06"
+    ],
+    "caption": "A ten-character domain acts like a technical mold; data elements give two fields different business meanings, and table columns hold values.",
+    "recall": "Which layer supplies field labels, and which object actually persists records?",
+    "limit": "The picture simplifies DDIC typing and does not imply that domain values or a value table enforce every database write.",
+    "image": "visuals/classic-ddic-layers.svg"
+  },
+  {
+    "id": "classic-sap-database-luw",
+    "title": "SAP LUW and database LUW",
+    "questions": [
+      "ABAP-07",
+      "ABAP-08",
+      "ABAP-09"
+    ],
+    "caption": "Several database transactions can serve a single classic SAP business transaction. The illustrated early database transactions only read; coordinated persistence happens at the end.",
+    "recall": "Who owns the commit, and why does a database lock not protect a long user interaction?",
+    "limit": "The final save may use update processing in another context. Lock scope and transfer rules vary; the line is conceptual ownership, not a universal enqueue lifetime. Do not apply classic COMMIT WORK patterns inside RAP handlers.",
+    "image": "visuals/classic-sap-database-luw.svg"
+  },
+  {
+    "id": "classic-oo-plug-contract",
+    "title": "OO interfaces and dependency injection",
+    "questions": [
+      "OO-01",
+      "OO-02",
+      "OO-07",
+      "OO-10",
+      "OO-14",
+      "CLOUD-15"
+    ],
+    "caption": "The service depends on a repository contract. Production and test implementations fit the same socket; the composition boundary supplies the appropriate collaborator.",
+    "recall": "Which object chooses the implementation, and what does a double-based test fail to prove?",
+    "limit": "The plug is a design metaphor, not a SAP connector or code signature. Injection does not itself guarantee a good abstraction or production integration.",
+    "image": "visuals/classic-oo-plug-contract.svg"
+  },
+  {
+    "id": "classic-sql-join-grain",
+    "title": "SQL join multiplication",
+    "questions": [
+      "SQL-04",
+      "SQL-06",
+      "SQL-07",
+      "MODEL-06",
+      "MODEL-10",
+      "MODEL-18"
+    ],
+    "caption": "Joining two order headers to three items repeats order 10's total, inflating a naive sum from EUR 180 to EUR 280. For outer joins, matching conditions in ON can preserve unmatched left rows, while right-side conditions in WHERE can remove them.",
+    "recall": "What is one row of this result supposed to represent? Where should a language filter go for optional text?",
+    "limit": "This is an inner-join example. WHERE and ON placement must follow intended semantics; neither DISTINCT nor SUM(DISTINCT amount) repairs every incorrect join or aggregation.",
+    "image": "visuals/classic-sql-join-grain.svg"
+  },
+  {
+    "id": "classic-performance-instruments",
+    "title": "Performance diagnosis",
+    "questions": [
+      "SQL-09",
+      "SQL-10",
+      "SQL-11",
+      "SQL-12"
+    ],
+    "caption": "Inspect database work, ABAP computation, transferred volume, and repeated calls as different possible causes. Choose the trace and change based on evidence.",
+    "recall": "Is the largest cost one slow statement, many cheap statements, ABAP processing, or transfer volume?",
+    "limit": "No percentages or speedups are measured here. These cost categories can overlap; do not sum overlapping trace durations. Available tools differ between classic and cloud editions.",
+    "image": "visuals/classic-performance-instruments.svg"
+  },
+  {
+    "id": "rap-contract-stack",
+    "title": "RAP contract stack",
+    "questions": [
+      "RAP-01",
+      "RAP-14",
+      "ADV-09",
+      "CDS-05",
+      "CDS-08",
+      "ODATA-02",
+      "CLOUD-10",
+      "MODEL-08",
+      "MODEL-16",
+      "SRAP-16",
+      "SRAP-22"
+    ],
+    "caption": "Read from the client down to storage, then explain what each artifact contributes.",
+    "recall": "Where would you restrict the exposed operation set?",
+    "limit": "Conceptual layers; the exact artifact set depends on the scenario and release.",
+    "image": "visuals/rap-contract-stack.svg"
+  },
+  {
+    "id": "cds-relationships",
+    "title": "CDS links and ownership",
+    "questions": [
+      "CDS-03",
+      "CDS-04",
+      "CDS-11",
+      "SQL-07",
+      "CLOUD-07",
+      "MODEL-06",
+      "MODEL-10"
+    ],
+    "caption": "Items belong to the order BO; a partner reference crosses to an independently managed object.",
+    "recall": "What breaks if a declared to-one relationship actually returns two partners?",
+    "limit": "Composition semantics and generated operations still require the corresponding RAP model.",
+    "image": "visuals/cds-relationships.svg"
+  },
+  {
+    "id": "cds-security-boundaries",
+    "title": "CDS security boundaries",
+    "questions": [
+      "CDS-07",
+      "ADV-02",
+      "TEST-06",
+      "MODEL-01",
+      "MODEL-11",
+      "MODEL-14",
+      "MODEL-16"
+    ],
+    "caption": "Review security where consumers enter the model, rather than assuming that lower layers protect every upper view.",
+    "recall": "Which two tests prove that an exposed service rejects unauthorized access?",
+    "limit": "Authorization behavior depends on the access path and supported DCL inheritance mechanisms.",
+    "image": "visuals/cds-security-boundaries.svg"
+  },
+  {
+    "id": "rap-buffer-example",
+    "title": "RAP buffer with a concrete value change",
+    "questions": [
+      "RAP-03",
+      "RAP-04",
+      "RAP-05",
+      "RAP-08",
+      "RAP-15",
+      "SRAP-01",
+      "SRAP-17",
+      "SRAP-19"
+    ],
+    "caption": "During modification, the transactional view can show 120 EUR while saved data still shows 100 EUR.",
+    "recall": "Why can a direct SQL read be the wrong way to read the BO during modification?",
+    "limit": "Simplified single-record example, not a promise about a particular SQL isolation level.",
+    "image": "visuals/rap-buffer-example.svg"
+  },
+  {
+    "id": "rap-hook-choices",
+    "title": "RAP hook responsibilities",
+    "questions": [
+      "RAP-06",
+      "RAP-13",
+      "ADV-04",
+      "ADV-05",
+      "SRAP-02",
+      "SRAP-03",
+      "SRAP-11",
+      "SRAP-12",
+      "SRAP-19"
+    ],
+    "caption": "Read each card as a separate design question; this is not an execution sequence.",
+    "recall": "Where would you derive a total, reject an invalid input and implement Submit?",
+    "limit": "Check scenario and release support; do not rely on an undocumented ordering of independent hooks.",
+    "image": "visuals/rap-hook-choices.svg"
+  },
+  {
+    "id": "eml-identity-tags",
+    "title": "EML identity tags",
+    "questions": [
+      "RAP-07",
+      "RAP-10",
+      "RAP-11",
+      "SRAP-07",
+      "SRAP-08",
+      "SRAP-13"
+    ],
+    "caption": "Content IDs connect entries within a request. Transactional and preliminary identities address other lifecycle needs.",
+    "recall": "How can a new item refer to a newly created order before the final order number exists?",
+    "limit": "Generated EML types and available components are authoritative for the specific BO.",
+    "image": "visuals/eml-identity-tags.svg"
+  },
+  {
+    "id": "draft-lifecycle",
+    "title": "Draft lifecycle",
+    "questions": [
+      "RAP-12",
+      "ADV-01",
+      "ADV-08",
+      "RICEFW-11",
+      "SRAP-09",
+      "SRAP-10",
+      "OPS-04"
+    ],
+    "caption": "Follow edit, activate and discard for an existing active object, then explain how a new-object draft differs.",
+    "recall": "What remains after discarding an edit draft? What if activation fails?",
+    "limit": "Schematic state transitions; draft actions and supported flows depend on the BO and consumer.",
+    "image": "visuals/draft-lifecycle.svg"
+  },
+  {
+    "id": "security-three-gates",
+    "title": "Identity, authorization and feature control",
+    "questions": [
+      "ADV-02",
+      "ADV-03",
+      "ADV-13",
+      "ODATA-09",
+      "TEST-06",
+      "MODEL-02",
+      "MODEL-11",
+      "MODEL-12",
+      "MODEL-13",
+      "MODEL-16"
+    ],
+    "caption": "Treat identity, business permission and contextual availability as separate checks.",
+    "recall": "If Submit is disabled in Fiori, what happens when someone calls the service directly?",
+    "limit": "Static operation characteristics differ from dynamic instance/global feature checks.",
+    "image": "visuals/security-three-gates.svg"
+  },
+  {
+    "id": "odata-batch-envelope",
+    "title": "OData batch envelope and atomic groups",
+    "questions": [
+      "ODATA-07",
+      "BTP-07",
+      "TEST-07",
+      "SRAP-20"
+    ],
+    "caption": "The outer envelope reduces HTTP packaging overhead; it does not establish one universal database transaction.",
+    "recall": "If a later independent group fails, must an earlier successful group be rolled back?",
+    "limit": "Conceptual grouping, not an exact multipart or JSON batch payload.",
+    "image": "visuals/odata-batch-envelope.svg"
+  },
+  {
+    "id": "query-page-count",
+    "title": "Filtering, paging and total count",
+    "questions": [
+      "ODATA-03",
+      "ODATA-04",
+      "ADV-10",
+      "ODATA-11",
+      "MODEL-03",
+      "MODEL-04",
+      "MODEL-05",
+      "OPS-07"
+    ],
+    "caption": "Count and paging answer different questions. Stable ordering matters when the client requests successive pages.",
+    "recall": "For this example, what count belongs beside a page of five records?",
+    "limit": "Provider-side execution order may be optimized while preserving request semantics.",
+    "image": "visuals/query-page-count.svg"
+  },
+  {
+    "id": "clean-core-wrapper",
+    "title": "Clean Core wrapper dependency",
+    "questions": [
+      "CORE-04",
+      "CORE-05",
+      "CORE-07",
+      "CORE-08",
+      "CORE-11",
+      "CORE-14",
+      "CORE-15",
+      "OO-10",
+      "CLOUD-03",
+      "GOV-03",
+      "GOV-07",
+      "GOV-14",
+      "GOV-15"
+    ],
+    "caption": "Trace dependencies across the wrapper instead of classifying the solution from its visible surface alone.",
+    "recall": "What evidence would let you accept a classic SAP dependency responsibly?",
+    "limit": "A governance review must consider technology restrictions, classifications and lifecycle risk.",
+    "image": "visuals/clean-core-wrapper.svg"
+  },
+  {
+    "id": "btp-account-runtime",
+    "title": "BTP account and runtime map",
+    "questions": [
+      "BTP-01",
+      "BTP-02",
+      "BTP-04",
+      "BTP-05",
+      "BTP-09",
+      "BTP-10",
+      "CLOUD-02",
+      "CLOUD-08"
+    ],
+    "caption": "Read the nesting as an organizational example, then distinguish the application, service instance and credentials.",
+    "recall": "How is a service instance different from a binding or service key?",
+    "limit": "Schematic Cloud Foundry route; other BTP environments have different runtime structures.",
+    "image": "visuals/btp-account-runtime.svg"
+  },
+  {
+    "id": "remote-transaction-boundary",
+    "title": "Local and remote transaction boundaries",
+    "questions": [
+      "BTP-06",
+      "BTP-07",
+      "BTP-08",
+      "RICEFW-05",
+      "RAP-15",
+      "CLOUD-01",
+      "CLOUD-05",
+      "SRAP-04",
+      "SRAP-15",
+      "OPS-11"
+    ],
+    "caption": "The remote commit belongs to another system, so local failure needs an explicit recovery strategy.",
+    "recall": "What should happen if the remote side succeeds but the response is lost?",
+    "limit": "This explains distributed consistency, not a particular messaging product guarantee.",
+    "image": "visuals/remote-transaction-boundary.svg"
+  },
+  {
+    "id": "event-idempotency",
+    "title": "Duplicate events and stale approvals",
+    "questions": [
+      "BTP-08",
+      "RICEFW-11",
+      "RICEFW-12",
+      "RICEFW-13",
+      "ADV-11",
+      "OO-12",
+      "SRAP-18",
+      "SRAP-23",
+      "OPS-11"
+    ],
+    "caption": "The event identity and current business state decide whether to apply, ignore or reject the request.",
+    "recall": "Two consumers process the same event simultaneously: what prevents a double effect?",
+    "limit": "Exact transactional deduplication mechanisms depend on the chosen infrastructure.",
+    "image": "visuals/event-idempotency.svg"
+  },
+  {
+    "id": "test-evidence-pyramid",
+    "title": "Testing scope and evidence",
+    "questions": [
+      "TEST-01",
+      "TEST-02",
+      "TEST-03",
+      "TEST-04",
+      "TEST-05",
+      "TEST-07",
+      "TEST-08",
+      "TEST-09",
+      "TEST-10",
+      "OO-14",
+      "CLOUD-18",
+      "OPS-01",
+      "OPS-02",
+      "OPS-09",
+      "OPS-14",
+      "OPS-15",
+      "OPS-16",
+      "OPS-18"
+    ],
+    "caption": "The widening base suggests many focused checks, but there is no mandatory numerical ratio.",
+    "recall": "Which risk remains after an ABAP Unit test with doubles passes?",
+    "limit": "Conceptual coverage map, not a count of tests actually run in SAP.",
+    "image": "visuals/test-evidence-pyramid.svg"
+  },
+  {
+    "id": "interview-evidence-story",
+    "title": "Explain decisions with evidence",
+    "questions": [
+      "STORY-01",
+      "STORY-02",
+      "STORY-03",
+      "STORY-04",
+      "STORY-05",
+      "STORY-06",
+      "TEST-10",
+      "OPS-18"
+    ],
+    "caption": "Practice a 60-second version first, then expand the mechanism and evidence when prompted.",
+    "recall": "Can you name the decision, trade-off and evidence without inventing metrics?",
+    "limit": "A rehearsal structure, not a scripted personal history or a substitute for technical depth.",
+    "image": "visuals/interview-evidence-story.svg"
+  },
+  {
+    "id": "http-message-anatomy",
+    "title": "HTTP request and response anatomy",
+    "questions": [
+      "HTTP-01",
+      "HTTP-02",
+      "HTTP-05",
+      "HTTP-06",
+      "HTTP-10",
+      "ODATA-02"
+    ],
+    "caption": "Read the method, target, status and headers before interpreting the body. The sample domain is deliberately non-production.",
+    "recall": "Which header describes the returned body, and which requests a response format?",
+    "limit": "A teaching example, not a runnable endpoint. HTTP/2 and HTTP/3 use different wire framing.",
+    "image": "visuals/http-message-anatomy.svg"
+  },
+  {
+    "id": "json-xml-values",
+    "title": "JSON and XML: values and mapping",
+    "questions": [
+      "HTTP-03",
+      "HTTP-07",
+      "HTTP-08",
+      "HTTP-09",
+      "HTTP-12",
+      "ABAP-12"
+    ],
+    "caption": "These are two explicitly designed representations of the same sample values, not a universal automatic JSON/XML conversion.",
+    "recall": "What could go wrong if an ABAP mapper converts the identifier to an integer?",
+    "limit": "XML namespace/schema rules and JSON API types must be defined by the actual interface contract.",
+    "image": "visuals/json-xml-values.svg"
+  },
+  {
+    "id": "rfc-mode-comparison",
+    "title": "RFC modes and guarantee boundaries",
+    "questions": [
+      "RFC-01",
+      "RFC-02",
+      "RFC-03",
+      "RFC-04",
+      "RFC-05",
+      "RFC-08",
+      "RFC-12"
+    ],
+    "caption": "Compare the caller behavior and delivery unit, then name the monitoring and retry owner.",
+    "recall": "Why does an asynchronous call not automatically become a durable queued transaction?",
+    "limit": "Classic terminology; API release, runtime availability and transaction rules must be checked for the target.",
+    "image": "visuals/rfc-mode-comparison.svg"
+  },
+  {
+    "id": "parallel-job-workers",
+    "title": "Parallel processing inside a job",
+    "questions": [
+      "RFC-06",
+      "RFC-07",
+      "RFC-08",
+      "RFC-09",
+      "RFC-10",
+      "RFC-11",
+      "RFC-12",
+      "OPS-17"
+    ],
+    "caption": "A coordinator schedules bounded independent work and collects explicit outcomes; a scheduler does not create parallelism automatically.",
+    "recall": "If worker B fails after A commits, what is safe to retry?",
+    "limit": "Conceptual fan-out/fan-in. Worker session and transaction boundaries require explicit design.",
+    "image": "visuals/parallel-job-workers.svg"
+  },
+  {
+    "id": "idoc-aif-lifecycle",
+    "title": "IDoc processing and AIF operations",
+    "questions": [
+      "INTF-01",
+      "INTF-02",
+      "INTF-03",
+      "INTF-04",
+      "INTF-05",
+      "INTF-06",
+      "INTF-07",
+      "INTF-08",
+      "INTF-09",
+      "INTF-10",
+      "INTF-11",
+      "INTF-12",
+      "RICEFW-06"
+    ],
+    "caption": "Follow the message to the business outcome. The AIF band represents supported configured capabilities, not an obligatory stage for every IDoc.",
+    "recall": "Before restarting an error, how would you check whether a document already exists?",
+    "limit": "Do not infer end-to-end business success from a transport hand-off status or assume all interfaces use AIF.",
+    "image": "visuals/idoc-aif-lifecycle.svg"
+  },
+  {
+    "id": "senior-control-presence",
+    "title": "EML update intent: absent versus clear",
+    "questions": [
+      "SRAP-06",
+      "SRAP-12",
+      "HTTP-07",
+      "HTTP-09"
+    ],
+    "caption": "The first two requests carry the same initial ABAP value but differ in update intent. The field control decides whether the old comment is preserved or explicitly cleared.",
+    "recall": "How would you preserve Amount while clearing Comment, and how could an adapter lose that distinction?",
+    "limit": "This is a worked mapping example. Actual generated EML types, UPDATE FIELDS syntax, protocol nullability, and business validation remain authoritative.",
+    "image": "visuals/senior-control-presence.svg"
+  },
+  {
+    "id": "senior-response-channels",
+    "title": "FAILED, REPORTED, and MAPPED in a worked create",
+    "questions": [
+      "SRAP-05",
+      "SRAP-07",
+      "SRAP-20",
+      "OPS-03"
+    ],
+    "caption": "Three input identities produce separate rejection, message, and key-correlation information. A message on C3 does not itself reject that input, and assigned keys do not prove durable persistence.",
+    "recall": "What must the consumer inspect after this interaction, and what happens if the later save fails?",
+    "limit": "Conceptual response contents, not executable EML. Available fields and correlation depend on the operation and BO; save and atomicity semantics must be tested separately.",
+    "image": "visuals/senior-response-channels.svg"
+  },
+  {
+    "id": "senior-remote-uncertainty",
+    "title": "Remote commit and uncertain local outcome",
+    "questions": [
+      "SRAP-04",
+      "SRAP-18",
+      "SRAP-23",
+      "OPS-11",
+      "CLOUD-01"
+    ],
+    "caption": "The local application durably records intent before separately owned delivery. The remote payment commits, but its reply is lost; recovery must identify the existing effect through REQ-42.",
+    "recall": "How do you distinguish an unprocessed request from a committed payment whose response never arrived?",
+    "limit": "The delivery and idempotency mechanisms are design requirements, not automatic guarantees from HTTP or RAP. This example does not claim distributed atomicity.",
+    "image": "visuals/senior-remote-uncertainty.svg"
+  },
+  {
+    "id": "senior-proposed-state-authorization",
+    "title": "Existing and proposed state authorization",
+    "questions": [
+      "MODEL-02",
+      "MODEL-13",
+      "MODEL-16",
+      "SRAP-12"
+    ],
+    "caption": "Editing the current A instance and moving it into B are different authorization decisions. Partial input must be interpreted with existing state without treating omitted fields as explicit clears.",
+    "recall": "Which state does each check inspect, and what happens if a determination changes the target scope?",
+    "limit": "A policy example, not a universal company-code rule. Implement through the target RAP scenario's supported hooks; prechecks do not replace the complete authorization model.",
+    "image": "visuals/senior-proposed-state-authorization.svg"
+  },
+  {
+    "id": "senior-query-secure-pipeline",
+    "title": "Secure custom-query filtering, count, and page",
+    "questions": [
+      "MODEL-03",
+      "MODEL-04",
+      "MODEL-05",
+      "OPS-07"
+    ],
+    "caption": "The same authorized logical set contains IDs 2, 4, and 6. Counting it returns three; skipping one and taking two returns IDs 4 and 6 without revealing hidden B rows.",
+    "recall": "What should a count-only request return, and what should happen if the filter cannot be represented safely?",
+    "limit": "The drawing specifies semantics, not a mandatory physical execution plan. A remote/custom provider must preserve equivalent authorization, filtering, count, and ordering behavior.",
+    "image": "visuals/senior-query-secure-pipeline.svg"
+  },
+  {
+    "id": "senior-real-cut-evidence",
+    "title": "Real behavior under test and dependency doubles",
+    "questions": [
+      "OPS-01",
+      "OPS-02",
+      "OPS-03",
+      "OPS-15",
+      "MODEL-14"
+    ],
+    "caption": "Two deliberately different inputs exercise the real Submit rule while a separate limit-provider dependency is controlled. Assertions inspect state and response identity, not only execution coverage.",
+    "recall": "If the account-assignment rejection is removed, which test fails? What evidence remains missing after these tests pass?",
+    "limit": "The fixture is conceptual and not an executed ABAP Unit result. Framework double support and persistence setup depend on the target release and test boundary.",
+    "image": "visuals/senior-real-cut-evidence.svg"
+  },
+  {
+    "id": "senior-contracts-versus-levels",
+    "title": "Release contracts versus Clean Core levels",
+    "questions": [
+      "GOV-01",
+      "GOV-02",
+      "GOV-03",
+      "GOV-05",
+      "GOV-18",
+      "CLOUD-05"
+    ],
+    "caption": "The two tables are separate classification axes. C1 identifies a local-use contract, while Level C identifies internal-object exposure in the Clean Core assessment context.",
+    "recall": "What else must you verify after finding a C1 release flag, and why does a wrapper not erase the underlying exposure?",
+    "limit": "These are the three contracts requested for this comparison, not the complete release-contract catalogue. Exact object classification, extension technology, target edition, and ATC scope remain decisive.",
+    "image": "visuals/senior-contracts-versus-levels.svg"
+  },
+  {
+    "id": "senior-exception-lifecycle",
+    "title": "Exception governance and review lifecycle",
+    "questions": [
+      "GOV-04",
+      "GOV-07",
+      "GOV-11",
+      "GOV-12",
+      "GOV-15",
+      "GOV-18"
+    ],
+    "caption": "A concrete exception record limits one dependency, states its evidence and owner, and defines review and exit triggers. A changed implementation must be assessed against that scope.",
+    "recall": "Which change invalidates this decision, and what proves that an exception is resolved rather than merely hidden?",
+    "limit": "EX-017 and the class name are fictional teaching identifiers. Actual approvals, gate behavior, and allowed development techniques follow the target environment and organization policy.",
+    "image": "visuals/senior-exception-lifecycle.svg"
+  },
+  {
+    "id": "rap-save-ownership-matrix",
+    "title": "RAP implementation ownership matrix",
+    "questions": [
+      "RAP-02",
+      "SRAP-01",
+      "SRAP-02"
+    ],
+    "caption": "Trace the same request through three implementation choices and name the owner of each responsibility.",
+    "recall": "Which part stays managed when only the save implementation is replaced?",
+    "limit": "Conceptual comparison; specific saver variants and failure support depend on release and scenario.",
+    "image": "visuals/rap-save-ownership-matrix.svg"
+  },
+  {
+    "id": "rap-numbering-timeline",
+    "title": "RAP identity and numbering timeline",
+    "questions": [
+      "RAP-10",
+      "RAP-11",
+      "SRAP-07",
+      "SRAP-08"
+    ],
+    "caption": "Compare when the identity becomes final and when persistence is confirmed.",
+    "recall": "What must an external EML consumer inspect after MODIFY and after COMMIT?",
+    "limit": "Illustrative numbering paths; exact %pid/%pre mapping and conversion syntax are release/scenario-specific.",
+    "image": "visuals/rap-numbering-timeline.svg"
+  },
+  {
+    "id": "rap-augmentation-additional-save",
+    "title": "Augmentation versus additional save",
+    "questions": [
+      "ADV-06",
+      "SRAP-02",
+      "SRAP-14"
+    ],
+    "caption": "Locate the input transformation and persistence supplement on the same conceptual timeline.",
+    "recall": "Why would writing an audit row not make augmentation the right save hook?",
+    "limit": "The arrow is conceptual; availability, supported fields and trigger details depend on the target RAP release.",
+    "image": "visuals/rap-augmentation-additional-save.svg"
+  },
+  {
+    "id": "rap-two-etag-boundaries",
+    "title": "Two ETag boundaries",
+    "questions": [
+      "ADV-01",
+      "SRAP-10",
+      "OPS-05"
+    ],
+    "caption": "The left side tests a conditional entity update; the right tests the active-state basis of a resumed draft.",
+    "recall": "Why does testing one entity ETag not prove the draft total-ETag implementation?",
+    "limit": "ETags are opaque. Verify lock expiry, relevant child changes and generated behavior on the actual system.",
+    "image": "visuals/rap-two-etag-boundaries.svg"
+  },
+  {
+    "id": "rap-side-effect-diagnosis",
+    "title": "Side effects and stale UI diagnosis",
+    "questions": [
+      "ADV-07",
+      "SRAP-21",
+      "OPS-06"
+    ],
+    "caption": "Use the observed backend value to choose the next debugging branch.",
+    "recall": "What request proves that the consumer refreshed the calculated total?",
+    "limit": "Consumer and metadata support are release-dependent; a valid backend side effect is not proof that every client processes it.",
+    "image": "visuals/rap-side-effect-diagnosis.svg"
+  },
+  {
+    "id": "rap-message-lifecycle",
+    "title": "RAP message lifecycle and correction",
+    "questions": [
+      "ADV-08",
+      "SRAP-24",
+      "RAP-07"
+    ],
+    "caption": "Follow the same child through an error and correction instead of treating a message as timeless text.",
+    "recall": "Which identity and state area would you inspect when the old error remains?",
+    "limit": "Message lifetime and permitted state-message scenarios depend on active/draft and the supported operation contract.",
+    "image": "visuals/rap-message-lifecycle.svg"
+  },
+  {
+    "id": "rap-query-calculation-placement",
+    "title": "Calculation placement and query semantics",
+    "questions": [
+      "CDS-09",
+      "MODEL-07",
+      "MODEL-08",
+      "MODEL-09",
+      "MODEL-18",
+      "OPS-08"
+    ],
+    "caption": "Use the requirement to decide where a value must exist before filtering, ordering or aggregation.",
+    "recall": "Why can a correct calculation still yield a wrong page of results?",
+    "limit": "Architecture alternatives, not a promise that all listed options are supported by each projection/custom provider.",
+    "image": "visuals/rap-query-calculation-placement.svg"
+  },
+  {
+    "id": "rap-release-gates",
+    "title": "RAP release and consumption gates",
+    "questions": [
+      "SRAP-16",
+      "SRAP-22",
+      "CLOUD-06",
+      "CLOUD-10",
+      "CLOUD-13",
+      "CLOUD-17",
+      "OPS-09",
+      "OPS-10",
+      "OPS-14"
+    ],
+    "caption": "Review eligibility, behavior and delivery as separate evidence gates.",
+    "recall": "Which gate would catch an API-compatible change that breaks deployment configuration?",
+    "limit": "A teaching checklist; exact release contracts, component visibility and delivery tools depend on the product.",
+    "image": "visuals/rap-release-gates.svg"
+  },
+  {
+    "id": "deep-parameter-paths",
+    "title": "Parameter values after exceptional exit",
+    "questions": [
+      "BASE-01"
+    ],
+    "caption": "Compare the same assignment under two transfer modes. The final caller value is visible evidence of the difference.",
+    "recall": "Which result changes if the method returns normally? What changes if the parameter holds an object reference?",
+    "limit": "This assumes a plain integer, value-result passing, and no additional side effects.",
+    "image": "visuals/deep-parameter-paths.svg"
+  },
+  {
+    "id": "deep-alias-snapshot",
+    "title": "Value components versus a shared referent",
+    "questions": [
+      "BASE-02",
+      "OODEEP-06",
+      "OODEEP-10"
+    ],
+    "caption": "Two structure values own independent string values but lead to the same pricing object. The arrow targets explain why a getter can expose mutable state.",
+    "recall": "Which change affects only ls_copy, and which change affects an object visible through both?",
+    "limit": "Conceptual object identity, not physical memory addresses or a particular sharing optimization.",
+    "image": "visuals/deep-alias-snapshot.svg"
+  },
+  {
+    "id": "deep-memory-lifetime",
+    "title": "Three distinct state and memory lifetimes",
+    "questions": [
+      "BASE-03",
+      "OODEEP-08"
+    ],
+    "caption": "Empty row slots and the initial allocation are deliberately drawn separately. A new object does not imply a new internal session or empty class cache.",
+    "recall": "Why can recreating a service leave a test-order failure unchanged?",
+    "limit": "Allocation diagram is qualitative; measure actual ABAP memory and cache lifetime in the target context.",
+    "image": "visuals/deep-memory-lifetime.svg"
+  },
+  {
+    "id": "deep-stale-results",
+    "title": "Stale aliases and overwritten return codes",
+    "questions": [
+      "BASE-04",
+      "BASE-05"
+    ],
+    "caption": "The first sequence can write to the previous target. The second takes a success branch for a different operation than the programmer intended.",
+    "recall": "Which test requires a successful operation before the failure to expose the defect?",
+    "limit": "Only statements documented to set sy-subrc replace it. Assignment failure behavior depends on the exact form and additions.",
+    "image": "visuals/deep-stale-results.svg"
+  },
+  {
+    "id": "deep-numeric-boundaries",
+    "title": "Conversion, rounding, and reduction counterexamples",
+    "questions": [
+      "BASE-06",
+      "BASE-07",
+      "BASE-11"
+    ],
+    "caption": "A lost character, a one-cent difference, and a false maximum reveal three unrelated errors that concise syntax can hide.",
+    "recall": "Which expected results change with a different rounding mode, and which are independent of rounding?",
+    "limit": "Half-up and two decimals are explicit exercise assumptions, not a universal currency rule. MAX notation is explanatory.",
+    "image": "visuals/deep-numeric-boundaries.svg"
+  },
+  {
+    "id": "deep-presence-merge",
+    "title": "Three mapping cases and two presence cases",
+    "questions": [
+      "BASE-08",
+      "BASE-14"
+    ],
+    "caption": "The matching initial status overwrites BASE just as a populated status does. A separate parameter table shows why zero cannot encode omission.",
+    "recall": "Which source needs a presence flag when the source type always contains status?",
+    "limit": "Structure mapping example; internal-table BASE preserves rows under different construction semantics.",
+    "image": "visuals/deep-presence-merge.svg"
+  },
+  {
+    "id": "deep-group-filter",
+    "title": "Unsorted group membership and explicit filter keys",
+    "questions": [
+      "BASE-09",
+      "BASE-10"
+    ],
+    "caption": "Arrows bring nonadjacent A rows into one group. The grouping total is computed from members, not read from the representative row.",
+    "recall": "What changes with WITHOUT MEMBERS, and why is an arbitrary OR predicate not automatically a basic FILTER condition?",
+    "limit": "Source rows and totals are illustrative; no measured performance advantage is asserted.",
+    "image": "visuals/deep-group-filter.svg"
+  },
+  {
+    "id": "deep-duplicates-ranges",
+    "title": "Duplicate insertion and empty authorization boundaries",
+    "questions": [
+      "BASE-15",
+      "BASE-16"
+    ],
+    "caption": "A duplicate unique key preserves the original row for the specified insertion form. An initial selection range has a very different meaning from an empty list of permissions.",
+    "recall": "How would you distinguish identical duplicates from conflicting ones, and prove a user with no plants sees nothing?",
+    "limit": "Single-line INSERT INTO TABLE with a unique primary key; other insertion and key-conflict forms need their own documented handling.",
+    "image": "visuals/deep-duplicates-ranges.svg"
+  },
+  {
+    "id": "deep-sql-inputs",
+    "title": "Two input kinds and two safe handling paths",
+    "questions": [
+      "BASE-12"
+    ],
+    "caption": "The apostrophe is intentionally harmless data on the left. The sort request on the right selects a predefined identifier rather than supplying executable SQL.",
+    "recall": "Why would quoting the sort option as a literal fail to solve identifier validation?",
+    "limit": "Conceptual SQL boundary; available dynamic-programming helpers and API release status depend on the target environment.",
+    "image": "visuals/deep-sql-inputs.svg"
+  },
+  {
+    "id": "deep-cleanup-cause",
+    "title": "Exceptional exits and preserved causes",
+    "questions": [
+      "BASE-13",
+      "OODEEP-09"
+    ],
+    "caption": "The table names three exit paths that require separate reasoning. The exception chain carries the lower-level diagnosis through a meaningful service-level failure.",
+    "recall": "Which path would a test of only propagated exceptions miss?",
+    "limit": "Simplified non-resumable scenarios; exact nesting and handlers determine CLEANUP execution. Resource ownership remains application-specific.",
+    "image": "visuals/deep-cleanup-cause.svg"
+  },
+  {
+    "id": "deep-substitution-dispatch",
+    "title": "A concrete counterexample to substitutability",
+    "questions": [
+      "OODEEP-01",
+      "OODEEP-02",
+      "OODEEP-03",
+      "OODEEP-04",
+      "OODEEP-11"
+    ],
+    "caption": "A valid quantity-one call exposes a behavioral violation invisible in matching parameter types. The lower table separates redefinition from a genuinely new capability.",
+    "recall": "Would downcasting every caller to Provider B repair the contract? What else besides accepted inputs must agree?",
+    "limit": "Hypothetical contract; a narrower published domain would lead to a different assessment. No executable interface is implied.",
+    "image": "visuals/deep-substitution-dispatch.svg"
+  },
+  {
+    "id": "deep-construction-test",
+    "title": "Construction invariants and meaningful test boundaries",
+    "questions": [
+      "OODEEP-05",
+      "OODEEP-07",
+      "OODEEP-12"
+    ],
+    "caption": "Invalid dependencies are rejected before use. In the successful test, the input price is controlled but the discount rule itself executes.",
+    "recall": "What defect should make the assertion fail, and which private access is actually necessary?",
+    "limit": "The 10-percent discount is an illustrative fixture, not an application rule. Friendship details and real integration require separate checks.",
+    "image": "visuals/deep-construction-test.svg"
+  },
+  {
+    "id": "patterns-strategy-template",
+    "title": "Strategy versus Template Method in approval rules",
+    "questions": [
+      "PAT-01",
+      "PAT-10",
+      "PAT-12"
+    ],
+    "caption": "The same 700 EUR request receives different policy decisions through the same Strategy contract. Template Method instead fixes a call skeleton and exposes deliberate subclass steps.",
+    "recall": "Which part varies, who selects it, and which object keeps transaction ownership?",
+    "limit": "Conceptual pattern comparison, not executable ABAP or a universal approval rule. Framework-owned construction may require a supported delegation seam.",
+    "image": "visuals/patterns-strategy-template.svg"
+  },
+  {
+    "id": "patterns-factory-families",
+    "title": "Three factory choices and a concrete family constraint",
+    "questions": [
+      "PAT-02",
+      "PAT-11",
+      "PAT-12"
+    ],
+    "caption": "The family boundary prevents an A serializer from being combined accidentally with a B sender. The table distinguishes a simple choice from subclass creation and related-product creation.",
+    "recall": "What invalid combination does this factory prevent, and when would a simple factory be enough?",
+    "limit": "Provider compatibility is a fictional fixture. Pattern names do not grant API release eligibility, security or transaction guarantees.",
+    "image": "visuals/patterns-factory-families.svg"
+  },
+  {
+    "id": "patterns-adapter-facade-decorator",
+    "title": "Adapter, Facade and Decorator with observable outcomes",
+    "questions": [
+      "PAT-03",
+      "PAT-04"
+    ],
+    "caption": "Mapping, orchestration and added behavior are different responsibilities. The lower example shows why wrapper order changes whether a log records one logical call or two attempts.",
+    "recall": "Where would you translate an explicit clear, stop after a failed check, and record retry attempts?",
+    "limit": "The retry example is deliberately an eligible read. Write retries need the actual idempotency and uncertainty contract; no pattern automatically supplies it.",
+    "image": "visuals/patterns-adapter-facade-decorator.svg"
+  },
+  {
+    "id": "patterns-chain-command",
+    "title": "First-match routing and idempotent command execution",
+    "questions": [
+      "PAT-05",
+      "PAT-07"
+    ],
+    "caption": "The 700 EUR fixture passes the team-lead rule and stops at the manager rule. The selected operation then needs its own durable identity to handle duplicate delivery safely.",
+    "recall": "What changes if all rules must run, and what must a repeated SUBMIT-42 return?",
+    "limit": "Routing thresholds and command identity are fictional. The actual business transition, persistence and compensation contracts must be designed separately.",
+    "image": "visuals/patterns-chain-command.svg"
+  },
+  {
+    "id": "patterns-observer-lifetime",
+    "title": "Observer delivery and hidden singleton state",
+    "questions": [
+      "PAT-06",
+      "PAT-09"
+    ],
+    "caption": "A registered local handler can update an ALV, while an external process needs transactional publication and durable processing evidence. Session-shared mutable state is a separate source of repeated-test failures.",
+    "recall": "Which facts survive a process restart, and which request-specific values must not be cached implicitly?",
+    "limit": "The lower path describes required responsibilities, not an automatic feature of ABAP Objects events. Verify the chosen event infrastructure and service lifetime.",
+    "image": "visuals/patterns-observer-lifetime.svg"
+  },
+  {
+    "id": "patterns-repository-contract",
+    "title": "Repository read semantics and proportional abstraction",
+    "questions": [
+      "PAT-08",
+      "PAT-10",
+      "PAT-11"
+    ],
+    "caption": "A direct persistence read returns 100 while the transaction already sees 120. The repository seam is valuable only if its real implementation honors the state contract required by the caller.",
+    "recall": "Which integration test catches a mockable repository that reads the wrong state, and when is no new abstraction needed?",
+    "limit": "Conceptual read semantics rather than an SQL isolation guarantee. The specific BO, EML operation, authorization and target release remain authoritative.",
+    "image": "visuals/patterns-repository-contract.svg"
+  },
+  {
+    "id": "hana-grain-review",
+    "title": "HANA pushdown: result grain and table-function review",
+    "questions": [
+      "SQLX-01",
+      "SQLX-02"
+    ],
+    "caption": "A two-language text join duplicates both item amounts. Repair the relationship before accepting a performance rewrite, then verify security, client isolation and the chosen implementation contract.",
+    "recall": "Why would DISTINCT or dividing by two be an unreliable repair, and what metrics would justify pushdown?",
+    "limit": "Illustrative data, not a benchmark. Read-only here refers to the cited CDS table-function scenario, not every AMDP method; check target rules and consumption-path security.",
+    "image": "visuals/hana-grain-review.svg"
+  },
+  {
+    "id": "delivery-source-runtime-evidence",
+    "title": "Source transfer, delivery and verified runtime evidence",
+    "questions": [
+      "DELIV-01"
+    ],
+    "caption": "Four evidence layers answer different questions. A release links the reviewed and tested revision to an actual imported state, then verifies the target consumer and configuration.",
+    "recall": "Which artifact proves what was imported, and what can fail after a successful import?",
+    "limit": "REV-42, D-17 and TST are fictional identifiers. The table is an evidence checklist, not a mandatory sequence requiring abapGit in every transport landscape.",
+    "image": "visuals/delivery-source-runtime-evidence.svg"
+  },
+  {
+    "id": "draft-storage-illustration",
+    "title": "Three storage lifetimes: an illustrated analogy",
+    "questions": [
+      "RAP-03",
+      "RAP-12",
+      "SRAP-09",
+      "OPS-04"
+    ],
+    "caption": "The desk represents the current transactional buffer; the draft cabinet represents persistent work across requests; the shared archive represents saved active data.",
+    "recall": "Which of the three can survive several HTTP requests without becoming active business data?",
+    "limit": "An analogy, not literal SAP storage architecture or a mandatory three-stage pipeline. A new draft may have no active instance. Active business records may still be updated.",
+    "raster": true,
+    "image": "visuals/draft-storage-illustration.png"
+  },
+  {
+    "id": "etag-story-illustration",
+    "title": "Two editors and one version: an illustrated story",
+    "questions": [
+      "ADV-01",
+      "ODATA-06",
+      "TEST-07",
+      "OPS-05",
+      "SRAP-10"
+    ],
+    "caption": "Alice and Ben read version 7. Alice updates successfully, producing version 8. Ben must not overwrite that newer state using the stale version 7 precondition.",
+    "recall": "Why should the client refresh and resolve the conflict instead of blindly retrying its old payload?",
+    "limit": "Version numbers are illustrative. Real ETags are opaque validators; a failed If-Match precondition commonly returns HTTP 412. This is optimistic concurrency, not a pessimistic lock.",
+    "raster": true,
+    "image": "visuals/etag-story-illustration.png"
+  }
+]

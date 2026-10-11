@@ -1,0 +1,86 @@
+[
+  {
+    "id": "QUIZ-SQLX-01",
+    "questionId": "SQLX-01",
+    "prompt": "A CDS table-function implementation writes a helper table and joins client-dependent sources without demonstrated isolation. What is the correct review response?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Approve it because an outer #CHECK annotation protects every SQLScript statement.",
+        "explanation": "An annotation does not establish client-safe native processing or automatically authorize all internal reads."
+      },
+      {
+        "id": "b",
+        "text": "Remove the write and verify client safety, authorization and target support separately.",
+        "explanation": "The table-function contract is read-only, and client isolation does not replace business authorization."
+      },
+      {
+        "id": "c",
+        "text": "Keep the write if the helper table is hidden from the CDS result.",
+        "explanation": "Hiding a table from the return shape does not remove the read-only implementation restriction."
+      },
+      {
+        "id": "d",
+        "text": "Reject every AMDP implementation because database pushdown is forbidden in ABAP.",
+        "explanation": "AMDP can be supported; the specific function contract, environment and dependencies determine eligibility."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-SQLX-02",
+    "questionId": "SQLX-02",
+    "prompt": "Two order items total 100 EUR, but joining each to two texts yields 200 EUR. A proposed AMDP runs faster. What should happen first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Accept the AMDP because lower runtime outweighs a duplicated result.",
+        "explanation": "Performance cannot justify incorrect business totals."
+      },
+      {
+        "id": "b",
+        "text": "Divide every aggregate by two before comparing the implementations.",
+        "explanation": "The current duplicate factor is incidental and may vary with data and predicates."
+      },
+      {
+        "id": "c",
+        "text": "Restore the intended grain and result equivalence before measuring alternatives.",
+        "explanation": "Correct multiplicity and semantics are prerequisites; then compare suitable SQL/CDS and AMDP options."
+      },
+      {
+        "id": "d",
+        "text": "Move the duplicate aggregate into ABAP so HANA no longer controls it.",
+        "explanation": "Changing execution location does not itself correct a flawed join or aggregation contract."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-DELIV-01",
+    "questionId": "DELIV-01",
+    "prompt": "Local lint passes and abapGit pushes the source revision. What additional evidence supports a claim that the feature reached the intended runtime?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A green Git push with the same repository name as production.",
+        "explanation": "Source history does not demonstrate import, activation, configuration or runtime behavior."
+      },
+      {
+        "id": "b",
+        "text": "An abapGit export proves that all target object types are supported.",
+        "explanation": "Import support and activation depend on the target environment and release."
+      },
+      {
+        "id": "c",
+        "text": "A local mock test proves that target authorization and service access work.",
+        "explanation": "Mocks cannot establish the actual target's authorization or communication configuration."
+      },
+      {
+        "id": "d",
+        "text": "Traceable delivery/import IDs, target checks and a real service verification.",
+        "explanation": "These connect the tested source to the intended runtime and its configured consumer behavior."
+      }
+    ],
+    "correctOption": "d"
+  }
+]

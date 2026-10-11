@@ -1,0 +1,1122 @@
+[
+  {
+    "id": "QUIZ-RAP-01",
+    "questionId": "SRAP-06",
+    "prompt": "An EML update must clear Comment while preserving omitted Amount. Which update intent is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Supply Comment with its initial value and mark only intended fields.",
+        "explanation": "Field presence/control distinguishes clearing a value from leaving it untouched."
+      },
+      {
+        "id": "b",
+        "text": "Supply initial values and mark every field as changed.",
+        "explanation": "That can overwrite Amount and other omitted fields with unintended initial values."
+      },
+      {
+        "id": "c",
+        "text": "Leave Comment unmarked because its initial value implies deletion.",
+        "explanation": "Initial content alone does not convey update intent when the field is unmarked."
+      },
+      {
+        "id": "d",
+        "text": "Clear Comment directly in persistence before calling EML.",
+        "explanation": "Direct managed-table changes bypass the BO contract and do not fix request semantics."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-02",
+    "questionId": "SRAP-05",
+    "prompt": "MODIFY ENTITIES returns a warning in REPORTED and no matching FAILED entry. What can you conclude safely?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Any REPORTED entry proves the entire SAP LUW was rolled back.",
+        "explanation": "REPORTED can contain informational and warning messages without rejecting the transaction."
+      },
+      {
+        "id": "b",
+        "text": "The message alone does not establish rejection or final persistence.",
+        "explanation": "Response roles differ, and interaction completion is separate from save completion."
+      },
+      {
+        "id": "c",
+        "text": "No FAILED entry proves the database commit already completed.",
+        "explanation": "MODIFY ENTITIES processes interaction changes; persistence still needs the transaction's save boundary."
+      },
+      {
+        "id": "d",
+        "text": "MAPPED must contain one successful row for every update.",
+        "explanation": "MAPPED is used for relevant creation/key correlation, not a universal update success list."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-03",
+    "questionId": "SRAP-07",
+    "prompt": "A request creates two new orders and their items before final keys exist. How should items identify their newly created parent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use the parent's position in the create input table.",
+        "explanation": "Row position is not the identity contract and can break correlation after reordering."
+      },
+      {
+        "id": "b",
+        "text": "Allocate a guessed parent key with SELECT MAX plus one.",
+        "explanation": "This introduces concurrency risk and bypasses the BO's numbering contract."
+      },
+      {
+        "id": "c",
+        "text": "Use supported %cid_ref correlation to the parent's unique content ID.",
+        "explanation": "Content-ID correlation links dependent creates before final business keys are available."
+      },
+      {
+        "id": "d",
+        "text": "Use the same %cid for every parent because they share a request.",
+        "explanation": "Content IDs must distinguish the relevant creates rather than collapse their identities."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-04",
+    "questionId": "RAP-10",
+    "prompt": "A handler reconstructs an instance key from business fields and loses draft context. Which correction is most appropriate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Replace %tky with %cid for all existing instances.",
+        "explanation": "Content IDs correlate request creates; they are not a universal existing-instance key."
+      },
+      {
+        "id": "b",
+        "text": "Treat %tky as a temporary numeric key to be regenerated.",
+        "explanation": "Its meaning is transactional identity, not an arbitrary temporary number."
+      },
+      {
+        "id": "c",
+        "text": "Read active persistence whenever draft identity is missing.",
+        "explanation": "That may address a different instance and conceal the original identity defect."
+      },
+      {
+        "id": "d",
+        "text": "Preserve the supported transactional identity, including %tky context.",
+        "explanation": "Transactional identification may include draft and preliminary-key components beyond business fields."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-05",
+    "questionId": "SRAP-08",
+    "prompt": "Late numbering returns a final document key during save. What must the implementation preserve?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Preliminary-to-final identity correlation in the supported mapping contract.",
+        "explanation": "Consumers and associations need to connect the earlier instance identity to its final key."
+      },
+      {
+        "id": "b",
+        "text": "The original input row order as the only mapping information.",
+        "explanation": "Ordering cannot replace the explicit key-correlation contract."
+      },
+      {
+        "id": "c",
+        "text": "A promise of gap-free numbers solely because numbering is late.",
+        "explanation": "Number-range and posting semantics determine gaps; late timing alone is insufficient."
+      },
+      {
+        "id": "d",
+        "text": "A normal error response from every ADJUST_NUMBERS implementation.",
+        "explanation": "Late failure handling requires the specific supported saver scenario, not a universal assumption."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-06",
+    "questionId": "SRAP-20",
+    "prompt": "One item fails in a bulk action inside an OData batch. What determines the rollback scope?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The presence of any FAILED row always rolls back the entire batch.",
+        "explanation": "That overgeneralizes per-instance failure to unrelated batch transaction boundaries."
+      },
+      {
+        "id": "b",
+        "text": "The actual atomicity boundary and the defined transaction policy.",
+        "explanation": "A whole batch, an atomic group and an interaction response are distinct scopes."
+      },
+      {
+        "id": "c",
+        "text": "The number of successful items decides whether the framework commits.",
+        "explanation": "A majority-success rule is not the RAP or OData transaction contract."
+      },
+      {
+        "id": "d",
+        "text": "The first HTTP response settles persistence for every later operation.",
+        "explanation": "Operation responses do not replace the enclosing save and atomicity semantics."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-07",
+    "questionId": "SRAP-17",
+    "prompt": "An unmanaged action updates its buffer, then a direct SELECT returns the old amount. Which diagnosis fits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The buffer must be flushed with COMMIT WORK inside the action.",
+        "explanation": "Independent commit violates RAP transaction ownership."
+      },
+      {
+        "id": "b",
+        "text": "The database has necessarily lost the latest committed value.",
+        "explanation": "The change may simply be uncommitted and correctly absent from persistence."
+      },
+      {
+        "id": "c",
+        "text": "The SELECT observes persistence rather than the unsaved transactional state.",
+        "explanation": "Transaction-sensitive reads must use the BO's correct buffered view."
+      },
+      {
+        "id": "d",
+        "text": "The service should replace all reads with a session-wide singleton cache.",
+        "explanation": "A second cache does not establish correct transaction scope or cleanup."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-08",
+    "questionId": "SRAP-24",
+    "prompt": "A corrected draft item still displays its previous validation error. What should be inspected first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Whether every message was converted into a transition message.",
+        "explanation": "Persistent validation state can be appropriate; changing all message types avoids the actual lifecycle defect."
+      },
+      {
+        "id": "b",
+        "text": "Whether all application messages can be cleared unconditionally.",
+        "explanation": "That may erase unrelated errors owned by other validations."
+      },
+      {
+        "id": "c",
+        "text": "Whether the UI can force a commit after clearing its display.",
+        "explanation": "A display workaround neither corrects backend state messaging nor owns the transaction."
+      },
+      {
+        "id": "d",
+        "text": "State-area invalidation, trigger execution and instance/message correlation.",
+        "explanation": "These determine whether the previous state message is removed and the current state reported."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-09",
+    "questionId": "SRAP-09",
+    "prompt": "A user discards an edit draft of an existing order. Which result should the application preserve?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The existing active order remains; the draft changes are abandoned.",
+        "explanation": "An edit draft is a temporary editing version, distinct from its active counterpart."
+      },
+      {
+        "id": "b",
+        "text": "The active order is deleted because draft and active share identity.",
+        "explanation": "Discarding draft work is not a request to delete the active business object."
+      },
+      {
+        "id": "c",
+        "text": "The draft is activated automatically to prevent data loss.",
+        "explanation": "Discard explicitly abandons draft changes rather than saving them as active data."
+      },
+      {
+        "id": "d",
+        "text": "The order must advance to Submitted before discard is allowed.",
+        "explanation": "Submission is separate business behavior, not a universal draft-discard prerequisite."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-10",
+    "questionId": "SRAP-10",
+    "prompt": "A draft lock expires and another process changes only an active child. Which protection detects stale resume?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only the root's unchanged business fields need comparison.",
+        "explanation": "A child-only change can still invalidate the draft's view of the business object."
+      },
+      {
+        "id": "b",
+        "text": "Correct total-ETag maintenance for relevant changes across the BO.",
+        "explanation": "Draft resume needs the aggregate active-state version to reflect child changes."
+      },
+      {
+        "id": "c",
+        "text": "The expired lock continues preventing all active changes.",
+        "explanation": "Expiry means exclusive protection no longer guarantees the active state stayed unchanged."
+      },
+      {
+        "id": "d",
+        "text": "A client timestamp unrelated to persisted active state is sufficient.",
+        "explanation": "Conflict detection requires the defined version contract, not an arbitrary client time."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-11",
+    "questionId": "ADV-01",
+    "prompt": "Two clients read the same entity version; one updates it before the other sends If-Match. What should the stale request encounter?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Automatic merging of every changed field by the ETag mechanism.",
+        "explanation": "ETags detect conflicts; they do not implement arbitrary business merge rules."
+      },
+      {
+        "id": "b",
+        "text": "Guaranteed success because the second client holds an old copy.",
+        "explanation": "An old representation is exactly why a version check is needed."
+      },
+      {
+        "id": "c",
+        "text": "A version conflict under the configured entity ETag contract.",
+        "explanation": "Optimistic concurrency detects that the submitted version is no longer current."
+      },
+      {
+        "id": "d",
+        "text": "A permanent reservation created when the entity was first read.",
+        "explanation": "An ETag is not a pessimistic lock acquired by a read."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-12",
+    "questionId": "SRAP-11",
+    "prompt": "Two determinations derive Discount and Total, and results depend on their order. What is the strongest correction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Move one determination earlier in the source file.",
+        "explanation": "Declaration order is not a supported guarantee for determination execution order."
+      },
+      {
+        "id": "b",
+        "text": "Set a static flag after the first call to prevent repeated execution.",
+        "explanation": "A session flag can skip legitimate recalculation and leaks lifecycle assumptions."
+      },
+      {
+        "id": "c",
+        "text": "Send Total to the UI and let it apply Discount afterwards.",
+        "explanation": "That moves the invariant out of the backend and leaves non-UI consumers inconsistent."
+      },
+      {
+        "id": "d",
+        "text": "Make derivation idempotent and independent of unspecified execution order.",
+        "explanation": "Derive from authoritative inputs with complete triggers rather than accumulating prior results."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-13",
+    "questionId": "SRAP-12",
+    "prompt": "An update proposes a new company code that the user may not use. Where can incoming-value inspection fit?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A supported precheck alongside the complete operation authorization model.",
+        "explanation": "It can inspect proposed change values before buffer application without replacing authorization design."
+      },
+      {
+        "id": "b",
+        "text": "Only a read DCL on the original company's persisted row.",
+        "explanation": "Read filtering alone does not decide whether the new target context is allowed."
+      },
+      {
+        "id": "c",
+        "text": "Only feature control that hides CompanyCode on the screen.",
+        "explanation": "UI availability does not establish the backend authorization boundary."
+      },
+      {
+        "id": "d",
+        "text": "Only additional save after the data is already ready to persist.",
+        "explanation": "Predictable rejection should be handled at an appropriate earlier boundary."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-14",
+    "questionId": "SRAP-19",
+    "prompt": "A fully unmanaged BO validates draft edits, but a direct active write violates the same rule. What must be reviewed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The draft validation text should be changed to an error message.",
+        "explanation": "Message wording cannot cover a write path where the check does not run."
+      },
+      {
+        "id": "b",
+        "text": "The supported consistency checks for its active handler/save path.",
+        "explanation": "Draft validation support does not automatically prove active unmanaged persistence is protected."
+      },
+      {
+        "id": "c",
+        "text": "The direct API should be trusted because it is not a UI.",
+        "explanation": "Business invariants still apply to supported non-UI consumers."
+      },
+      {
+        "id": "d",
+        "text": "The frontend should read the active object more frequently.",
+        "explanation": "Additional reads cannot enforce a missing backend write invariant."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-15",
+    "questionId": "SRAP-01",
+    "prompt": "RAP can manage interaction buffering, but an eligible API must persist the data. Which option is a candidate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Fully unmanaged behavior is mandatory whenever any API is reused.",
+        "explanation": "The interaction and persistence responsibilities must be assessed separately."
+      },
+      {
+        "id": "b",
+        "text": "Additional save should replace every managed persistence operation.",
+        "explanation": "Additional save augments managed persistence rather than inherently replacing it."
+      },
+      {
+        "id": "c",
+        "text": "Managed behavior with unmanaged save, after contract verification.",
+        "explanation": "It can retain managed interaction while replacing persistence with supported custom save logic."
+      },
+      {
+        "id": "d",
+        "text": "A managed determination should write the API's tables directly.",
+        "explanation": "That bypasses persistence ownership and may violate save-phase and API constraints."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-16",
+    "questionId": "SRAP-02",
+    "prompt": "A transactional audit must accompany a managed order save. What is a plausible design?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Write the audit in an on-modify determination and commit immediately.",
+        "explanation": "The order can still be rejected and behavior code must not commit independently."
+      },
+      {
+        "id": "b",
+        "text": "Switch the entire BO to unmanaged solely to record one audit row.",
+        "explanation": "That adds responsibilities without establishing why managed interaction or persistence is unsuitable."
+      },
+      {
+        "id": "c",
+        "text": "Send an HTTP audit call and assume local rollback reverses it.",
+        "explanation": "An external effect is not automatically part of the local database transaction."
+      },
+      {
+        "id": "d",
+        "text": "Use supported additional save while preserving framework commit ownership.",
+        "explanation": "It can add transactional persistence work alongside managed order persistence."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-17",
+    "questionId": "SRAP-03",
+    "prompt": "A saver performs predictable business validation in the late save phase. What should be the default redesign?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Move expected rejection before the point of no return.",
+        "explanation": "Late save normally persists consistent state; special BAPI failure support requires explicit qualification."
+      },
+      {
+        "id": "b",
+        "text": "Return an error message from any late saver and assume rollback.",
+        "explanation": "Message reporting alone is not a universal recoverable late-failure mechanism."
+      },
+      {
+        "id": "c",
+        "text": "Assume no SAP-supported late-failure mechanism exists in any scenario.",
+        "explanation": "Documented failure-capable BAPI integration is a scoped exception to that absolute."
+      },
+      {
+        "id": "d",
+        "text": "Commit first so the validation can examine final database values.",
+        "explanation": "That defeats validation's ability to prevent an invalid business transaction."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-18",
+    "questionId": "SRAP-15",
+    "prompt": "A called legacy function commits internally. Which change actually addresses the transaction problem?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Move the unchanged committing call from the action into SAVE.",
+        "explanation": "The hidden commit still conflicts with framework transaction ownership."
+      },
+      {
+        "id": "b",
+        "text": "Use a compatible API or explicitly redesign the transaction boundary.",
+        "explanation": "A wrapper or phase move cannot remove the dependency's internal commit semantics."
+      },
+      {
+        "id": "c",
+        "text": "Wrap the call in TRY CATCH and report any later exception.",
+        "explanation": "Catching an exception does not undo already committed effects."
+      },
+      {
+        "id": "d",
+        "text": "Call the function through RFC while still promising local atomicity.",
+        "explanation": "RFC introduces a separate boundary instead of restoring one local atomic transaction."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-19",
+    "questionId": "SRAP-04",
+    "prompt": "Remote payment succeeds, then the local RAP save fails. What conclusion follows?",
+    "options": [
+      {
+        "id": "a",
+        "text": "ROLLBACK ENTITIES automatically reverses the remote payment.",
+        "explanation": "Its local transaction scope does not encompass arbitrary external systems."
+      },
+      {
+        "id": "b",
+        "text": "The remote success proves the local save must have committed.",
+        "explanation": "The systems have separate outcomes unless an actual coordinated protocol establishes otherwise."
+      },
+      {
+        "id": "c",
+        "text": "The remote effect needs explicit reconciliation or compensation.",
+        "explanation": "Local rollback cannot undo an ordinary remote HTTP operation."
+      },
+      {
+        "id": "d",
+        "text": "Retry both steps with new identities until both return success.",
+        "explanation": "Fresh identities can duplicate remote payment instead of recovering the uncertain workflow."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-20",
+    "questionId": "SRAP-18",
+    "prompt": "A business event is delivered twice after a committed Submit. What should the consumer do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assume duplicates are impossible and start the workflow each time.",
+        "explanation": "The event mechanism does not justify universal exactly-once business processing assumptions."
+      },
+      {
+        "id": "b",
+        "text": "Roll back the producer's already committed Submit transaction.",
+        "explanation": "A consumer cannot simply undo a completed remote producer transaction."
+      },
+      {
+        "id": "c",
+        "text": "Use the current ABAP session's static flag as permanent deduplication.",
+        "explanation": "Session state is neither durable nor appropriately scoped for external delivery recovery."
+      },
+      {
+        "id": "d",
+        "text": "Recognize the same transition and avoid a second effective action.",
+        "explanation": "Durable correlation and idempotent handling protect against duplicate delivery."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-21",
+    "questionId": "MODEL-01",
+    "prompt": "A base CDS entity has DCL, but the consumed projection exposes unauthorized rows. Which statement is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Protect the consumed entity with an appropriate DCL design.",
+        "explanation": "Read access control is not automatically inherited through every CDS projection."
+      },
+      {
+        "id": "b",
+        "text": "Adding #CHECK creates the missing authorization rule by itself.",
+        "explanation": "The annotation does not define the business authorization condition."
+      },
+      {
+        "id": "c",
+        "text": "The base DCL must automatically cover every higher view.",
+        "explanation": "That assumption is the authorization gap the scenario exposes."
+      },
+      {
+        "id": "d",
+        "text": "Removing sensitive columns replaces row-level authorization.",
+        "explanation": "A smaller projection can still reveal unauthorized business records."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-22",
+    "questionId": "MODEL-02",
+    "prompt": "A user may update company A but changes the order's CompanyCode to B. What risk does original-instance authorization leave?",
+    "options": [
+      {
+        "id": "a",
+        "text": "No additional risk exists if the old order was authorized.",
+        "explanation": "That ignores a privilege-changing update to the object's authorization context."
+      },
+      {
+        "id": "b",
+        "text": "The proposed target context may require a separate authorization decision.",
+        "explanation": "Authority over the original state does not imply authority over every allowed new value."
+      },
+      {
+        "id": "c",
+        "text": "The change is safe whenever the value help lists company B.",
+        "explanation": "Value-help visibility is not proof of permission to execute this transition."
+      },
+      {
+        "id": "d",
+        "text": "An entity ETag proves the user is authorized for company B.",
+        "explanation": "ETags address concurrency, not the user's business authorization scope."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-23",
+    "questionId": "ADV-02",
+    "prompt": "A submitted request must be read-only for everyone, while only assigned approvers may approve it. Which separation fits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Feature control for both rules because the UI consumes it.",
+        "explanation": "UI-facing availability does not replace the authorization boundary."
+      },
+      {
+        "id": "b",
+        "text": "Authorization for both rules with all feature handlers disabled.",
+        "explanation": "Authorization can deny users, but it does not replace deliberate operation-availability modeling."
+      },
+      {
+        "id": "c",
+        "text": "Feature control for state availability; authorization for permitted actors.",
+        "explanation": "Business availability and permission are separate responsibilities."
+      },
+      {
+        "id": "d",
+        "text": "Hide Approve and trust the service's authenticated session.",
+        "explanation": "Authentication and button visibility do not establish instance-specific approval permission."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-24",
+    "questionId": "MODEL-13",
+    "prompt": "A reusable helper adds IN LOCAL MODE to avoid authorization failures. What must the reviewer establish?",
+    "options": [
+      {
+        "id": "a",
+        "text": "That every consumer can now perform the operation successfully.",
+        "explanation": "Universal success may indicate weakened security rather than a correct helper."
+      },
+      {
+        "id": "b",
+        "text": "That local mode only changes SQL performance.",
+        "explanation": "Its effect includes control checks, not merely execution optimization."
+      },
+      {
+        "id": "c",
+        "text": "That authentication alone makes instance authorization redundant.",
+        "explanation": "An authenticated user may still lack permission for the particular business operation."
+      },
+      {
+        "id": "d",
+        "text": "That the call is in a permitted internal context with deliberate bypasses.",
+        "explanation": "Local mode has a specific scope and bypass effects; it is not a general authorization repair."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-25",
+    "questionId": "MODEL-03",
+    "prompt": "A custom query returns only allowed rows but calculates count from all rows. What is the defect?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The count can leak unauthorized scope and violates query consistency.",
+        "explanation": "Count and data must reflect the same relevant filtering and authorization."
+      },
+      {
+        "id": "b",
+        "text": "No defect exists because no hidden row is returned.",
+        "explanation": "Aggregated metadata can still reveal protected information."
+      },
+      {
+        "id": "c",
+        "text": "The count should always be replaced by the current page length.",
+        "explanation": "That avoids neither the required total-count semantics nor correct authorization design."
+      },
+      {
+        "id": "d",
+        "text": "Counts are inherently public metadata in every OData service.",
+        "explanation": "No universal rule exempts business counts from authorization concerns."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-26",
+    "questionId": "MODEL-04",
+    "prompt": "A requested OR filter cannot be converted to simple ranges. What should the provider do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ignore the filter and return the whole dataset as a fallback.",
+        "explanation": "This broadens the request unexpectedly and can expose unintended rows."
+      },
+      {
+        "id": "b",
+        "text": "Preserve its semantics through supported handling or reject it explicitly.",
+        "explanation": "Silently discarding restrictions changes both correctness and potentially security."
+      },
+      {
+        "id": "c",
+        "text": "Apply only the first convertible part of the expression.",
+        "explanation": "Partial filtering can return a different result from the requested logical expression."
+      },
+      {
+        "id": "d",
+        "text": "Catch the conversion error and report zero matching records.",
+        "explanation": "Invented empty results conceal unsupported processing and mislead the consumer."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-27",
+    "questionId": "MODEL-05",
+    "prompt": "A paged custom query orders by a nonunique description. How can it improve predictable paging?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assume the database preserves the same order for equal descriptions.",
+        "explanation": "Without a complete ordering guarantee, tied rows can appear unpredictably."
+      },
+      {
+        "id": "b",
+        "text": "Return all records and let every consumer invent paging rules.",
+        "explanation": "That may be costly and abandons the provider's paging contract."
+      },
+      {
+        "id": "c",
+        "text": "Add a suitable deterministic tie-breaker and define change consistency.",
+        "explanation": "Stable order reduces ambiguity, while concurrent changes still require an explicit source contract."
+      },
+      {
+        "id": "d",
+        "text": "Guarantee a frozen snapshot merely by adding ORDER BY.",
+        "explanation": "Ordering alone does not freeze the dataset across separate requests."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-28",
+    "questionId": "MODEL-06",
+    "prompt": "Joining language-dependent texts doubles order totals. What should be investigated first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add DISTINCT to every aggregate query as a general fix.",
+        "explanation": "It may hide symptoms or change semantics without repairing the relationship."
+      },
+      {
+        "id": "b",
+        "text": "Declare the relationship to-one even if multiple texts still match.",
+        "explanation": "A cardinality declaration does not make contradictory data or predicates unique."
+      },
+      {
+        "id": "c",
+        "text": "Divide the total by two because two texts currently exist.",
+        "explanation": "That hard-codes an accidental duplication factor and fails when data changes."
+      },
+      {
+        "id": "d",
+        "text": "The association condition, language restriction and actual multiplicity.",
+        "explanation": "The join may multiply fact rows; truthful cardinality and predicates address the cause."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-29",
+    "questionId": "MODEL-07",
+    "prompt": "A report displays 100 EUR plus 100 USD as 200. What must the model establish?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Currency-aware grouping or explicit conversion under a defined policy.",
+        "explanation": "Amounts in different currencies are not meaningfully additive without compatible semantics."
+      },
+      {
+        "id": "b",
+        "text": "A longer decimal type so the mixed total is more precise.",
+        "explanation": "Numeric precision does not resolve incompatible currencies."
+      },
+      {
+        "id": "c",
+        "text": "A currency annotation that automatically chooses any exchange rate.",
+        "explanation": "Semantic annotation alone does not specify and execute every required conversion policy."
+      },
+      {
+        "id": "d",
+        "text": "A formatted text suffix listing both currencies after the total.",
+        "explanation": "Labeling an invalid aggregation does not make its numeric result meaningful."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-30",
+    "questionId": "SRAP-21",
+    "prompt": "The backend draft total is correct, but Fiori displays the old value after quantity changes. What is the next diagnostic step?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add COMMIT WORK to the determination so the UI can see it.",
+        "explanation": "A commit violates transaction ownership and is not the proper refresh mechanism."
+      },
+      {
+        "id": "b",
+        "text": "Inspect side effects, metadata and actual refresh requests.",
+        "explanation": "Backend calculation and client refresh are separate contracts that need separate evidence."
+      },
+      {
+        "id": "c",
+        "text": "Move the total calculation entirely into browser code.",
+        "explanation": "That weakens backend correctness for other consumers and does not diagnose the refresh gap."
+      },
+      {
+        "id": "d",
+        "text": "Treat the old display as proof that the database update failed.",
+        "explanation": "The backend value may be correct while the client retains an older representation."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-31",
+    "questionId": "CORE-02",
+    "prompt": "An extension uses an internal SAP object that is not explicitly classified as non-recommended. Which initial classification is the relevant one?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Level A because any callable SAP object is an API.",
+        "explanation": "Technical accessibility does not establish a released consumption contract."
+      },
+      {
+        "id": "b",
+        "text": "Level B because the object has existed for several releases.",
+        "explanation": "Longevity is not SAP designation as a classic API."
+      },
+      {
+        "id": "c",
+        "text": "Level C dependency, subject to the actual classification and context.",
+        "explanation": "Internal dependencies carry upgrade risk; explicit non-recommended classification is a distinct category."
+      },
+      {
+        "id": "d",
+        "text": "Level D solely because every unreleased object is prohibited.",
+        "explanation": "A-D distinguishes internal objects from explicitly non-recommended dependencies."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-32",
+    "questionId": "CORE-03",
+    "prompt": "A configured Clean Core usage check reports a Level B dependency. Which mapping matches this check model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Priority 1 error because every classic dependency is Level D.",
+        "explanation": "Classic classification is not automatically non-recommended usage."
+      },
+      {
+        "id": "b",
+        "text": "No finding because Level B is identical to a released Level A API.",
+        "explanation": "The classification and corresponding usage finding differ."
+      },
+      {
+        "id": "c",
+        "text": "Priority 2 warning because all ATC warnings mean Level B.",
+        "explanation": "The model maps C to priority 2, and unrelated ATC checks have separate meanings."
+      },
+      {
+        "id": "d",
+        "text": "Priority 3 informational finding for the nominated classic dependency.",
+        "explanation": "The stated mapping is specific to the Clean Core usage checks."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-33",
+    "questionId": "CORE-08",
+    "prompt": "A custom wrapper is released, but its implementation calls an internal SAP object. What should the review record?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The released wrapper boundary and the underlying dependency risk.",
+        "explanation": "Releasing the consumer-facing contract does not erase internal implementation dependencies."
+      },
+      {
+        "id": "b",
+        "text": "An entirely Level A implementation because the wrapper is released.",
+        "explanation": "That confuses a controlled consumer contract with the full dependency chain."
+      },
+      {
+        "id": "c",
+        "text": "No need for upgrade tests because callers never see the object.",
+        "explanation": "Hidden implementation dependencies can still break after an upgrade."
+      },
+      {
+        "id": "d",
+        "text": "Permission to use the wrapper in every product and language version.",
+        "explanation": "Eligibility depends on target platform, contract and actual allowed implementation."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-34",
+    "questionId": "GOV-02",
+    "prompt": "A developer interprets a C1-released API as Clean Core Level C. What is the correction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "C1 also permits extending the released object's implementation.",
+        "explanation": "C1 permits the specified consumption; extensibility needs its own supported extension contract."
+      },
+      {
+        "id": "b",
+        "text": "C1 is a release contract; A-D describes a different classification.",
+        "explanation": "Similar characters do not make API release contracts and Clean Core levels equivalent."
+      },
+      {
+        "id": "c",
+        "text": "C1 automatically authorizes every remote exposure of the object.",
+        "explanation": "Local consumption release is not blanket permission for every exposure contract."
+      },
+      {
+        "id": "d",
+        "text": "Level C objects always have a formal C1 release contract.",
+        "explanation": "Internal-dependency classification is not defined by such a release contract."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-35",
+    "questionId": "GOV-05",
+    "prompt": "A classified classic API is acceptable in a Private Edition extension. What must be checked before using the same design in Public Edition?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only whether the same function name exists in documentation.",
+        "explanation": "A name alone does not prove released, permitted consumption on the target."
+      },
+      {
+        "id": "b",
+        "text": "Nothing, because Level B guarantees identical edition support.",
+        "explanation": "Classification and environment restrictions remain distinct concerns."
+      },
+      {
+        "id": "c",
+        "text": "The target edition's allowed APIs, language and extension contracts.",
+        "explanation": "A prior classification or approval does not establish availability in another environment."
+      },
+      {
+        "id": "d",
+        "text": "Only whether the application uses a RAP UI binding.",
+        "explanation": "The service technology does not legalize an unsupported backend dependency."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-36",
+    "questionId": "GOV-04",
+    "prompt": "A team requests a temporary exception for an internal dependency needed this quarter. What makes it governable?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A permanent suppression applied to every similar ATC finding.",
+        "explanation": "That obscures scope and removes pressure to reassess changing alternatives."
+      },
+      {
+        "id": "b",
+        "text": "An assertion that the object is unlikely to change.",
+        "explanation": "Confidence without ownership and evidence is not a manageable exception."
+      },
+      {
+        "id": "c",
+        "text": "A new wrapper name with no dependency inventory.",
+        "explanation": "Renaming hides neither the upgrade risk nor the need for lifecycle management."
+      },
+      {
+        "id": "d",
+        "text": "A scoped rationale, named owner, regression evidence and replacement trigger.",
+        "explanation": "The exception needs accountable risk management and a path to reassessment."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-37",
+    "questionId": "CLOUD-05",
+    "prompt": "An on-stack extension can use either a suitable local released API or a remote endpoint for the same operation. What should guide the choice?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Required semantics, transactional fit, latency and supported contracts.",
+        "explanation": "Placement alone does not decide; compare the actual APIs and consistency requirements."
+      },
+      {
+        "id": "b",
+        "text": "Remote is always cleaner because HTTP separates the code.",
+        "explanation": "Network separation can add failure boundaries without improving the needed local contract."
+      },
+      {
+        "id": "c",
+        "text": "Local is always correct because network calls are slower.",
+        "explanation": "Local access still needs the right released semantics and appropriate coupling."
+      },
+      {
+        "id": "d",
+        "text": "Use the remote endpoint because it must expose the same transaction and authorization semantics as the local API.",
+        "explanation": "Local and remote APIs can expose different operations, identities and transaction boundaries, even for the same business capability."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-RAP-38",
+    "questionId": "SRAP-22",
+    "prompt": "A released RAP BO interface omits an operation available on its visible base BO. Which next step respects the contract?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Call the base BO directly because its source is visible.",
+        "explanation": "Visibility does not establish supported cross-component consumption."
+      },
+      {
+        "id": "b",
+        "text": "Find another supported API, request the capability or redesign the flow.",
+        "explanation": "Consumption should stay within the released interface rather than bypass its boundary."
+      },
+      {
+        "id": "c",
+        "text": "Update its persistence table to reproduce the missing operation.",
+        "explanation": "That bypasses behavior invariants, authorization and supported persistence ownership."
+      },
+      {
+        "id": "d",
+        "text": "Use dynamic invocation to avoid static release checks.",
+        "explanation": "Avoiding a check does not make the underlying dependency eligible or stable."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-RAP-39",
+    "questionId": "CLOUD-06",
+    "prompt": "A CDS feature works in development but fails on an older supported target. What prevents recurrence most directly?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Copy the latest SAP example without checking its stated environment.",
+        "explanation": "Examples may intentionally use newer syntax than the supported target provides."
+      },
+      {
+        "id": "b",
+        "text": "Assume ABAP Cloud has one identical feature set everywhere.",
+        "explanation": "Products and releases can differ despite sharing the development model."
+      },
+      {
+        "id": "c",
+        "text": "Maintain a target-release compatibility baseline and validate against it.",
+        "explanation": "Current documentation and a newer development system do not prove oldest-target support."
+      },
+      {
+        "id": "d",
+        "text": "Treat successful frontend rendering as proof of backend compatibility.",
+        "explanation": "The UI result does not establish syntax or API availability on another backend."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RAP-40",
+    "questionId": "SRAP-23",
+    "prompt": "Submit committed, but the client lost the response and retries. Which contract is most robust?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create another submission because the client did not see success.",
+        "explanation": "Response loss does not imply the first operation failed."
+      },
+      {
+        "id": "b",
+        "text": "Use a new request-local %cid as proof the retry is distinct.",
+        "explanation": "Content correlation is not a durable business idempotency contract."
+      },
+      {
+        "id": "c",
+        "text": "Rely on disabling the Submit button after a browser refresh.",
+        "explanation": "UI state cannot prevent retries from other clients or concurrent requests."
+      },
+      {
+        "id": "d",
+        "text": "Recognize the completed transition and return a defined replay outcome.",
+        "explanation": "Stable identity and state handling prevent another effective submission or duplicate follow-up."
+      }
+    ],
+    "correctOption": "d"
+  }
+]

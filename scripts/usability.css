@@ -1,0 +1,78 @@
+/* Shared interaction states: labels, focus and selection use the same source of truth. */
+:root { --focus: #176d93; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip-link { position: fixed; top: 8px; left: 12px; z-index: 100; transform: translateY(-180%); padding: 10px 16px; color: white; background: var(--ink); border-radius: 6px; }
+.skip-link:focus { transform: none; }
+:where(button,a,input,select,summary,[tabindex]):focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+#heading:focus { outline: none; }
+.app-bar { display: flex; gap: 12px; align-items: center; position: sticky; top: 0; z-index: 20; padding: 12px 0; margin: -12px 0 18px; background: var(--paper); border-bottom: 1px solid var(--line); }
+.global-search-launcher { display: flex; align-items: center; gap: 10px; width: min(100%,520px); min-height: 46px; text-align: left; color: var(--muted); }
+.global-search-launcher svg { width: 20px; height: 20px; flex: none; }
+.global-search-launcher kbd { margin-left: auto; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; font: 11px/1.7 inherit; white-space: nowrap; }
+#resumePractice { margin-left: auto; font-size: 13px; white-space: nowrap; }
+.answer-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 20px 0 12px; }
+.answer-toggle { display: inline-flex; padding: 4px; gap: 4px; background: #e7eeea; border: 1px solid #bdcfc6; border-radius: 10px; }
+.answer-toggle button { min-height: 40px; background: transparent; border-color: transparent; font-size: 14px; }
+.answer-toggle button[aria-pressed=true] { background: var(--ink); color: white; border-color: var(--ink); box-shadow: 0 1px 3px #122b3e22; font-weight: 650; }
+.answer-toggle button[aria-pressed=true]::before { content: "\2713"; margin-right: 7px; }
+.answer-state { margin: 0 0 18px; color: var(--muted); font-size: 13px; }
+.answer-state strong { color: var(--ink); }
+.learning-answer { scroll-margin-top: 105px; }
+.learning-answer > summary { min-height: 32px; padding: 6px 0; }
+.learning-answer:not([open]) > summary { margin: 0; }
+.question-group .card[id] { scroll-margin-top: 95px; }
+.question-group .card h3[tabindex]:focus { outline: none; }
+.question-group .card:focus-within { border-color: #83aa9b; }
+.question-links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.question-links button { min-height: 36px; font-size: 13px; color: #12618a; background: transparent; }
+.nav-topic { font-size: 13px !important; }
+.nav-section { min-height: 36px; font-size: 12px !important; }
+#breadcrumbs button { min-height: 28px; }
+.topic-sections button[aria-pressed=true] { border-color: var(--green); font-weight: 650; }
+.question-index a { min-height: 32px; }
+.question-sources a { line-height: 2; }
+#searchDialog { padding: 0; width: min(860px,calc(100% - 32px)); max-height: min(85vh,900px); background: white; }
+.search-header { position: sticky; top: 0; z-index: 1; background: white; padding: 22px 24px 12px; border-bottom: 1px solid var(--line); }
+.search-header h2 { font-size: 24px; margin: 0; }
+.search-header .dialog-heading { align-items: center; margin-bottom: 15px; }
+#globalSearchForm { display: flex; align-items: stretch; gap: 8px; }
+#globalSearchInput { width: 100%; min-width: 0; flex: 1; font-size: 16px; }
+#globalSearchCount { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+#globalSearchHelp { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+.search-empty { padding: 28px 24px; }
+.search-empty h3 { margin-top: 0; font-size: 19px; }
+.search-empty p { color: var(--muted); max-width: 64ch; }
+.search-examples { display: flex; gap: 8px; flex-wrap: wrap; }
+.search-examples button { font-size: 13px; }
+.search-results { list-style: none; margin: 0; padding: 8px 16px; }
+.search-results li { border-bottom: 1px solid var(--line); }
+.search-results li:last-child { border: 0; }
+.search-result { display: grid; gap: 7px; width: 100%; padding: 17px 12px; text-align: left; border: 1px solid transparent; background: white; }
+.search-result:hover,.search-result:focus-visible { background: #f1f6f3; border-color: #c0d7cc; }
+.search-result-meta { color: var(--muted); font-size: 11px; line-height: 1.5; }
+.search-result strong { font-size: 16px; line-height: 1.45; }
+.search-snippet { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.match-label { font-size: 11px; color: var(--green); font-weight: 700; margin-right: 5px; }
+.search-result mark { color: inherit; background: #fff0bd; border-radius: 2px; }
+.search-footer { padding: 12px 24px 20px; }
+#moreSearchResults { width: 100%; font-size: 13px; }
+@media(max-width:650px) {
+ .app-bar { flex-wrap: wrap; gap: 7px; margin-top: -10px; margin-bottom: 14px; padding: 9px 0; }
+ .global-search-launcher { width: 100%; font-size: 14px; }
+ .global-search-launcher kbd { display: none; }
+ #resumePractice { padding: 5px 10px; }
+ .answer-toggle { width: 100%; }
+ .answer-toggle button { flex: 1; padding: 9px 7px; font-size: 13px; }
+ .answer-toolbar > .primary { width: 100%; }
+ #searchDialog { width: calc(100% - 16px); max-height: 92dvh; border-radius: 12px; }
+ .search-header { padding: 16px 14px 12px; }
+ .search-header h2 { font-size: 21px; }
+ .search-header .dialog-heading button { padding: 7px 11px; }
+ #globalSearchHelp { display: none; }
+ .search-results { padding: 4px 7px; }
+ .search-result { padding: 14px 8px; }
+ .search-empty { padding: 22px 16px; }
+ #globalSearchForm button { padding: 7px 10px; }
+}
+@media(prefers-reduced-motion:reduce) { html { scroll-behavior: auto; } }
+@media print { .app-bar,.answer-toolbar,.answer-state,.question-links,.skip-link,#searchDialog { display:none; } }

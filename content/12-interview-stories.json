@@ -1,0 +1,56 @@
+{
+  "id": "12-interview-stories",
+  "title": "Interview answers and project discussion",
+  "intro": "Use these structures with your real experience. Keep the first answer to about one minute, then expand when asked. Be explicit about the part you owned, the constraints and the evidence for the outcome.",
+  "sources": [],
+  "questions": [
+    {
+      "id": "STORY-01",
+      "level": "Core",
+      "question": "How would you introduce yourself for an ABAP role?",
+      "answer": "Connect your actual ABAP experience to the role's needs: core language and data handling, the SAP landscape you worked in, representative delivery responsibilities and the modern topics you can discuss confidently. Give one concrete example and distinguish production experience from learning exercises.",
+      "detail": "Use this sequence: current focus, two relevant strengths, one real project result, and why this role fits. Replace every general statement with a truthful detail before rehearsing.",
+      "pitfall": "Do not invent years, clients, performance metrics or RAP production experience."
+    },
+    {
+      "id": "STORY-02",
+      "level": "Core",
+      "question": "How do you explain a project you owned?",
+      "answer": "Start with the business problem and users, then state your responsibility, constraints and design choice. Describe one important trade-off, how you tested it and the outcome. Finish with what you would improve now. Keep background short enough that the interviewer can ask technical follow-ups.",
+      "detail": "Prepare one classic ABAP example and one modern service example if you have them. If the modern example is a lab, identify it as a lab and explain its limits.",
+      "pitfall": "Listing transactions and technologies without explaining the result does not show ownership."
+    },
+    {
+      "id": "STORY-03",
+      "level": "Advanced",
+      "question": "How do you answer a question when the SAP release is unknown?",
+      "answer": "State the concept that is stable, identify the release-sensitive point and ask for the target edition or version. Explain how you would verify availability in official documentation and the target repository. Offer a supported alternative rather than pretending one syntax works everywhere.",
+      "detail": "For a RAP feature, separate business intent from exact BDL syntax. For an API, check release state and the operation needed instead of guessing from its name.",
+      "pitfall": "Saying it depends without explaining what it depends on is not a useful answer."
+    },
+    {
+      "id": "STORY-04",
+      "level": "Core",
+      "question": "How do you discuss a performance improvement?",
+      "answer": "Describe the initial symptom, representative workload and measurements. Explain the bottleneck found, the change made and the measured result with correctness checks. Mention relevant data volume and constraints so the result is meaningful. Use only numbers you can support from your own work.",
+      "detail": "Prepare a story involving SQL round trips, selective access or internal-table keys, and be ready to explain why a different approach was rejected.",
+      "pitfall": "Do not claim a speedup from code appearance alone or memorize an invented percentage."
+    },
+    {
+      "id": "STORY-05",
+      "level": "Advanced",
+      "question": "How would you defend an architecture trade-off?",
+      "answer": "Compare options against requirements such as transaction consistency, API availability, consumer compatibility, latency and operational ownership. State the selected option, its cost and the conditions that would change your decision. Show how the design will be validated.",
+      "detail": "For on-stack versus side-by-side, discuss the local LUW requirement and remote failure handling before product preferences.",
+      "pitfall": "Always use RAP or always use BTP is not an architecture argument."
+    },
+    {
+      "id": "STORY-06",
+      "level": "Core",
+      "question": "What should you ask the interviewer?",
+      "answer": "Ask which SAP editions and releases the team supports, how work is split between classic ABAP and RAP, what Clean Core policy they enforce, and how they test and deploy. Discuss the expected ownership of CDS, UI, integration and production support.",
+      "detail": "Choose three questions that affect your daily work and learning priorities. Ask for an example of a recent technical trade-off rather than only a technology list.",
+      "pitfall": "Do not assume the role title tells you whether the work is maintenance, migration or new development."
+    }
+  ]
+}

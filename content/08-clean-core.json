@@ -1,0 +1,313 @@
+{
+  "id": "08-clean-core",
+  "title": "Clean Core levels and extensibility",
+  "intro": "Clean Core interviews test architectural judgment, not just memorization of A through D. Explain the target edition, actual API and extension technology, upgrade risk and governance. The levels complement the choice of key-user, on-stack or side-by-side extensibility.",
+  "sources": [
+    {
+      "title": "SAP Clean Core best practices",
+      "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487"
+    },
+    {
+      "title": "SAP Clean Core ATC levels and setup",
+      "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad"
+    },
+    {
+      "title": "SAP Cloudification Repository",
+      "url": "https://github.com/SAP/abap-atc-cr-cv-s4hc"
+    },
+    {
+      "title": "SAP ABAP Cloud FAQ",
+      "url": "https://pages.community.sap.com/topics/abap/abap-cloud-faq"
+    },
+    {
+      "title": "SAP TechEd Clean Core exercise",
+      "url": "https://github.com/SAP-samples/teched2025-DT260/blob/main/exercises/ex3/README.md"
+    },
+    {
+      "title": "SAP API release contracts",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis?locale=en-us"
+    }
+  ],
+  "questions": [
+    {
+      "id": "CORE-01",
+      "level": "Core",
+      "question": "What is Clean Core in a practical ABAP answer?",
+      "answer": "Keep extensions decoupled from SAP internals through supported contracts so business changes and upgrades remain manageable. Start with fit-to-standard, use suitable released interfaces and extension points, and govern exceptions and lifecycle costs. Extensibility is one dimension of Clean Core alongside concerns such as processes, data and integration.",
+      "detail": "Explain a business requirement, why standard configuration was insufficient, which extension boundary you chose, and how you test upgrades. This is stronger than saying that all custom code must disappear.",
+      "pitfall": "Clean Core is not the same as Clean ABAP, zero custom code or moving everything to BTP.",
+      "references": [
+        {
+          "title": "SAP Clean Core best practices",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-02",
+      "level": "Core",
+      "question": "What are Clean Core levels A B C and D?",
+      "answer": "A uses released SAP interfaces and extension points with their supported contracts. B uses SAP-designated classic APIs and supported classic extension options. C depends on internal SAP objects with upgrade risk. D uses explicitly non-recommended objects or techniques. Always classify actual dependencies and technology in the applicable product context.",
+      "detail": "Use A where feasible, consider B for justified classic scenarios, manage C with explicit risk ownership and monitoring, and prioritize remediation of D.",
+      "pitfall": "A familiar API is not automatically B, and every unreleased object is not automatically D.",
+      "references": [
+        {
+          "title": "SAP Clean Core ATC levels and setup",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-03",
+      "level": "Core",
+      "question": "How do the levels map to ATC messages?",
+      "answer": "In the configured Clean Core usage checks, A produces no corresponding finding, B is priority 3 information, C is priority 2 warning and D is priority 1 error. This is the Clean Core mapping, not a universal interpretation of every ATC result from security or performance checks.",
+      "detail": "Confirm the check variant, check implementation, classification data and target release before interpreting a result. A system with missing checks can appear green without proving compliance.",
+      "pitfall": "No ATC findings does not prove that the entire application is secure, correct or fully Level A.",
+      "references": [
+        {
+          "title": "SAP Clean Core ATC levels and setup",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-04",
+      "level": "Advanced",
+      "question": "Why is a classic API Level B rather than Level A?",
+      "answer": "SAP may designate an established interface for classic use without releasing it under the ABAP Cloud contract. That nomination supports a lower-risk classic extension path, but it does not grant unrestricted consumption from ABAP for Cloud Development. Classification and language-version permissions are related but distinct.",
+      "detail": "Look up the exact object and applicable use in SAP's classification data. A function module name beginning BAPI is not enough evidence.",
+      "pitfall": "Do not describe all classic APIs as public-cloud-ready or as formally C1-released.",
+      "references": [
+        {
+          "title": "SAP Clean Core ATC levels and setup",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        },
+        {
+          "title": "SAP Cloudification Repository",
+          "url": "https://github.com/SAP/abap-atc-cr-cv-s4hc",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-05",
+      "level": "Advanced",
+      "question": "What does responsible Level C use look like?",
+      "answer": "Level C acknowledges dependence on internals that may change. Identify the missing supported alternative, isolate the dependency, assign ownership, track SAP changes and test affected processes during upgrades. Keep a replacement plan. Organizational exception policy and the target product still govern whether the use is acceptable.",
+      "detail": "A required internal read with no suitable alternative should have a named owner and regression coverage. Reassess when SAP releases a successor or changes the classification.",
+      "pitfall": "C is not an unlimited permission to call anything, nor is it the same risk category as a modification.",
+      "references": [
+        {
+          "title": "SAP Clean Core ATC levels and setup",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-06",
+      "level": "Core",
+      "question": "What belongs to Level D and what would you do first?",
+      "answer": "Explicitly non-recommended objects and techniques, including problematic modifications or unsupported direct changes to SAP persistence, represent the highest-risk category. Confirm the actual classification and operation. Replace dangerous write paths or modifications with supported APIs or extension points, using regression tests and a staged rollout.",
+      "detail": "For a direct UPDATE of an SAP business table, find the released or supported business API that performs checks and dependent updates rather than reproducing only the table assignment.",
+      "pitfall": "The fact that a direct update works in development does not establish a supported business transaction.",
+      "references": [
+        {
+          "title": "SAP Clean Core ATC levels and setup",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-07",
+      "level": "Core",
+      "question": "Are A through D the same as the old three tiers?",
+      "answer": "No. The earlier model organized ABAP Cloud development, API enablement through wrappers and classic extensions into tiers. The newer levels classify dependency and technology choices more granularly, particularly for private edition and on-premise landscapes. Keep tiers as historical context, not the main current grading scheme.",
+      "detail": "A classic extension can qualify at B rather than being dismissed solely for using classic ABAP. A wrapper can still contain a C or D dependency.",
+      "pitfall": "Do not map tier 1 to A, tier 2 to B and tier 3 to C mechanically.",
+      "references": [
+        {
+          "title": "SAP Clean Core ATC levels and setup",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-08",
+      "level": "Advanced",
+      "question": "Does wrapping an unreleased SAP API make it Level A?",
+      "answer": "A released custom wrapper can provide a controlled interface to a consumer where the platform permits it. Its implementation still has the classification and upgrade risk of the underlying dependency. Evaluate both consumer contract and implementation chain, and retire the wrapper when an appropriate supported alternative exists.",
+      "detail": "A wrapper around a nominated classic API can retain a B implementation dependency even when the calling ABAP Cloud code sees a released custom contract.",
+      "pitfall": "A wrapper is not a mechanism for laundering an internal or prohibited dependency into an entirely Level A solution.",
+      "references": [
+        {
+          "title": "SAP Clean Core ATC levels and setup",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-09",
+      "level": "Core",
+      "question": "How do public private and on-premise editions change the answer?",
+      "answer": "Public-edition developer extensibility uses the supported ABAP Cloud model and released contracts. Private edition and on-premise support broader classic scenarios alongside ABAP Cloud, depending on release. The A-D model helps govern those existing dependencies; it does not unlock forbidden language or objects in a restricted environment.",
+      "detail": "Start an interview architecture answer by asking which edition and release are in scope. ABAP Cloud is available beyond public cloud and BTP, so location alone is not the development model.",
+      "pitfall": "Private cloud does not mean that every classic customization is recommended, and ABAP Cloud does not mean only BTP.",
+      "references": [
+        {
+          "title": "SAP Clean Core best practices",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        },
+        {
+          "title": "SAP ABAP Cloud FAQ",
+          "url": "https://pages.community.sap.com/topics/abap/abap-cloud-faq",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-10",
+      "level": "Core",
+      "question": "How do you choose key-user on-stack and side-by-side extensibility?",
+      "answer": "Choose key-user tools for supported business-context adaptations. Choose on-stack developer extensibility when close access to released data and transactional integration is required. Choose side-by-side for a more independent application lifecycle or cross-system process, using supported remote interfaces and explicit distributed consistency.",
+      "detail": "An additional field with a supported business context may fit key-user tools. A synchronous local validation may fit a released BAdI. A cross-system approval portal may fit BTP.",
+      "pitfall": "These are placement and development choices, not automatic A-D grades or fixed implementation times.",
+      "references": [
+        {
+          "title": "SAP Clean Core best practices",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-11",
+      "level": "Advanced",
+      "question": "Why is side-by-side not automatically Clean Core?",
+      "answer": "An external application still depends on its integration contracts. Unsupported table access, fragile endpoints or duplicated core business logic can retain upgrade and lifecycle risk even when the code runs on BTP. Decoupling also requires security, observability, versioning and consistency design.",
+      "detail": "A remote extension using a stable business API and idempotent events can evolve independently within that contract. It still needs regression tests when the API or business semantics change.",
+      "pitfall": "Moving custom code out of the ERP server does not erase coupling.",
+      "references": [
+        {
+          "title": "SAP Clean Core best practices",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-12",
+      "level": "Advanced",
+      "question": "What are release contracts C0 C1 and C2?",
+      "answer": "In the ABAP release-contract vocabulary, C0 concerns extension, C1 system-internal use and C2 remote use. Check release state, contract and use visibility for the exact object and scenario. A contract describes supported consumption; it does not replace business authorization or establish that every needed operation is available.",
+      "detail": "An object suitable for local ABAP consumption is not automatically a remote API. Conversely an HTTP API does not necessarily expose a released local ABAP implementation class.",
+      "pitfall": "A public class or an I_ CDS name is not proof of a released API contract.",
+      "references": [
+        {
+          "title": "SAP API release contracts",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis?locale=en-us",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-13",
+      "level": "Advanced",
+      "question": "How do you verify an API choice rather than guess?",
+      "answer": "Check official API discovery and documentation, the target repository's API state and release visibility, and SAP's applicable Cloudification Repository and technology guidance. Confirm the required operation and product version. Use ATC against maintained classification data to validate actual usage.",
+      "detail": "Verify a proposed write operation, not merely the existence of a similarly named read CDS view. Record the successor and any restrictions alongside the architecture decision.",
+      "pitfall": "A search result, object prefix or successful syntax check alone does not establish support for the intended usage.",
+      "references": [
+        {
+          "title": "SAP Clean Core best practices",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-14",
+      "level": "Advanced",
+      "question": "Can a solution using both A and B dependencies be called entirely A?",
+      "answer": "No. The lower-grade dependency matters when assessing the containing development and its upgrade risk. Preserve object-level findings and dependency context rather than averaging them away. An A-compliant consumer and a B wrapper are useful separate facts, but they do not remove the B dependency from the solution.",
+      "detail": "Report the distribution of findings and critical dependencies. Prioritize remediation by business impact, exposure and cost, not only the number of objects.",
+      "pitfall": "Percentages of Level A objects should not hide one critical D write path.",
+      "references": [
+        {
+          "title": "SAP Clean Core best practices",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-15",
+      "level": "Core",
+      "question": "What if no released API covers the business requirement?",
+      "answer": "Recheck standard functionality and supported extension points, confirm the target release, and evaluate another placement or process design. In a landscape allowing classic development, inspect designated classic APIs and govern any remaining internal dependency. Request a supported API through the appropriate SAP channel when needed.",
+      "detail": "Document the missing operation, alternatives rejected, risk owner and exit criteria. A temporary exception should have an explicit review point when a successor appears.",
+      "pitfall": "Do not immediately choose a modification, and do not assume public edition permits a classic workaround.",
+      "references": [
+        {
+          "title": "SAP Clean Core best practices",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-16",
+      "level": "Advanced",
+      "question": "What would your Clean Core governance pipeline contain?",
+      "answer": "Maintain a system-specific ATC variant with API-usage and enhancement-technology checks plus appropriate quality and security checks. Review findings, own exceptions with expiry or review conditions, and track remediation. Recheck against target-upgrade information and real regression tests. Automated checks support architecture judgment.",
+      "detail": "A transport policy may block selected priorities while allowing reviewed exceptions. Explain how exemptions are approved and revisited rather than silently suppressing all findings.",
+      "pitfall": "A priority number alone is not a complete technical-debt decision or a substitute for runtime tests.",
+      "references": [
+        {
+          "title": "SAP Clean Core ATC levels and setup",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-17",
+      "level": "Core",
+      "question": "Is Clean ABAP the same thing as Clean Core?",
+      "answer": "Clean ABAP concerns understandable and maintainable implementation: naming, responsibilities, interfaces, error handling and tests. Clean Core concerns extension boundaries, supported dependencies and lifecycle stability. They reinforce one another, but a beautifully written class can still modify SAP internals and create high upgrade risk.",
+      "detail": "Review a class twice: first its dependencies and extension mechanism, then its code quality and tests. Both dimensions belong in a strong interview example.",
+      "pitfall": "Refactoring variable names does not change the Clean Core level of an unsupported dependency.",
+      "references": [
+        {
+          "title": "SAP Clean Core best practices",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    },
+    {
+      "id": "CORE-18",
+      "level": "Advanced",
+      "question": "How would you modernize a large custom-code portfolio?",
+      "answer": "Start with usage and business value, retire genuinely unused code after validation, then classify dependencies and address the highest-risk active objects. Adopt supported APIs and suitable extension patterns incrementally. Measure regressions and upgrade effort, and avoid rebuilding every classic report solely for stylistic uniformity.",
+      "detail": "Select one important D dependency, establish baseline behavior, replace it behind a clear interface and verify the end-to-end process. Repeat with evidence rather than promising a universal automatic conversion.",
+      "pitfall": "RAP is not a mandatory replacement for every report, interface or classic application.",
+      "references": [
+        {
+          "title": "SAP Clean Core best practices",
+          "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487",
+          "note": "Verify actual dependency classification and target-edition restrictions."
+        }
+      ]
+    }
+  ]
+}

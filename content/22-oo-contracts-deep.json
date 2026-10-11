@@ -1,0 +1,366 @@
+{
+  "id": "22-oo-contracts-deep",
+  "title": "Practical OO: contracts, state, and substitutability",
+  "intro": "Work through these decisions after the OO fundamentals. The emphasis is on observable promises: valid state, compatible substitutes, honest failure, ownership, and useful tests. Design recommendations are applications of the cited language rules and SAP guidance, not claims that the compiler enforces a complete business contract.",
+  "sources": [
+    {
+      "title": "SAP Learning: Documenting ABAP code",
+      "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/documenting-abap-code_ad565c7e-6ac5-4a49-95e2-e4c33268dac6"
+    },
+    {
+      "title": "SAP Learning: Using interfaces",
+      "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/using-interfaces_e45af9bb-46e5-457b-88ef-d5ad6b0d38d7"
+    },
+    {
+      "title": "SAP Learning: Defining interfaces",
+      "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/defining-interfaces_ab3c7c07-bb66-424b-ba06-6cfa7cc39439"
+    },
+    {
+      "title": "SAP: Extending a subclass",
+      "url": "https://help.sap.com/saphelp_em900/helpdata/en/2f/8bbf7bbb4111d2958600a0c94260a5/content.htm?no_cache=true"
+    },
+    {
+      "title": "SAP: ABAP Doc class example and method uniqueness",
+      "url": "https://help.sap.com/docs/SAP_NETWEAVER_740/468a97775123488ab3345a0c48cadd8f/f6fba4c6e1cb49c7b355319ac9c8d1cd.html"
+    },
+    {
+      "title": "SAP: Friendship between classes",
+      "url": "https://help.sap.com/doc/abapdocu_751_index_htm/7.51/en-US/abenfriends.htm?from=20423&from_column=20423"
+    },
+    {
+      "title": "SAP: Initializations",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/initializations"
+    },
+    {
+      "title": "SAP Learning: Encapsulation and consistency",
+      "url": "https://learning.sap.com/courses/basic-abap-programming/using-encapsulation-to-ensure-consistency_e3780ce0-2ba3-4d03-a09f-15ac109b0c03"
+    },
+    {
+      "title": "SAP: CLASS-METHODS",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/class-methods"
+    },
+    {
+      "title": "SAP Learning: Working with exception classes",
+      "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/working-with-exception-classes_acd9568c-be4e-445a-a454-14c6f2cfcd2e"
+    },
+    {
+      "title": "SAP: Assignment rules for reference variables",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/assignment-rules-for-reference-variables"
+    },
+    {
+      "title": "SAP: Interfaces in ABAP Objects",
+      "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md#interfaces"
+    },
+    {
+      "title": "SAP: Adding test doubles",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/add-test-doubles"
+    }
+  ],
+  "questions": [
+    {
+      "id": "OODEEP-01",
+      "question": "A method named reserve returns a reservation ID. Which promises must be explicit beyond its parameter types?",
+      "answer": "I define accepted inputs, the observable success result, allowed state changes, and failure behavior. The caller needs to know whether the reservation is merely buffered or durable, whether repetition is safe, and who owns transaction completion. Those promises belong in the contract and its tests. A matching signature alone cannot tell another developer whether combining two operations is safe.",
+      "detail": "One implementation returns an ID before save; another commits immediately. Both compile against the same interface but are not interchangeable for a caller that reserves two items atomically. Document the intended boundary in ABAP Doc and test failure of the second item against the first one's state.",
+      "pitfall": "RETURNING an identifier does not itself promise committed persistence, and a method name cannot replace a transaction contract.",
+      "followups": [
+        "What state is allowed after reserve raises an exception?",
+        "What is the result when the same business request is retried?"
+      ],
+      "signals": [
+        "Defines success and failure state",
+        "States transaction ownership",
+        "Defines repeat-call semantics"
+      ],
+      "evidence": "Contract tests plus documentation covering buffered success, persistence boundary, and repeated requests.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP Learning: Documenting ABAP code",
+          "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/documenting-abap-code_ad565c7e-6ac5-4a49-95e2-e4c33268dac6",
+          "note": "ABAP Doc documents methods, parameters, and exceptions; the scenario applies this to behavioral contracts."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-02",
+      "question": "A new price-provider implementation rejects quantities below ten although the interface accepts any positive quantity. Is it a valid substitute?",
+      "answer": "No, if the published contract accepts every positive quantity, the new provider strengthens the precondition and breaks callers that validly request one unit. I either preserve the shared contract, expose the narrower capability separately, or change the contract through a managed migration. I compare outputs, errors, and side effects as well as input types when assessing substitutability.",
+      "detail": "A checkout calls the provider through an interface with quantity one and expects a quote. A subclass or implementation that raises an unsupported-quantity error for that valid input violates the agreed behavior even though activation succeeds. Run the same contract scenarios against each implementation.",
+      "pitfall": "Implementing an interface or passing a cast check proves type compatibility, not behavioral substitutability.",
+      "followups": [
+        "Can a substitute silently return a different currency?",
+        "Which common tests would run against every provider?"
+      ],
+      "signals": [
+        "Identifies strengthened precondition",
+        "Checks postconditions and side effects",
+        "Uses shared behavioral tests"
+      ],
+      "evidence": "A contract suite exercises minimum positive quantity, currency, failures, and repeat calls for both providers.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP Learning: Using interfaces",
+          "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/using-interfaces_e45af9bb-46e5-457b-88ef-d5ad6b0d38d7",
+          "note": "Interface references provide the common call surface for different implementations."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-03",
+      "question": "Two unrelated services share a capability and some validation code. Should their callers depend on an abstract superclass?",
+      "answer": "I separate the public capability from implementation reuse. An interface can express the capability without imposing a class hierarchy. Shared validation can be a collaborator. An abstract base class is justified when there is a stable specialization relationship and a useful shared lifecycle or template, not simply similar code. I also consider that a class has only one superclass.",
+      "detail": "A document exporter and a notification sender may both support cancellation but have unrelated lifecycles. A narrow cancellation interface lets a coordinator address either, while shared policy is composed where needed. For a genuine family of parsers with enforced shared steps, an abstract template may be appropriate.",
+      "pitfall": "An abstract superclass is not automatically a better contract because it can carry reusable implementation.",
+      "followups": [
+        "Which invariant would the superclass enforce?",
+        "How would the design accommodate a class already inheriting from a framework base?"
+      ],
+      "signals": [
+        "Separates contract from reuse",
+        "Tests the is-a relationship",
+        "Accounts for independent variation"
+      ],
+      "evidence": "A responsibility sketch shows the caller's minimal interface and the owner of shared validation.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP Learning: Defining interfaces",
+          "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/defining-interfaces_ab3c7c07-bb66-424b-ba06-6cfa7cc39439",
+          "note": "Interfaces support common capabilities across unrelated classes and restrict the client's view."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-04",
+      "question": "A subclass needs a different implementation and an extra mandatory input for an inherited method. Can REDEFINITION add it?",
+      "answer": "No. Redefinition replaces an eligible inherited instance method's implementation while preserving its interface. ABAP does not use same-name, different-signature method overloading to solve this. If the additional input changes the operation's contract, I introduce a distinct operation or a deliberate compatible contract evolution. The existing inherited operation must still satisfy callers using the base type.",
+      "detail": "A base method formats a document. A specialized format requires an extra profile: provide a separately named operation, or configure a validated collaborator before use if that fits the existing contract. Requiring callers to downcast merely to make the inherited method usable exposes a broken abstraction.",
+      "pitfall": "Redefinition is not method overloading, and optional parameters do not automatically make every behavioral change compatible.",
+      "followups": [
+        "How does a call through the base reference choose the implementation?",
+        "When would super->method be useful inside the redefinition?"
+      ],
+      "signals": [
+        "Preserves inherited signature",
+        "Distinguishes dispatch and overloading",
+        "Keeps base callers valid"
+      ],
+      "evidence": "A base-reference test exercises the redefined behavior without concrete-class knowledge.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP: Extending a subclass",
+          "url": "https://help.sap.com/saphelp_em900/helpdata/en/2f/8bbf7bbb4111d2958600a0c94260a5/content.htm?no_cache=true",
+          "note": "Redefinition preserves the inherited method signature and applies to eligible instance methods."
+        },
+        {
+          "title": "SAP: ABAP Doc class example and method uniqueness",
+          "url": "https://help.sap.com/docs/SAP_NETWEAVER_740/468a97775123488ab3345a0c48cadd8f/f6fba4c6e1cb49c7b355319ac9c8d1cd.html",
+          "note": "The ABAP Doc example explicitly distinguishes ABAP's lack of method overloading from JavaDoc."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-05",
+      "question": "A local test class needs access to private state. What does granting friendship expose, and what does it not imply?",
+      "answer": "Friendship grants access to the granting class's protected and private components. It is unilateral, so the reverse access is not automatic. A friend of a superclass is not automatically a friend of its subclasses; subclasses of a friend can also gain access. I keep the grant narrow and first ask whether the test can assert the public behavior instead.",
+      "detail": "A focused final local test class may need a legacy injection seam. Making every production attribute public is broader than necessary. Granting friendship to a widely implemented interface is also much broader than naming one final class, because implementations participate in the friendship relationship.",
+      "pitfall": "Do not summarize friendship as simply inherited or not inherited; the direction and which class is subclassed matter.",
+      "followups": [
+        "What happens if the friend itself has subclasses?",
+        "What refactoring becomes harder when tests inspect private representation?"
+      ],
+      "signals": [
+        "States unilateral access",
+        "Distinguishes the two inheritance directions",
+        "Limits test coupling"
+      ],
+      "evidence": "A visibility matrix names the granting class, its subclass, the friend, and the friend's subclass.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP: Friendship between classes",
+          "url": "https://help.sap.com/doc/abapdocu_751_index_htm/7.51/en-US/abenfriends.htm?from=20423&from_column=20423",
+          "note": "Friendship is unilateral; distinguishes friends' subclasses from subclasses of the granting class."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-06",
+      "question": "Two references point to one resource-owning object. Does clearing one reference close the resource or destroy the object?",
+      "answer": "Clearing one reference changes that variable to the null reference; another reference can still keep the object reachable. Memory reclamation by the garbage collector is distinct from business resource management. If a connection, registration, or lock needs timely release, I define an explicit ownership and release protocol and execute it on the relevant completion and failure paths.",
+      "detail": "A coordinator and cache both hold a reference to the same session object. Clearing the coordinator's reference leaves the cache entry usable. An explicit close can be appropriate for the owner, but then other holders need defined behavior after closure, and a borrowed resource must not be closed accidentally.",
+      "pitfall": "Reference clearing is not an object-level close operation and must not be used as a lock-release guarantee.",
+      "followups": [
+        "Who may close a shared or borrowed object?",
+        "What should a second close or a call after close do?"
+      ],
+      "signals": [
+        "Separates reachability and resource lifetime",
+        "Identifies owner versus borrower",
+        "Defines closed-state behavior"
+      ],
+      "evidence": "Tests cover multiple aliases, explicit close, repeated close, and use after closure.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP: Initializations",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/initializations",
+          "note": "Initializing a reference is distinct from the garbage collector deleting an unreachable object."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-07",
+      "question": "An object can be created with a missing repository and fails much later on its first business call. What would you change?",
+      "answer": "I make mandatory construction requirements explicit and establish a valid state before the object is usable. Constructor injection can require the repository, with a meaningful failure if the supplied reference is invalid. Complex or fallible setup can be coordinated by a factory. I avoid publishing a half-initialized object or making unrelated business operations depend on a hidden setup call.",
+      "detail": "An approval service requires a repository and a policy. A public zero-argument constructor followed by set_repository creates an invalid intermediate state. Validate the mandatory dependencies at creation; if opening an external session is a separate lifecycle step, expose and test that lifecycle explicitly rather than surprising every constructor caller.",
+      "pitfall": "Constructor injection does not validate an initial reference automatically, and heavy I/O is not required for good initialization.",
+      "followups": [
+        "When would a factory improve error handling over constructor work?",
+        "How do you prevent this object escaping before setup succeeds?"
+      ],
+      "signals": [
+        "Defines construction invariants",
+        "Rejects missing dependencies early",
+        "Separates setup from business work"
+      ],
+      "evidence": "Creation tests prove invalid dependencies fail immediately and valid instances need no undocumented setup call.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP Learning: Encapsulation and consistency",
+          "url": "https://learning.sap.com/courses/basic-abap-programming/using-encapsulation-to-ensure-consistency_e3780ce0-2ba3-4d03-a09f-15ac109b0c03",
+          "note": "Constructors establish initial state and can report construction failure."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-08",
+      "question": "A test passes alone but fails after another test changes CLASS-DATA. Why does NEW not reliably isolate it?",
+      "answer": "Creating another instance initializes that instance's state; it does not reset class-level mutable state. Static attributes persist within the relevant internal session and may be shared by every instance of that class there. I identify and remove unnecessary global state or provide an explicit, controlled test reset. Cache keys and invalidation must also reflect the real context.",
+      "detail": "One test loads a policy cache, then another expects changed customizing. Recreating the service leaves the static cache populated. An injected policy provider with test-owned lifetime can avoid this coupling; if caching is a genuine requirement, test refresh, invalidation, and relevant user or tenant context separately.",
+      "pitfall": "CLASS-DATA is not per instance, but it is also not a globally synchronized cache across application servers.",
+      "followups": [
+        "Does a class constructor rerun for every NEW?",
+        "Which context must appear in a security-sensitive cache key?"
+      ],
+      "signals": [
+        "Identifies static lifetime",
+        "Separates test isolation from construction",
+        "Defines cache scope and invalidation"
+      ],
+      "evidence": "The suite passes individually, together, and with varied order without stale shared state.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP: CLASS-METHODS",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/class-methods",
+          "note": "Static members and initialization have class semantics, separate from instance state."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-09",
+      "question": "A repository raises a low-level exception. Should a business service catch CX_ROOT and return an empty result?",
+      "answer": "Usually not: an empty result can turn technical failure into a false business fact. I catch failures at a boundary that can recover or translate them into the service's declared meaning. When wrapping an exception, I preserve the original through previous so diagnosis remains possible. Expected absence, business rejection, and technical failure need distinguishable outcomes.",
+      "detail": "A pricing repository connection failure must not look like 'no price exists' and trigger a free item. Translate the unavailable dependency into a meaningful service error while retaining its cause. Test not-found separately from unavailable, and ensure failure does not leave a misleading success result.",
+      "pitfall": "Broad catch-and-default handling is not resilience when it changes an unknown outcome into valid-looking data.",
+      "followups": [
+        "When is catching CX_ROOT justified at an application boundary?",
+        "What information belongs in user feedback versus technical diagnostics?"
+      ],
+      "signals": [
+        "Keeps absence distinct from failure",
+        "Translates at an abstraction boundary",
+        "Preserves causal exception"
+      ],
+      "evidence": "Tests assert distinct not-found and technical-failure paths, including the previous exception chain.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP Learning: Working with exception classes",
+          "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/working-with-exception-classes_acd9568c-be4e-445a-a454-14c6f2cfcd2e",
+          "note": "Exception propagation and previous preserve a technical cause during translation."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-10",
+      "question": "A getter returns a reference to a mutable internal collection. Has private visibility protected the object's invariants?",
+      "answer": "Private storage alone is insufficient if the getter hands out a reference that lets callers mutate the same data or object. I define whether the return value is a snapshot, a read capability, or intentionally shared mutable state. For an invariant-bearing aggregate, I prefer operations that validate changes and expose appropriate values rather than unrestricted aliases to internals.",
+      "detail": "A cart validates positive item quantities in add_item, but get_items returns a writable data reference to its actual table. A caller can then insert a negative quantity without calling add_item. Returning a table value removes that table alias; reference components inside its rows still require separate ownership decisions.",
+      "pitfall": "A copied reference is not a copied referent; changing the static view alone does not create immutable state.",
+      "followups": [
+        "Does returning a table value solve reference components inside its rows?",
+        "Which mutation should remain an operation of the owning object?"
+      ],
+      "signals": [
+        "Finds alias-based invariant bypass",
+        "Chooses explicit ownership semantics",
+        "Considers nested references"
+      ],
+      "evidence": "Attempted external mutation cannot bypass the owner's quantity rule or alter a promised snapshot.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP: Assignment rules for reference variables",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/assignment-rules-for-reference-variables",
+          "note": "Reference assignment preserves the same object; static views do not clone mutable state."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-11",
+      "question": "A widely used provider interface needs an optional new capability. How do you avoid forcing unrelated implementations into fake behavior?",
+      "answer": "I assess both callers and implementers before extending the contract. A separate capability interface may let interested clients request the new operation without requiring every existing provider to pretend it supports it. If the main interface must evolve, I define semantics, compatibility, and rollout deliberately. A no-op implementation is valid only when doing nothing genuinely satisfies the documented contract.",
+      "detail": "A price provider gains simulation support, but one external provider cannot simulate. Adding simulate everywhere and returning an empty success hides a capability gap. A simulation interface and explicit capability selection can keep pricing callers unchanged; tests verify unsupported capability handling at the composition boundary.",
+      "pitfall": "Adding a method is not automatically harmless merely because existing callers do not invoke it.",
+      "followups": [
+        "How will existing implementers activate after the interface change?",
+        "When would a separate version be clearer than optional capability discovery?"
+      ],
+      "signals": [
+        "Assesses caller and implementer impact",
+        "Avoids fake successful behavior",
+        "Defines migration and unsupported capability"
+      ],
+      "evidence": "An implementation inventory and compatibility tests cover old clients and providers without simulation.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP: Interfaces in ABAP Objects",
+          "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md#interfaces",
+          "note": "Interface components and implementation syntax underpin capability evolution."
+        }
+      ]
+    },
+    {
+      "id": "OODEEP-12",
+      "question": "An OO unit test mocks calculate_total and then asserts the mocked total. What behavior has it proved?",
+      "answer": "It has mainly proved the test configuration, not the calculation. I keep the behavior named as the code under test real and replace dependencies that make its inputs unpredictable, such as a price source or clock. Then I assert independently expected results and important failure behavior. A separate orchestration test may mock a calculator only when orchestration, rather than arithmetic, is its subject.",
+      "detail": "To test a discount calculation, provide controlled prices and exercise the real calculation at the threshold and around it. To test whether checkout requests a calculation before posting, the calculator can be a collaborator double. Naming the test's responsibility makes that difference explicit.",
+      "pitfall": "The same component can be a real subject in one test and a doubled dependency in another; coverage alone does not settle test quality.",
+      "followups": [
+        "Which defect should make this test fail?",
+        "What real integration evidence remains necessary after a double-based unit test?"
+      ],
+      "signals": [
+        "Names the actual tested responsibility",
+        "Doubles only dependencies",
+        "Uses independent assertions"
+      ],
+      "evidence": "A deliberately changed business rule makes its calculation test fail, while orchestration tests remain separately meaningful.",
+      "level": "Senior",
+      "references": [
+        {
+          "title": "SAP: Adding test doubles",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/add-test-doubles",
+          "note": "Doubles isolate dependencies; the application scenario distinguishes a dependency from the behavior being tested."
+        }
+      ]
+    }
+  ]
+}

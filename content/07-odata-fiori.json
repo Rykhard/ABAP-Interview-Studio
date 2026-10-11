@@ -1,0 +1,211 @@
+{
+  "id": "07-odata-fiori",
+  "title": "OData Gateway and Fiori integration",
+  "intro": "Separate the OData protocol from SAP implementation technologies. Practice explaining a request, its transaction boundary and the returned metadata or error. Keep legacy Gateway knowledge while choosing supported modern bindings for new services.",
+  "sources": [
+    {
+      "title": "SAP Learning on OData",
+      "url": "https://learning.sap.com/courses/building-odata-services-with-sap-gateway/explaining-open-data-protocol-odata-"
+    },
+    {
+      "title": "SAP Learning on UI service bindings",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-an-odata-ui-service"
+    },
+    {
+      "title": "OASIS OData V4 protocol",
+      "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
+    }
+  ],
+  "questions": [
+    {
+      "id": "ODATA-01",
+      "level": "Core",
+      "question": "When would you choose OData V4 rather than V2?",
+      "answer": "Prefer V4 for new supported transactional RAP services, while checking the actual Fiori elements or integration consumer and backend release. Keep V2 where required by an existing contract or consumer. V4 has first-class actions and functions and different protocol details; it is not simply a faster V2 switch.",
+      "detail": "Draft, determinations and validations are RAP capabilities rather than exclusive V4 features. Verify draft and non-draft support for the specific UI template and SAPUI5 version.",
+      "pitfall": "Neither RAP nor draft automatically implies that V2 is impossible; Gateway is not exclusively V2.",
+      "references": [
+        {
+          "title": "SAP Learning on OData",
+          "url": "https://learning.sap.com/courses/building-odata-services-with-sap-gateway/explaining-open-data-protocol-odata-",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        },
+        {
+          "title": "SAP Learning on UI service bindings",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-an-odata-ui-service",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-02",
+      "level": "Core",
+      "question": "What does $metadata describe?",
+      "answer": "It describes the service contract: entity types, properties, keys, relationships, operations and relevant annotations. Clients use it to understand types and available operations. Metadata is separate from instance data, and the actual endpoint must be checked after model or binding changes.",
+      "detail": "A missing action button may result from an unexposed projection action, missing metadata or UI support. Inspect the contract before debugging the handler implementation.",
+      "pitfall": "A database field is not automatically visible in the service just because it exists in persistence.",
+      "references": [
+        {
+          "title": "OASIS OData V4 protocol",
+          "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-03",
+      "level": "Core",
+      "question": "What are the main query options?",
+      "answer": "$select restricts properties, $filter restricts rows, $orderby sorts, $top and $skip page, and $expand includes related entities. Count and search syntax and support differ by protocol and service. A provider must apply options consistently and avoid returning unnecessarily large payloads.",
+      "detail": "Request a small field set, a selective filter and a stable key-based order. Use free-text $search only where the service exposes and implements that capability.",
+      "pitfall": "The existence of an OData option in the standard does not guarantee that every SAP service implements it.",
+      "references": [
+        {
+          "title": "OASIS OData V4 protocol",
+          "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-04",
+      "level": "Advanced",
+      "question": "How do paging and total count work in V2 and V4?",
+      "answer": "Apply filtering before count and paging, and ensure a stable order. V2 commonly uses $inlinecount=allpages, while V4 uses $count=true for an inline total; the /$count resource returns a count. Server-driven paging can return a next link that clients should follow.",
+      "detail": "A total of 500 with a page of 20 is valid. Returning 20 as the total because only 20 rows were fetched breaks page navigation. Concurrent changes may still affect offset-based paging.",
+      "pitfall": "Do not invent one generic SET_COUNT method for every Gateway implementation; use the actual response contract.",
+      "references": [
+        {
+          "title": "OASIS OData V4 protocol",
+          "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-05",
+      "level": "Core",
+      "question": "What is the difference between actions and functions?",
+      "answer": "In V4 a function is side-effect-free in the protocol sense and is used for retrieval or calculation. An action may have side effects and is invoked with POST. Operations can be bound to an entity or collection or be unbound. V2 exposes operation patterns through function imports.",
+      "detail": "Get a calculated preview through a function when the supported service contract fits. Submit a request with an action that checks the business transition.",
+      "pitfall": "An HTTP GET should not create or approve business documents.",
+      "references": [
+        {
+          "title": "OASIS OData V4 protocol",
+          "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-06",
+      "level": "Core",
+      "question": "How do ETags prevent lost updates?",
+      "answer": "A service returns a version token. The client supplies If-Match with a modifying request, and the service checks whether the current version matches. A stale token normally produces HTTP 412. The client should reload or resolve the conflict instead of silently overwriting newer changes.",
+      "detail": "Test with two clients reading the same version, then updating sequentially. In RAP, configure the relevant ETag fields and update semantics correctly.",
+      "pitfall": "If-Match with a wildcard can defeat the intended stale-version protection; timestamps alone do not secure authorization.",
+      "references": [
+        {
+          "title": "OASIS OData V4 protocol",
+          "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-07",
+      "level": "Advanced",
+      "question": "Is a batch request one database transaction?",
+      "answer": "Not necessarily. A batch groups HTTP operations; it is not automatically one atomic transaction. Multipart batch formats use changesets for atomic change operations. OData 4.01 JSON batch uses atomicity groups. These mechanisms depend on protocol version and provider support; read operations and separate groups can have different outcomes. Deep create describes creating a related structure and requires backend support for a coherent transaction.",
+      "detail": "For an order and items, test a failing child and verify that the intended atomic group does not partially persist. Inspect each inner response even when the outer batch request succeeds. Check the service's protocol version and provider capabilities; a V4 endpoint does not automatically support every V4.01 batching feature.",
+      "pitfall": "HTTP 200 for a batch does not mean every operation inside it succeeded.",
+      "references": [
+        {
+          "title": "OASIS OData V4 protocol",
+          "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        },
+        {
+          "title": "OASIS OData 4.01 JSON Format: Batch Requests",
+          "url": "https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html",
+          "note": "See JSON batch atomicityGroup semantics. Verify that the SAP provider supports this protocol version and batch format."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-08",
+      "level": "Core",
+      "question": "What are MPC_EXT and DPC_EXT in classic Gateway?",
+      "answer": "The model-provider extension class extends the service model and metadata. The data-provider extension class implements or redefines runtime data operations and business error handling. Generated base classes should not host customer changes. This is a classic Gateway development approach, distinct from RAP behavior implementation.",
+      "detail": "In a SEGW service, trace GET_ENTITYSET for collection retrieval and CREATE_ENTITY or a deep-create implementation for writes. Keep reusable domain logic outside the provider adapter where feasible.",
+      "pitfall": "Putting every rule directly in DPC_EXT makes testing and reuse harder; MPC_EXT is not intrinsically unimportant.",
+      "references": [
+        {
+          "title": "SAP Learning on OData",
+          "url": "https://learning.sap.com/courses/building-odata-services-with-sap-gateway/explaining-open-data-protocol-odata-",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-09",
+      "level": "Core",
+      "question": "How do authentication authorization and CSRF differ?",
+      "answer": "Authentication establishes the caller. Authorization controls what that caller may access or change. CSRF protection mitigates unwanted requests using a user's browser session. SAP Gateway write flows commonly require a fetched CSRF token and matching session context; exact requirements depend on the endpoint and authentication flow.",
+      "detail": "For a 403, inspect whether the failure is a missing token, service permission or business authorization. Never fix it by indiscriminately removing checks.",
+      "pitfall": "CSRF is not a universal OData-standard requirement and a valid token does not grant business permission.",
+      "references": [
+        {
+          "title": "SAP Learning on OData",
+          "url": "https://learning.sap.com/courses/building-odata-services-with-sap-gateway/explaining-open-data-protocol-odata-",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-10",
+      "level": "Advanced",
+      "question": "How do you design dates media and errors?",
+      "answer": "Preserve the service's protocol-specific date and timestamp types and timezone meaning. Media streams require the appropriate binary endpoints, content type and content handling. Errors need suitable HTTP status, stable codes and useful messages without exposing internals. Classic Gateway and RAP use different implementation contracts.",
+      "detail": "Use a date for a date-only business value and a timezone-aware instant for a recorded event. In Gateway use its exception and message-container APIs; in RAP use FAILED and REPORTED appropriately.",
+      "pitfall": "Edm.Date is a V4 type; do not assume identical date serialization in V2.",
+      "references": [
+        {
+          "title": "OASIS OData V4 protocol",
+          "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-11",
+      "level": "Advanced",
+      "question": "How do you troubleshoot a slow or failing Fiori request?",
+      "answer": "Capture the failing network request and response, user, timestamp and correlation information. Check service metadata and relevant Gateway or application logs, then trace SQL and ABAP work in an authorized test context. Separate UI rendering, network payload, backend processing and authorization failures.",
+      "detail": "A huge $expand can dominate response time even if each SQL statement is fast. Measure request duration, row counts and payload size before changing the model.",
+      "pitfall": "A working ADT preview does not prove a deployed app's routing, identity, metadata cache and backend authorization are correct.",
+      "references": [
+        {
+          "title": "SAP Learning on OData",
+          "url": "https://learning.sap.com/courses/building-odata-services-with-sap-gateway/explaining-open-data-protocol-odata-",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    },
+    {
+      "id": "ODATA-12",
+      "level": "Advanced",
+      "question": "How do you evolve an existing API safely?",
+      "answer": "Treat keys, names, types, operation semantics and error behavior as consumer contracts. Prefer compatible additions where consumers tolerate them, and version breaking changes. Test old consumers and publish a transition plan. A parallel RAP service may coexist with a legacy Gateway service during modernization.",
+      "detail": "Renaming a field or changing a key can break saved UI state and integrations. Inventory consumers and retire the old contract only after migration evidence.",
+      "pitfall": "Building a new RAP service does not automatically migrate an existing V2 client or preserve its semantics.",
+      "references": [
+        {
+          "title": "SAP Learning on UI service bindings",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-an-odata-ui-service",
+          "note": "Check protocol version and SAP provider support; the protocol specification does not guarantee implementation support."
+        }
+      ]
+    }
+  ]
+}

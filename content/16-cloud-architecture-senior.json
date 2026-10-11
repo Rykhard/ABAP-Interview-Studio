@@ -1,0 +1,501 @@
+{
+  "id": "16-cloud-architecture-senior",
+  "title": "Senior ABAP Cloud architecture decisions",
+  "intro": "Treat each question as a design review: state the business invariant, choose a boundary, explain the rejected alternative, and name the evidence that would validate the decision. ABAP Cloud is the main development model here; deployment, API scope, and operational constraints still differ across SAP products. These scenarios demand decisions and verification rather than memorized framework definitions.",
+  "sources": [
+    {
+      "title": "SAP ABAP Cloud development model",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-cloud-background-concepts-and-overview/abap-cloud-development-model"
+    },
+    {
+      "title": "SAP extensibility approaches and target environments",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-cloud/extensibility"
+    },
+    {
+      "title": "SAP extension architecture guidance",
+      "url": "https://help.sap.com/docs/sap-btp-guidance-framework/extension-architecture-guide/getting-started-with-extensibility"
+    },
+    {
+      "title": "SAP released APIs, contracts, visibility, and states",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis"
+    },
+    {
+      "title": "SAP software component dependencies and API snapshots",
+      "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/software-component-dependencies"
+    },
+    {
+      "title": "SAP software component organization and lifecycle boundaries",
+      "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/software-components"
+    },
+    {
+      "title": "SAP communication arrangements and scenarios",
+      "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/communication-arrangements"
+    },
+    {
+      "title": "SAP ABAP development and multitenancy guidance",
+      "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/abap-development"
+    }
+  ],
+  "questions": [
+    {
+      "id": "CLOUD-01",
+      "question": "A new approval extension needs immediate document validation and an external supplier portal. Would you put everything on-stack or on BTP?",
+      "answer": "I would split only where the business and transaction boundaries justify it. Validation that must reject the core document belongs at a supported on-stack extension point when available. The supplier portal may fit side-by-side because its users, scaling, and release lifecycle differ. I would define released remote contracts and tolerate explicit asynchronous states between the two. The decision depends on available APIs, latency, identity, operational ownership, and failure recovery, not a blanket preference for BTP.",
+      "detail": "If the portal calls a remote service during the core save, a supplier-network outage could block all internal posting. Separating a committed submission from later supplier interaction avoids that coupling, but requires visible pending and failed states, retry correlation, and a business rule for withdrawal after submission.",
+      "pitfall": "Deploying side-by-side does not make synchronous cross-system validation atomic or automatically clean-core compliant.",
+      "level": "Senior",
+      "followups": [
+        "Which invariant must be enforced before the core commit?",
+        "How does the user recover when the portal accepts a request but the core is unavailable?"
+      ],
+      "signals": [
+        "Separates business and runtime boundaries",
+        "Names latency and lifecycle tradeoffs",
+        "Defines partial-failure recovery"
+      ],
+      "evidence": "An architecture decision record, target API availability checks, and a failure-sequence test showing pending, retry, and withdrawal outcomes.",
+      "references": [
+        {
+          "title": "SAP extension architecture guidance",
+          "url": "https://help.sap.com/docs/sap-btp-guidance-framework/extension-architecture-guide/getting-started-with-extensibility",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-02",
+      "question": "A stakeholder says ABAP Cloud means moving the existing application to SAP BTP ABAP environment. How would you correct the proposal?",
+      "answer": "I would separate the development model from the runtime. ABAP Cloud combines restricted language versions, released dependencies, modern tooling, and programming models such as RAP; it is available in supported S/4HANA environments as well as SAP BTP ABAP environment. Moving code to BTP changes data locality, connectivity, operations, and available business APIs. I would first identify the required product capabilities and choose deployment deliberately, then assess the application's compatibility with that environment.",
+      "detail": "A class that reads local sales data in an S/4HANA system cannot assume the same application tables or local APIs exist in a BTP ABAP system. A remote service, data replication, or a different ownership model may be necessary even if the ABAP language syntax is valid.",
+      "pitfall": "Cloud-compatible syntax does not establish identical application content, API availability, or deployment portability.",
+      "level": "Senior",
+      "followups": [
+        "Which dependencies become remote after the move?",
+        "What target-system evidence would you require before estimating migration?"
+      ],
+      "signals": [
+        "Distinguishes model from runtime",
+        "Identifies lost data locality",
+        "Checks product-specific capabilities"
+      ],
+      "evidence": "A target capability matrix mapping each dependency to its supported local or remote equivalent and a tested integration spike.",
+      "references": [
+        {
+          "title": "SAP ABAP Cloud development model",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-cloud-background-concepts-and-overview/abap-cloud-development-model",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-03",
+      "question": "A developer proposes dynamic calls to an unreleased SAP class because static ABAP Cloud checks reject it. What do you do?",
+      "answer": "I would reject bypassing the development contract and investigate the actual capability gap. First confirm the object's release status, visibility, and a suitable released alternative on the target version. Then reconsider standard functionality, another extension point, or a supported remote API. If a private-edition classic boundary is genuinely needed, isolate and govern it explicitly. Dynamic invocation must not disguise a prohibited dependency or be presented as equivalent to a released interface.",
+      "detail": "A dynamic call can fail after an upgrade even when a superficial static scan no longer identifies the dependency. It may also be rejected by the language or runtime. The useful prototype is a supported replacement path with representative inputs, not a demonstration that one forbidden call happened to work once.",
+      "pitfall": "An ATC suppression or dynamic name does not create a supported API contract.",
+      "level": "Senior",
+      "followups": [
+        "What options remain in Public Edition when no released extension exists?",
+        "How would you track an API gap without blocking unrelated delivery?"
+      ],
+      "signals": [
+        "Rejects hidden dependency bypass",
+        "Verifies target-specific alternatives",
+        "Separates private-edition exceptions from public-cloud rules"
+      ],
+      "evidence": "ADT API-state evidence, a documented capability gap, and a decision record showing supported alternatives and any approved bounded exception.",
+      "references": [
+        {
+          "title": "SAP released APIs, contracts, visibility, and states",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-04",
+      "question": "Two teams want independent releases but share pricing helpers and persistence types. How would you structure packages and software components?",
+      "answer": "I would identify which shared capabilities can carry a stable contract and which require coordinated releases. Packages organize implementation and access boundaries; software components also define lifecycle and delivery dependencies. A stable pricing interface can belong to a reuse component, while private persistence types should remain with their owner. Where supported, component relations permit targeted internal access, but they are not a substitute for a compatibility commitment. I would avoid cycles and make import order explicit.",
+      "detail": "If both teams depend on each other's database row types, an allegedly independent release may require simultaneous activation everywhere. Replacing those types with a narrow request/result contract reduces coupling. If the contract is not stable yet, a coordinated release may be more honest than promising independence through extra components.",
+      "pitfall": "More software components do not create independent lifecycles when their dependencies still require lockstep delivery.",
+      "level": "Senior",
+      "followups": [
+        "When would you choose a component relation instead of a C1 API?",
+        "How would an incompatible dependency removal be detected?"
+      ],
+      "signals": [
+        "Models dependency direction",
+        "Distinguishes access permission from stability",
+        "Aligns boundaries with delivery reality"
+      ],
+      "evidence": "A dependency graph without cycles, explicit component relations, a transport/import sequence, and compatibility checks against the prior delivered API snapshot.",
+      "references": [
+        {
+          "title": "SAP software component dependencies and API snapshots",
+          "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/software-component-dependencies",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        },
+        {
+          "title": "SAP software component organization and lifecycle boundaries",
+          "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/software-components",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-05",
+      "question": "The same business capability is exposed through a local released API and a remote service. Which should an on-stack application consume?",
+      "answer": "I would compare the actual contracts rather than select by familiarity. A suitable local API can avoid network overhead and may participate in the supported local transaction model. A remote service provides a separate integration boundary, identity, and lifecycle, but introduces latency and independent failure semantics. Local and remote variants may expose different operations or consistency guarantees. I would choose the one whose authorization, transaction, availability, and release contract fits the caller.",
+      "detail": "Calling the system's own HTTP endpoint from inside a save routine can create another session, lock contention, and confusing commit behavior. Conversely, a local read API does not replace a remote business command simply because both mention the same business object. Compare operation semantics and test concurrent access.",
+      "pitfall": "C1 local consumption and C2 remote consumption are different purposes; one release contract does not authorize the other.",
+      "level": "Senior",
+      "followups": [
+        "Can the chosen local command participate in this RAP save phase?",
+        "What changes if the consumer moves to BTP next year?"
+      ],
+      "signals": [
+        "Compares full contracts",
+        "Recognizes self-call transaction risks",
+        "Plans a replaceable consumption boundary"
+      ],
+      "evidence": "Documented local and remote API contracts plus a transaction and authorization test for the chosen consumption path.",
+      "references": [
+        {
+          "title": "SAP released APIs, contracts, visibility, and states",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-06",
+      "question": "A CDS object compiles in the development system but fails after delivery to an older supported release. How would you prevent recurrence?",
+      "answer": "I would establish a supported product and release matrix before choosing provider contracts, CDS features, binding types, and APIs. Compilation on one system proves only that configuration. I would separate broadly supported domain contracts from newer delivery features where feasible and test the lowest supported target. API release visibility and language restrictions must be checked alongside syntax. Unsupported features require a compatible design, an explicit support-floor change, or a separately maintained variant.",
+      "detail": "A projection provider contract or service binding available in one release can be absent in another. Copying an example from current documentation may therefore fail during activation rather than at runtime. A compatibility spike should include dependent CDS, behavior, service artifacts, and a representative request, not just one class.",
+      "pitfall": "An object being active in development does not prove compatibility with every product edition or supported transport target.",
+      "level": "Senior",
+      "followups": [
+        "Where would you document the minimum feature level?",
+        "Which differences justify a versioned implementation rather than a shared code path?"
+      ],
+      "signals": [
+        "Sets a concrete support matrix",
+        "Tests the lowest supported release",
+        "Includes dependent repository artifacts"
+      ],
+      "evidence": "A versioned compatibility matrix, target activation evidence, and service tests tied to the exact supported release and delivery revision.",
+      "references": [
+        {
+          "title": "SAP ABAP Cloud development model",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-cloud-background-concepts-and-overview/abap-cloud-development-model",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        },
+        {
+          "title": "SAP released APIs, contracts, visibility, and states",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-07",
+      "question": "Should a request, its approval history, and an external purchase order be one RAP business object?",
+      "answer": "I would choose the business-object boundary around invariants, ownership, lifecycle, and transactional consistency, not screen layout. Request items that cannot exist independently may belong in its composition tree. Approval history may have separate retention and immutability requirements. An external purchase order has another owner and transaction boundary, so I would normally reference it through a supported contract. Cross-boundary consistency becomes an explicit workflow or reconciliation concern rather than a fictional shared database transaction.",
+      "detail": "Deleting a request should not accidentally delete legally relevant approval evidence or attempt to cascade into another system. Conversely, splitting tightly coupled request lines into unrelated objects can make total validation and locking unnecessarily difficult. Model allowed transitions and failure states before drawing the CDS composition hierarchy.",
+      "pitfall": "A composition relationship is not a convenient visual grouping and cannot provide atomicity across an external system.",
+      "level": "Senior",
+      "followups": [
+        "Which invariant requires one commit?",
+        "How do retention and cancellation rules change your composition tree?"
+      ],
+      "signals": [
+        "Starts from business invariants",
+        "Distinguishes ownership and retention",
+        "Designs cross-boundary consistency"
+      ],
+      "evidence": "An invariant table, lifecycle/state model, composition rationale, and tests for deletion, cancellation, and remote-posting failure.",
+      "references": [
+        {
+          "title": "SAP extension architecture guidance",
+          "url": "https://help.sap.com/docs/sap-btp-guidance-framework/extension-architecture-guide/getting-started-with-extensibility",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-08",
+      "question": "A partner wants one ABAP solution to serve several customers. What isolation questions must be answered before calling it multitenant?",
+      "answer": "I would verify the target runtime's supported multitenancy model and treat tenant identity as a security boundary throughout persistence, configuration, caching, jobs, logs, and integration destinations. Ordinary client handling is only part of that analysis and does not prove SaaS isolation. Provider operations and customer access need separate responsibilities. I would design onboarding, upgrades, offboarding, and data deletion explicitly, then require negative tests showing that one tenant cannot observe or influence another.",
+      "detail": "A static cache keyed only by document number can leak a result if different tenants use the same number and the runtime scope permits reuse. An outbound destination selected from the wrong tenant context can expose payloads even when database queries are correctly scoped. Isolation testing must cover both paths.",
+      "pitfall": "Adding a tenant field or relying on automatic client filtering alone does not establish complete multitenancy isolation.",
+      "level": "Senior",
+      "followups": [
+        "Which caches or jobs outlive one request?",
+        "How do you prove offboarding removes access without damaging another tenant?"
+      ],
+      "signals": [
+        "Covers non-database isolation paths",
+        "Uses supported tenant context",
+        "Includes tenant lifecycle operations"
+      ],
+      "evidence": "A tenant-boundary threat model, two-tenant negative integration tests, and an onboarding/offboarding runbook validated in the target runtime.",
+      "references": [
+        {
+          "title": "SAP ABAP development and multitenancy guidance",
+          "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/abap-development",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-09",
+      "question": "A business team requests a new field, a rule, and a custom app. How do you decide between configuration, key-user, and developer extensibility?",
+      "answer": "I would decompose the request by purpose and first check standard configuration and delivered extensibility. A supported custom-field scenario may already propagate the field through relevant services and UIs. A small rule can fit key-user logic when its execution context and limits match. A custom transactional application may need developer extensibility. I would keep ownership, transport, validation, and field semantics consistent across these mechanisms rather than rebuild everything in code for convenience.",
+      "detail": "A developer-added field in a custom table may not appear in standard forms or analytics, while a supported key-user field can provide those publication paths. Conversely, putting complex orchestration into a limited key-user hook can create unsupported coupling. Verify the exact business context and downstream propagation requirements.",
+      "pitfall": "Key-user extensibility is not inherently less serious engineering, and developer extensibility is not a reason to duplicate standard configuration.",
+      "level": "Senior",
+      "followups": [
+        "Who owns a rule that business users can change?",
+        "How will the field reach the required integration and output artifacts?"
+      ],
+      "signals": [
+        "Performs fit-to-standard decomposition",
+        "Checks propagation and hook limits",
+        "Assigns lifecycle ownership"
+      ],
+      "evidence": "A requirement-to-extension matrix and a target-system demonstration of field propagation, rule authorization, and transport behavior.",
+      "references": [
+        {
+          "title": "SAP extensibility approaches and target environments",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-cloud/extensibility",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-10",
+      "question": "Can you expose the same RAP projection to a Fiori UI and long-lived external consumers?",
+      "answer": "I would reuse the business model where appropriate but avoid coupling an external contract to every UI change. UI consumers may need draft, feature control, presentation annotations, and navigation optimized for interaction. External consumers need stable operation semantics, versioning, paging, idempotency, and communication setup. Separate projections or service contracts can protect those needs. I would confirm which protocol and binding capabilities are supported, then test both consumers against the shared business invariants.",
+      "detail": "A UI team renaming a property or narrowing visible fields could break a nightly integration if both share one uncontrolled service contract. A draft-oriented workflow may also be unsuitable for an external command that expects immediate final posting. Share policy implementation while making each consumer's lifecycle explicit.",
+      "pitfall": "An OData endpoint generated for a UI is not automatically a released, durable integration contract for external systems.",
+      "level": "Senior",
+      "followups": [
+        "Which behavior should be shared and which should be projected differently?",
+        "How would you introduce a breaking external-contract change?"
+      ],
+      "signals": [
+        "Separates consumer contracts",
+        "Preserves shared business rules",
+        "Addresses external API lifecycle"
+      ],
+      "evidence": "Service metadata baselines, UI and integration contract tests, and documented compatibility and deprecation rules.",
+      "references": [
+        {
+          "title": "SAP released APIs, contracts, visibility, and states",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-11",
+      "question": "A released CDS view contains all required fields. Why might it still be unsuitable for implementing a business command?",
+      "answer": "A read model exposes data, not necessarily the business operation that may change it. I would find the released transactional contract and its authorization, locking, validation, and save semantics. Query reuse can support decisions or presentation, but direct writes to underlying persistence bypass ownership. If no command API exists, I would revisit the process or extension design and raise a capability gap rather than infer write permission from a useful read view.",
+      "detail": "Reading a purchase order status does not authorize updating its database field to simulate release. That shortcut can omit change documents, outputs, follow-on checks, and dependent state. A valid prototype must execute the supported command and observe its complete outcome, including rejection paths and concurrency behavior.",
+      "pitfall": "A released read API does not release its underlying tables for mutation or guarantee that its fields form a write contract.",
+      "level": "Senior",
+      "followups": [
+        "How would you handle a query result that becomes stale before the command?",
+        "What evidence distinguishes a supported command from a database shortcut?"
+      ],
+      "signals": [
+        "Separates query and command semantics",
+        "Preserves provider ownership",
+        "Handles stale reads and concurrency"
+      ],
+      "evidence": "The command API's release and behavior documentation, plus concurrent-change and validation-failure tests.",
+      "references": [
+        {
+          "title": "SAP released APIs, contracts, visibility, and states",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-12",
+      "question": "A large classic application cannot be replaced in one release. How would you introduce ABAP Cloud without creating two inconsistent applications?",
+      "answer": "I would identify a bounded capability that can move behind a supported contract while retaining one authoritative owner for each business state. A phased transition needs routing, compatibility, shared identifiers, and reconciliation between old and new paths. In a suitable private-edition environment, a deliberately governed classic boundary may support coexistence. I would avoid uncontrolled dual writes and define measurable retirement criteria so the temporary bridge does not become an unowned permanent platform.",
+      "detail": "If the old report and new RAP app both update the same business object through different rules, users can create inconsistent states. A safer first slice may reuse the existing approved posting owner while replacing a query or interaction path. The cutover needs a reversible routing decision and verified reconciliation.",
+      "pitfall": "Using RAP for the new UI does not by itself modernize or validate the legacy posting transaction behind it.",
+      "level": "Senior",
+      "followups": [
+        "Which system owns writes during each transition phase?",
+        "What objective condition lets you remove the bridge?"
+      ],
+      "signals": [
+        "Defines one authoritative writer",
+        "Plans coexistence and cutover",
+        "Sets retirement criteria"
+      ],
+      "evidence": "A phased ownership map, routing and rollback plan, reconciliation results, and an explicit bridge-removal milestone.",
+      "references": [
+        {
+          "title": "SAP extension architecture guidance",
+          "url": "https://help.sap.com/docs/sap-btp-guidance-framework/extension-architecture-guide/getting-started-with-extensibility",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-13",
+      "question": "A shared custom API is widely used but has no named owner. What would you change before accepting another dependency on it?",
+      "answer": "I would establish ownership of its semantics, compatibility, security, operations, and support window. A technically accessible object without those responsibilities is not a reliable platform contract. I would identify existing consumers, capture current behavior, and agree the release or component-access mechanism that fits its maturity. New consumers should receive documented limits and a change-notification path. If nobody can sustain the contract, I would avoid presenting it as independently reusable infrastructure.",
+      "detail": "A helper that silently changes rounding can break several applications without changing its ABAP signature. Ownership must therefore cover business behavior as well as activation compatibility. Existing consumers need regression examples for amounts, units, exceptions, and transaction assumptions before the API is advertised more broadly.",
+      "pitfall": "Public visibility or a C1 release flag does not replace accountable ownership and semantic compatibility testing.",
+      "level": "Senior",
+      "followups": [
+        "Who approves a behavioral change without a signature change?",
+        "How do you discover consumers outside the local where-used list?"
+      ],
+      "signals": [
+        "Assigns contractual ownership",
+        "Includes semantic compatibility",
+        "Inventories actual consumers"
+      ],
+      "evidence": "An API owner record, consumer inventory, support policy, and executable consumer-contract examples tied to a released baseline.",
+      "references": [
+        {
+          "title": "SAP released APIs, contracts, visibility, and states",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-14",
+      "question": "A released BAdI exists, but it runs after the point where the requirement must reject a transaction. Is it still the right extension?",
+      "answer": "Not necessarily. Release status establishes a supported extension contract, but functional suitability depends on execution timing, available data, allowed changes, and error handling. I would map the requirement to the actual transaction phases and verify whether that hook can enforce the invariant. If it cannot, I would find another supported extension or revise the process. I would not hide an early validation requirement inside a late callback that can only report or trigger follow-up work.",
+      "detail": "A post-save notification hook cannot reliably prevent a committed document merely by raising a message. A late reversal is a different business process with its own audit and downstream effects. Test the hook's behavior under invalid input, rollback, and update failure rather than infer it from the method name.",
+      "pitfall": "A released extension point can still be the wrong place for a particular business rule.",
+      "level": "Senior",
+      "followups": [
+        "What data and modifications does the BAdI contract actually permit?",
+        "Would compensating after save meet the same business requirement?"
+      ],
+      "signals": [
+        "Checks hook timing and permissions",
+        "Distinguishes prevention from compensation",
+        "Validates behavior with failures"
+      ],
+      "evidence": "A transaction-phase map, the extension-point contract, and a target-system test proving when rejection or follow-up occurs.",
+      "references": [
+        {
+          "title": "SAP extensibility approaches and target environments",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-cloud/extensibility",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-15",
+      "question": "Your domain classes depend on Gateway messages, SQL row types, and HTTP clients. How would you improve the architecture without a wholesale rewrite?",
+      "answer": "I would isolate one meaningful business decision behind a typed application contract and move transport-specific mapping to adapters. Domain logic should receive the information it needs and return business outcomes, while persistence and communication remain replaceable collaborators. I would preserve transaction ownership and existing callers during extraction. The goal is not a class per framework artifact; it is a boundary that allows policy tests and infrastructure changes without rediscovering the same business rules.",
+      "detail": "An eligibility calculation can accept a stable request and policy data rather than an HTTP request object. Its result can then be translated to RAP messages or an integration response at the boundary. Characterization tests protect existing rounding and failure behavior while database and protocol dependencies are incrementally removed.",
+      "pitfall": "Wrapping every framework call in another class adds layers without isolating business policy if framework types still dominate the contract.",
+      "level": "Senior",
+      "followups": [
+        "Which extraction has the lowest transaction risk?",
+        "What should remain in the RAP behavior implementation?"
+      ],
+      "signals": [
+        "Extracts a coherent business responsibility",
+        "Preserves external and transaction contracts",
+        "Uses observable regression tests"
+      ],
+      "evidence": "A bounded before/after dependency map and passing business-policy tests plus unchanged integration acceptance results.",
+      "references": [
+        {
+          "title": "SAP extension architecture guidance",
+          "url": "https://help.sap.com/docs/sap-btp-guidance-framework/extension-architecture-guide/getting-started-with-extensibility",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-16",
+      "question": "A side-by-side service needs to act for users and also run scheduled reconciliation. Would you use one technical identity for both?",
+      "answer": "I would distinguish interactive delegation from machine-to-machine processing and define the business authorization required for each. The supported communication scenario determines available services and authentication methods; arrangements and identities must be configured accordingly. A broad technical identity can hide the initiating user and over-authorize actions. I would make audit attribution, credential rotation, tenant selection, and job permissions explicit, using separate identities or scopes when the contracts and operational model require them.",
+      "detail": "A nightly reconciliation may legitimately read many documents, while an interactive user should see only their authorized scope. Reusing the batch identity for UI requests can bypass that distinction. Conversely, propagating an end user's short-lived credentials into an unattended job creates a different reliability and security problem.",
+      "pitfall": "Authentication success proves identity, not permission for the requested business operation or tenant.",
+      "level": "Senior",
+      "followups": [
+        "Where is the initiating user recorded when a technical identity performs the command?",
+        "What happens during credential rotation or tenant offboarding?"
+      ],
+      "signals": [
+        "Separates user and machine access",
+        "Preserves business authorization",
+        "Plans identity lifecycle and audit"
+      ],
+      "evidence": "A communication and authorization matrix with negative access tests, audit examples, and a credential-rotation test.",
+      "references": [
+        {
+          "title": "SAP communication arrangements and scenarios",
+          "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/communication-arrangements",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-17",
+      "question": "A released dependency is deprecated but still works. How do you decide when and how to replace it?",
+      "answer": "I would record the announced successor, support constraints, affected consumers, and target-release availability, then plan migration according to exposure and business criticality. Deprecated does not automatically mean already removed, but new reliance increases future work. I would compare semantics and failure behavior rather than mechanically rename calls. Compatibility tests, rollout sequencing, and monitoring should cover both the old and new paths until the transition is complete and the old dependency can be retired.",
+      "detail": "A successor API may use a different key, paging model, authorization scope, or asynchronous outcome even if it serves the same business purpose. Migrating without checking those differences can create missing records or duplicate submissions. A small production-safe rollout needs explicit success measures and a supported reversal strategy.",
+      "pitfall": "A release contract does not mean an API never evolves, and deprecation is different from decommissioning.",
+      "level": "Senior",
+      "followups": [
+        "What if the successor is unavailable on your lowest supported release?",
+        "Which semantic differences would block a direct replacement?"
+      ],
+      "signals": [
+        "Distinguishes lifecycle states",
+        "Checks successor semantics and availability",
+        "Plans measured migration"
+      ],
+      "evidence": "A dependency lifecycle register, old/new contract comparison, and regression results across the supported release matrix.",
+      "references": [
+        {
+          "title": "SAP released APIs, contracts, visibility, and states",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-18",
+      "question": "What would you require before approving a senior team's ABAP Cloud architecture for production?",
+      "answer": "I would require evidence for the main business invariants and nonfunctional risks, not only a component diagram. That includes transaction ownership, authorization, release-compatible dependencies, realistic workload behavior, observability, recovery, data retention, and deployment sequencing. Each consequential assumption needs an owner and a validation result. I would permit proportionate residual risk with explicit operational controls, while distinguishing a prototype, a locally tested implementation, and a solution proven on the intended runtime.",
+      "detail": "A successful Fiori demo with mocked data does not establish real RAP authorization, lock handling, or remote error recovery. A useful readiness review walks through one concurrent update, one dependency outage, one failed deployment, and one recovery drill, with evidence tied to the actual release candidate.",
+      "pitfall": "A clean syntax check, green ATC run, or attractive diagram is not an end-to-end production-readiness certificate.",
+      "level": "Senior",
+      "followups": [
+        "Which risk would you prove first with a technical spike?",
+        "What evidence would make you delay the release despite a successful demo?"
+      ],
+      "signals": [
+        "Prioritizes consequential risks",
+        "Requires runtime-linked evidence",
+        "Defines operational ownership and recovery"
+      ],
+      "evidence": "A release-readiness dossier with targeted load, security, transaction, deployment, and recovery results for the exact candidate revision.",
+      "references": [
+        {
+          "title": "SAP extension architecture guidance",
+          "url": "https://help.sap.com/docs/sap-btp-guidance-framework/extension-architecture-guide/getting-started-with-extensibility",
+          "note": "Use this contract as evidence for the architecture decision; verify availability on the target product."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,562 @@
+[
+  {
+    "id": "QUIZ-ABAP-01",
+    "questionId": "ABAP-01",
+    "prompt": "You repeatedly read a large internal table using the complete unique business key and never need index access. Which default choice best fits that access pattern?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A standard table with an empty key",
+        "explanation": "It does not provide a key lookup structure for these repeated reads."
+      },
+      {
+        "id": "b",
+        "text": "A hashed table with that unique key",
+        "explanation": "Full unique-key lookup is the intended access pattern; account for memory and mutation costs."
+      },
+      {
+        "id": "c",
+        "text": "A sorted table accessed only by table index",
+        "explanation": "The requirement is business-key lookup, and row indexes are not stable business identities."
+      },
+      {
+        "id": "d",
+        "text": "A standard table sorted before every lookup",
+        "explanation": "Repeated sorting adds avoidable work; choose a suitable maintained key and measure."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-ABAP-03",
+    "questionId": "ABAP-03",
+    "prompt": "BINARY SEARCH is used on a standard table sorted by Customer then Date. The read specifies only Date. What must be corrected?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Nothing, because either sort field is sufficient",
+        "explanation": "Binary search needs an order compatible with the search key, not any column in the sort."
+      },
+      {
+        "id": "b",
+        "text": "Convert Date to a string before the read",
+        "explanation": "Changing the type does not establish the missing sort order."
+      },
+      {
+        "id": "c",
+        "text": "Use an access path ordered for the actual search key",
+        "explanation": "The ordering must match the searched leading key; an appropriate sorted key is another option."
+      },
+      {
+        "id": "d",
+        "text": "Set sy-subrc to zero after a failed search",
+        "explanation": "A return code does not recover a row skipped by an invalid search assumption."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-ABAP-06",
+    "questionId": "ABAP-06",
+    "prompt": "A classic DDIC domain names a value table. What may you conclude about automatic input validation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "That alone does not create the required check-table relationship",
+        "explanation": "A domain value table is a proposal context; the field foreign-key/check-table definition and consumer behavior matter."
+      },
+      {
+        "id": "b",
+        "text": "Every database insert is rejected when the value is absent",
+        "explanation": "DDIC metadata does not establish that universal database enforcement."
+      },
+      {
+        "id": "c",
+        "text": "The value table is identical to a search help",
+        "explanation": "Value suggestions and validation relationships have different responsibilities."
+      },
+      {
+        "id": "d",
+        "text": "The domain now has a database foreign-key constraint",
+        "explanation": "Do not infer a physical database constraint from the ABAP DDIC definition."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-ABAP-08",
+    "questionId": "ABAP-08",
+    "prompt": "A classic external transaction owner issues COMMIT WORK AND WAIT. What is a defensible conclusion?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Every remote workflow and asynchronous consumer has completed",
+        "explanation": "AND WAIT is not a global distributed completion barrier."
+      },
+      {
+        "id": "b",
+        "text": "A later rollback can undo the previous commit",
+        "explanation": "Committed work is beyond that later local rollback."
+      },
+      {
+        "id": "c",
+        "text": "Every update failure becomes a class-based exception",
+        "explanation": "Update outcomes and return-code handling follow the documented contract."
+      },
+      {
+        "id": "d",
+        "text": "It waits for the relevant synchronous update completion, not all downstream work",
+        "explanation": "Inspect the documented update outcome; remote effects require their own completion evidence."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-ABAP-09",
+    "questionId": "ABAP-09",
+    "prompt": "Why might an SAP business lock still be needed when the database already locks changed rows?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It makes any remote call share the local database transaction",
+        "explanation": "A business lock does not merge independent transaction owners."
+      },
+      {
+        "id": "b",
+        "text": "It protects a business object across the relevant application work steps",
+        "explanation": "The logical lock lifetime and scope can differ from a short database transaction."
+      },
+      {
+        "id": "c",
+        "text": "It permanently prevents all other users from reading the table",
+        "explanation": "Lock compatibility and application enforcement are more specific than that."
+      },
+      {
+        "id": "d",
+        "text": "It replaces all authorization checks on the locked object",
+        "explanation": "Mutual exclusion and permission are separate responsibilities."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-ABAP-10",
+    "questionId": "ABAP-10",
+    "prompt": "A service adapter translates a dependency exception into a domain exception. What should it preserve?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only a generic success flag for the caller",
+        "explanation": "That hides failure rather than translating it."
+      },
+      {
+        "id": "b",
+        "text": "The dependency implementation type in every public signature",
+        "explanation": "A boundary may deliberately decouple its public contract from that type."
+      },
+      {
+        "id": "c",
+        "text": "The useful domain meaning and original exception as previous",
+        "explanation": "The caller receives an appropriate abstraction while diagnostics retain the cause."
+      },
+      {
+        "id": "d",
+        "text": "The original stack by catching and doing nothing",
+        "explanation": "Silently swallowing the failure loses the meaningful outcome."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-OO-02",
+    "questionId": "OO-02",
+    "prompt": "Two unrelated classes should be substitutable as payment providers without sharing implementation. Which contract fits best?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A common interface with the required behavior",
+        "explanation": "The interface expresses a usable contract independently of a shared class hierarchy."
+      },
+      {
+        "id": "b",
+        "text": "A shared public static variable for the current provider",
+        "explanation": "Global mutable selection does not express a safe behavioral contract."
+      },
+      {
+        "id": "c",
+        "text": "A superclass copied separately into both classes",
+        "explanation": "Duplicated code is not a common polymorphic contract."
+      },
+      {
+        "id": "d",
+        "text": "An inheritance chain in which one provider subclasses the other",
+        "explanation": "One concrete provider is not necessarily a behavioral subtype of the other."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-OO-04",
+    "questionId": "OO-04",
+    "prompt": "A base reference may contain different subclasses. How should a caller use a subclass-specific capability?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Downcast unconditionally because all references have the same size",
+        "explanation": "Reference representation does not establish runtime type compatibility."
+      },
+      {
+        "id": "b",
+        "text": "Change the declared reference name to the subclass name",
+        "explanation": "A name change cannot change the runtime object."
+      },
+      {
+        "id": "c",
+        "text": "Call the subclass method through any base reference",
+        "explanation": "The static contract limits directly available components."
+      },
+      {
+        "id": "d",
+        "text": "Prefer the needed interface, or check and handle a justified downcast",
+        "explanation": "Expose the capability through a suitable contract and treat invalid casts deliberately."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-OO-05",
+    "questionId": "OO-05",
+    "prompt": "A helper stores the current request user in CLASS-DATA. Why is that a risky request-context design?",
+    "options": [
+      {
+        "id": "a",
+        "text": "CLASS-DATA is necessarily shared globally by every SAP server",
+        "explanation": "Its lifetime and scope are not a universal cross-system singleton."
+      },
+      {
+        "id": "b",
+        "text": "Static state can outlive the intended call and couple consumers or tests",
+        "explanation": "Prefer explicit request context and verify the actual session/runtime scope."
+      },
+      {
+        "id": "c",
+        "text": "An instance constructor resets every static member automatically",
+        "explanation": "That reset behavior is not guaranteed by creating an object."
+      },
+      {
+        "id": "d",
+        "text": "Static methods are never callable in ABAP Objects",
+        "explanation": "They are supported; the concern is state ownership, not syntax existence."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-OO-06",
+    "questionId": "OO-06",
+    "prompt": "A service needs interchangeable tax calculations, but no stable is-a hierarchy exists. What is the stronger design?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deep inheritance so each country overrides unrelated methods",
+        "explanation": "That couples variation to a hierarchy without a justified subtype contract."
+      },
+      {
+        "id": "b",
+        "text": "A CASE statement duplicated in every consumer",
+        "explanation": "Duplicating selection and calculation spreads the change across callers."
+      },
+      {
+        "id": "c",
+        "text": "Compose the service with a tax-policy interface",
+        "explanation": "The variation has an explicit seam and can be changed or tested independently."
+      },
+      {
+        "id": "d",
+        "text": "A single global country variable read by all calculations",
+        "explanation": "Implicit state makes behavior and testing less predictable."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-OO-07",
+    "questionId": "OO-07",
+    "prompt": "A class accepts an interface dependency in its constructor but constructs a concrete implementation again inside each method. Is the test seam effective?",
+    "options": [
+      {
+        "id": "a",
+        "text": "No; the methods bypass the supplied dependency",
+        "explanation": "The behavior must use the injected dependency for the seam to control that collaboration."
+      },
+      {
+        "id": "b",
+        "text": "Yes; a constructor parameter always proves dependency inversion",
+        "explanation": "The existence of a parameter does not establish actual use or architectural direction."
+      },
+      {
+        "id": "c",
+        "text": "Yes; concrete dependencies are replaced automatically by ABAP Unit",
+        "explanation": "The test framework does not automatically replace arbitrary object construction."
+      },
+      {
+        "id": "d",
+        "text": "No; constructor injection is forbidden in ABAP",
+        "explanation": "The issue is bypassing the seam, not the availability of constructor parameters."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-OO-14",
+    "questionId": "OO-14",
+    "prompt": "A unit test replaces the class being tested with a double and asserts its configured return value. What has it established?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The production implementation follows the business rule",
+        "explanation": "The real implementation was never exercised."
+      },
+      {
+        "id": "b",
+        "text": "The database persistence and authorization are correct",
+        "explanation": "Those behaviors were not proven by a configured double."
+      },
+      {
+        "id": "c",
+        "text": "The test covers every collaborator interaction",
+        "explanation": "A configured result alone does not establish such coverage."
+      },
+      {
+        "id": "d",
+        "text": "Only that the double returns the configured result",
+        "explanation": "Exercise the real unit and replace selected dependencies instead."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-SQL-02",
+    "questionId": "SQL-02",
+    "prompt": "The driver table is empty before a classic FOR ALL ENTRIES selection. What must the code consider?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The database always returns zero rows automatically",
+        "explanation": "That assumption misses the documented empty-driver behavior."
+      },
+      {
+        "id": "b",
+        "text": "Guard the empty-driver case according to the business requirement",
+        "explanation": "An empty FOR ALL ENTRIES driver causes the entire explicit WHERE condition to be ignored; normal implicit client handling still applies."
+      },
+      {
+        "id": "c",
+        "text": "Add DISTINCT to guarantee an empty result",
+        "explanation": "Duplicate elimination does not create the missing selection restriction."
+      },
+      {
+        "id": "d",
+        "text": "The statement cannot compile with an internal-table operand",
+        "explanation": "FOR ALL ENTRIES supports an internal-table driver."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-SQL-04",
+    "questionId": "SQL-04",
+    "prompt": "A LEFT OUTER JOIN is followed by WHERE right.status = active. Orders with no matching right row disappear. Why?",
+    "options": [
+      {
+        "id": "a",
+        "text": "All left joins automatically behave as inner joins on HANA",
+        "explanation": "The database is respecting the predicate placement, not discarding left-join semantics."
+      },
+      {
+        "id": "b",
+        "text": "The SELECT list omitted the right-side key",
+        "explanation": "Projection does not explain rejection by the WHERE predicate."
+      },
+      {
+        "id": "c",
+        "text": "The WHERE condition rejects the null-extended unmatched rows",
+        "explanation": "Place predicates according to the intended preservation semantics and verify with unmatched cases."
+      },
+      {
+        "id": "d",
+        "text": "DISTINCT always removes unmatched orders",
+        "explanation": "Duplicate elimination is a separate operation and not the stated cause."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-SQL-08",
+    "questionId": "SQL-08",
+    "prompt": "SELECT SINGLE uses a non-unique predicate and the caller expects the latest record. Which correction is sound?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use a selection with an explicit supported ordering and row limit",
+        "explanation": "Latest needs a deterministic ordering, including a tie-breaker where necessary."
+      },
+      {
+        "id": "b",
+        "text": "Keep SELECT SINGLE because the database returns the newest row first",
+        "explanation": "Without a relevant ordering guarantee, the chosen row is not a latest-record contract."
+      },
+      {
+        "id": "c",
+        "text": "Add more fields to the SELECT list",
+        "explanation": "Projection width does not define result order."
+      },
+      {
+        "id": "d",
+        "text": "Run the same query twice and use the second row",
+        "explanation": "Repeated execution does not establish deterministic recency."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-SQL-14",
+    "questionId": "SQL-14",
+    "prompt": "A CDS expression can efficiently implement a simple projection. Should it be moved to AMDP just because HANA is available?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, SQLScript is always faster for any query",
+        "explanation": "Performance depends on the workload and execution plan, not that blanket rule."
+      },
+      {
+        "id": "b",
+        "text": "Yes, AMDP removes client and authorization concerns",
+        "explanation": "Those responsibilities still need explicit design."
+      },
+      {
+        "id": "c",
+        "text": "No, AMDP can never execute database procedures",
+        "explanation": "That contradicts the purpose of AMDP."
+      },
+      {
+        "id": "d",
+        "text": "Keep the simpler suitable model unless measured needs justify AMDP",
+        "explanation": "Choose by supported semantics, complexity and evidence rather than technology preference."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-HTTP-04",
+    "questionId": "HTTP-04",
+    "prompt": "A create request times out after the server may have committed. What is the safest default recovery design?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Repeat POST with a new business identity until one response arrives",
+        "explanation": "This can create duplicates when an earlier request succeeded."
+      },
+      {
+        "id": "b",
+        "text": "Reconcile by a stable identity or use a supported idempotency contract",
+        "explanation": "The timeout means an uncertain outcome, so recovery must prevent duplicate business effects."
+      },
+      {
+        "id": "c",
+        "text": "Assume the network timeout rolled back the server transaction",
+        "explanation": "Transport failure does not establish the remote transaction outcome."
+      },
+      {
+        "id": "d",
+        "text": "Switch the create operation to GET",
+        "explanation": "GET is not an appropriate workaround for an unsafe create command."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-HTTP-07",
+    "questionId": "HTTP-07",
+    "prompt": "A JSON payload contains an identifier as the string \"0004711\" and a decimal amount. Which mapping approach is safest?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Convert every quoted numeric-looking value into an integer",
+        "explanation": "That can destroy identifiers and contract-defined precision."
+      },
+      {
+        "id": "b",
+        "text": "Treat missing, null and empty as identical for every update",
+        "explanation": "Those meanings must be specified by the API contract."
+      },
+      {
+        "id": "c",
+        "text": "Preserve contract-defined types, leading zeros and decimal precision",
+        "explanation": "Represent business values deliberately and distinguish omitted values from explicit clearing."
+      },
+      {
+        "id": "d",
+        "text": "Use floating point for every monetary value",
+        "explanation": "Binary floating-point representation can introduce unwanted monetary rounding behavior."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-RFC-05",
+    "questionId": "RFC-05",
+    "prompt": "An RFC call posts remotely, then the local caller executes ROLLBACK WORK. What should the caller assume?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The remote transaction has its own outcome and needs reconciliation",
+        "explanation": "A local rollback does not generally undo an independently committed remote effect."
+      },
+      {
+        "id": "b",
+        "text": "All remote effects are automatically rolled back by the caller",
+        "explanation": "That assumes a shared atomic transaction that was not established."
+      },
+      {
+        "id": "c",
+        "text": "RFC transport makes both systems one database LUW",
+        "explanation": "RFC is a call mechanism, not a universal distributed transaction manager."
+      },
+      {
+        "id": "d",
+        "text": "A BAPI name guarantees local and remote atomicity",
+        "explanation": "Transaction semantics come from the documented API and execution boundary."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-INTF-06",
+    "questionId": "INTF-06",
+    "prompt": "An inbound message is in error, but a matching business document may already exist. What comes before replay?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Delete the status history so the message looks new",
+        "explanation": "That removes evidence and can make duplicate posting more likely."
+      },
+      {
+        "id": "b",
+        "text": "Resubmit immediately with a different correlation key",
+        "explanation": "That can bypass duplicate detection."
+      },
+      {
+        "id": "c",
+        "text": "Treat technical error status as proof that nothing was posted",
+        "explanation": "The business outcome must be checked independently."
+      },
+      {
+        "id": "d",
+        "text": "Establish the actual posting outcome and the owning retry mechanism",
+        "explanation": "Use correlation and business keys, correct the cause, and prevent a second business effect."
+      }
+    ],
+    "correctOption": "d"
+  }
+]

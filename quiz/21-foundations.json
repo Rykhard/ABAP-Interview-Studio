@@ -1,0 +1,450 @@
+[
+  {
+    "id": "QUIZ-BASE-01",
+    "questionId": "BASE-01",
+    "prompt": "A method receives plain integer amount = 10 through CHANGING VALUE(amount), sets its local amount to 20, then raises an exception caught by the caller. No other side effects occur. What is the caller's amount?",
+    "options": [
+      {
+        "id": "a",
+        "text": "20, because CHANGING always aliases the caller.",
+        "explanation": "VALUE changes this to value-result passing; normal copy-back did not occur."
+      },
+      {
+        "id": "b",
+        "text": "10, because exceptional exit prevents normal copy-back.",
+        "explanation": "The local value changed, but it was not transferred back on normal completion."
+      },
+      {
+        "id": "c",
+        "text": "0, because exceptional exit initializes the actual parameter.",
+        "explanation": "Exceptional exit does not reset the caller's original variable."
+      },
+      {
+        "id": "d",
+        "text": "Undefined, because catching an exception discards caller data.",
+        "explanation": "The caller's plain integer remains valid and retains its original value."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-BASE-02",
+    "questionId": "BASE-02",
+    "prompt": "ls_copy = ls_original copies a structure with a string and a reference to a mutable object. Which subsequent change affects an object visible through both structures?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Replacing the copied string with a different string.",
+        "explanation": "The string component has value semantics; the source string does not change."
+      },
+      {
+        "id": "b",
+        "text": "Clearing only the copied reference variable.",
+        "explanation": "This removes that reference; the source reference still points to the object."
+      },
+      {
+        "id": "c",
+        "text": "Calling a state-changing method through the copied reference.",
+        "explanation": "Both reference values identify the same object, so its state change is shared."
+      },
+      {
+        "id": "d",
+        "text": "Assigning a new object to the copied reference variable.",
+        "explanation": "Rebinding one reference does not rebind the reference component in the original."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-BASE-03",
+    "questionId": "BASE-03",
+    "prompt": "A headerless temporary table is empty after CLEAR. Which reason specifically favors FREE when no near-term reuse is planned?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It also releases the table's initial memory allocation.",
+        "explanation": "Both clear rows; FREE additionally releases the initial memory requirement."
+      },
+      {
+        "id": "b",
+        "text": "It guarantees the operating system immediately shrinks the process.",
+        "explanation": "ABAP memory release does not guarantee this operating-system effect."
+      },
+      {
+        "id": "c",
+        "text": "It deletes the declared variable from its scope.",
+        "explanation": "The declared data object remains and can be populated again."
+      },
+      {
+        "id": "d",
+        "text": "It destroys every object referenced by former table rows.",
+        "explanation": "Other references may keep those objects reachable; resource lifetime is separate."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-BASE-04",
+    "questionId": "BASE-04",
+    "prompt": "A field symbol previously assigned to PRICE is reused by a dynamic ASSIGN of nonexistent component PRCIE without ELSE UNASSIGN. What is the safest conclusion?",
+    "options": [
+      {
+        "id": "a",
+        "text": "IS ASSIGNED must now be false.",
+        "explanation": "A failed assignment can preserve the old assignment."
+      },
+      {
+        "id": "b",
+        "text": "Writing through it necessarily raises an unassigned-symbol error.",
+        "explanation": "If the old assignment remains valid, the write may succeed on the wrong field."
+      },
+      {
+        "id": "c",
+        "text": "An inline declaration would prove the new component exists.",
+        "explanation": "Declaration syntax does not prove the latest dynamic lookup succeeded."
+      },
+      {
+        "id": "d",
+        "text": "Check the latest ASSIGN result before using the symbol.",
+        "explanation": "Its assigned state alone may describe the previous target, not the attempted one."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-BASE-05",
+    "questionId": "BASE-05",
+    "prompt": "READ TABLE fails; a subsequent FIND succeeds; then IF sy-subrc = 0 is evaluated. What does that branch test?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Whether READ TABLE found its row.",
+        "explanation": "FIND has replaced the shared system field since the read."
+      },
+      {
+        "id": "b",
+        "text": "The result of the intervening FIND.",
+        "explanation": "The last relevant statement wrote zero, so the branch describes FIND."
+      },
+      {
+        "id": "c",
+        "text": "Whether both READ TABLE and FIND succeeded.",
+        "explanation": "sy-subrc does not accumulate results across statements."
+      },
+      {
+        "id": "d",
+        "text": "Whether either statement raised an exception.",
+        "explanation": "The field is a statement return code, not a generic exception flag."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-BASE-06",
+    "questionId": "BASE-06",
+    "prompt": "A runtime text value ABCD must fit a three-character target without losing any characters. Which boundary best enforces that requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use EXACT for the target type and handle conversion failure.",
+        "explanation": "Lossless conversion rejects a value that would need truncation."
+      },
+      {
+        "id": "b",
+        "text": "Use CONV for the target type and accept the result.",
+        "explanation": "Ordinary conversion can truncate according to the target conversion rules."
+      },
+      {
+        "id": "c",
+        "text": "Assign normally and check that the result is not initial.",
+        "explanation": "ABC is noninitial, so this test does not detect lost characters."
+      },
+      {
+        "id": "d",
+        "text": "Convert to string first, then assign normally to the target.",
+        "explanation": "The final narrow assignment can still lose the fourth character."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-BASE-07",
+    "questionId": "BASE-07",
+    "prompt": "The agreed policy is half-up rounding to two decimals. Two unrounded line amounts are 0.005 each. Which pair is correct: sum of rounded lines; rounded sum?",
+    "options": [
+      {
+        "id": "a",
+        "text": "0.01; 0.02",
+        "explanation": "This reverses the two calculations."
+      },
+      {
+        "id": "b",
+        "text": "0.01; 0.01",
+        "explanation": "Each separately rounded positive half-cent becomes 0.01."
+      },
+      {
+        "id": "c",
+        "text": "0.02; 0.01",
+        "explanation": "The two rounded lines total 0.02, while the precise sum 0.010 rounds to 0.01."
+      },
+      {
+        "id": "d",
+        "text": "0.02; 0.02",
+        "explanation": "Rounding the already exact sum 0.010 to two decimals yields 0.01."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-BASE-08",
+    "questionId": "BASE-08",
+    "prompt": "ls_target-status is Approved. ls_source has only a note component. What happens with ls_target = CORRESPONDING #( ls_source )?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Status stays Approved because matching is by name.",
+        "explanation": "The constructor creates a new result; unmatched fields start initial."
+      },
+      {
+        "id": "b",
+        "text": "The assignment fails because the structures differ.",
+        "explanation": "CORRESPONDING is specifically intended for component-based mapping."
+      },
+      {
+        "id": "c",
+        "text": "Status changes only if ls_source-note is initial.",
+        "explanation": "Whether the unmatched status initializes does not depend on the note's value."
+      },
+      {
+        "id": "d",
+        "text": "Status becomes initial; BASE would preserve the unmatched status.",
+        "explanation": "BASE supplies the initial target state before matching components overwrite it."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-BASE-09",
+    "questionId": "BASE-09",
+    "prompt": "An internal table has customers A, B, A in that order. LOOP AT ... GROUP BY customer is used without WITHOUT MEMBERS. Which result is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Two groups, with both A rows available in A's member loop.",
+        "explanation": "Grouping collects equal keys even when their rows are not adjacent."
+      },
+      {
+        "id": "b",
+        "text": "Three groups because the source was not sorted.",
+        "explanation": "GROUP BY does not require equal keys to be adjacent."
+      },
+      {
+        "id": "c",
+        "text": "Two groups, but only the first A row remains accessible.",
+        "explanation": "The representative is not the entire group; its members remain available."
+      },
+      {
+        "id": "d",
+        "text": "One group because no sorted table key was declared.",
+        "explanation": "The grouping expression determines groups independently of that table category."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-BASE-10",
+    "questionId": "BASE-10",
+    "prompt": "A standard table has an empty primary key and a sorted secondary key by customer. A basic FILTER selects one customer. What is required?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Convert it to a hashed table because FILTER rejects standard tables.",
+        "explanation": "A standard table with a suitable sorted secondary key is supported."
+      },
+      {
+        "id": "b",
+        "text": "Rely on the empty primary key to scan every row.",
+        "explanation": "The basic FILTER form requires a suitable sorted or hash key."
+      },
+      {
+        "id": "c",
+        "text": "Select the suitable secondary key with USING KEY.",
+        "explanation": "This provides the required key access for the customer condition."
+      },
+      {
+        "id": "d",
+        "text": "Add ORDER BY to FILTER before its WHERE clause.",
+        "explanation": "ORDER BY is not the mechanism for selecting an internal-table FILTER key."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-BASE-11",
+    "questionId": "BASE-11",
+    "prompt": "A REDUCE maximum starts with max = 0 and processes -8 and -3 using max = greatest(max, current). What is the defect?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The input must be sorted for a maximum calculation.",
+        "explanation": "An ordinary maximum reduction does not need sorted input."
+      },
+      {
+        "id": "b",
+        "text": "Initialization adds zero as a candidate absent from the data.",
+        "explanation": "Zero remains larger than every actual member, producing the wrong maximum."
+      },
+      {
+        "id": "c",
+        "text": "REDUCE cannot return negative numeric values.",
+        "explanation": "Negative results are supported; the accumulator logic is the issue."
+      },
+      {
+        "id": "d",
+        "text": "The two values cancel because REDUCE always aggregates by sum.",
+        "explanation": "The specified state update controls the operation; REDUCE is not inherently SUM."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-BASE-12",
+    "questionId": "BASE-12",
+    "prompt": "A search API accepts free-text customer name and a requested sort column. Which design best protects SQL syntax?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Quote both inputs and concatenate them into WHERE and ORDER BY.",
+        "explanation": "A safely quoted value is not validation of identifier or clause syntax."
+      },
+      {
+        "id": "b",
+        "text": "Bind the sort column as a value and concatenate the customer text.",
+        "explanation": "A host value is not a dynamic identifier, and concatenating customer text is avoidable."
+      },
+      {
+        "id": "c",
+        "text": "Allow any column if the customer value uses a host variable.",
+        "explanation": "Value binding does not authorize arbitrary column access or sorting expressions."
+      },
+      {
+        "id": "d",
+        "text": "Bind the customer value and map allowed sort options to known columns.",
+        "explanation": "Values remain data and server-controlled mapping constrains the dynamic SQL shape."
+      }
+    ],
+    "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-BASE-13",
+    "questionId": "BASE-13",
+    "prompt": "TRY completes normally. Its only resource-release statement is in CLEANUP. What follows?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The release does not run merely because ENDTRY is reached.",
+        "explanation": "CLEANUP handles relevant exception unwinding, not every successful exit."
+      },
+      {
+        "id": "b",
+        "text": "The release runs exactly once after ENDTRY.",
+        "explanation": "ABAP CLEANUP is not a general finally block."
+      },
+      {
+        "id": "c",
+        "text": "The release runs before the final successful statement in TRY.",
+        "explanation": "No normal-path execution of CLEANUP is implied."
+      },
+      {
+        "id": "d",
+        "text": "The runtime raises an exception because CLEANUP was skipped.",
+        "explanation": "A successful TRY can validly leave its CLEANUP block unexecuted."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-BASE-14",
+    "questionId": "BASE-14",
+    "prompt": "An optional integer parameter defaults to zero. Call A omits it; call B explicitly passes zero. Which observation distinguishes A from B?",
+    "options": [
+      {
+        "id": "a",
+        "text": "IS INITIAL is false only in B.",
+        "explanation": "The value is zero in both, so both are initial."
+      },
+      {
+        "id": "b",
+        "text": "The formal parameter type differs in B.",
+        "explanation": "Passing zero does not change the declared formal type."
+      },
+      {
+        "id": "c",
+        "text": "IS SUPPLIED is false in A and true in B.",
+        "explanation": "Presence of an actual argument is independent of its value."
+      },
+      {
+        "id": "d",
+        "text": "sy-subrc is nonzero only in A.",
+        "explanation": "Argument omission is not reported through such a sy-subrc convention."
+      }
+    ],
+    "correctOption": "c"
+  },
+  {
+    "id": "QUIZ-BASE-15",
+    "questionId": "BASE-15",
+    "prompt": "A unique hashed internal table contains key 7 with amount 10. A single-line INSERT INTO TABLE attempts key 7 with amount 20. What happens?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The existing row is replaced with amount 20.",
+        "explanation": "This insertion form does not update the existing row."
+      },
+      {
+        "id": "b",
+        "text": "The row remains amount 10 and sy-subrc indicates the duplicate.",
+        "explanation": "The unique primary key prevents insertion; the duplicate result requires explicit handling."
+      },
+      {
+        "id": "c",
+        "text": "Both rows remain because their amounts differ.",
+        "explanation": "Uniqueness applies to the defined key, not the whole payload."
+      },
+      {
+        "id": "d",
+        "text": "The table is cleared to restore key uniqueness.",
+        "explanation": "The failed single-line insertion does not erase the existing table."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-BASE-16",
+    "questionId": "BASE-16",
+    "prompt": "A user has no allowed plants; the authorization helper returns an initial plant range. What should the caller do before WHERE plant IN range?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Run the query because an empty range means no plants.",
+        "explanation": "An initial selection range means no restriction for IN."
+      },
+      {
+        "id": "b",
+        "text": "Remove the condition to make the no-permission case explicit.",
+        "explanation": "Removing it would broaden access instead of denying it."
+      },
+      {
+        "id": "c",
+        "text": "Insert a dummy initial plant and assume it can never exist.",
+        "explanation": "A fabricated value is an unreliable authorization contract."
+      },
+      {
+        "id": "d",
+        "text": "Handle no permission explicitly and return no rows or reject.",
+        "explanation": "The empty authorization case must fail closed independently of range semantics."
+      }
+    ],
+    "correctOption": "d"
+  }
+]

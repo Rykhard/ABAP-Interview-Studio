@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+tmp/
+qa-render/
+dist/
+dist.zip
+.wrangler/
+node_modules/
+.env
+.env.*
+abap-study-progress.json
+originals/

@@ -1,0 +1,238 @@
+{
+  "id": "14-rfc-background",
+  "title": "Function modules, RFC, BAPI, parallel processing, and jobs",
+  "intro": "Separate the callable unit, the communication mechanism, and the business transaction. Classic RFC and job transactions remain important interview topics, but their statements and APIs are not automatically available in ABAP Cloud. Explain ownership, restart behavior, and observable outcomes before promising reliability or faster processing.",
+  "sources": [
+    {
+      "title": "SAP RFC variants and their quality-of-service scope",
+      "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/99b53cee2b73e7e10000000a42189b/content.htm"
+    },
+    {
+      "title": "SAP BAPI transaction model and documented exceptions",
+      "url": "https://help.sap.com/SAPHELP_SCM700_EHP02/helpdata/EN/4d/5b102ba1483d8fe10000000a42189e/content.htm"
+    },
+    {
+      "title": "SAP parallel processing, callbacks, and resource groups",
+      "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/7bfe8cdcfbb040dcb6702dada8c3e2f0/4d909309eba36e73e10000000a15822b.html"
+    },
+    {
+      "title": "SAP WAIT UNTIL and database commit implications",
+      "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/9b958a1786062de10000000a42189d/content.htm"
+    },
+    {
+      "title": "SAP classic background scheduling and monitoring",
+      "url": "https://help.sap.com/saphelp_em700_ehp01/helpdata/en/48/baab96ca960611e10000000a42189b/content.htm"
+    },
+    {
+      "title": "SAP application job implementation, catalog entries, and templates",
+      "url": "https://help.sap.com/docs/btp/sap-business-technology-platform/creating-job-catalog-entry-and-job-template-in-adt"
+    }
+  ],
+  "questions": [
+    {
+      "id": "RFC-01",
+      "question": "How does a function module differ from an ABAP method?",
+      "answer": "A function module is a callable procedure belonging to a function group, with a defined interface and potentially shared function-group state. A method belongs to a class or interface and supports object-oriented contracts and dependency substitution. I usually organize new business logic in classes while preserving function modules required by existing APIs, RFC, or framework integration.",
+      "detail": "A normal function module is not automatically remote-enabled or an update module; those are distinct attributes and invocation models. A thin, approved integration entry point can delegate calculations to a testable class without changing its external contract.",
+      "pitfall": "Moving logic into a method does not automatically make it released for ABAP Cloud, stateless, or safe to call remotely.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "SAP RFC variants and their quality-of-service scope",
+          "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/99b53cee2b73e7e10000000a42189b/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-02",
+      "question": "How do synchronous, asynchronous, transactional, queued, and background RFC differ?",
+      "answer": "Synchronous RFC waits for the response. Asynchronous RFC lets the caller continue and optionally collect results through callbacks. Transactional RFC registers calls and parameters in the current SAP LUW; COMMIT WORK triggers processing of the registered unit rather than each call running immediately. Queued RFC adds sequencing through configured queues. Background RFC supports transactional and queued units with its own infrastructure. Their documented delivery guarantees apply to those units, not automatically to an entire distributed business process.",
+      "detail": "A tRFC registration does not prove completed remote processing. ROLLBACK WORK removes the current registrations; after commit, temporary unavailability is handled through retry. sRFC and aRFC lack that durable retry model. tRFC and bgRFC type T provide documented Exactly Once unit semantics; qRFC and bgRFC type Q add ordering within the configured dependency scope. bgRFC is the successor technology; choose what the target environment permits and let the runtime own the unit's transaction. Separate business submissions can still duplicate an order.",
+      "pitfall": "STARTING NEW TASK is not durable background messaging, and queued processing does not imply one global order across unrelated queues.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "SAP RFC variants and their quality-of-service scope",
+          "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/99b53cee2b73e7e10000000a42189b/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        },
+        {
+          "title": "SAP: CALL FUNCTION IN BACKGROUND TASK",
+          "url": "https://help.sap.com/saphelp_snc700_ehp01/helpdata/en/8f/53b67ad30be445b0ccc968d69bc6ff/content.htm",
+          "note": "Classic tRFC registration, COMMIT WORK and ROLLBACK WORK semantics. Registration is not confirmation of remote execution."
+        },
+        {
+          "title": "SAP: CALL FUNCTION IN BACKGROUND UNIT",
+          "url": "https://help.sap.com/doc/abapdocu_752_index_htm/7.52/en-US/abapcall_function_background_unit.htm",
+          "note": "Classic bgRFC unit contract and successor technology. Check target-environment availability; this is not permission to commit inside RAP handlers."
+        }
+      ]
+    },
+    {
+      "id": "RFC-03",
+      "question": "What is the difference between a BAPI and an RFC-enabled function module?",
+      "answer": "RFC describes a mechanism for calling remote-enabled function modules. A BAPI describes a business API contract, traditionally exposed through a remote-enabled function module associated with a business object or interface. A generic RFC-enabled module is not automatically a BAPI. I check business semantics, release status, supported deployment, transaction behavior, and return messages for the particular API.",
+      "detail": "A released classic BAPI may be suitable for an existing integration while not being released for direct ABAP Cloud use. Conversely, modern released business APIs can use HTTP and OData instead of a classic BAPI implementation. The name alone does not establish clean-core classification.",
+      "pitfall": "Do not equate remote-enabled, BAPI, released API, and clean-core Level A; they describe different properties that must be checked separately.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "SAP BAPI transaction model and documented exceptions",
+          "url": "https://help.sap.com/SAPHELP_SCM700_EHP02/helpdata/EN/4d/5b102ba1483d8fe10000000a42189e/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-04",
+      "question": "When should BAPI_TRANSACTION_COMMIT or BAPI_TRANSACTION_ROLLBACK be called, and what does WAIT mean?",
+      "answer": "The owner of a BAPI transaction decides whether to commit after evaluating the complete return contract or roll back after a failure. For remote calls, transaction control must reach the correct remote context. WAIT requests synchronous high-priority update completion; it does not wait for every downstream workflow, interface, or lower-priority activity. I verify exceptions in the specific BAPI documentation.",
+      "detail": "A successful transport response is not enough: inspect all relevant business return messages and the commit result. Some documented legacy BAPIs commit internally. In RAP behavior implementations, inserting BAPI_TRANSACTION_COMMIT is not a valid way to bypass framework transaction restrictions.",
+      "pitfall": "An empty RETURN table is not the only possible success condition, and a local COMMIT WORK does not commit an unrelated remote BAPI context.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP BAPI transaction model and documented exceptions",
+          "url": "https://help.sap.com/SAPHELP_SCM700_EHP02/helpdata/EN/4d/5b102ba1483d8fe10000000a42189e/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-05",
+      "question": "Does a remote call participate in the caller's local SAP LUW?",
+      "answer": "A remote execution has its own processing context; I do not assume one atomic rollback spans caller and receiver. I establish which side owns each transaction and whether a stateful remote session is required. If the remote change commits and the local step later fails, recovery needs an explicit reconciliation or compensating business operation.",
+      "detail": "Two remote BAPI calls intended to share a transaction need the appropriate connector context, followed by transaction control in that context. Merely reusing a destination name is not a complete session-management design. An aRFC worker cannot inherit the caller's uncommitted memory or transaction buffer.",
+      "pitfall": "ROLLBACK WORK in the caller cannot undo an already committed remote business document or external side effect.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP RFC variants and their quality-of-service scope",
+          "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/99b53cee2b73e7e10000000a42189b/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        },
+        {
+          "title": "SAP BAPI transaction model and documented exceptions",
+          "url": "https://help.sap.com/SAPHELP_SCM700_EHP02/helpdata/EN/4d/5b102ba1483d8fe10000000a42189e/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-06",
+      "question": "How would you collect results from CALL FUNCTION STARTING NEW TASK?",
+      "answer": "I dispatch a remote-enabled function module with a task identifier and register a callback using CALLING or PERFORMING ON END OF TASK. The callback uses RECEIVE RESULTS FROM FUNCTION to collect outputs and handle communication or system failures. I track launched, completed, failed, and timed-out work explicitly instead of assuming launch success means processing success.",
+      "detail": "The callback can correlate the task identifier with its input package, then store a result or failure. The caller must remain alive and allow callback processing, using an appropriate bounded wait when needed. Callback order need not match the launch order.",
+      "pitfall": "An immediate successful dispatch does not mean business success, and the normal synchronous IMPORTING pattern does not collect an aRFC result.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP parallel processing, callbacks, and resource groups",
+          "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/7bfe8cdcfbb040dcb6702dada8c3e2f0/4d909309eba36e73e10000000a15822b.html",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-07",
+      "question": "How do you prevent parallel RFC processing from exhausting resources?",
+      "answer": "In classic parallel processing I use DESTINATION IN GROUP with an appropriate RFC server group, bound the number of outstanding tasks, and size work packages deliberately. SPBT_INITIALIZE can help inspect available resources, but availability changes. I handle RESOURCE_FAILURE with bounded retry or throttling and measure whether parallelism actually helps the workload.",
+      "detail": "RZ12 defines relevant RFC groups in classic systems. A batch coordinator may dispatch aRFC workers to dialog work processes; its own background status does not mean every worker is a background work process. Avoid spawning one task for every tiny row.",
+      "pitfall": "A resource count is a snapshot, not a reservation; hard-coded maximum concurrency can overload the system or increase lock contention.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP parallel processing, callbacks, and resource groups",
+          "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/7bfe8cdcfbb040dcb6702dada8c3e2f0/4d909309eba36e73e10000000a15822b.html",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-08",
+      "question": "Why are WAIT and implicit database commits important in parallel processing?",
+      "answer": "Waiting and RFC boundaries can have database-transaction consequences, so I check the exact statement's documented behavior. Classic WAIT can trigger a database commit; it is not a harmless sleep around partially completed writes or an open database cursor. That database boundary does not mean all application update tasks or remote business transactions have completed successfully.",
+      "detail": "Prepare work packages without relying on pending caller writes becoming visible to workers. Define explicit transaction boundaries before dispatch and wait. COMMIT WORK AND WAIT, WAIT UNTIL, and collecting aRFC results solve different problems and cannot be substituted for one another.",
+      "pitfall": "Neither 'RFC never commits' nor 'every RFC commits the whole business transaction' is a safe rule; statement, context, and framework restrictions matter.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP WAIT UNTIL and database commit implications",
+          "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/9b958a1786062de10000000a42189d/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-09",
+      "question": "How would you design parallel workers that can be restarted safely?",
+      "answer": "I partition independent work by stable business keys, define each worker's transaction scope, and persist enough progress to distinguish pending, successful, and uncertain outcomes. Retries must be idempotent or detect prior effects. I avoid assigning the same locked business object to concurrent workers and design reconciliation for partial completion across independently committed packages.",
+      "detail": "If five packages commit and a sixth times out, restarting all six blindly can duplicate work. A package status alone may be insufficient if the posting committed before status recording failed; correlate to the actual business result using a stable identifier.",
+      "pitfall": "Parallel execution does not provide all-or-nothing behavior across separate worker transactions, and more workers can make a lock-bound workload slower.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP parallel processing, callbacks, and resource groups",
+          "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/7bfe8cdcfbb040dcb6702dada8c3e2f0/4d909309eba36e73e10000000a15822b.html",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        },
+        {
+          "title": "SAP classic background scheduling and monitoring",
+          "url": "https://help.sap.com/saphelp_em700_ehp01/helpdata/en/48/baab96ca960611e10000000a42189b/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-10",
+      "question": "How do you schedule and troubleshoot a classic background job?",
+      "answer": "In a classic system I define job steps, program variants, execution identity, and start conditions, commonly through SM36. I monitor status, step details, job log, and spool through SM37, then correlate application logs, dumps, and external dependencies. Before repeating a failed job, I establish which business effects already committed and whether the input selection is stable.",
+      "detail": "A periodic posting job needs an overlap rule, a defined selection window, and monitoring for missed runs. Scheduled, released, ready, active, finished, and canceled describe different execution states. A technically finished job may still have logged rejected business records.",
+      "pitfall": "SM37 Finished is not proof that every business record succeeded, and canceling a job does not reverse its earlier commits.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "SAP classic background scheduling and monitoring",
+          "url": "https://help.sap.com/saphelp_em700_ehp01/helpdata/en/48/baab96ca960611e10000000a42189b/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-11",
+      "question": "How do application jobs differ from classic report scheduling in ABAP Cloud?",
+      "answer": "Application jobs use supported execution contracts and job artifacts rather than assuming classic report scheduling APIs are available. A catalog entry identifies executable logic and parameter metadata; a template supplies parameter defaults for scheduling. The Application Jobs app and released APIs support operation according to the product's capabilities. I verify the interfaces and authorization setup for the target release.",
+      "detail": "One catalog can have several templates for different business selections. The executable class, catalog, template, and allowed scheduler must fit together. Application jobs also exist in supported on-premise scenarios; they are not exclusively a cloud concept.",
+      "pitfall": "Do not copy an unreleased JOB_OPEN or SUBMIT pattern into ABAP Cloud, or assume an interface signature from a different release.",
+      "level": "Core",
+      "references": [
+        {
+          "title": "SAP application job implementation, catalog entries, and templates",
+          "url": "https://help.sap.com/docs/btp/sap-business-technology-platform/creating-job-catalog-entry-and-job-template-in-adt",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    },
+    {
+      "id": "RFC-12",
+      "question": "Which operational and security checks make RFC or job processing production-ready?",
+      "answer": "I verify destination and execution identities, least-privilege technical and business authorization, secure connectivity, structured logs, correlation, and alert ownership. Tests include unavailable targets, exhausted resources, malformed input, duplicate requests, lock conflicts, and uncertain outcomes after timeouts. I distinguish a successful scheduling or transport acknowledgment from completed business processing and document a controlled recovery path.",
+      "detail": "Classic diagnosis may use SM58 for tRFC, SMQ1 or SMQ2 for queues, and SBGRFCMON for bgRFC where available. Operators need enough authority to investigate without unrestricted payload editing or posting rights. Exercise retry scenarios with realistic volumes in an authorized test environment.",
+      "pitfall": "An RFC authorization check is not a replacement for application-level authorization, and a durable queue still needs operational monitoring and recovery.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP RFC variants and their quality-of-service scope",
+          "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/99b53cee2b73e7e10000000a42189b/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        },
+        {
+          "title": "SAP classic background scheduling and monitoring",
+          "url": "https://help.sap.com/saphelp_em700_ehp01/helpdata/en/48/baab96ca960611e10000000a42189b/content.htm",
+          "note": "Classic runtime contract unless the source explicitly describes a cloud application job."
+        }
+      ]
+    }
+  ]
+}

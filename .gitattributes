@@ -1,0 +1,4 @@
+# Preserve the exact bytes of the delivered artifacts and archived originals.
+* -text
+*.pdf binary
+*.png binary

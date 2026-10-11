@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1036) scale(1,-1)">Keep Submit real; double only its true dependencies</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)">CUT = code under test. A configured mock response cannot prove the behavior it replaces.</text>
+			<rect x="36" y="276" width="252" height="176" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<rect x="36" y="413" width="252" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="50" y="426" style="font-family: Helvetica-Bold; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,852) scale(1,-1)">TEST INPUT</text>
+			<text x="51" y="383" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,766) scale(1,-1)">Request R1: assignment present</text>
+			<text x="51" y="360" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,720) scale(1,-1)">Request R2: assignment missing</text>
+			<text x="51" y="337" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,674) scale(1,-1)"></text>
+			<text x="51" y="314" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,628) scale(1,-1)">Drive the real operation via EML.</text>
+			<rect x="339" y="276" width="234" height="176" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="358" y="415" style="font-family: Helvetica-Bold; font-size: 21px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,830) scale(1,-1)">REAL CUT</text>
+			<text x="358" y="382" style="font-family: Helvetica; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,764) scale(1,-1)">Submit behavior</text>
+			<text x="358" y="356" style="font-family: Helvetica; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,712) scale(1,-1)">Account-assignment rule</text>
+			<text x="358" y="330" style="font-family: Helvetica; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,660) scale(1,-1)">State transition</text>
+			<text x="358" y="304" style="font-family: Helvetica; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,608) scale(1,-1)">FAILED / REPORTED</text>
+			<path d="M 295,361 L 331,361 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="331 361, 321 356, 321 366" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<rect x="622" y="276" width="223" height="176" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<rect x="622" y="413" width="223" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;"/>
+			<text x="636" y="426" style="font-family: Helvetica-Bold; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,852) scale(1,-1)">DOUBLED DEPENDENCY</text>
+			<text x="638" y="382" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,764) scale(1,-1)">External limit provider</text>
+			<text x="638" y="359" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,718) scale(1,-1)">Controlled return: 500 EUR</text>
+			<text x="638" y="336" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,672) scale(1,-1)">Or a defined failure</text>
+			<text x="638" y="313" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,626) scale(1,-1)"></text>
+			<text x="638" y="290" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,580) scale(1,-1)">Do not double Submit.</text>
+			<path d="M 580,361 L 614,361 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="614 361, 604 356, 604 366" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<rect x="39" y="220" width="229.97777777777776" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="49" y="233" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,466) scale(1,-1)">Case</text>
+			<rect x="270.97777777777776" y="220" width="569.0222222222224" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;"/>
+			<text x="280.97777777777776" y="233" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,466) scale(1,-1)">Required assertions</text>
+			<rect x="39" y="186" width="229.97777777777776" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="49" y="199" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,398) scale(1,-1)">R1: valid</text>
+			<rect x="270.97777777777776" y="186" width="569.0222222222224" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="280.97777777777776" y="199" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,398) scale(1,-1)">Expected state transition and correlated response</text>
+			<rect x="39" y="152" width="229.97777777777776" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="49" y="165" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,330) scale(1,-1)">R2: invalid</text>
+			<rect x="270.97777777777776" y="152" width="569.0222222222224" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="280.97777777777776" y="165" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,330) scale(1,-1)">Rejected identity, useful message, no forbidden state</text>
+			<rect x="39" y="118" width="229.97777777777776" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="49" y="131" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,262) scale(1,-1)">Rule deliberately broken</text>
+			<rect x="270.97777777777776" y="118" width="569.0222222222224" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="280.97777777777776" y="131" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,262) scale(1,-1)">The negative test must fail</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)">Persistence using doubles is isolated evidence. Real database, service authorization, locking, and</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)">external integration still need targeted tests on the actual runtime.</text>
+		</g>
+	</g>
+</svg>
