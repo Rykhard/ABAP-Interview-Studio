@@ -2,7 +2,7 @@
 
 Target source repository: https://github.com/Rykhard/ABAP-Interview-Studio
 
-Requested production hostname: `abap-interview-studio.pages.dev`. Cloudflare determines whether the exact hostname is available when the Pages project is created; a repository name alone does not reserve it.
+Production site: **https://abap-interview-studio.pages.dev/**. The requested hostname was allocated and the first Git-integrated deployment succeeded on 11 October 2026.
 
 ## Git integration
 

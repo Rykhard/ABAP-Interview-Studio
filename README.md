@@ -6,7 +6,7 @@ An English interview preparation app focused on ABAP Cloud, RAP and Clean Core, 
 
 ## Open the app
 
-Requested production address: https://abap-interview-studio.pages.dev/ . This address is a deployment target; see the Cloudflare dashboard for deployment status and hostname availability.
+Open the hosted app: **https://abap-interview-studio.pages.dev/**. Cloudflare Pages publishes successful builds from this repository's `main` branch automatically. See [Deployment](docs/Deployment.md) for build settings and verification.
 
 For offline use, download this repository, keep its folders together and open `START_HERE.html`. GitHub's file viewer does not execute the app.
 

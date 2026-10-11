@@ -14,4 +14,17 @@ Run `python scripts/validate.py` with the dependencies in `requirements.txt` ins
 
 The prior local application review exercised global search, answer visibility states, topic navigation, practice continuity and progress import/export. These checks establish browser behavior, not SAP runtime correctness. Proposed SAP exercises still require execution in an appropriate SAP environment.
 
-Deployment-specific checks and the publishing procedure are described in [Deployment](../docs/Deployment.md). A successful local build alone does not establish that production is deployed or reachable.
+## Production verification, 11 October 2026
+
+Cloudflare Pages successfully built Git commit `f908c14` and published https://abap-interview-studio.pages.dev/ using Git integration. Automatic deployments from `main` are enabled.
+
+- Production root and question navigation loaded; global search for `SQL-12` returned the exact question across all topics.
+- Answer display controls exposed the expected selected state in both modes.
+- The RAP practice setup showed 52 interview questions and 24 authored multiple-choice challenges; a quiz session opened with four answer choices.
+- Browser HTTP requests returned 200 for the root, SVG diagram, handbook PDF, Anki TSV and deployment manifest. A nonexistent path returned 404 with the custom page.
+- The checked diagram, PDF and Anki bytes matched local SHA-256 hashes. Production HTML matched the local build after normalizing Windows line endings to LF.
+- `X-Content-Type-Options: nosniff` was present on the checked responses. The deliberate 404 produced an expected browser network error; no application JavaScript error occurred in the navigation/search checks.
+
+The shell network route returned 403 for the production host, so production HTTP verification used the authenticated browser's ordinary network context. The site itself opened without a learner sign-in.
+
+The publishing procedure is described in [Deployment](../docs/Deployment.md). These deployment checks do not establish SAP runtime correctness.
