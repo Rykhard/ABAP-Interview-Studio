@@ -1,8 +1,8 @@
 # ABAP Interview Studio
 
-An English interview preparation app focused on ABAP Cloud, RAP and Clean Core, with classic ABAP, OO patterns, CDS, SQL/HANA, integration and operations.
+An English/Russian interview preparation app focused on ABAP Cloud, RAP and Clean Core, with classic ABAP, OO patterns, CDS, SQL/HANA, integration and operations.
 
-**329 study questions, 104 authored multiple-choice challenges, 70 teaching visuals and 10 topics.** ABAP Cloud, RAP and Clean Core form the largest curriculum track: 154 questions. Content reviewed 12 October 2026.
+**332 study questions, 107 authored multiple-choice challenges, 70 teaching visuals and 10 topics.** ABAP Cloud, RAP and Clean Core form the largest curriculum track: 156 questions. Content reviewed 12 October 2026.
 
 ## Open the app
 
@@ -12,17 +12,18 @@ For offline use, download this repository, keep its folders together and open `S
 
 ## Learn and practice
 
+- Switch EN/RU in the top bar. Questions, explanations, practice choices, worked-example steps and interface text are authored in both languages. Technical identifiers and executable code stay unchanged. Language switching preserves the current question, lesson step and ongoing practice session. See [Localization](docs/Localization.md) for scope and maintenance.
 - Browse subjects and subtopics as compact question lists with all difficulty levels together. Open a question to read its explanation immediately; return to the same list position and filters.
 - Open a question's code example, select a step to highlight its lines, and read what happens. Use the larger code view or copy the excerpt. Process diagrams remain available beside code where useful. Teaching fragments state their prerequisites and link to primary sources.
 - Switch between light and dark with the animated sun/moon control. Reading preferences include system appearance, larger answer text and a focus mode that hides topic navigation. Theme and reading choices stay in this browser.
 - Save questions into a personal collection, resume the last opened question and move between neighboring questions in a subtopic.
 - Choose Explanation, Code or Step by step where available. The explanation starts with the short answer and one concrete example; extended material is in one optional details section. Visual references open directly in a readable diagram viewer, without tiny previews.
-- Open Guided lessons in the sidebar to browse 23 authored examples linked to 57 questions, covering RAP/CDS/Clean Core, LUW/locks, RFC/workers, HTTP/JSON, IDoc/AIF, patterns, SQL and testing. Each step changes the current process stage and example data. Values illustrate scenarios; they are not a live SAP simulation.
+- Open Guided lessons in the sidebar to browse 24 authored examples linked to 58 questions, covering RAP/CDS/Clean Core, LUW/locks, RFC/workers, HTTP/JSON, IDoc/AIF, patterns, SQL and testing. Each step changes the current process stage and example data. Values illustrate scenarios; they are not a live SAP simulation.
 - Guided views are also available after revealing a practice answer. One step navigator follows changing example data, showing previous values when a state changes. Sources and scope remain available.
 - Question list / All answers has an explicit selected state and remembers your preference. Reading a single question always opens its explanation.
 - Search the whole library with Ctrl+K / Cmd+K. The separate text filter narrows the current view.
 - Interview practice covers every question: answer aloud, reveal the model and self-rate 0-3.
-- Multiple-choice practice has four authored options with explanations. First-correct-concept XP stays separate from spoken readiness. RAP contains 52 study questions, of which 24 have multiple-choice challenges.
+- Multiple-choice practice has four authored options with explanations. First-correct-concept XP stays separate from spoken readiness. RAP contains 54 study questions, of which 27 have multiple-choice challenges.
 - Search during practice and use Resume practice to return to the same session within the page. Reload preserves saved progress, not an unfinished session queue.
 - Progress and saved questions stay in this browser; devices do not synchronize automatically. Downloadable study materials remain in the repository.
 
@@ -49,10 +50,10 @@ Choose one full Anki edition; the senior deck is a subset rather than extra uniq
 | Topic | Questions |
 | --- | ---: |
 | ABAP Cloud architecture | 18 |
-| RAP business objects | 52 |
+| RAP business objects | 54 |
 | Clean Core & extensibility | 36 |
 | CDS modeling & security | 30 |
-| ABAP, OO & patterns | 69 |
+| ABAP, OO & patterns | 70 |
 | SQL & HANA performance | 16 |
 | Protocols & integration | 58 |
 | Testing, delivery & operations | 29 |

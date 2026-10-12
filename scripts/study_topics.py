@@ -17,9 +17,9 @@ def topic_catalog(modules):
             section('cloud-isolation', 'Isolation & identity', 'CLOUD-08 CLOUD-16')]),
         topic('rap', 'RAP business objects', 'rap', 'Model behavior and reason through transactional state, consumer contracts and failure.', [
             section('rap-model', 'Model, implementation & exposure', 'RAP-01 RAP-02 RAP-14 ADV-09 ADV-10 ADV-12 SRAP-01 SRAP-16 SRAP-22'),
-            section('rap-transactions', 'Transactions & save ownership', 'RAP-03 RAP-04 RAP-05 RAP-15 SRAP-02 SRAP-03 SRAP-04 SRAP-15 SRAP-17 SRAP-20'),
+            section('rap-transactions', 'Transactions & save ownership', 'RAP-03 RAP-04 RAP-05 RAP-15 RAP-17 SRAP-02 SRAP-03 SRAP-04 SRAP-15 SRAP-17 SRAP-20'),
             section('rap-eml', 'EML, responses & numbering', 'RAP-07 RAP-08 RAP-10 RAP-11 SRAP-05 SRAP-06 SRAP-07 SRAP-08'),
-            section('rap-behavior', 'Rules, actions & augmentation', 'RAP-06 RAP-13 ADV-04 ADV-05 ADV-06 SRAP-11 SRAP-13 SRAP-14 SRAP-19'),
+            section('rap-behavior', 'Rules, actions & augmentation', 'RAP-06 RAP-13 RAP-16 ADV-04 ADV-05 ADV-06 SRAP-11 SRAP-13 SRAP-14 SRAP-19'),
             section('rap-state', 'Draft, concurrency & access', 'RAP-09 RAP-12 ADV-01 ADV-02 ADV-03 ADV-13 SRAP-09 SRAP-10 SRAP-12 SRAP-23'),
             section('rap-feedback', 'Messages, side effects & events', 'ADV-07 ADV-08 ADV-11 SRAP-18 SRAP-21 SRAP-24')]),
         topic('clean-core', 'Clean Core & extensibility', 'core', 'Classify dependencies and choose supported APIs, extension options and bounded exceptions.', [
@@ -38,7 +38,7 @@ def topic_catalog(modules):
             section('abap-language', 'Language & values', 'ABAP-04 ABAP-05 ABAP-06 ABAP-07 ABAP-08 ABAP-09 ABAP-10 ABAP-12 ABAP-13 ABAP-14 BASE-01 BASE-02 BASE-04 BASE-05 BASE-06 BASE-07 BASE-12 BASE-13 BASE-14'),
             section('abap-tables', 'Tables & expressions', 'ABAP-01 ABAP-02 ABAP-03 ABAP-11 BASE-03 BASE-08 BASE-09 BASE-10 BASE-11 BASE-15 BASE-16'),
             section('abap-oo', 'OO contracts', 'OO-01 OO-02 OO-03 OO-04 OO-05 OO-06 OO-07 OO-08 OO-13 OO-14 '+numbered('OODEEP',12)),
-            section('abap-patterns', 'Patterns', 'OO-09 OO-10 OO-11 OO-12 OO-15 '+numbered('PAT',12))]),
+            section('abap-patterns', 'Patterns', 'OO-09 OO-10 OO-11 OO-12 OO-15 OO-16 '+numbered('PAT',12))]),
         topic('sql', 'SQL & HANA performance', 'performance', 'Preserve result semantics, select a database implementation and measure actual cost.', [
             section('sql-queries', 'Selection, joins & result semantics', 'SQL-02 SQL-03 SQL-04 SQL-05 SQL-06 SQL-07 SQL-08'),
             section('sql-performance', 'Measurement, buffering & data design', 'SQL-09 SQL-10 SQL-11 SQL-12 SQL-13'),

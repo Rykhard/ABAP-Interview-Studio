@@ -1,0 +1,139 @@
+[
+  {
+    "id": "oo-singleton-instance",
+    "language": "ABAP",
+    "questions": [
+      "OO-11",
+      "OO-16",
+      "PAT-09"
+    ],
+    "title": "Singleton: two calls, one reference",
+    "intro": "The static reference retains the object. CREATE PRIVATE alone is not enough.",
+    "context": "Local class definitions and implementations in a teaching report or class pool.",
+    "code": "CLASS lcl_settings DEFINITION FINAL CREATE PRIVATE.\n  PUBLIC SECTION.\n    CLASS-METHODS get_instance\n      RETURNING VALUE(instance) TYPE REF TO lcl_settings.\n  PRIVATE SECTION.\n    CLASS-DATA shared_instance TYPE REF TO lcl_settings.\nENDCLASS.\n\nCLASS lcl_settings IMPLEMENTATION.\n  METHOD get_instance.\n    IF shared_instance IS NOT BOUND.\n      shared_instance = NEW #( ).\n    ENDIF.\n    instance = shared_instance.\n  ENDMETHOD.\nENDCLASS.\n\n\" Inside the caller's executable method:\n\" DATA(first) = lcl_settings=>get_instance( ).\n\" DATA(second) = lcl_settings=>get_instance( ).\n\" ASSERT first = second.",
+    "highlights": [
+      {
+        "label": "Control creation",
+        "lines": [
+          1,
+          3,
+          4,
+          6
+        ],
+        "explanation": "Callers cannot use NEW directly. They request the object through get_instance. The class retains one reference in CLASS-DATA."
+      },
+      {
+        "label": "Create once, reuse later",
+        "lines": [
+          11,
+          12,
+          14
+        ],
+        "explanation": "The first call creates the object. Later calls skip NEW and return the already bound reference."
+      },
+      {
+        "label": "Check the lifetime",
+        "lines": [
+          19,
+          20,
+          21
+        ],
+        "explanation": "Put these statements in an executable method and remove the comment markers. Both references are equal within this internal session. Another session has its own static data."
+      }
+    ],
+    "outcome": "The caller gets the same instance twice in one internal session.",
+    "caveat": "This demonstrates instance lifetime, not a configuration loader. No shared memory, locking or automatic cache invalidation is implemented. Do not keep order-specific mutable state here.",
+    "references": [
+      {
+        "title": "SAP: Singleton buffer implementation",
+        "url": "https://help.sap.com/docs/CP/c0d02c4330c34b3abca88bdd57eaccfc/71c0abf0e9bc4e3c84f82183890bd792.html?locale=en-US"
+      }
+    ]
+  },
+  {
+    "id": "oo-delivery-facade",
+    "language": "ABAP",
+    "questions": [
+      "OO-10",
+      "OO-16",
+      "PAT-03"
+    ],
+    "title": "Facade: one preview operation, three collaborators",
+    "intro": "The UI asks for a delivery preview. The facade coordinates the details.",
+    "context": "Method body of your application facade. The three collaborators are injected interfaces with the methods shown below.",
+    "code": "METHOD preview_delivery.\n  DATA(ls_order) = order_reader->read( order_id ).\n  DATA(lt_packages) = packer->pack( ls_order ).\n  result = carrier->estimate( lt_packages ).\nENDMETHOD.\n\n\" The UI only needs this operation:\n\" DATA(ls_preview) = delivery_facade->preview_delivery( order_id ).",
+    "highlights": [
+      {
+        "label": "Coordinate the steps",
+        "lines": [
+          2,
+          3,
+          4
+        ],
+        "explanation": "Read the order, calculate packages, then estimate delivery. If a collaborator raises a declared exception, the method does not continue to the next step."
+      },
+      {
+        "label": "Keep the caller simple",
+        "lines": [
+          7,
+          8
+        ],
+        "explanation": "The caller knows preview_delivery instead of repeating all three steps. The facade still exposes its result and failures clearly."
+      }
+    ],
+    "outcome": "Several callers can reuse one clearly named business operation.",
+    "caveat": "Teaching fragment: define the facade signature, result type, interfaces, constructor injection and declared exceptions in your application. These are fictional collaborators, not released SAP APIs. This read-only preview does not create a LUW or issue COMMIT.",
+    "references": [
+      {
+        "title": "SAP examples: Facade",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/34_OO_Design_Patterns.md#facade"
+      }
+    ]
+  },
+  {
+    "id": "rap-action-invocation-grouping",
+    "language": "CDS",
+    "questions": [
+      "RAP-16"
+    ],
+    "title": "A table action with a shared changeset",
+    "intro": "Request atomic grouping for selected instances in a supporting Fiori elements client.",
+    "context": "Metadata extension of your own projection ZC_Order, which allows metadata extensions and exposes the Approve action through its service.",
+    "code": "@Metadata.layer: #CORE\nannotate entity ZC_Order with\n{\n  @UI.lineItem: [\n    { position: 10 },\n    { type: #FOR_ACTION,\n      dataAction: 'Approve',\n      label: 'Approve',\n      invocationGrouping: #CHANGE_SET }\n  ]\n  OrderID;\n}",
+    "highlights": [
+      {
+        "label": "Expose the action",
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "explanation": "Use the actual exposed RAP action name. The label is presentation text; it does not create the action implementation."
+      },
+      {
+        "label": "Choose the group",
+        "lines": [
+          9
+        ],
+        "explanation": "#CHANGE_SET requests one changeset for the selected instances. #ISOLATED is the default and allows independent changesets. Either may be carried in $batch."
+      },
+      {
+        "label": "Verify the failure case",
+        "lines": [
+          4,
+          9,
+          11
+        ],
+        "explanation": "Select three orders, make one invalid, inspect metadata and the network payload, then verify that none of the grouped updates persisted. Do not infer grouping from the URL alone."
+      }
+    ],
+    "outcome": "In the supported all-or-nothing scenario, one rejected order prevents the whole shared changeset from committing.",
+    "caveat": "Requires a matching projection, behavior, service and supported Fiori elements/OData version. The annotation does not configure arbitrary freestyle clients or provide rollback for already committed remote effects.",
+    "references": [
+      {
+        "title": "SAP: UI.lineItem.invocationGrouping",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/ui-lineitem-invocationgrouping?locale=en-US"
+      }
+    ]
+  }
+]

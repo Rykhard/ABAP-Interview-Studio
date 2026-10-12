@@ -1,0 +1,23 @@
+[
+ {"from":"${qs.length} ${qs.length===1?'question':'questions'}","to":"${localeCount(qs.length,'question')}"},
+ {"from":"${all.length} questions &middot; ${topics.length} topics","to":"${localeCount(all.length,'question')} &middot; ${localeCount(topics.length,'topic')}"},
+ {"from":"${matched.length} questions","to":"${localeCount(matched.length,'question')}"},
+ {"from":"${g.questions.length} questions","to":"${localeCount(g.questions.length,'question')}"},
+ {"from":"`${matches.length} ${matches.length===1?'question':'questions'} found across all ${topics.length} topics`","to":"`Найдено: ${localeCount(matches.length,'question')}. Поиск по всем темам (${topics.length}).`"},
+ {"from":"`Search all ${all.length} questions, answers, guided lessons, examples and references.`","to":"`Поиск по библиотеке: ${localeCount(all.length,'question')}, ответы, уроки, примеры и источники.`"},
+ {"from":"Show more results (${shown.length} of ${matches.length})","to":"Ещё результаты (${shown.length} из ${matches.length})"},
+ {"from":"Step ${index+1} of ${lesson.steps.length}","to":"Шаг ${index+1} из ${lesson.steps.length}"},
+ {"from":"${lessons.length} worked examples linked to ${coverage} questions. Each example shows one scenario, its changing state and the reason for each step. You can switch back to reading or code at any time.","to":"${localeCount(lessons.length,'lesson')}; связанных вопросов: ${coverage}. Каждый пример показывает сценарий, изменение данных и смысл каждого шага. В любой момент можно вернуться к объяснению или коду."},
+ {"from":"${lesson.steps.length} steps · ${lesson.questions.length} related questions","to":"${localeCount(lesson.steps.length,'step')} · связанных вопросов: ${lesson.questions.length}"},
+ {"from":"`${mcq} of ${total} study questions have authored answer choices. ${total-mcq} more can be practiced aloud.`","to":"`Варианты ответа подготовлены для ${mcq} из ${total} вопросов. Остальные (${total-mcq}) можно тренировать устно.`"},
+ {"from":"`All ${total} study questions are available here. Reveal the model answer, then rate your own explanation.`","to":"`Для устного ответа доступны все вопросы (${total}). Откройте пример ответа и оцените своё объяснение.`"},
+ {"from":"`Start ${count}-question session`","to":"`Начать: ${localeCount(count,'question')}`"},
+ {"from":"`${items.length} questions available${practiceKind==='quiz'?' with answer choices':''}`","to":"`${localeCount(items.length,'question')}${practiceKind==='quiz'?' с вариантами ответа':' для тренировки'}`"},
+ {"from":"Question ${s.index+1} of ${s.ids.length} · ${Object.keys(s.answers).length} ${s.kind==='quiz'?'answered':'self-rated'}","to":"Вопрос ${s.index+1} из ${s.ids.length} · ${s.kind==='quiz'?'Ответов':'Самооценок'}: ${Object.keys(s.answers).length}"},
+ {"from":"${answered.length} of ${s.ids.length} ${s.kind==='quiz'?'answered':'self-rated'}","to":"${s.kind==='quiz'?'Ответов':'Самооценок'}: ${answered.length} из ${s.ids.length}"},
+ {"from":"${s.kind==='quiz'?'correct':'ready to explain'}","to":"${s.kind==='quiz'?'верных ответов':'готовы к устному ответу'}"},
+ {"from":"Retry ${missed.length} ${s.kind==='quiz'?(missed.length===1?'mistake':'mistakes'):(missed.length===1?'weak answer':'weak answers')}","to":"Повторить ${localeCount(missed.length,'question')}"},
+ {"from":"Practice ${unanswered.length} not attempted","to":"Без попытки: ${localeCount(unanswered.length,'question')}"},
+ {"from":"' question '","to":"' вопрос '"},
+ {"from":" question ${q.id}","to":" вопрос ${q.id}"}
+]

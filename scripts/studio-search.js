@@ -1,8 +1,9 @@
 // Global search has its own state and never narrows or resets a practice session.
 let searchQuery='',searchLimit=20,searchOpener=null,searchDestination=null,questionFromSearch=false,searchRouteClosing=false;
-const normalized=s=>String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+const normalized=s=>String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const searchIndex=all.map(q=>({q,fields:[
  ['Question',q.question],['Answer',q.answer],['Example',q.detail],['Common mistake',q.pitfall],
+ ['EN / RU',(englishQuestionText.get(q.id)||'')+' '+(russianQuestionText.get(q.id)||'')],
  ['Topic',q.moduleTitle],['Follow-up',[...q.followups||[],...q.signals||[],q.evidence||''].join(' ')],
  ['Reference',(q.references||[]).map(r=>r.title+' '+r.note).join(' ')],
  ['Guided lesson',(lessonsByQuestion.get(q.id)||[]).map(lesson=>[lesson.title,lesson.scenario,lesson.goal,...lesson.steps.map(step=>step.title+' '+step.explanation)].join(' ')).join(' ')],

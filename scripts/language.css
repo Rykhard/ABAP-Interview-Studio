@@ -1,0 +1,8 @@
+.language-picker{display:inline-flex;align-items:center;flex-shrink:0;padding:3px;border:1px solid var(--line);border-radius:999px;gap:2px}
+.language-picker button{padding:7px 10px;min-height:36px;min-width:40px;border:0;border-radius:999px;background:transparent;color:var(--muted);font:inherit;font-size:.8rem;font-weight:700;transition:background-color .18s ease,color .18s ease}
+.language-picker button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+html[data-theme="dark"] .language-picker button[aria-pressed="true"]{background:#addbce;color:#102629}
+.language-picker button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:640px){.app-bar{gap:7px;flex-wrap:wrap}.language-picker button{min-width:36px;padding:6px 8px}.global-search-launcher{min-width:0}.app-bar #readingOptions{padding-inline:10px}}
+@media(prefers-reduced-motion:reduce){.language-picker button{transition:none}}
+.diagram-language-note{font-size:12px;color:var(--muted);margin:6px 0}

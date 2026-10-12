@@ -1,0 +1,76 @@
+[
+  {
+    "id": "cloud-small-business-rule",
+    "title": "Передать бизнес-правилу бизнес-значения",
+    "questions": [
+      "CLOUD-15"
+    ],
+    "intro": "Небольшое бизнес-правило может работать без HTTP-запроса, строки БД или объекта сообщения RAP.",
+    "language": "ABAP",
+    "context": "Метод собственного класса бизнес-правил. amount и minimum — параметры IMPORTING типа decfloat34, blocked — IMPORTING abap_bool, result — RETURNING abap_bool. Клиент передаёт значения и преобразует результат в ответ сервиса или сообщение UI.",
+    "code": "METHOD is_eligible.\n  result = xsdbool(\n    amount >= minimum\n    AND blocked = abap_false ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4
+        ],
+        "label": "Вычислить одно бизнес-решение",
+        "explanation": "Метод сравнивает amount и blocked. Он не читает HTTP request, не выполняет SQL и не создаёт framework message."
+      },
+      {
+        "lines": [
+          2
+        ],
+        "label": "Вернуть простой результат",
+        "explanation": "Клиент получает abap_true или abap_false. RAP adapter может сообщить решение, не создавая зависимости policy class от RAP response types."
+      }
+    ],
+    "outcome": "При amount 500, minimum 300 и blocked = abap_false результат true. Unit test проверяет правило без HTTP-сервера и базы данных.",
+    "caveat": "Это небольшое правило, а не весь процесс согласования или проверка полномочий. В полном решении также нужны права, правила валют, причины отказа и ответственность за транзакцию. Выполнение в SAP не заявляется.",
+    "references": [
+      {
+        "title": "SAP Clean ABAP: методы и тестируемость",
+        "url": "https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md"
+      }
+    ]
+  },
+  {
+    "id": "clean-core-wrapper-dependency",
+    "title": "Обёртка не удаляет исходную зависимость",
+    "questions": [
+      "CORE-08",
+      "GOV-03"
+    ],
+    "intro": "Переименование вызова или преобразование результата не меняет статус использования API внутри обёртки.",
+    "language": "ABAP",
+    "context": "Метод собственной обёртки в классическом компоненте системы, где такой подход разрешён. dependency — ссылка на объект с методом read_order; order_id и result имеют собственные публичные типы приложения. Предполагается, что вызванная реализация проверена и всё ещё использует unreleased-объект SAP. Конкретный SAP API здесь не выдумывается.",
+    "code": "METHOD read_order.\n  DATA(ls_order) = dependency->read_order(\n    order_id = order_id ).\n  result = CORRESPONDING #( ls_order ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3
+        ],
+        "label": "Проследить настоящий вызов",
+        "explanation": "Проверьте следующую зависимость в цепочке. Выпуск собственного интерфейса для клиентов не делает внутренний объект SAP released."
+      },
+      {
+        "lines": [
+          4
+        ],
+        "label": "Разделить преобразование данных и классификацию",
+        "explanation": "Собственный тип результата защищает клиентов от части изменений интерфейса. Он не устраняет внутреннюю зависимость и риск несовместимости после обновления."
+      }
+    ],
+    "outcome": "Клиент получает небольшой интерфейс, но исходной зависимости всё ещё нужны классификация, ответственный, тесты и план замены. Вся цепочка не стала Level A.",
+    "caveat": "Учебная обёртка с необходимыми типами и методами. Это не обход ограничений ABAP Cloud или Public Edition. Проверьте настоящие вызовы SAP и реализации, выбираемые из настройки. Один этот фрагмент не устанавливает уровень Clean Core.",
+    "references": [
+      {
+        "title": "SAP Learning: Clean Core checks и release contracts",
+        "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad"
+      }
+    ]
+  }
+]

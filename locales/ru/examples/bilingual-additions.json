@@ -1,0 +1,139 @@
+[
+  {
+    "id": "oo-singleton-instance",
+    "language": "ABAP",
+    "questions": [
+      "OO-11",
+      "OO-16",
+      "PAT-09"
+    ],
+    "title": "Singleton: два вызова, одна ссылка",
+    "intro": "Статическая ссылка хранит объект. Одного CREATE PRIVATE недостаточно.",
+    "context": "Локальный класс в учебном отчёте или class pool.",
+    "code": "CLASS lcl_settings DEFINITION FINAL CREATE PRIVATE.\n  PUBLIC SECTION.\n    CLASS-METHODS get_instance\n      RETURNING VALUE(instance) TYPE REF TO lcl_settings.\n  PRIVATE SECTION.\n    CLASS-DATA shared_instance TYPE REF TO lcl_settings.\nENDCLASS.\n\nCLASS lcl_settings IMPLEMENTATION.\n  METHOD get_instance.\n    IF shared_instance IS NOT BOUND.\n      shared_instance = NEW #( ).\n    ENDIF.\n    instance = shared_instance.\n  ENDMETHOD.\nENDCLASS.\n\n\" Inside the caller's executable method:\n\" DATA(first) = lcl_settings=>get_instance( ).\n\" DATA(second) = lcl_settings=>get_instance( ).\n\" ASSERT first = second.",
+    "highlights": [
+      {
+        "label": "Управляем созданием",
+        "lines": [
+          1,
+          3,
+          4,
+          6
+        ],
+        "explanation": "Внешний код не может вызвать NEW напрямую. Он получает объект через get_instance. Класс хранит одну ссылку в CLASS-DATA."
+      },
+      {
+        "label": "Создаём один раз, затем используем",
+        "lines": [
+          11,
+          12,
+          14
+        ],
+        "explanation": "Первый вызов создаёт объект. Следующие пропускают NEW и возвращают ту же ссылку."
+      },
+      {
+        "label": "Проверяем время жизни",
+        "lines": [
+          19,
+          20,
+          21
+        ],
+        "explanation": "Перенесите эти строки в исполняемый метод и уберите знаки комментария. В одной internal session ссылки равны. В другой сессии статические данные свои."
+      }
+    ],
+    "outcome": "В одной internal session вызывающий код дважды получает один экземпляр.",
+    "caveat": "Это пример времени жизни объекта, а не загрузчик настроек. Здесь нет shared memory, блокировок или автоматического сброса кеша. Не храните здесь изменяемые данные текущего заказа.",
+    "references": [
+      {
+        "title": "SAP: реализация Singleton-буфера",
+        "url": "https://help.sap.com/docs/CP/c0d02c4330c34b3abca88bdd57eaccfc/71c0abf0e9bc4e3c84f82183890bd792.html?locale=en-US"
+      }
+    ]
+  },
+  {
+    "id": "oo-delivery-facade",
+    "language": "ABAP",
+    "questions": [
+      "OO-10",
+      "OO-16",
+      "PAT-03"
+    ],
+    "title": "Facade: одна операция предпросмотра, три зависимости",
+    "intro": "UI запрашивает предпросмотр доставки. Facade организует остальные вызовы.",
+    "context": "Тело метода Facade вашего приложения. Три зависимости переданы через интерфейсы с методами, показанными ниже.",
+    "code": "METHOD preview_delivery.\n  DATA(ls_order) = order_reader->read( order_id ).\n  DATA(lt_packages) = packer->pack( ls_order ).\n  result = carrier->estimate( lt_packages ).\nENDMETHOD.\n\n\" The UI only needs this operation:\n\" DATA(ls_preview) = delivery_facade->preview_delivery( order_id ).",
+    "highlights": [
+      {
+        "label": "Связываем шаги",
+        "lines": [
+          2,
+          3,
+          4
+        ],
+        "explanation": "Читаем заказ, формируем упаковки, оцениваем доставку. Если зависимость выбрасывает объявленное исключение, метод не переходит к следующему шагу."
+      },
+      {
+        "label": "Упрощаем вызывающий код",
+        "lines": [
+          7,
+          8
+        ],
+        "explanation": "Вместо повторения трёх шагов вызывающий код знает preview_delivery. Результат и возможные ошибки всё равно должны быть понятны."
+      }
+    ],
+    "outcome": "Несколько клиентов используют одну понятно названную бизнес-операцию.",
+    "caveat": "Учебный фрагмент: определите сигнатуру, тип результата, интерфейсы, передачу зависимостей через constructor и исключения в своём приложении. Зависимости вымышленные, это не released SAP API. Этот предпросмотр только читает данные: он не создаёт LUW и не выполняет COMMIT.",
+    "references": [
+      {
+        "title": "SAP: примеры Facade",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/34_OO_Design_Patterns.md#facade"
+      }
+    ]
+  },
+  {
+    "id": "rap-action-invocation-grouping",
+    "language": "CDS",
+    "questions": [
+      "RAP-16"
+    ],
+    "title": "Action таблицы с общим changeset",
+    "intro": "Запрашиваем общую атомарную группу для выбранных строк в поддерживающем Fiori elements клиенте.",
+    "context": "Metadata extension вашей проекции ZC_Order. Проекция разрешает metadata extensions и публикует action Approve через сервис.",
+    "code": "@Metadata.layer: #CORE\nannotate entity ZC_Order with\n{\n  @UI.lineItem: [\n    { position: 10 },\n    { type: #FOR_ACTION,\n      dataAction: 'Approve',\n      label: 'Approve',\n      invocationGrouping: #CHANGE_SET }\n  ]\n  OrderID;\n}",
+    "highlights": [
+      {
+        "label": "Показываем action",
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "explanation": "Укажите настоящее имя опубликованного RAP action. Label — только подпись кнопки; реализацию action она не создаёт."
+      },
+      {
+        "label": "Выбираем группу",
+        "lines": [
+          9
+        ],
+        "explanation": "#CHANGE_SET запрашивает один changeset для выбранных строк. По умолчанию #ISOLATED допускает независимые changesets. Оба варианта могут передаваться в $batch."
+      },
+      {
+        "label": "Проверяем ошибочный сценарий",
+        "lines": [
+          4,
+          9,
+          11
+        ],
+        "explanation": "Выберите три заказа, сделайте один невалидным, проверьте metadata и сетевой запрос. Затем убедитесь, что ни одно изменение общей группы не сохранилось. Одного URL недостаточно."
+      }
+    ],
+    "outcome": "В поддерживаемом сценарии «всё или ничего» ошибка одного заказа не даёт сохранить общий changeset.",
+    "caveat": "Нужны соответствующие проекция, behavior, сервис и поддерживаемая версия Fiori elements/OData. Аннотация не настраивает произвольные freestyle-клиенты и не откатывает уже сохранённые удалённые изменения.",
+    "references": [
+      {
+        "title": "SAP: UI.lineItem.invocationGrouping",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/ui-lineitem-invocationgrouping?locale=en-US"
+      }
+    ]
+  }
+]

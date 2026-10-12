@@ -1,0 +1,387 @@
+{
+  "id": "05-rap-foundations",
+  "title": "Основы RAP и транзакции",
+  "intro": "Начните с границы business object и владельца транзакции. Объясните, как потребитель меняет transactional buffer, как выполняются бизнес-правила и когда фреймворк сохраняет результат. Эти различия помогают избежать наиболее серьёзных ошибок исходных заметок.",
+  "sources": [
+    {
+      "title": "SAP Learning: варианты реализации behavior",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/exploring-the-behavior-implementation-options"
+    },
+    {
+      "title": "SAP Learning: EML и владение транзакцией",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects"
+    },
+    {
+      "title": "SAP Learning: numbering и determinations",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/setting-values-using-numbering-and-determinations"
+    },
+    {
+      "title": "SAP Learning: draft",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/understanding-the-draft-concept"
+    },
+    {
+      "title": "SAP: контракт RAP BO",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract"
+    },
+    {
+      "title": "SAP RAP: determinations и область их действия в unmanaged",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/determinations"
+    },
+    {
+      "title": "SAP RAP: mapping при late numbering",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/adjust-numbers"
+    },
+    {
+      "title": "SAP: BAPI в RAP — late numbering и save sequence",
+      "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US"
+    }
+  ],
+  "questions": [
+    {
+      "id": "RAP-01",
+      "level": "Core",
+      "question": "Из каких частей состоит RAP-приложение?",
+      "answer": "У RAP-приложения есть модель данных, бизнес-правила и сервис. Таблицы хранят данные, CDS описывает сущности и связи. Behavior definition задаёт доступные операции, а обработчики на ABAP реализуют бизнес-логику. Projection выбирает нужные приложению поля и операции. Service definition определяет, какие сущности публиковать, а service binding — через какой протокол к ним обращаться.",
+      "detail": "В приложении заявок на закупку есть действие Submit. CDS описывает заявку и позиции, behavior definition объявляет Submit, а обработчик проверяет или меняет заявку. Сначала изменения находятся в памяти текущей транзакции. Затем RAP save sequence записывает допустимые изменения в базу.\n\nProjection предоставляет нужные поля и операции. Service definition выбирает сущности, а service binding задаёт, например, тип сервиса OData. Правила доступа к данным и аннотации UI решают отдельные задачи. Благодаря такому разделению легче понять, где искать причину отсутствующего поля, ошибки операции или неправильного экрана.",
+      "pitfall": "Service definition не реализует бизнес-поведение. Создание service binding само по себе ещё не означает, что сервис готов к промышленной эксплуатации.",
+      "references": [
+        {
+          "title": "SAP Learning: варианты реализации behavior",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/exploring-the-behavior-implementation-options",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-02",
+      "level": "Core",
+      "question": "Как выбрать managed или unmanaged RAP?",
+      "answer": "Managed RAP подходит, когда фреймворк может обрабатывать изменения объекта и запись в базу. Unmanaged RAP нужен, когда эту работу должна выполнять ваша реализация, часто через существующий бизнес-API. Managed RAP with unmanaged save — промежуточный вариант: изменения ведёт RAP, сохранение реализуете вы. Во всех вариантах транзакцией управляет RAP.",
+      "detail": "Для нового приложения командировок со своими таблицами managed RAP избавляет от ручной реализации основных CREATE, UPDATE и DELETE. Можно сосредоточиться на проверке дат. В существующем приложении бизнес-API уже может правильно обновлять несколько таблиц. Его использование иногда оправдывает unmanaged save или полностью unmanaged реализацию.\n\nДо выбора проверяю внутренний COMMIT, update tasks и блокировки API. COMMIT внутри локальной обработки RAP нарушает правила выполнения и может быть отклонён. Перенос в отдельную транзакцию даёт другую проблему: она сохраняется независимо, и последующий локальный ROLLBACK её не отменит. Выбор определяется поведением API, а не возрастом приложения.",
+      "pitfall": "Unmanaged не разрешает произвольный COMMIT WORK или запись в базу в любом месте handler.",
+      "references": [
+        {
+          "title": "SAP Learning: варианты реализации behavior",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/exploring-the-behavior-implementation-options",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-03",
+      "level": "Core",
+      "question": "Что такое transactional buffer?",
+      "answer": "Transactional buffer — рабочее состояние бизнес-объекта внутри текущей транзакции, включая ещё не сохранённые изменения. EML позволяет читать это состояние через BO. Прямой SELECT из базы может вернуть старые значения. В managed RAP буфер ведёт фреймворк; в unmanaged реализация должна сама обеспечить нужное поведение.",
+      "detail": "В базе количество позиции равно 2. Пользователь меняет его на 5, и RAP должен пересчитать итог до сохранения. Чтение через BO учитывает ожидающее сохранения значение 5. Чтение только из базы может вернуть 2, и итог получится устаревшим.\n\nПосле успешного сохранения база содержит новое состояние. До этого буфер принадлежит текущей транзакции и не сохраняет незавершённую работу между независимыми HTTP-запросами. Для этого у draft есть отдельное постоянное хранилище. Поэтому технически правильный SELECT иногда всё равно не подходит для бизнес-проверки.",
+      "pitfall": "Transactional buffer — не постоянное хранилище draft. Он не переносит изменения между произвольными независимыми HTTP-запросами.",
+      "references": [
+        {
+          "title": "SAP Learning: EML и владение транзакцией",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-04",
+      "level": "Core",
+      "question": "Где разрешено вызывать COMMIT ENTITIES?",
+      "answer": "COMMIT ENTITIES вызывает внешняя ABAP-программа, которая управляет своей EML-транзакцией. Внутри обработчика RAP или saver транзакцию завершает фреймворк: самостоятельно вызывать COMMIT ENTITIES и COMMIT WORK нельзя. Это относится и к actions, validations и determinations. При запросе OData момент сохранения определяет фреймворк обработки запроса.",
+      "detail": "Отдельная ABAP-программа создаёт заявку и позиции через EML. Она проверяет ответы изменения и вызывает COMMIT ENTITIES, когда всё бизнес-изменение готово к сохранению. Затем проверяет ответы сохранения: принятие изменения не доказывает успешное сохранение.\n\nЕсли та же логика находится внутри RAP action, action может делать разрешённые изменения, но не должна сама выполнять COMMIT. Фреймворку ещё нужно обработать другие правила и изменения. Ранний COMMIT разрывает единую транзакцию, а нарушение контракта RAP может вызвать ошибку выполнения. Перенос COMMIT в saver не исправляет проблему.",
+      "pitfall": "Перенос COMMIT из validation в SAVE или CANCEL не делает его разрешённым.",
+      "references": [
+        {
+          "title": "SAP Learning: EML и владение транзакцией",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        },
+        {
+          "title": "SAP: контракт RAP BO",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-05",
+      "level": "Advanced",
+      "question": "Каковы шаги RAP save sequence и где находится point of no return?",
+      "answer": "RAP сохраняет изменения так: FINALIZE завершает расчёты, CHECK_BEFORE_SAVE проверяет данные, ADJUST_NUMBERS назначает окончательные ключи при late numbering, SAVE записывает данные, CLEANUP очищает buffer. Point of no return наступает после успешного CHECK_BEFORE_SAVE всех участвующих BO. Запомнить просто: рассчитать → проверить → пронумеровать → записать → очистить.",
+      "detail": "1. FINALIZE - Завершить расчёты. Например, посчитать итог заказа по его позициям. В managed BO это делают соответствующие on-save determinations, в unmanaged — метод saver. Это последняя фаза, в которой разрешено менять transactional buffer. Обычные EML MODIFY после FINALIZE вызывают ошибку выполнения; запрет действует не с начала этой фазы.\n\n2. CHECK_BEFORE_SAVE - Выполнить окончательные бизнес-проверки. Например, отклонить заказ с неверной датой доставки. Managed BO использует validations, unmanaged BO — проверку в saver. Point of no return наступает только после успешной проверки всех участвующих BO. Ошибка останавливает процесс до late numbering и записи данных.\n\n3. ADJUST_NUMBERS - Назначить окончательные ключи при late numbering. Например, новый заказ получает номер 4711. При early numbering ключ уже назначен, поэтому этот поздний шаг выдачи номера не нужен. Полученный номер ещё не доказывает, что COMMIT базы завершится успешно.\n\n4. SAVE - Записать изменения. При обычном managed save данные BO сохраняет RAP. При additional save RAP продолжает сохранять BO, а save_modified добавляет, например, запись в журнал аудита. В managed BO с with unmanaged save метод save_modified заменяет стандартное сохранение. Полностью unmanaged BO реализует метод save в локальном классе saver. SAVE — название фазы, а не обязательное имя метода во всех вариантах.\n\n5. CLEANUP - Очистить локальные буферы при завершении LUW, включая ROLLBACK, чтобы старые данные не попали в следующую транзакцию. CLEANUP_FINALIZE — отдельный метод для обработки ранней ошибки в FINALIZE или CHECK_BEFORE_SAVE участвующего BO. Он позволяет отменить подготовительную работу. Это не последний шаг успешного сохранения. Ошибка сохранения не означает, что весь пользовательский ввод автоматически удалён.\n\nПример: позиции стоят 40 и 60. FINALIZE получает итог 100. CHECK_BEFORE_SAVE обнаруживает неверную дату — сохранение прекращается без позднего номера и без записанного заказа. С правильной датой ADJUST_NUMBERS выдаёт 4711, затем сохраняются заказ и позиции. Владелец транзакции завершает COMMIT, а CLEANUP убирает рабочие данные. Обработчик RAP или saver не выполняет собственный COMMIT.\n\nPoint of no return означает, что обычные бизнес-проверки уже пройдены, а не что сбой базы невозможен. Для поддерживаемых случаев, в том числе отдельных интеграций BAPI, SAP описывает специальный saver CL_ABAP_BEHAVIOR_SAVER_FAILED. Проверяйте сценарий и версию системы: это не разрешение переносить обычные validations на позднюю фазу сохранения.",
+      "pitfall": "Не запрещайте все EML-изменения внутри FINALIZE, не переносите обычную validation за point of no return и не путайте save_modified managed BO с save полностью unmanaged BO. CLEANUP_FINALIZE относится к ранней ошибке.",
+      "references": [
+        {
+          "title": "SAP: выполнение save sequence",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/save-sequence-runtime",
+          "note": "Порядок фаз, последняя фаза изменения буфера, point of no return и обработка ранних ошибок."
+        },
+        {
+          "title": "SAP: варианты сохранения",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/save",
+          "note": "Managed persistence, additional save и замена persistence — разные варианты."
+        },
+        {
+          "title": "SAP: реализация additional save",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-additional-save",
+          "note": "Hook save_modified дополняет managed persistence и получает сведения об изменениях."
+        },
+        {
+          "title": "SAP: TYPE REQUEST FOR",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/type-request-for",
+          "note": "Оба расширения сохранения managed BO используют save_modified с входными create, update и delete."
+        },
+        {
+          "title": "SAP: CLEANUP_FINALIZE",
+          "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/f030096abe1d41f9ac7549f0290b9c09.html?locale=en-US",
+          "note": "CLEANUP_FINALIZE вызывается при раннем сбое. Жизненный цикл буфера отличается от обычной очистки в конце LUW."
+        },
+        {
+          "title": "SAP: интеграция BAPI и late numbering",
+          "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US&state=PRODUCTION&version=sap_cross_product_abap",
+          "note": "Особая интеграция BAPI может требовать saver с поддержкой отказа. Проверьте продукт и релиз."
+        }
+      ],
+      "defaultExplanation": "diagram"
+    },
+    {
+      "id": "RAP-06",
+      "level": "Core",
+      "question": "Когда использовать determination, validation, action или precheck?",
+      "answer": "Determination автоматически заполняет или рассчитывает значения. Validation проверяет, можно ли сохранить данные. Action — явно запрошенная операция, например Submit. Precheck отклоняет входящее изменение до попадания в buffer. Выбирайте по нужному действию и моменту, а не помещайте все правила в один handler.",
+      "detail": "В заявке determination задаёт валюту по умолчанию. Validation отклоняет дату окончания раньше начала. Submit — action, потому что пользователь явно просит бизнес-действие. Подходящий precheck может отклонить новое значение поля до принятия UPDATE в транзакцию.\n\nValidation сообщает проблему, а не исправляет данные незаметно. Важен тип реализации: в unmanaged RAP объявленные determinations и validations применяются к draft-экземплярам. Для активных экземпляров согласованность обеспечивают соответствующие unmanaged operation handlers и save checks. Копирование managed-примера без этого различия может оставить активные данные без проверки.",
+      "pitfall": "Action — не другое название CRUD event. Validation не должна менять бизнес-данные.",
+      "references": [
+        {
+          "title": "SAP Learning: numbering и determinations",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/setting-values-using-numbering-and-determinations",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        },
+        {
+          "title": "SAP RAP: determinations и область их действия в unmanaged",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/determinations",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-07",
+      "level": "Core",
+      "question": "Чем отличаются FAILED, REPORTED и MAPPED?",
+      "answer": "FAILED указывает, какой экземпляр или операция отклонены. REPORTED содержит сообщения, их важность и привязку к полю или экземпляру. MAPPED связывает идентификатор создания, переданный потребителем, с созданным объектом, если операция поддерживает такое сопоставление. Это разные задачи: одного сообщения об ошибке в REPORTED не всегда достаточно, чтобы отклонить операцию.",
+      "detail": "Из двух заявок у одной неверная дата доставки. Validation указывает эту заявку в FAILED и объясняет причину в REPORTED. Привязка сообщения к полю позволяет UI выделить дату. Одно сообщение с уровнем Error — ненадёжный способ запретить сохранение.\n\nПри CREATE потребитель может передать content ID ещё до появления окончательного ключа. MAPPED связывает этот идентификатор с новым объектом. Используйте только те параметры ответа, которые доступны конкретному обработчику. Например, у determination нет FAILED, поэтому она не заменяет validation, отклоняющую сохранение.",
+      "pitfall": "Error severity в REPORTED не заменяет FAILED. У determinations нет FAILED.",
+      "references": [
+        {
+          "title": "SAP Learning: EML и владение транзакцией",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-08",
+      "level": "Core",
+      "question": "Что такое EML и когда использовать его вместо SQL?",
+      "answer": "EML позволяет ABAP-коду обращаться к RAP BO через его операции. READ ENTITIES читает текущее состояние объекта в транзакции, MODIFY ENTITIES запрашивает изменения или actions. SQL напрямую обращается к базе и не запускает бизнес-логику BO. Для бизнес-операции используйте EML; для чтения сохранённых данных выбирайте подходящий интерфейс запросов.",
+      "detail": "Фоновая программа должна отправить заявку на возмещение расходов на согласование. SQL UPDATE поля статуса может обойти проверки, блокировки и проверку полномочий действия Submit. Вызов этого action через EML использует бизнес-логику BO и возвращает результат, который программа должна проверить.\n\nНужно проверить и результат последующего сохранения: успешный ответ action ещё не доказывает, что COMMIT выполнен. Для отчёта, который только читает сохранённые данные, CDS или SQL часто проще и быстрее. Смысл EML — соблюдать правила бизнес-объекта, а не автоматически ускорять любое чтение.",
+      "pitfall": "EML не означает, что любое чтение через него оптимально по скорости. Выбирайте интерфейс с правильным смыслом.",
+      "references": [
+        {
+          "title": "SAP Learning: EML и владение транзакцией",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-09",
+      "level": "Advanced",
+      "question": "Что означает IN LOCAL MODE?",
+      "answer": "IN LOCAL MODE предназначен для внутренних EML-вызовов BO к самому себе. В зависимости от операции он пропускает некоторые проверки, например authorization, feature control и prechecks, чтобы внутренняя логика могла обслуживать объект. Он не создаёт отдельную транзакцию и не разрешает запрещённый save. Это не общий способ отключить безопасность чужого BO.",
+      "detail": "Поле итога заявки объявлено readonly для пользователя, потому что сумму рассчитывает приложение. Determination внутри BO должна обновить итог после изменения позиции. Внутренний EML-вызов с IN LOCAL MODE позволяет выполнить такое служебное изменение в рамках правил RAP.\n\nВнешний потребитель не должен использовать этот режим как способ обойти проверку полномочий другого BO. Проверяйте, где выполняется вызов и какие проверки он пропускает. IN LOCAL MODE не создаёт новую LUW и не разрешает COMMIT в обработчике.",
+      "pitfall": "IN LOCAL MODE не является универсальной опцией внешнего потребителя для отключения безопасности любого BO.",
+      "references": [
+        {
+          "title": "SAP Learning: EML и владение транзакцией",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-10",
+      "level": "Core",
+      "question": "Что означают %cid, %cid_ref, %tky и %pid?",
+      "answer": "%cid — идентификатор создания внутри запроса. Через %cid_ref можно сослаться на создаваемого родителя, например при создании позиции. %tky — transactional key: ключ экземпляра с нужным контекстом, в том числе состоянием draft. %pid — предварительный идентификатор для late numbering. Эти значения решают разные задачи и не заменяют друг друга.",
+      "detail": "Создаём заголовок и позицию одним запросом. Окончательного номера заголовка пока может не быть. Передаём для него content ID, а при create by association позиции ссылаемся на этот ID. RAP связывает объекты без необходимости угадывать окончательный ключ.\n\nВ ответах и сообщениях обработчика используйте полученный ключ транзакционного экземпляра. Если собрать ключ только из номера документа, можно потерять контекст draft. При late numbering ADJUST_NUMBERS сопоставляет предварительные значения в %pre с окончательным %key. Content ID связывает части запроса, но не является постоянным номером документа.",
+      "pitfall": "%tky означает transactional key, а не temporary key. %cid — не сохраняемый номер бизнес-документа.",
+      "references": [
+        {
+          "title": "SAP Learning: EML и владение транзакцией",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-11",
+      "level": "Advanced",
+      "question": "Чем early numbering отличается от late numbering?",
+      "answer": "Early numbering назначает окончательный ключ во время interaction phase. Late numbering оставляет предварительный идентификатор и назначает окончательный ключ позже, при сохранении. Технический UUID и видимый пользователю номер документа могут быть разными полями. Late numbering помогает не тратить номера на часть отклонённых изменений, но само по себе не гарантирует нумерацию без пропусков.",
+      "detail": "Новая заявка сразу получает UUID, чтобы её позиции могли ссылаться на стабильный технический ключ. А видимый номер согласования бизнес хочет выдавать только после принятия заявки. Для этого нужно отдельно спроектировать поддерживаемую нумерацию; видимый номер не обязательно делать единственным техническим ключом.\n\nДва пользователя сохраняют документы одновременно. SELECT MAX плюс один может выдать обоим один номер. Используйте подходящий number range и правила управления транзакцией. Если бизнес требует номера без пропусков, отдельно разберите ошибки сохранения, отмены и реальные гарантии механизма нумерации.",
+      "pitfall": "Late numbering не гарантирует номера без пропусков. SELECT MAX плюс один небезопасен при параллельной работе.",
+      "references": [
+        {
+          "title": "SAP Learning: numbering и determinations",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/setting-values-using-numbering-and-determinations",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        },
+        {
+          "title": "SAP RAP: mapping при late numbering",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/adjust-numbers",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-12",
+      "level": "Core",
+      "question": "Какую проблему решает draft?",
+      "answer": "Draft хранит незавершённое редактирование отдельно от активных бизнес-данных. Пользователь может продолжить работу после следующего HTTP-запроса или перерыва. RAP предоставляет Edit, Resume, Activate и Discard; Prepare может запускать выбранные проверки и расчёты. Activate переносит допустимые изменения draft в обработку активного экземпляра. После этого save sequence тоже должна завершиться успешно.",
+      "detail": "Майя меняет сумму заказа 4703 с 80 EUR на 120 EUR и закрывает браузер. Draft хранит 120 EUR, а активный заказ всё ещё содержит 80 EUR. Позже Майя запускает Activate, но проверка отклоняет сумму: в этом примере разрешено не больше 100 EUR. Она исправляет draft на 90 EUR. Только успешные активация и сохранение делают 90 EUR активным значением.\n\nОбязательные проверки при активации могут отклонить пустые или неверные данные. Успех Activate не даёт обработчику права вызвать собственный COMMIT. При чтении, сообщениях и actions различайте ключи draft и активного экземпляра. Пользовательское действие Submit может быть отдельным бизнес-шагом: оно не обязано совпадать с активацией draft.",
+      "pitfall": "Не каждый BO автоматически поддерживает draft. Custom Submit action не равен автоматически draft activation.",
+      "references": [
+        {
+          "title": "SAP Learning: draft",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/understanding-the-draft-concept",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-13",
+      "level": "Advanced",
+      "question": "Можно ли полагаться на порядок determinations и validations?",
+      "answer": "Не делайте независимую determination зависимой от запуска другой раньше, если framework contract этого не гарантирует. Связанные значения рассчитывайте вместе или явно задавайте зависимость. Повторный расчёт должен давать согласованный результат. У RAP есть определённые фазы, но это не гарантирует порядок всех handlers внутри фазы.",
+      "detail": "Одна determination пересчитывает валюту отображения, другая — итог. Если итог предполагает уже выполненную конвертацию, последующее изменение может оставить неверное значение. Понятнее считать оба результата из одних текущих исходных данных или объединить зависимые шаги в подходящей операции.\n\nПроверяйте не только первый CREATE: дважды измените количество, смените валюту, повторите тот же UPDATE. Итог должен оставаться правильным, handlers не должны бесконечно запускать друг друга. Проблема не в том, что весь порядок RAP случаен, а в зависимости от порядка, которого документация не обещает.",
+      "pitfall": "Называть порядок случайным неточно. Опасно полагаться на порядок, не гарантированный контрактом.",
+      "references": [
+        {
+          "title": "SAP RAP: determinations и область их действия в unmanaged",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/determinations",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-14",
+      "level": "Core",
+      "question": "Как работает persistent field mapping?",
+      "answer": "Field mapping сообщает RAP, как поле хранилища связано с элементом CDS, если их имена различаются. Например, RequestUUID соответствует колонке request_uuid. Mapping сопоставляет имена для выбранного варианта хранения. Он не рассчитывает значения и не соединяет таблицы. Для расчётов и преобразований нужна отдельная логика.",
+      "detail": "В таблице поле называется request_uuid, а в CDS — RequestUUID. Mapping в behavior definition связывает эти имена, чтобы RAP читал и записывал нужное поле. Проверяйте все важные поля: похожие имена не всегда означают, что нужное сопоставление уже настроено.\n\nЕсли экран показывает сумму в другой валюте, сопоставление Amount с колонкой не выполняет конвертацию. Валюту должна пересчитать отдельная логика. У projections и сгенерированных типов EML также могут отличаться имена и поля ключа: для каждого вызова используйте подходящий тип.",
+      "pitfall": "Mapping — не JOIN базы и не универсальный механизм преобразования значений.",
+      "references": [
+        {
+          "title": "SAP Learning: варианты реализации behavior",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/exploring-the-behavior-implementation-options",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        }
+      ]
+    },
+    {
+      "id": "RAP-15",
+      "level": "Advanced",
+      "question": "Можно ли вызвать BAPI из RAP и что будет, если он выполнит COMMIT?",
+      "answer": "Некоторые BAPI подходят для RAP, другие — нет. Не каждый BAPI выполняет собственный COMMIT: проверяйте конкретный API. Локальный COMMIT WORK или BAPI_TRANSACTION_COMMIT внутри RAP handler или saver нарушает владение транзакцией и может вызвать ошибку выполнения. Перенос в unmanaged save или save_modified не делает COMMIT разрешённым.",
+      "detail": "Сначала выясните, что делает BAPI: как проверяет данные и полномочия, ставит блокировки, пишет в базу, использует update task и завершает транзакцию. Проверьте доступность API в выбранной ABAP language version. Даже released API не обязательно разрешено вызывать в любой фазе RAP.\n\nДля совместимого API действие RAP может записать намерение в transactional buffer, а подходящая точка save sequence выполнит сохранение позже. В managed BO with unmanaged save метод save_modified заменяет стандартную запись данных BO; при additional save — дополняет её. Полностью unmanaged BO обычно использует метод save своего saver. Это разные варианты реализации, но ни один не разрешает самостоятельно завершать LUW. Финальным COMMIT управляет RAP.\n\nПример: action запрашивает изменение через подходящий BAPI. Проверьте предсказуемые ошибки до point of no return, сохраните запрос в буфере, вызовите API в документированной поздней точке сохранения и правильно обработайте его ответы. Затем дайте RAP завершить транзакцию. Для поддерживаемого CREATE с late numbering SAP описывает вызов BAPI в ADJUST_NUMBERS. Проверяйте версию системы и допустимую обработку ошибок.\n\nЕсли BAPI неизбежно выполняет собственный COMMIT, нельзя просто вставить его в save_modified или спрятать за wrapper. Нужен подходящий API либо явно отделённая асинхронная обработка. Во втором случае бизнес-операция завершается позже: пользователю нужны понятные состояния, например Pending и Failed. BRFplus вычисляет правила, а не обходит ограничения транзакций; см. RAP-17. Проверку полномочий выполняйте в поддерживаемой точке, при необходимости используя документированный authorization-context pattern.",
+      "pitfall": "Unmanaged означает больше ручной реализации поведения или хранения, а не свободный COMMIT. Wrapper, BRFplus или RFC destination не сохраняют единую атомарную LUW волшебным образом.",
+      "references": [
+        {
+          "title": "SAP: BAPI в RAP — late numbering и save sequence",
+          "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US",
+          "note": "Проверьте тип реализации RAP и допустимые действия в этой точке транзакции."
+        },
+        {
+          "title": "SAP: полномочия при использовании BAPI в RAP",
+          "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-authorizations",
+          "note": "Изучайте authorization-context pattern вместе с RAP authorization. Если в ограниченной фазе нужно подавить повторную проверку, настоящая проверка прав всё равно должна выполняться на разрешённой границе."
+        },
+        {
+          "title": "SAP: RAP action со встроенной бизнес-логикой BAPI",
+          "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/implementing-rap-action-with-integrated-bapi-business-logic",
+          "note": "Сравните сохранение намерения action и вызов совместимого BAPI на этапе late save."
+        },
+        {
+          "title": "Практикум SAP RAP640: реализация unmanaged save",
+          "url": "https://github.com/SAP-samples/abap-platform-rap640/blob/main/exercises/ex4/README.md",
+          "note": "Практический пример managed BO с unmanaged save. До адаптации изучите требования сценария."
+        },
+        {
+          "title": "SAP: транзакционная модель BAPI",
+          "url": "https://help.sap.com/docs/PRODUCT_ID/fe1c8e016c551014ba0ec92da35a91ee/4d5b102ba1483d8fe10000000a42189e.html",
+          "note": "Обычно BAPI оставляет завершение транзакции вызывающей стороне, но есть документированные исторические исключения. Проверяй конкретный API."
+        }
+      ]
+    },
+    {
+      "id": "RAP-16",
+      "level": "Advanced",
+      "question": "Как объединить Fiori action для нескольких выбранных строк в один changeset через InvocationGrouping?",
+      "answer": "В поддерживаемом приложении Fiori elements укажите invocationGrouping: #CHANGE_SET в аннотации действия @UI.lineItem. По умолчанию #ISOLATED допускает отдельные changesets для выбранных строк. Оба варианта могут передаваться внутри одного HTTP $batch. $batch — общий конверт, а changeset — атомарная группа запросов внутри него. Проверьте метаданные и реальный сетевой запрос.",
+      "detail": "Выбраны заказы A, B и C, нажата Approve. Заказ B содержит ошибку. При отдельных changesets A и C могут сохраниться, а B — нет. В одном общем changeset ожидается всё или ничего: отказ B не позволяет зафиксировать A и C в этой группе.\n\nЗадайте аннотацию для действия в CDS metadata extension, сохранив type: #FOR_ACTION и правильное имя dataAction. В метаданных OData проверьте UI.InvocationGrouping со значением UI.OperationGroupingType/ChangeSet. Затем откройте вкладку Network браузера: наличие /$batch ещё не доказывает один общий changeset. Намеренно выберите один неверный заказ и проверьте сохранённые данные.\n\nНастройка определяет, как поддерживающий её UI вызывает действие. Она не объединяет произвольные запросы всех клиентов и не обещает один вызов обработчика ABAP. Обработчик должен корректно принимать несколько ключей. Клиент на freestyle SAPUI5 дополнительно требует настройки групп и отправки запросов в OData model. Если удалённая система уже сохранила результат, локальный ROLLBACK changeset его не отменит.",
+      "pitfall": "Не приравнивайте #ISOLATED к отсутствию $batch, а #CHANGE_SET — к атомарности между системами. Проверяйте версию Fiori elements/OData и поведение сервиса.",
+      "references": [
+        {
+          "title": "SAP: UI.lineItem.invocationGrouping",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/ui-lineitem-invocationgrouping?locale=en-US",
+          "note": "Значения аннотации, значение по умолчанию и группировка вызовов для нескольких экземпляров."
+        },
+        {
+          "title": "SAPUI5: группировка вызовов action",
+          "url": "https://help.sap.com/docs/SAPUI5/fbdf2b2c05364a829185721c6ce5daa0/cbf16c599f2d4b8796e3702f7d4aae6c.html",
+          "note": "Различайте общий batch request и changesets внутри него."
+        }
+      ]
+    },
+    {
+      "id": "RAP-17",
+      "level": "Advanced",
+      "question": "Делают ли BRFplus, bgPF или bgRFC безопасным BAPI с внутренним COMMIT в RAP?",
+      "answer": "BRFplus вычисляет бизнес-правила и не решает проблему COMMIT внутри BAPI. bgPF — механизм фонового выполнения. Если версия системы поддерживает вариант uncontrolled, в нём можно выполнять логику, которой нужен собственный COMMIT. Но эта работа идёт отдельно от исходного сохранения RAP: общей транзакции «всё или ничего» уже нет. Такой подход подходит, только если бизнес допускает результат позже, повторные попытки и возможную ошибку. В обычном bgRFC unit выполнять COMMIT по-прежнему нельзя.",
+      "detail": "Пример: после сохранения заказа нужна долгая дополнительная обработка. При поддерживаемой интеграции bgPF зарегистрируйте фоновую работу в разрешённой точке RAP save. Она станет доступна для выполнения после успешной исходной транзакции. Пользователь видит Pending, затем Completed или Failed. Нужны повторные попытки, защита от дублей, мониторинг и восстановление после ошибки. Сбой фоновой операции не откатывает уже сохранённый заказ.\n\nРазличай обычный bgRFC unit и специальный вариант bgPF uncontrolled. Для второго SAP предлагает IF_BGMC_OP_SINGLE_TX_UNCONTR и set_operation_tx_uncontrolled; в примере SAP собственный COMMIT WORK прямо указан как один из случаев использования. Проверь доступность и ограничения в своей системе. Это не разрешает COMMIT в исходном обработчике RAP или saver. Промежуточные сохранения в фоне могут оставить частичный результат, поэтому повторный запуск не должен создавать дубликаты.\n\nBRFplus может выбрать правило согласования, но не планирует фоновые задачи и не исправляет транзакционную согласованность RAP. Если предлагают BRF+ для проблемы COMMIT в BAPI, уточните, не имелись ли в виду bgPF или bgRFC, и отдельно оцените такое решение.",
+      "pitfall": "Не путай BRFplus с bgPF, а вариант bgPF uncontrolled — с обычным bgRFC unit. Разрешённый COMMIT в фоновой операции не делает её одной атомарной транзакцией с исходным сохранением RAP.",
+      "references": [
+        {
+          "title": "SAP: бизнес-правила BRFplus",
+          "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/8b78ae42ec1c4b75937806fcd4fd7d1c/9a6b67ce7c26446483af079719edf679.html",
+          "note": "BRFplus определяет и вычисляет бизнес-правила."
+        },
+        {
+          "title": "SAP: Background Processing Framework",
+          "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/6aa39f1ac05441e5a23f484f31e477e7/0ad13bd0fafb46f08d3f5174d5fd01f9.html",
+          "note": "bgPF обеспечивает надёжную асинхронную обработку на основе bgRFC."
+        },
+        {
+          "title": "SAP: CALL FUNCTION IN BACKGROUND UNIT",
+          "url": "https://help.sap.com/doc/abapdocu_752_index_htm/7.52/en-US/abapcall_function_background_unit.htm",
+          "note": "Изучите ограничения транзакций внутри bgRFC unit."
+        },
+        {
+          "title": "SAP: Controlled SAP LUW",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-concepts/controlled-sap-luw",
+          "note": "RAP использует controlled SAP LUW. Правила выбранного варианта операции bgPF нужно проверить отдельно."
+        },
+        {
+          "title": "SAP: варианты операций bgPF — controlled и uncontrolled",
+          "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/8132142fd1a144a59303663a03a7c2d4/54886371defd410498df76d2c980c9ab.html",
+          "note": "В документации по трассировке перечислены оба интерфейса операций. Полные правила их работы проверяй в документации своей версии."
+        },
+        {
+          "title": "Пример SAP: выполнение bgPF controlled и uncontrolled",
+          "url": "https://github.com/SAP-samples/abap-platform-bgpf-appl-log-events-side-effects/blob/main/src/zbgpfcl_calc_inventory_006.clas.abap",
+          "note": "Пример различает интерфейсы операций и показывает регистрацию через set_operation_tx_uncontrolled. Проверь свою версию и правила обработки ошибок и повторов."
+        }
+      ]
+    }
+  ]
+}

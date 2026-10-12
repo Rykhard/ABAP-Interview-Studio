@@ -1,0 +1,660 @@
+[
+  {
+    "id": "cloud",
+    "title": "Архитектура ABAP Cloud",
+    "icon": "cloud",
+    "description": "Выбирайте место расширения, API, компоненты и способы идентификации с учётом целевой системы.",
+    "sections": [
+      {
+        "id": "cloud-placement",
+        "title": "Размещение и границы бизнес-процессов",
+        "questionIds": [
+          "CLOUD-01",
+          "CLOUD-02",
+          "CLOUD-07",
+          "CLOUD-09",
+          "CLOUD-12",
+          "CLOUD-14"
+        ]
+      },
+      {
+        "id": "cloud-apis",
+        "title": "Выбор API и правила использования",
+        "questionIds": [
+          "CLOUD-03",
+          "CLOUD-05",
+          "CLOUD-10",
+          "CLOUD-11",
+          "CLOUD-13",
+          "CLOUD-17"
+        ]
+      },
+      {
+        "id": "cloud-lifecycle",
+        "title": "Компоненты и жизненный цикл",
+        "questionIds": [
+          "CLOUD-04",
+          "CLOUD-06",
+          "CLOUD-15",
+          "CLOUD-18"
+        ]
+      },
+      {
+        "id": "cloud-isolation",
+        "title": "Изоляция и идентификация",
+        "questionIds": [
+          "CLOUD-08",
+          "CLOUD-16"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rap",
+    "title": "Бизнес-объекты RAP",
+    "icon": "rap",
+    "description": "Разбирайте поведение объектов, транзакции, взаимодействие с клиентами и обработку ошибок.",
+    "sections": [
+      {
+        "id": "rap-model",
+        "title": "Модель, реализация и публикация",
+        "questionIds": [
+          "RAP-01",
+          "RAP-02",
+          "RAP-14",
+          "ADV-09",
+          "ADV-10",
+          "ADV-12",
+          "SRAP-01",
+          "SRAP-16",
+          "SRAP-22"
+        ]
+      },
+      {
+        "id": "rap-transactions",
+        "title": "Транзакции и управление сохранением",
+        "questionIds": [
+          "RAP-03",
+          "RAP-04",
+          "RAP-05",
+          "RAP-15",
+          "RAP-17",
+          "SRAP-02",
+          "SRAP-03",
+          "SRAP-04",
+          "SRAP-15",
+          "SRAP-17",
+          "SRAP-20"
+        ]
+      },
+      {
+        "id": "rap-eml",
+        "title": "EML, ответы и нумерация",
+        "questionIds": [
+          "RAP-07",
+          "RAP-08",
+          "RAP-10",
+          "RAP-11",
+          "SRAP-05",
+          "SRAP-06",
+          "SRAP-07",
+          "SRAP-08"
+        ]
+      },
+      {
+        "id": "rap-behavior",
+        "title": "Правила, actions и augmentation",
+        "questionIds": [
+          "RAP-06",
+          "ADV-04",
+          "RAP-13",
+          "RAP-16",
+          "ADV-05",
+          "ADV-06",
+          "SRAP-11",
+          "SRAP-13",
+          "SRAP-14",
+          "SRAP-19"
+        ]
+      },
+      {
+        "id": "rap-state",
+        "title": "Draft, параллельные изменения и доступ",
+        "questionIds": [
+          "RAP-12",
+          "ADV-01",
+          "RAP-09",
+          "ADV-02",
+          "ADV-03",
+          "ADV-13",
+          "SRAP-09",
+          "SRAP-10",
+          "SRAP-12",
+          "SRAP-23"
+        ]
+      },
+      {
+        "id": "rap-feedback",
+        "title": "Сообщения, side effects и события",
+        "questionIds": [
+          "ADV-07",
+          "ADV-08",
+          "ADV-11",
+          "SRAP-18",
+          "SRAP-21",
+          "SRAP-24"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "clean-core",
+    "title": "Clean Core и расширения",
+    "icon": "core",
+    "description": "Оценивайте зависимости и выбирайте поддерживаемые API, способы расширения и обоснованные исключения.",
+    "sections": [
+      {
+        "id": "core-levels",
+        "title": "Уровни и результаты ATC",
+        "questionIds": [
+          "CORE-01",
+          "CORE-02",
+          "CORE-03",
+          "CORE-06",
+          "CORE-07",
+          "CORE-17",
+          "CORE-04",
+          "CORE-05",
+          "CORE-14",
+          "GOV-01",
+          "GOV-16",
+          "GOV-18"
+        ]
+      },
+      {
+        "id": "core-contracts",
+        "title": "Released API и цепочки зависимостей",
+        "questionIds": [
+          "CORE-08",
+          "CORE-12",
+          "CORE-13",
+          "GOV-02",
+          "GOV-03",
+          "GOV-09",
+          "GOV-10"
+        ]
+      },
+      {
+        "id": "core-choices",
+        "title": "Выбор расширения и отсутствие API",
+        "questionIds": [
+          "CORE-09",
+          "CORE-10",
+          "CORE-15",
+          "CORE-11",
+          "GOV-05",
+          "GOV-07",
+          "GOV-08",
+          "GOV-14"
+        ]
+      },
+      {
+        "id": "core-exceptions",
+        "title": "Исключения и правила поставки",
+        "questionIds": [
+          "CORE-16",
+          "GOV-04",
+          "GOV-11",
+          "GOV-12",
+          "GOV-15"
+        ]
+      },
+      {
+        "id": "core-modernization",
+        "title": "Модернизация и обновления",
+        "questionIds": [
+          "CORE-18",
+          "GOV-06",
+          "GOV-13",
+          "GOV-17"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cds",
+    "title": "Моделирование CDS и безопасность",
+    "icon": "cds",
+    "description": "Создавайте корректные ключи, связи и запросы. Проверяйте доступ на каждом пути чтения данных.",
+    "sections": [
+      {
+        "id": "cds-model",
+        "title": "Сущности, ключи и связи",
+        "questionIds": [
+          "CDS-01",
+          "CDS-02",
+          "CDS-03",
+          "CDS-04",
+          "CDS-05",
+          "CDS-11",
+          "MODEL-06",
+          "MODEL-10"
+        ]
+      },
+      {
+        "id": "cds-projections",
+        "title": "Проекции, аннотации и развитие модели",
+        "questionIds": [
+          "CDS-08",
+          "CDS-12",
+          "MODEL-08",
+          "MODEL-17"
+        ]
+      },
+      {
+        "id": "cds-security",
+        "title": "DCL и границы авторизации",
+        "questionIds": [
+          "CDS-07",
+          "MODEL-01",
+          "MODEL-02",
+          "MODEL-11",
+          "MODEL-12",
+          "MODEL-13",
+          "MODEL-14",
+          "MODEL-15",
+          "MODEL-16"
+        ]
+      },
+      {
+        "id": "cds-query",
+        "title": "Custom queries и virtual elements",
+        "questionIds": [
+          "CDS-06",
+          "CDS-09",
+          "MODEL-03",
+          "MODEL-04",
+          "MODEL-05",
+          "MODEL-09"
+        ]
+      },
+      {
+        "id": "cds-analytics",
+        "title": "Аналитика, суммы и агрегация",
+        "questionIds": [
+          "CDS-10",
+          "MODEL-07",
+          "MODEL-18"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "abap",
+    "title": "ABAP, ООП и паттерны",
+    "icon": "abap",
+    "description": "Понимайте поведение языка и создавайте ясные интерфейсы, управляемые объекты и заменяемые зависимости.",
+    "sections": [
+      {
+        "id": "abap-language",
+        "title": "Язык и значения",
+        "questionIds": [
+          "ABAP-04",
+          "ABAP-05",
+          "ABAP-06",
+          "ABAP-10",
+          "ABAP-12",
+          "ABAP-14",
+          "ABAP-07",
+          "ABAP-08",
+          "ABAP-09",
+          "ABAP-13",
+          "BASE-04",
+          "BASE-05",
+          "BASE-06",
+          "BASE-14",
+          "BASE-01",
+          "BASE-02",
+          "BASE-07",
+          "BASE-12",
+          "BASE-13"
+        ]
+      },
+      {
+        "id": "abap-tables",
+        "title": "Внутренние таблицы и выражения",
+        "questionIds": [
+          "ABAP-01",
+          "ABAP-02",
+          "ABAP-03",
+          "ABAP-11",
+          "BASE-03",
+          "BASE-08",
+          "BASE-09",
+          "BASE-10",
+          "BASE-11",
+          "BASE-15",
+          "BASE-16"
+        ]
+      },
+      {
+        "id": "abap-oo",
+        "title": "Правила и интерфейсы ООП",
+        "questionIds": [
+          "OO-01",
+          "OO-02",
+          "OO-03",
+          "OO-04",
+          "OO-05",
+          "OO-06",
+          "OO-07",
+          "OO-13",
+          "OO-14",
+          "OO-08",
+          "OODEEP-04",
+          "OODEEP-05",
+          "OODEEP-01",
+          "OODEEP-02",
+          "OODEEP-03",
+          "OODEEP-06",
+          "OODEEP-07",
+          "OODEEP-08",
+          "OODEEP-09",
+          "OODEEP-10",
+          "OODEEP-11",
+          "OODEEP-12"
+        ]
+      },
+      {
+        "id": "abap-patterns",
+        "title": "Паттерны",
+        "questionIds": [
+          "OO-15",
+          "OO-16",
+          "OO-09",
+          "OO-10",
+          "OO-11",
+          "OO-12",
+          "PAT-01",
+          "PAT-02",
+          "PAT-03",
+          "PAT-04",
+          "PAT-05",
+          "PAT-06",
+          "PAT-07",
+          "PAT-08",
+          "PAT-09",
+          "PAT-10",
+          "PAT-11",
+          "PAT-12"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sql",
+    "title": "SQL и производительность HANA",
+    "icon": "performance",
+    "description": "Сохраняйте смысл результатов запросов, выбирайте способ обработки и измеряйте реальную стоимость.",
+    "sections": [
+      {
+        "id": "sql-queries",
+        "title": "Выборка, JOIN и смысл результата",
+        "questionIds": [
+          "SQL-02",
+          "SQL-03",
+          "SQL-06",
+          "SQL-08",
+          "SQL-04",
+          "SQL-05",
+          "SQL-07"
+        ]
+      },
+      {
+        "id": "sql-performance",
+        "title": "Измерения, буферизация и модель данных",
+        "questionIds": [
+          "SQL-09",
+          "SQL-13",
+          "SQL-10",
+          "SQL-11",
+          "SQL-12"
+        ]
+      },
+      {
+        "id": "sql-pushdown",
+        "title": "CDS, AMDP и code pushdown",
+        "questionIds": [
+          "SQL-01",
+          "SQL-14",
+          "SQLX-01",
+          "SQLX-02"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "integration",
+    "title": "Протоколы и интеграция",
+    "icon": "integration",
+    "description": "Связывайте системы с понятными форматами данных, правилами доступа, транзакциями и восстановлением после ошибок.",
+    "sections": [
+      {
+        "id": "integration-http",
+        "title": "HTTP, REST и форматы",
+        "questionIds": [
+          "HTTP-01",
+          "HTTP-02",
+          "HTTP-03",
+          "HTTP-05",
+          "HTTP-06",
+          "HTTP-07",
+          "HTTP-08",
+          "HTTP-11",
+          "HTTP-04",
+          "HTTP-09",
+          "HTTP-10",
+          "HTTP-12"
+        ]
+      },
+      {
+        "id": "integration-odata",
+        "title": "OData и Fiori",
+        "questionIds": [
+          "ODATA-01",
+          "ODATA-02",
+          "ODATA-03",
+          "ODATA-05",
+          "ODATA-06",
+          "ODATA-08",
+          "ODATA-09",
+          "ODATA-04",
+          "ODATA-07",
+          "ODATA-10",
+          "ODATA-11",
+          "ODATA-12"
+        ]
+      },
+      {
+        "id": "integration-rfc",
+        "title": "RFC, BAPI и jobs",
+        "questionIds": [
+          "RFC-01",
+          "RFC-02",
+          "RFC-03",
+          "RFC-10",
+          "RFC-11",
+          "RFC-04",
+          "RFC-05",
+          "RFC-06",
+          "RFC-07",
+          "RFC-08",
+          "RFC-09",
+          "RFC-12"
+        ]
+      },
+      {
+        "id": "integration-idoc",
+        "title": "IDoc и AIF",
+        "questionIds": [
+          "INTF-01",
+          "INTF-02",
+          "INTF-03",
+          "INTF-04",
+          "INTF-05",
+          "INTF-07",
+          "INTF-11",
+          "INTF-06",
+          "INTF-08",
+          "INTF-09",
+          "INTF-10",
+          "INTF-12"
+        ]
+      },
+      {
+        "id": "integration-btp",
+        "title": "Сервисы BTP и подключения",
+        "questionIds": [
+          "BTP-01",
+          "BTP-02",
+          "BTP-03",
+          "BTP-04",
+          "BTP-06",
+          "BTP-09",
+          "BTP-05",
+          "BTP-07",
+          "BTP-08",
+          "BTP-10"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "quality",
+    "title": "Тестирование, поставка и эксплуатация",
+    "icon": "quality",
+    "description": "Проверяйте решения тестами, отслеживайте изменения и проектируйте восстановление после сбоев.",
+    "sections": [
+      {
+        "id": "quality-tests",
+        "title": "Дизайн тестов и test doubles",
+        "questionIds": [
+          "TEST-01",
+          "TEST-02",
+          "TEST-10",
+          "TEST-03",
+          "TEST-04",
+          "OPS-01",
+          "OPS-02",
+          "OPS-03",
+          "OPS-04",
+          "OPS-15",
+          "OPS-18"
+        ]
+      },
+      {
+        "id": "quality-boundaries",
+        "title": "Проверки безопасности и параллельных изменений",
+        "questionIds": [
+          "TEST-06",
+          "TEST-07",
+          "OPS-05"
+        ]
+      },
+      {
+        "id": "quality-operations",
+        "title": "Диагностика, производительность и восстановление",
+        "questionIds": [
+          "TEST-09",
+          "OPS-06",
+          "OPS-07",
+          "OPS-08",
+          "OPS-11",
+          "OPS-12",
+          "OPS-13",
+          "OPS-17"
+        ]
+      },
+      {
+        "id": "quality-delivery",
+        "title": "Поставка, совместимость и проверка версии",
+        "questionIds": [
+          "TEST-05",
+          "TEST-08",
+          "OPS-09",
+          "OPS-10",
+          "OPS-14",
+          "OPS-16",
+          "DELIV-01"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "extensions",
+    "title": "Enhancements и workflow",
+    "icon": "extension",
+    "description": "Определяйте объём классических разработок, выбирайте способы расширения и разбирайте процессы согласования.",
+    "sections": [
+      {
+        "id": "extensions-scope",
+        "title": "Объём работ, интерфейсы и миграция",
+        "questionIds": [
+          "RICEFW-01",
+          "RICEFW-02",
+          "RICEFW-06",
+          "RICEFW-05",
+          "RICEFW-07",
+          "RICEFW-15"
+        ]
+      },
+      {
+        "id": "extensions-hooks",
+        "title": "Enhancements и формы",
+        "questionIds": [
+          "RICEFW-03",
+          "RICEFW-04",
+          "RICEFW-08"
+        ]
+      },
+      {
+        "id": "extensions-workflow",
+        "title": "Workflow и жизненный цикл согласования",
+        "questionIds": [
+          "RICEFW-09",
+          "RICEFW-10",
+          "RICEFW-11",
+          "RICEFW-12",
+          "RICEFW-13",
+          "RICEFW-14"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "interview",
+    "title": "Опыт проектов и решения на интервью",
+    "icon": "interview",
+    "description": "Рассказывайте о своей работе, обосновывайте решения и уточняйте недостающие данные.",
+    "sections": [
+      {
+        "id": "interview-stories",
+        "title": "Примеры проектов и результаты",
+        "questionIds": [
+          "STORY-01",
+          "STORY-02",
+          "STORY-04"
+        ]
+      },
+      {
+        "id": "interview-decisions",
+        "title": "Выбор решений и вопросы интервьюеру",
+        "questionIds": [
+          "STORY-06",
+          "STORY-03",
+          "STORY-05"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,218 @@
+{
+  "id": "04-cds-data-modeling",
+  "title": "Моделирование данных в CDS",
+  "intro": "Сначала объясните модель данных, затем annotations. Хороший ответ связывает идентичность entity, cardinality ассоциаций, полномочия и нужды потребителя. Различайте переиспользуемую CDS-модель, транзакционную RAP projection и аналитический запрос.",
+  "sources": [
+    {
+      "title": "SAP Learning: понятия CDS",
+      "url": "https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e"
+    },
+    {
+      "title": "SAP Learning: наследование DCL",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks"
+    },
+    {
+      "title": "SAP Learning: compositions",
+      "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-compositions-in-odata-ui-services"
+    },
+    {
+      "title": "SAP: аналитические projection views",
+      "url": "https://learning.sap.com/courses/developing-analytical-models-with-cds-based-analytical-projection-views/describing-the-role-of-a-cds-analytical-projection-view"
+    },
+    {
+      "title": "SAP: CDS abstract entities",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-data-models/cds-abstract-entities"
+    },
+    {
+      "title": "SAP RAP: реализация сортировки virtual elements",
+      "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-sorting-of-virtual-elements"
+    }
+  ],
+  "questions": [
+    {
+      "id": "CDS-01",
+      "level": "Core",
+      "question": "Что ABAP CDS добавляет к SQL-запросу?",
+      "answer": "CDS превращает запрос к базе в переиспользуемую модель данных ABAP. Модель описывает поля, связи, смысл сумм и валют, аннотации и правила доступа на чтение. Несколько приложений могут использовать её, не собирая одинаковый запрос заново. За получение результата из базы по-прежнему отвечает SQL. Для создания и изменения бизнес-объектов отдельно нужны операции RAP behavior.",
+      "detail": "Списку заказов нужны номер, клиент и сумма. CDS может предоставить эти поля, связать данные клиента и указать валюту суммы. Подходящие правила доступа ограничивают доступные заказы. Другое приложение переиспользует модель вместо копирования JOIN и правил.\n\nСмысл опубликованных полей важен потребителям. Его изменение может сломать приложение, даже если запрос продолжает работать. Модель чтения заказа не даёт автоматически операцию создания: бизнес-операции и их поведение нужно определить отдельно.",
+      "pitfall": "CDS definition не реализует автоматически CREATE, UPDATE и DELETE.",
+      "references": [
+        {
+          "title": "SAP Learning: понятия CDS",
+          "url": "https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-02",
+      "level": "Core",
+      "question": "Чем classic CDS view отличается от CDS view entity?",
+      "answer": "Classic CDS view создаёт CDS entity и отдельно именованный DDIC SQL view. CDS view entity не создаёт этот отдельный SQL-view object. Для новой разработки предпочитаю view entities, если их поддерживают релиз и потребители. При миграции проверяю программы, обращающиеся напрямую к старому SQL-view name.",
+      "detail": "Classic CDS view объявляет имя SQL view, которое несколько отчётов используют в SELECT. При замене на view entity меняется не только синтаксис: отчёты всё ещё ожидают отдельный объект. Нужно найти потребителей и спланировать их переход.\n\nДо конвертации проверяю версию системы и требования инструментов. После изменения вызовов проверяю характерные чтения, поля и ключи результата. AbapCatalog.sqlViewName относится к классическому варианту и не переносится в view entity. На интервью важно объяснить, какие объекты репозитория существуют и кто от них зависит.",
+      "pitfall": "Не копируйте AbapCatalog.sqlViewName в view entity и не предполагайте поддержку view entities во всех старых системах.",
+      "references": [
+        {
+          "title": "SAP Learning: понятия CDS",
+          "url": "https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-03",
+      "level": "Core",
+      "question": "Association или JOIN: как выбрать cardinality?",
+      "answer": "JOIN соединяет источники в текущем запросе. Association описывает связь, по которой может перейти потребитель; при использовании она часто превращается в JOIN. Cardinality показывает, сколько строк реально может соответствовать ON. Она должна соответствовать данным. To-one при нескольких возможных совпадениях способен дать неправильный результат.",
+      "detail": "Заказ 4710 имеет сумму 100 EUR и статус с английским и немецким текстами. JOIN только по Status найдёт оба текста: заказ появится дважды, а сумма может стать 200 EUR. Нужно сопоставить Status и требуемый Language. Если пара действительно уникальна в источнике текстов, to-one может быть верным. Проверяю также отсутствие текста и неожиданные дубли.\n\nКлюч заказа — отдельный вопрос. Key OrderUUID не удалит строки от неполного JOIN. To-one тоже не обеспечивает уникальность источника: её должны подтверждать ON и данные. При необходимости измеряю скорость. Association удобна для моделирования связей, но не быстрее JOIN автоматически.",
+      "pitfall": "Associations не быстрее JOIN автоматически и не обеспечивают ссылочную целостность сами по себе.",
+      "references": [
+        {
+          "title": "SAP Learning: понятия CDS",
+          "url": "https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-04",
+      "level": "Core",
+      "question": "Чем association отличается от composition в RAP?",
+      "answer": "Association описывает связь между сущностями. Composition использую, когда дочерний объект принадлежит родителю в одном RAP BO: например, позиция принадлежит заказу. Такое владение влияет на жизненный цикл и настроенные зависимости блокировок и полномочий. В projections связи перенаправляют на соответствующие проекции сущностей.",
+      "detail": "У позиции есть собственная строка таблицы, но обычно она существует как часть заказа. Composition выражает это владение и поддерживает, например, создание позиций через родителя. Проверяю правила удаления и зависимости дочерних сущностей от корня BO для блокировок и полномочий. Они должны соответствовать жизненному циклу объекта.\n\nКлиент, связанный с заказом, — другой случай. Удаление заказа обычно не должно удалять клиента, поэтому нужна association. В projections навигация должна вести на проекции заказа и позиции. Одного внешнего ключа недостаточно, чтобы объявить связь composition.",
+      "pitfall": "Не каждый foreign key должен становиться composition. Решающее условие — владение жизненным циклом.",
+      "references": [
+        {
+          "title": "SAP Learning: compositions",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-compositions-in-odata-ui-services",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-05",
+      "level": "Core",
+      "question": "Что означают interface, composite, consumption и projection?",
+      "answer": "Эти названия описывают разные задачи моделирования. Interface views ориентированы на повторное использование, consumption views — на конкретных потребителей. Аннотации VDM basic, composite и consumption задают соглашения модели. RAP projection предоставляет поддерживаемое представление одной исходной сущности для определённого сценария. Provider contract ограничивает доступные возможности. Ни одно из этих названий само не публикует сервис.",
+      "detail": "Два приложения используют общую модель заявки, но разные поля и операции. Общий смысл храню в переиспользуемой модели. Каждому приложению даю нужную projection и согласованно перенаправляю связи. Это избавляет от копирования основных бизнес-определений для каждого экрана.\n\nНе добавляю слой CDS только ради красивой схемы названий: у него должна быть полезная задача. Аннотация composite не разрешает любые возможности projection и не создаёт service binding. До добавления JOIN и выражений проверяю provider contract. Важно объяснить, зачем слой нужен потребителю и от каких изменений он его защищает.",
+      "pitfall": "Аннотация VDM composite не является условием service binding и не разрешает произвольные JOIN в RAP projection.",
+      "references": [
+        {
+          "title": "SAP Learning: понятия CDS",
+          "url": "https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-06",
+      "level": "Advanced",
+      "question": "Что такое CDS abstract entity и custom entity?",
+      "answer": "Abstract entity задаёт структурированный тип, например параметры action. Она не создаёт результат запроса к базе. Custom entity описывает данные запроса, которые предоставляет реализация на ABAP вместо сгенерированного SQL. Ни один из этих терминов не означает абстрактный родительский класс ABAP. Выбор зависит от задачи: описать форму данных или реализовать собственный запрос.",
+      "detail": "Действие Submit принимает комментарий и желаемую дату согласования. Abstract entity описывает эти параметры, а само action всё равно объявляют в behavior definition. Наличие типа не создаёт таблицу параметров для чтения.\n\nДля поиска поставщиков через удалённый сервис custom entity задаёт поля результата, а ABAP query provider получает данные. Реализация должна обрабатывать фильтры, сортировку, страницы, количество и полномочия — в зависимости от запроса. Если просто вернуть первую страницу внешнего сервиса, список может вводить пользователя в заблуждение. Custom entity задаёт модель, но не реализует эти правила автоматически.",
+      "pitfall": "Не описывайте abstract entity как сохраняемый BO, от которого наследуются другие CDS entities.",
+      "references": [
+        {
+          "title": "SAP: CDS abstract entities",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-data-models/cds-abstract-entities",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-07",
+      "level": "Core",
+      "question": "Защищает ли DCL базового view все вышестоящие views автоматически?",
+      "answer": "Нет. Правила доступа нижнего CDS view не защищают автоматически всё, что построено над ним. Защита нужна для той сущности, к которой действительно обращается потребитель. Поддерживаемое DCL inheritance позволяет переиспользовать условия с нужным сопоставлением полей. Аннотация #CHECK сама по себе не создаёт правило. Право изменения в RAP проверяется отдельно.",
+      "detail": "Базовая модель разрешает Лее организацию продаж A, а сервис предоставляет вышестоящий consumption view. Проверяю именно его через реальный путь чтения. Если вместе с A1 виден B1 из организации B, защита нижнего слоя не обеспечила защиту сервиса. Список выбора клиента проверяю отдельно: он тоже не должен раскрывать B-Customer.\n\nИзучаю действующий DCL доступной сущности, унаследованные условия и сопоставление полей. Тестирую пользователей с разными правами и реальные фильтры. Затем отдельно проверяю UPDATE и Approve в RAP. Ограничение видимых строк не даёт автоматически право на все actions над ними.",
+      "pitfall": "DCL одного слоя не защищает автоматически произвольную цепочку view-on-view.",
+      "references": [
+        {
+          "title": "SAP Learning: наследование DCL",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-08",
+      "level": "Core",
+      "question": "Где размещать аннотации UI и value helps?",
+      "answer": "Поддерживаемые аннотации UI и value help размещаю в metadata extensions, если модель это разрешает. Смысл данных, например связь суммы с валютой, оставляю в модели данных. Проверяю доступные аннотации и слои расширения своей версии. Value help упрощает ввод, но сервер всё равно должен проверять присланные значения и полномочия.",
+      "detail": "Список Fiori elements показывает сумму заявки и value help для центра затрат. Metadata extension описывает колонки и поддерживаемую настройку выбора. При этом модель CDS должна указывать валюту суммы, чтобы все потребители правильно понимали данные.\n\nТеперь вызываем сервис напрямую с центром затрат, которого нет в списке выбора. Сервер должен отклонить значение, нарушающее правило или права. Скрыть поле или ограничить список недостаточно. Проверяю также приоритет слоёв: расширение заказчика или партнёра может влиять на метаданные. Механический перенос всех аннотаций способен изменить UI.",
+      "pitfall": "UI.hidden и value help не являются средствами безопасности или гарантией целостности данных.",
+      "references": [
+        {
+          "title": "SAP Learning: понятия CDS",
+          "url": "https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-09",
+      "level": "Advanced",
+      "question": "Что такое virtual element и какие у него ограничения?",
+      "answer": "Virtual element вычисляется в ABAP в поддерживаемом сценарии запроса, часто через SADL calculation exit. Это не сохранённая колонка базы. Поэтому фильтрация и сортировка по нему требуют специально поддерживаемой обработки; возможности зависят от сервиса и версии. Если нужна эффективная фильтрация в базе, рассматриваю вычисление на стороне базы.",
+      "detail": "Список показывает описание статуса, рассчитанное по данным вне основной таблицы. Virtual element подходит, если обработка запроса вызывает нужный расчёт и передаёт его входные поля. Запрашиваю только необходимые данные, а не все поля для каждой строки.\n\nЕсли нужно отсортировать тысячи строк по этому значению до разбиения на страницы, расчёт после чтения одной страницы не даст правильный общий порядок. Проверяю поддерживаемые механизмы сортировки и фильтрации либо меняю модель. requestAtLeast помогает конкретному UI запросить нужные поля, но не гарантирует их наличие у любого потребителя.",
+      "pitfall": "requestAtLeast — подсказка UI для запроса, а не универсальная гарантия расчёта virtual element любым потребителем.",
+      "references": [
+        {
+          "title": "SAP RAP: реализация сортировки virtual elements",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-sorting-of-virtual-elements",
+          "note": "Описаны поддерживаемые способы преобразовать сортировку по virtual element до чтения данных. Проверьте projection, protocol, released interface и реального клиента целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-10",
+      "level": "Advanced",
+      "question": "Чем аналитические CDS-модели отличаются от транзакционных?",
+      "answer": "Аналитическая модель отвечает на вопросы об итогах по месяцам или компаниям. Она описывает показатели, измерения и правила агрегации. Транзакционная модель RAP идентифицирует отдельные объекты и предоставляет операции, например Create или Approve. Модель для одной задачи не становится автоматически правильной для другой. Важны валюты, единицы измерения и реальный механизм выполнения запроса.",
+      "detail": "Приложение заказов показывает отдельные заказы и позволяет их согласовать. Отчёт расходов группирует суммы по поставщику и месяцу. Если просто сложить EUR и USD, получится число без корректной общей валюты. Нужно разделить группы или выполнить нужную конвертацию.\n\nПроверяю возможности аналитического движка, протокол сервиса и клиента. У cube или analytical query другие задачи, чем у обычного транзакционного списка. Аннотация VDM или запрос $apply ещё не доказывают правильность группировки, конвертации и агрегации. Проверяю небольшой набор с заранее известным результатом и смешанными валютами.",
+      "pitfall": "Аннотация VDM и OData $apply сами по себе не гарантируют правильную аналитическую семантику.",
+      "references": [
+        {
+          "title": "SAP: аналитические projection views",
+          "url": "https://learning.sap.com/courses/developing-analytical-models-with-cds-based-analytical-projection-views/describing-the-role-of-a-cds-analytical-projection-view",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-11",
+      "level": "Core",
+      "question": "Как связаны CDS keys и database keys?",
+      "answer": "CDS key говорит потребителю, какие поля идентифицируют строку, но не заставляет результат быть уникальным. Database key обеспечивает уникальность в таблице, однако JOIN и группировка могут изменить результат. RAP и OData нужна стабильная и действительно уникальная идентичность. Проверяю весь результат, а не только объявления ключей.",
+      "detail": "Рейс определяется перевозчиком, маршрутом и датой полёта. Если CDS отмечает ключами только перевозчика и маршрут, рейсы в разные даты выглядят для клиента одним объектом. Список может перепутать их или обратиться не к той строке, хотя в базе две корректные записи.\n\nВключаю поля, необходимые для идентификации одной строки результата, и проверяю влияние JOIN. Соединение рейса с несколькими связанными строками снова может размножить результат. Добавить key к ещё одному полю — не значит убрать дубли или исправить запрос. Проверяю повторяющиеся бизнес-значения, а не только уникальные демонстрационные данные.",
+      "pitfall": "Объявление key не удаляет дубли строк.",
+      "references": [
+        {
+          "title": "SAP Learning: понятия CDS",
+          "url": "https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    },
+    {
+      "id": "CDS-12",
+      "level": "Core",
+      "question": "Является ли maintenance view RAP view и как задаются defaults?",
+      "answer": "Classic maintenance view относится к обслуживанию таблиц и представлений DDIC, часто через SM30. RAP-приложение использует CDS и behavior для другого вида приложения ведения данных. В RAP значения по умолчанию задают determinations или поддерживаемые defaulting functions. Вид экрана определяется UI и метаданными. Сначала уточняю, о каком способе ведения данных идёт речь.",
+      "detail": "Команда просит небольшой экран настроек. Если это существующий диалог SM30, изучаю его события и поддерживаемые настройки. Для приложения Fiori на RAP проектирую CDS и behavior: кто меняет записи и откуда берутся значения по умолчанию. Слово maintenance не делает эти технологии одинаковыми.\n\nНапример, determination в RAP заполняет исходную валюту, а серверные проверки отклоняют неверный ввод. Аннотации UI показывают поля, но не заменяют бизнес-логику. Не придумываю универсальные Metadata.ignore или Metadata.defaultValue: проверяю реальные механизмы начальных значений и видимости в выбранном приложении.",
+      "pitfall": "Metadata.ignore и Metadata.defaultValue — не универсальные аннотации для реализации приложения ведения данных.",
+      "references": [
+        {
+          "title": "SAP Learning: понятия CDS",
+          "url": "https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        },
+        {
+          "title": "SAP Learning: наследование DCL",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks",
+          "note": "Проверьте тип CDS entity, ограничения provider contract и поддержку целевого релиза."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1073 @@
+[
+  {
+    "id": "abap-hashed-lookup",
+    "title": "Один ключ — один заказ",
+    "questions": [
+      "ABAP-01",
+      "ABAP-02"
+    ],
+    "intro": "Выберите таблицу под нужный поиск.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент метода. Учебные данные находятся в памяти, а не в базе.",
+    "code": "TYPES: BEGIN OF ty_order,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE HASHED TABLE OF ty_order\n  WITH UNIQUE KEY order_id.\nlt_orders = VALUE #( ( order_id = 7 amount = 100 )\n                     ( order_id = 9 amount = 200 ) ).\nDATA(ls_order) = lt_orders[ order_id = 9 ].",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Определить поиск",
+        "explanation": "Полный уникальный ключ — order_id. Hashed table рассчитана на такой exact-key access."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9
+        ],
+        "label": "Прочитать заказ 9",
+        "explanation": "Найдена строка с amount 200. Не нужны ручная сортировка и числовая позиция строки.",
+        "questions": [
+          "ABAP-02"
+        ]
+      }
+    ],
+    "outcome": "Заказ 9 найден по ID. Standard table с empty key означала бы другой выбор доступа.",
+    "caveat": "Здесь наличие строки гарантировано. В настоящем коде обработайте отсутствие ключа; hashed key не является индексом поиска диапазонов.",
+    "references": [
+      {
+        "title": "SAP: внутренние таблицы",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-missing-row",
+    "title": "Отсутствующая строка: ожидаемый случай или ошибка?",
+    "questions": [
+      "ABAP-03"
+    ],
+    "intro": "Если поиск может ничего не найти, решение должно быть явным.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент метода. Здесь отсутствие ожидаемо и представлено несвязанной ссылкой.",
+    "code": "TYPES: BEGIN OF ty_order,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE HASHED TABLE OF ty_order\n  WITH UNIQUE KEY order_id.\nINSERT VALUE #( order_id = 7 amount = 100 )\n  INTO TABLE lt_orders.\nDATA(order_ref) = REF #( lt_orders[ order_id = 9 ]\n                        OPTIONAL ).\nDATA(found) = xsdbool( order_ref IS BOUND ).",
+    "highlights": [
+      {
+        "lines": [
+          7,
+          8
+        ],
+        "label": "Есть только заказ 7",
+        "explanation": "Заказ 9 намеренно отсутствует в таблице."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11
+        ],
+        "label": "Сохранить явное отсутствие",
+        "explanation": "REF с OPTIONAL даёт несвязанную ссылку при отсутствии строки. found равен false."
+      }
+    ],
+    "outcome": "Обычное lt_orders[ order_id = 9 ] выбросило бы CX_SY_ITAB_LINE_NOT_FOUND. Эта форма отличает отсутствие строки от реальной строки с initial-значениями.",
+    "caveat": "Используйте OPTIONAL, только если отсутствие допустимо. Если заказ обязателен, обработайте отсутствие строки как ошибку.",
+    "references": [
+      {
+        "title": "SAP: внутренние таблицы",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      },
+      {
+        "title": "SAP: значения по умолчанию в table expressions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/table-exp-default"
+      }
+    ]
+  },
+  {
+    "id": "abap-copy-or-alias",
+    "title": "Копия и прямое изменение строки",
+    "questions": [
+      "ABAP-04",
+      "BASE-05"
+    ],
+    "intro": "Посмотрите, какое присваивание действительно меняет таблицу.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент метода. Оба чтения успешны: учебная строка 1 существует.",
+    "code": "TYPES: BEGIN OF ty_order,\n         amount TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE STANDARD TABLE OF ty_order\n  WITH EMPTY KEY.\nlt_orders = VALUE #( ( amount = 100 ) ).\nREAD TABLE lt_orders INDEX 1 INTO DATA(ls_order).\nIF sy-subrc = 0.\n  ls_order-amount = 200.\nENDIF.\nREAD TABLE lt_orders INDEX 1\n  ASSIGNING FIELD-SYMBOL(<ls_order>).\nIF sy-subrc = 0.\n  <ls_order>-amount = 300.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Изменить копию",
+        "explanation": "INTO копирует строку. Значение 200 в ls_order оставляет amount таблицы равным 100."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "label": "Изменить настоящую строку",
+        "explanation": "ASSIGNING указывает на строку. Amount таблицы становится 300. Каждый sy-subrc проверяется сразу после чтения.",
+        "questions": [
+          "BASE-05"
+        ]
+      }
+    ],
+    "outcome": "В рабочей структуре остаётся 200, а в строке таблицы — 300. Проверяйте sy-subrc сразу после чтения, пока другая инструкция его не перезаписала.",
+    "caveat": "Field symbol указывает на исходные данные, а не на независимую копию. Не меняйте через него поля первичного ключа sorted или hashed table.",
+    "references": [
+      {
+        "title": "SAP: внутренние таблицы",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-corresponding-base",
+    "title": "Сохранить поле, которого нет в источнике",
+    "questions": [
+      "ABAP-11",
+      "BASE-08"
+    ],
+    "intro": "BASE определяет, начнётся ли новая структура с существующих значений.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент с небольшими локальными структурами. Текстовые литералы — учебные данные.",
+    "code": "TYPES: BEGIN OF ty_request,\n         status TYPE string,\n         note   TYPE string,\n       END OF ty_request.\nTYPES: BEGIN OF ty_change,\n         note TYPE string,\n       END OF ty_change.\nDATA(ls_old) = VALUE ty_request(\n  status = `Approved` note = `Old note` ).\nDATA(ls_change) = VALUE ty_change( note = `New note` ).\nDATA(ls_plain) = CORRESPONDING ty_request( ls_change ).\nDATA(ls_kept) = CORRESPONDING ty_request(\n  BASE ( ls_old ) ls_change ).",
+    "highlights": [
+      {
+        "lines": [
+          8,
+          9,
+          10
+        ],
+        "label": "Начать с согласованных данных",
+        "explanation": "Входящее изменение содержит note, но не status."
+      },
+      {
+        "lines": [
+          11
+        ],
+        "label": "Построить из initial values",
+        "explanation": "ls_plain получает новую note и пустой status."
+      },
+      {
+        "lines": [
+          12,
+          13
+        ],
+        "label": "Построить из старого значения",
+        "explanation": "ls_kept сохраняет Approved и получает новую note."
+      }
+    ],
+    "outcome": "Один источник даёт разные значения status. BASE сохраняет поля без соответствия, но не игнорирует пустые значения совпавших полей.",
+    "caveat": "Если бы тип источника содержал status, поле перезаписало бы прежнее значение даже пустой строкой. Для API PATCH нужны отдельные правила наличия поля.",
+    "references": [
+      {
+        "title": "SAP: constructor expressions",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md"
+      }
+    ],
+    "startFor": [
+      "ABAP-11"
+    ]
+  },
+  {
+    "id": "abap-exact-conversion",
+    "title": "Отклонить потерю символов на границе ввода",
+    "questions": [
+      "BASE-06"
+    ],
+    "intro": "ID должен помещаться целиком: молчаливое усечение меняет смысл.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент метода. Четыре символа на входе заданы намеренно.",
+    "code": "TYPES ty_code TYPE c LENGTH 3.\nDATA(input) = `ABCD`.\nDATA(ordinary) = CONV ty_code( input ).\nDATA rejected TYPE abap_bool.\nTRY.\n    DATA(lossless) = EXACT ty_code( input ).\n  CATCH cx_sy_conversion_data_loss.\n    rejected = abap_true.\nENDTRY.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Обычное преобразование",
+        "explanation": "В target помещается три символа. Обычное преобразование сохраняет ABC."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "label": "Потребовать точное значение",
+        "explanation": "EXACT отклоняет потерю непустого символа. CATCH отмечает этот input как отклонённый."
+      }
+    ],
+    "outcome": "Программа отклоняет неверный ввод вместо сохранения другого ID. Сначала проверяется возможность точного преобразования, затем — бизнес-правила.",
+    "caveat": "Пример только фиксирует отказ. Настоящий импорт должен объяснить ошибку поля и проверить допустимые значения.",
+    "references": [
+      {
+        "title": "SAP: constructor expressions",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-changing-value",
+    "title": "Локальное изменение копируется обратно только при успехе",
+    "questions": [
+      "BASE-01"
+    ],
+    "intro": "VALUE меняет то, что останется у клиента после вышедшего из метода исключения.",
+    "language": "ABAP",
+    "context": "Объявление и реализация метода одного локального класса. lcx_rejected нужно определить как подкласс CX_STATIC_CHECK. Вызывающий код начинает с amount 10 и перехватывает lcx_rejected.",
+    "code": "METHODS change_amount\n  CHANGING VALUE(amount) TYPE i\n  RAISING lcx_rejected.\n\nMETHOD change_amount.\n  amount = 20.\n  RAISE EXCEPTION TYPE lcx_rejected.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Объявить передачу по значению",
+        "explanation": "Метод работает с собственной копией amount. Без VALUE CHANGING по умолчанию передаётся по ссылке."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Выйти с исключением",
+        "explanation": "Локальный amount становится 20, но нормального завершения нет, поэтому обратно он не копируется."
+      }
+    ],
+    "outcome": "При передаче VALUE вызывающий код сохраняет 10. При передаче по ссылке такое же присваивание уже изменило бы его значение на 20.",
+    "caveat": "Защищается только простое значение. Это не отменяет записи БД или изменения объекта, доступного через скопированную ссылку.",
+    "references": [
+      {
+        "title": "SAP: передача параметров методов",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/methods-parameters"
+      }
+    ]
+  },
+  {
+    "id": "abap-dynamic-assign",
+    "title": "Не записывать через старый field symbol",
+    "questions": [
+      "BASE-04"
+    ],
+    "intro": "После неудачного динамического поиска нельзя записывать через прежнюю привязку.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент метода. Опечатка в имени компонента намеренна. UNASSIGN позволяет не зависеть от нового синтаксиса ELSE UNASSIGN.",
+    "code": "DATA: BEGIN OF ls_order,\n        amount TYPE i VALUE 100,\n      END OF ls_order.\nFIELD-SYMBOLS <amount> TYPE any.\nASSIGN COMPONENT 'AMOUNT' OF STRUCTURE ls_order\n  TO <amount>.\nUNASSIGN <amount>.\nASSIGN COMPONENT 'AMUONT' OF STRUCTURE ls_order\n  TO <amount>.\nIF sy-subrc = 0.\n  <amount> = 200.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6,
+          7
+        ],
+        "label": "Очистить прежнюю привязку",
+        "explanation": "Первый поиск успешен. UNASSIGN намеренно убирает старый target."
+      },
+      {
+        "lines": [
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "Проверить новый поиск",
+        "explanation": "AMUONT не существует. sy-subrc ненулевой, поэтому запись через прежнюю привязку AMOUNT не выполняется."
+      }
+    ],
+    "outcome": "ls_order-amount остаётся 100. Проверка только IS ASSIGNED без очистки прежней привязки могла бы после неудачного поиска изменить не то поле.",
+    "caveat": "Для наглядности неверный ввод здесь пропускается. Настоящее преобразование данных должно вернуть ошибку или применять явно описанное правило пропуска.",
+    "references": [
+      {
+        "title": "SAP: ошибка ASSIGN и ELSE UNASSIGN",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/news-for-abap-release-7-89"
+      }
+    ]
+  },
+  {
+    "id": "abap-optional-limit",
+    "title": "Пропущенный аргумент отличается от нуля",
+    "questions": [
+      "BASE-14"
+    ],
+    "intro": "Клиент может намеренно запросить ноль строк.",
+    "language": "ABAP",
+    "context": "Объявление и реализация метода одного локального класса. effective — возвращаемое целое число. Метод только выбирает ограничение и не выполняет запрос.",
+    "code": "METHODS choose_limit\n  IMPORTING requested TYPE i OPTIONAL\n  RETURNING VALUE(effective) TYPE i.\n\nMETHOD choose_limit.\n  CONSTANTS co_default_limit TYPE i VALUE 20.\n  IF requested IS SUPPLIED.\n    effective = requested.\n  ELSE.\n    effective = co_default_limit.\n  ENDIF.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Разрешить пропуск",
+        "explanation": "OPTIONAL позволяет не передавать requested."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "label": "Проверить наличие, а не значение",
+        "explanation": "choose_limit( ) возвращает 20. choose_limit( requested = 0 ) возвращает 0, потому что аргумент был передан."
+      }
+    ],
+    "outcome": "Два вызова сохраняют разный смысл. IS INITIAL ошибочно принял бы явный ноль за отсутствие аргумента.",
+    "caveat": "Обёртка, которая всегда передаёт requested дальше, теряет информацию об отсутствии аргумента. Обработайте ноль до выполнения запроса, где он может означать отсутствие ограничения. Отрицательные значения проверяйте отдельно.",
+    "references": [
+      {
+        "title": "SAP: необязательные параметры методов",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/methods-parameters"
+      },
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-duplicate-insert",
+    "title": "Повторный INSERT не обновляет строку",
+    "questions": [
+      "BASE-15"
+    ],
+    "intro": "Первое значение заказа не должно молча стать вторым.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент метода: однострочный INSERT во внутреннюю таблицу с уникальным первичным ключом.",
+    "code": "TYPES: BEGIN OF ty_order,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE HASHED TABLE OF ty_order\n  WITH UNIQUE KEY order_id.\nINSERT VALUE #( order_id = 7 amount = 100 )\n  INTO TABLE lt_orders.\nINSERT VALUE #( order_id = 7 amount = 200 )\n  INTO TABLE lt_orders.\nDATA(duplicate) = xsdbool( sy-subrc = 4 ).\nDATA(ls_kept) = lt_orders[ order_id = 7 ].",
+    "highlights": [
+      {
+        "lines": [
+          7,
+          8
+        ],
+        "label": "Вставить первую строку",
+        "explanation": "Заказ 7 получает amount 100."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "Попробовать тот же ключ снова",
+        "explanation": "Второй INSERT завершается с sy-subrc 4. Старая строка сохраняет 100; duplicate равен true."
+      }
+    ],
+    "outcome": "Уникальный ключ не допускает две одинаковые строки по ключу, но не решает за приложение, нужно ли отклонить конфликтующие данные или заменить прежние.",
+    "caveat": "Указанный код возврата относится к этой форме однострочного INSERT. Другие формы вставки и нарушения вторичного ключа могут вызывать исключения.",
+    "references": [
+      {
+        "title": "SAP: внутренние таблицы",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-group-members",
+    "title": "Сгруппировать даже несоседние строки",
+    "questions": [
+      "BASE-09"
+    ],
+    "intro": "Клиент 1 встречается дважды; между его заказами находится заказ клиента 2.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент метода. GROUP BY группирует данные по customer в памяти. Значение total смотрите на каждой итерации внешнего цикла.",
+    "code": "TYPES: BEGIN OF ty_order,\n         customer TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE STANDARD TABLE OF ty_order\n  WITH EMPTY KEY.\nlt_orders = VALUE #( ( customer = 1 amount = 10 )\n                     ( customer = 2 amount = 20 )\n                     ( customer = 1 amount = 30 ) ).\nLOOP AT lt_orders INTO DATA(ls_order)\n  GROUP BY ls_order-customer INTO DATA(customer).\n  DATA(total) = 0.\n  LOOP AT GROUP customer INTO DATA(ls_member).\n    total += ls_member-amount.\n  ENDLOOP.\nENDLOOP.",
+    "highlights": [
+      {
+        "lines": [
+          7,
+          8,
+          9
+        ],
+        "label": "Заметить несортированный input",
+        "explanation": "Порядок клиентов — 1, 2, 1. Связанные строки не соседние."
+      },
+      {
+        "lines": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "label": "Посетить группы и их членов",
+        "explanation": "Внешний цикл выполняется дважды. Цикл членов получает 40 для customer 1 и 20 для customer 2."
+      }
+    ],
+    "outcome": "GROUP BY находит обе строки клиента 1 без предварительного SORT. Классическая обработка групп с AT NEW / AT END OF опирается на порядок строк и работает иначе.",
+    "caveat": "Это обработка в памяти ABAP. Если нужны только итоги БД, рассмотрите поддерживаемое SQL-агрегирование. Порядок вывода задайте отдельно.",
+    "references": [
+      {
+        "title": "SAP: внутренние таблицы",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "sql-guard-fae",
+    "title": "Пустая таблица условий не должна приводить к полной выборке",
+    "questions": [
+      "SQL-02",
+      "SQL-03"
+    ],
+    "intro": "Проверка — часть корректности, а не только ускорение.",
+    "language": "ABAP",
+    "context": "Фрагмент метода. Учебная таблица zt_demo_order содержит ключ order_id и поле amount. lt_ids заполнена структурами с order_id того же типа, что в БД. lt_orders — совместимая таблица результата.",
+    "code": "CLEAR lt_orders.\nIF lt_ids IS NOT INITIAL.\n  SELECT order_id, amount\n    FROM zt_demo_order\n    FOR ALL ENTRIES IN @lt_ids\n    WHERE order_id = @lt_ids-order_id\n    INTO TABLE @lt_orders.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2
+        ],
+        "label": "Обработать отсутствие запрошенных ID",
+        "explanation": "При пустой lt_ids результат пуст, а SQL не выполняется.",
+        "questions": [
+          "SQL-03"
+        ]
+      },
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "label": "Прочитать запрошенные заказы",
+        "explanation": "Для непустого driver запрос сопоставляет order_id с его значениями.",
+        "questions": [
+          "SQL-02"
+        ]
+      }
+    ],
+    "outcome": "Пустой вход возвращает ноль заказов. Без этой проверки FOR ALL ENTRIES при пустой входной таблице игнорирует WHERE и может прочитать все доступные строки.",
+    "caveat": "FOR ALL ENTRIES удаляет повторяющиеся строки результата. Включите поля, различающие нужные записи. Сравните вариант с JOIN по правильности результата и реальной производительности.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      },
+      {
+        "title": "SAP: поведение FOR ALL ENTRIES",
+        "url": "https://help.sap.com/docs/SUPPORT_CONTENT/abap/3353526117.html"
+      }
+    ]
+  },
+  {
+    "id": "sql-outer-join-filter",
+    "title": "Сохранить заказ в результате без английского текста",
+    "questions": [
+      "SQL-04",
+      "SQL-05",
+      "SQL-07"
+    ],
+    "intro": "Условие языка нужно разместить там, где сопоставляются тексты.",
+    "language": "ABAP",
+    "context": "Фрагмент метода. Собственные fixture tables: zt_demo_order с unique order_id; zt_demo_text с unique (order_id, language) и description. language имеет CHAR 1. Дополнительная business authorization не показана.",
+    "code": "CONSTANTS co_english TYPE c LENGTH 1 VALUE 'E'.\nSELECT o~order_id, t~description\n  FROM zt_demo_order AS o\n  LEFT OUTER JOIN zt_demo_text AS t\n    ON t~order_id = o~order_id\n   AND t~language = @co_english\n  INTO TABLE @DATA(lt_orders).",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Выбрать совпадения справа",
+        "explanation": "Английский текст присоединится, если существует. Условие language здесь относится к ON."
+      },
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "label": "Сохранить каждую левую строку",
+        "explanation": "Заказ без английского текста остаётся. WHERE t~language = co_english удалил бы его."
+      }
+    ],
+    "outcome": "Заказы остаются видимыми без перевода. Указанный unique text key также не позволяет нескольким английским строкам размножить заказ.",
+    "caveat": "Отсутствующий description до передачи равен SQL NULL. Без null indicators ABAP target станет initial, поэтому один этот результат не отличает отсутствующий текст от сохранённого пустого description.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      },
+      {
+        "title": "SAP: LEFT OUTER JOIN",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/left-outer-join"
+      }
+    ]
+  },
+  {
+    "id": "sql-group-totals",
+    "title": "Передавать итоги вместо всех позиций",
+    "questions": [
+      "SQL-06",
+      "SQL-09",
+      "SQLX-02"
+    ],
+    "intro": "Сначала отфильтруйте строки, посчитайте суммы, затем выберите нужные группы.",
+    "language": "ABAP",
+    "context": "Фрагмент метода. Учебная таблица zt_demo_item содержит company, currency, amount и is_cancelled. Поле amount имеет точный десятичный тип; внутри каждой валюты суммы используют одинаковые единицы. minimum_total намеренно равен нулю.",
+    "code": "DATA minimum_total TYPE decfloat34 VALUE 0.\nSELECT company, currency, SUM( amount ) AS total\n  FROM zt_demo_item\n  WHERE is_cancelled = @abap_false\n  GROUP BY company, currency\n  HAVING SUM( amount ) > @minimum_total\n  INTO TABLE @DATA(lt_totals).",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4
+        ],
+        "label": "Исключить отменённые позиции",
+        "explanation": "WHERE действует на отдельные строки до попадания в суммы."
+      },
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "label": "Считать каждую валюту отдельно",
+        "explanation": "БД возвращает одну итоговую сумму для каждой пары company и currency, а не передаёт приложению все позиции.",
+        "questions": [
+          "SQLX-02"
+        ]
+      },
+      {
+        "lines": [
+          6,
+          7
+        ],
+        "label": "Отфильтровать итоги",
+        "explanation": "HAVING оставляет только группы с положительной рассчитанной суммой.",
+        "questions": [
+          "SQL-09"
+        ]
+      }
+    ],
+    "outcome": "Результат содержит итоговые строки с валютами. Здесь нет text JOIN, который мог бы размножить позицию до суммы.",
+    "caveat": "Группировка по currency разделяет валюты, но не конвертирует их. В настоящем запросе также проверьте полномочия, диапазон чисел, десятичную точность и измеренное время выполнения.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      }
+    ]
+  },
+  {
+    "id": "sql-ordered-first",
+    "title": "Для последней записи нужен явный порядок",
+    "questions": [
+      "SQL-08"
+    ],
+    "intro": "Ограничение одной строкой не определяет, что значит «последняя».",
+    "language": "ABAP",
+    "context": "Фрагмент метода. Учебная таблица zt_demo_order содержит уникальный числовой order_id, customer_id и временную метку changed_at. customer_id — входной параметр. Если совпадений нет, lt_latest остаётся пустой.",
+    "code": "SELECT order_id, changed_at\n  FROM zt_demo_order\n  WHERE customer_id = @customer_id\n  ORDER BY changed_at DESCENDING, order_id DESCENDING\n  INTO TABLE @DATA(lt_latest)\n  UP TO 1 ROWS.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Выбрать нужного customer",
+        "explanation": "Условия могут совпасть у многих заказов; SELECT SINGLE не выражает выбор последнего."
+      },
+      {
+        "lines": [
+          4,
+          5,
+          6
+        ],
+        "label": "Определить победившую строку",
+        "explanation": "Сортировка по новому timestamp, затем по order_id разрешает равенство; возвращается максимум одна строка."
+      }
+    ],
+    "outcome": "Выбирается самая новая временная метка. При равенстве побеждает больший order_id — это явно заданное правило примера.",
+    "caveat": "Правило разрешения равенства выбрано приложением, а не задано SELECT SINGLE. Проверьте полномочия и план выполнения запроса к настоящему источнику.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-empty-authorization-range",
+    "title": "Нет разрешённых заводов — нет данных",
+    "questions": [
+      "BASE-16",
+      "TEST-06"
+    ],
+    "intro": "Пустой результат проверки полномочий не должен стать фильтром без ограничений.",
+    "language": "ABAP",
+    "context": "Фрагмент метода. Доверенный метод проверки полномочий вернул lt_allowed_plants со строками включения I/EQ. lt_orders — результат. Учебная таблица zt_demo_order содержит order_id и plant.",
+    "code": "CLEAR lt_orders.\nIF lt_allowed_plants IS INITIAL.\n  RETURN.\nENDIF.\nSELECT order_id, plant\n  FROM zt_demo_order\n  WHERE plant IN @lt_allowed_plants\n  INTO TABLE @lt_orders.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Остановиться при отсутствии прав",
+        "explanation": "Метод возвращает пустой результат до SQL."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Применить обязательное ограничение",
+        "explanation": "До query доходит только непустой набор разрешённых plants. Необязательные фильтры пользователя не должны заменять это ограничение."
+      }
+    ],
+    "outcome": "Пользователь без разрешённых заводов получает ноль строк. Пустой range в условии IN сам по себе не ограничил бы выборку.",
+    "caveat": "Это только защитная проверка, а не полная реализация полномочий. Метод должен вернуть настоящие разрешённые значения. Проверяйте запрет прямого API-вызова, а не только поведение UI. Для ranges только с исключениями нужны отдельные правила.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-approval-strategy",
+    "title": "Вызвать правило через один интерфейс",
+    "questions": [
+      "OO-01",
+      "OO-02",
+      "OO-09",
+      "PAT-01"
+    ],
+    "intro": "Координатор спрашивает решение правила, не выбирая его расчёт.",
+    "language": "ABAP",
+    "context": "Объявление локального интерфейса и вызов из координатора. strategy — ссылка на объект реализации, amount — входная сумма. Каждая реализация принимает решение без COMMIT и отправки сообщений.",
+    "code": "INTERFACE lif_approval.\n  METHODS needs_manager\n    IMPORTING amount TYPE decfloat34\n    RETURNING VALUE(required) TYPE abap_bool.\nENDINTERFACE.\n\nDATA rule TYPE REF TO lif_approval.\nrule = strategy.\nDATA(requires_manager) = rule->needs_manager(\n  amount = amount ).",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "label": "Договориться об одной операции",
+        "explanation": "Каждая Strategy принимает сумму и сообщает, нужен ли manager."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Использовать выбранную реализацию",
+        "explanation": "Один вызов обращается к реальному strategy object. Здесь координатор не ветвится по стране."
+      }
+    ],
+    "outcome": "Замена объекта меняет правило, а вызов координатора остаётся прежним. Это Strategy с полиморфизмом через интерфейс.",
+    "caveat": "Показаны интерфейс и вызов, а не полные правила стран. Проверяйте общие обещания всех реализаций. Побочные действия процесса оставьте координатору.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-constructor-injection",
+    "title": "Передать обязательную зависимость при создании сервиса",
+    "questions": [
+      "OO-06",
+      "OO-07",
+      "TEST-02",
+      "PAT-10",
+      "OODEEP-07"
+    ],
+    "intro": "Передайте зависимость один раз и используйте именно полученный объект.",
+    "language": "ABAP",
+    "context": "Фрагмент constructor implementation. Класс объявляет constructor IMPORTING repository TYPE REF TO lif_repository RAISING lcx_configuration и private attribute repository того же interface type. lcx_configuration — прикладной подкласс CX_STATIC_CHECK.",
+    "code": "METHOD constructor.\n  IF repository IS NOT BOUND.\n    RAISE EXCEPTION TYPE lcx_configuration.\n  ENDIF.\n  me->repository = repository.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Рано отклонить неполную настройку",
+        "explanation": "Даже типизированная ссылка может быть initial. Проверка не даёт создать сервис, который упадёт гораздо позже."
+      },
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Сохранить переданный helper",
+        "explanation": "Production передаёт настоящий repository, тест — контролируемую реализацию того же интерфейса."
+      }
+    ],
+    "outcome": "Конструктор делает зависимость явной и проверяет её наличие. Бизнес-методам больше не нужен скрытый поиск через глобальную фабрику.",
+    "caveat": "Это обычный класс приложения. Нельзя добавлять неподдерживаемые параметры конструктора в RAP handlers, создаваемые framework. Делегируйте работу отдельному сервису или используйте разрешённые точки подмены.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      },
+      {
+        "title": "SAP: ABAP Unit tests",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/14_ABAP_Unit_Tests.md"
+      }
+    ],
+    "startFor": [
+      "OO-06"
+    ]
+  },
+  {
+    "id": "oo-known-strategy-factory",
+    "title": "Настройка выбирает известное правило",
+    "questions": [
+      "OO-09",
+      "PAT-12"
+    ],
+    "intro": "Неизвестная страна не должна автоматически приводить к согласованию.",
+    "language": "ABAP",
+    "context": "Фрагмент factory method. get_rule принимает двухсимвольный country именованного character type, возвращает rule TYPE REF TO lif_approval и выбрасывает lcx_configuration. Оба local rule classes реализуют lif_approval без обязательных constructor parameters.",
+    "code": "METHOD get_rule.\n  CONSTANTS co_poland TYPE c LENGTH 2 VALUE 'PL'.\n  CONSTANTS co_germany TYPE c LENGTH 2 VALUE 'DE'.\n  CASE country.\n    WHEN co_poland.\n      rule = NEW lcl_polish_rule( ).\n    WHEN co_germany.\n      rule = NEW lcl_german_rule( ).\n    WHEN OTHERS.\n      RAISE EXCEPTION TYPE lcx_configuration.\n  ENDCASE.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Сопоставить поддерживаемые варианты",
+        "explanation": "Factory создаёт одну из двух известных реализаций общего интерфейса."
+      },
+      {
+        "lines": [
+          9,
+          10
+        ],
+        "label": "Отклонить неподдерживаемую настройку",
+        "explanation": "Пустая или неизвестная настройка вызывает ошибку, а не молчаливый выбор разрешающего правила."
+      }
+    ],
+    "outcome": "Проверьте PL, DE и неизвестное значение отдельно от расчёта правил. Это Simple Factory, а не автоматически паттерн Factory Method.",
+    "caveat": "Классы и исключения учебные, это не SAP API. Настоящей настройке могут понадобиться версия правила и журнал выбранного варианта.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ],
+    "startFor": [
+      "OO-09"
+    ]
+  },
+  {
+    "id": "oo-adapter-mapping",
+    "title": "Преобразовать один интерфейс в другой",
+    "questions": [
+      "OO-10",
+      "PAT-03"
+    ],
+    "intro": "Клиент работает с понятными бизнес-полями, Adapter — со старым форматом.",
+    "language": "ABAP",
+    "context": "Реализация lif_payment~post: amount TYPE decfloat34 и трёхсимвольный currency именованного character type; returning result TYPE i. Связанный legacy имеет execute IMPORTING ls_request TYPE ty_legacy_request RETURNING VALUE(result) TYPE i. ty_legacy_request содержит соответствующие gross_value и curr_key.",
+    "code": "METHOD lif_payment~post.\n  DATA(ls_request) = VALUE ty_legacy_request(\n    gross_value = amount\n    curr_key = currency ).\n  result = legacy->execute( ls_request = ls_request ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Преобразовать запрос",
+        "explanation": "Public amount и currency становятся полями, ожидаемыми legacy dependency. Явный ноль тоже копируется."
+      },
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Делегировать одну операцию",
+        "explanation": "Adapter вызывает dependency и возвращает результат. Прикладному клиенту не нужно знать gross_value и curr_key."
+      }
+    ],
+    "outcome": "Adapter преобразует поля между интерфейсами. Facade решает другую задачу: организует несколько действий, например подготовку, проверку и проведение.",
+    "caveat": "legacy — учебный локальный интерфейс, а не SAP API. Настоящая обёртка также преобразует ошибки, сохраняет проверки полномочий и правила транзакции. Она не убирает внутренний COMMIT и не делает API released.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-counting-decorator",
+    "title": "Добавить поведение вокруг прежнего вызова",
+    "questions": [
+      "PAT-04",
+      "OO-06"
+    ],
+    "intro": "Decorator передаёт настоящий вызов дальше, добавляя своё небольшое поведение.",
+    "language": "ABAP",
+    "context": "Фрагмент implementation. Класс реализует lif_sender: send IMPORTING payload TYPE string RETURNING VALUE(response) TYPE string. inner — обязательная связанная ссылка lif_sender из constructor. attempts — private integer с начальным нулём. Также объявлен METHODS get_attempts RETURNING VALUE(count) TYPE i.",
+    "code": "METHOD lif_sender~send.\n  attempts += 1.\n  response = inner->send( payload = payload ).\nENDMETHOD.\n\nMETHOD get_attempts.\n  count = attempts.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Обернуть без подмены",
+        "explanation": "Decorator считает попытку и передаёт вызов ровно один раз. Результат inner и выходящее исключение не превращаются в ложный успех."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "label": "Наблюдать добавленное поведение",
+        "explanation": "get_attempts возвращает count TYPE i. Счётчик включает неудачные вызовы, поскольку увеличивается до делегирования."
+      }
+    ],
+    "outcome": "Один вызов обёртки добавляет одну попытку. Внутри или снаружи Retry Decorator счётчик будет по-разному считать попытки и общие операции.",
+    "caveat": "Счётчик живёт только в объекте. Это не сохраняемый журнал и не правило повторов. Для повторной удалённой записи нужны защита от дубликатов и обработка неизвестного результата.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-exception-previous",
+    "title": "Сохранить исходную ошибку при преобразовании",
+    "questions": [
+      "ABAP-10",
+      "OODEEP-09"
+    ],
+    "intro": "Недоступные данные не должны становиться успешным пустым результатом.",
+    "language": "ABAP",
+    "context": "Фрагмент метода. repository — связанная local interface reference; read_price( ) возвращает decfloat34 и выбрасывает lcx_repository. get_price возвращает price TYPE decfloat34 и объявляет RAISING lcx_price_unavailable. Оба исключения — прикладные подклассы CX_STATIC_CHECK с унаследованным PREVIOUS.",
+    "code": "METHOD get_price.\n  TRY.\n      price = repository->read_price( ).\n    CATCH lcx_repository INTO DATA(cause).\n      RAISE EXCEPTION TYPE lcx_price_unavailable\n        EXPORTING previous = cause.\n  ENDTRY.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4
+        ],
+        "label": "Перехватить понятную ошибку",
+        "explanation": "Здесь преобразуется только объявленная ошибка repository. Это не успешный результат «цены нет»."
+      },
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Сохранить причину",
+        "explanation": "Business-facing exception хранит исходное исключение в PREVIOUS для диагностики."
+      }
+    ],
+    "outcome": "Клиент получает понятную ошибку «цена недоступна», а не нулевую цену. Исходное исключение позволяет поддержке найти причину.",
+    "caveat": "Собственные классы исключений и сигнатуры нужно определить заранее: это не готовые объекты SAP. Пользовательские сообщения должны переводиться и не раскрывать чувствительные технические данные.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-real-calculation-test",
+    "title": "Проверить само правило на границе",
+    "questions": [
+      "TEST-01",
+      "OO-14",
+      "OODEEP-12",
+      "PAT-11"
+    ],
+    "intro": "Тест порога должен вызывать настоящий расчёт.",
+    "language": "ABAP",
+    "context": "Два метода из разных классов. lcl_discount объявляет CLASS-METHODS percent IMPORTING quantity TYPE i RETURNING VALUE(result) TYPE i. Тестовый класс объявляет METHODS threshold FOR TESTING. Учебное правило: скидка 10 процентов начиная с количества 10, иначе ноль.",
+    "code": "METHOD percent.\n  result = COND #( WHEN quantity >= 10\n                   THEN 10 ELSE 0 ).\nENDMETHOD.\n\nMETHOD threshold.\n  cl_abap_unit_assert=>assert_equals(\n    act = lcl_discount=>percent( quantity = 9 )\n    exp = 0 ).\n  cl_abap_unit_assert=>assert_equals(\n    act = lcl_discount=>percent( quantity = 10 )\n    exp = 10 ).\n  cl_abap_unit_assert=>assert_equals(\n    act = lcl_discount=>percent( quantity = 11 )\n    exp = 10 ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Оставить production behavior настоящим",
+        "explanation": "Решение скидки использует реальное сравнение quantity. Mock его не заменяет."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "label": "Проверить ниже, на границе и выше",
+        "explanation": "Quantity 9, 10 и 11 проверяют обе стороны и сам порог с независимо выбранными ожиданиями."
+      }
+    ],
+    "outcome": "Замена >= на > нарушит проверку для quantity 10. Подмена результата percent через mock не обнаружила бы ошибку.",
+    "caveat": "Это подготовленный исходник, а не выполненный тест SAP. Добавьте определения классов и обязательные атрибуты ABAP Unit. Отдельно проверьте неверные входные данные. Измеренное покрытие не заявляется.",
+    "references": [
+      {
+        "title": "SAP: ABAP Unit tests",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/14_ABAP_Unit_Tests.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-filter-key",
+    "title": "FILTER нужен подходящий ключ доступа",
+    "questions": [
+      "BASE-10",
+      "ABAP-02"
+    ],
+    "intro": "Standard table может сохранять порядок добавления строк и иметь сортированный вторичный ключ.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент метода. customer_key задан явно и соответствует условию равенства.",
+    "code": "TYPES: BEGIN OF ty_order,\n         customer TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nTYPES ty_orders TYPE STANDARD TABLE OF ty_order\n  WITH EMPTY KEY\n  WITH NON-UNIQUE SORTED KEY customer_key\n    COMPONENTS customer.\nDATA(lt_orders) = VALUE ty_orders(\n  ( customer = 2 amount = 10 )\n  ( customer = 1 amount = 20 )\n  ( customer = 2 amount = 30 ) ).\nDATA(lt_selected) = FILTER #(\n  lt_orders USING KEY customer_key WHERE customer = 2 ).",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Предоставить ключ",
+        "explanation": "Один EMPTY KEY не поддерживает этот обычный FILTER. Secondary sorted key поддерживает."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Явно выбрать ключ",
+        "explanation": "USING KEY customer_key выбирает обе строки customer 2 с amount 10 и 30."
+      }
+    ],
+    "outcome": "Результат содержит две подходящие строки. Нужный вторичный ключ позволяет использовать эту форму FILTER для standard table.",
+    "caveat": "Ключи требуют памяти и обновления при изменении строк. Если условие не подходит правилам ключа, используйте понятный LOOP или FOR. Проверьте синтаксис целевой версии.",
+    "references": [
+      {
+        "title": "SAP: внутренние таблицы",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      },
+      {
+        "title": "SAP: constructor expressions",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-reduce-negative-maximum",
+    "title": "Не добавлять выдуманный ноль в максимум",
+    "questions": [
+      "BASE-11",
+      "ABAP-11"
+    ],
+    "intro": "Полностью отрицательные данные обнаруживают неверное начальное значение.",
+    "language": "ABAP",
+    "context": "Самодостаточный фрагмент метода. Учебная таблица содержит хотя бы одну строку. has_maximum отдельно показывает наличие результата.",
+    "code": "TYPES ty_values TYPE STANDARD TABLE OF i\n  WITH EMPTY KEY.\nDATA(lt_values) = VALUE ty_values( ( -8 ) ( -3 ) ).\nDATA maximum TYPE i.\nDATA(has_maximum) = xsdbool( lt_values IS NOT INITIAL ).\nIF has_maximum = abap_true.\n  maximum = REDUCE i(\n    INIT best = lt_values[ 1 ]\n    FOR number IN lt_values\n    NEXT best = COND #(\n      WHEN number > best THEN number ELSE best ) ).\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Отдельно обработать отсутствие результата",
+        "explanation": "Guard не позволяет читать строку 1 пустой таблицы. has_maximum отличает отсутствие значения от настоящего нуля."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "label": "Начать с реального кандидата",
+        "explanation": "Accumulator начинается с -8 и становится -3. Начальный ноль ошибочно сохранился бы как максимум."
+      }
+    ],
+    "outcome": "Максимум равен -3. Краткий синтаксис не отменяет необходимости правильно выбрать начальное значение и обработать пустую таблицу.",
+    "caveat": "Проверьте пустую таблицу, одну строку, только отрицательные и смешанные числа. Если результат обязателен, отклоняйте пустой вход вместо отдельного признака наличия.",
+    "references": [
+      {
+        "title": "SAP: constructor expressions",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md"
+      }
+    ]
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "QUIZ-PRACTICAL-OO-16",
+    "questionId": "OO-16",
+    "prompt": "Three screens repeat read order, pack items and estimate delivery. What most directly simplifies their callers?",
+    "correctOption": "b",
+    "options": [
+      {
+        "id": "a",
+        "text": "A Singleton for every service.",
+        "explanation": "Shared lifetime does not remove the repeated sequence. It can add unwanted shared state."
+      },
+      {
+        "id": "b",
+        "text": "A Facade exposing one preview_delivery operation.",
+        "explanation": "The Facade coordinates the sequence behind one clear entry point. Its collaborators can still be injected and tested."
+      },
+      {
+        "id": "c",
+        "text": "A Factory that only creates the reader.",
+        "explanation": "That centralizes one creation decision but leaves all callers coordinating the repeated process."
+      },
+      {
+        "id": "d",
+        "text": "COMMIT WORK between each step.",
+        "explanation": "The example is a read-only preview. Extra commits neither simplify the interface nor make the process atomic."
+      }
+    ]
+  },
+  {
+    "id": "QUIZ-PRACTICAL-RAP-16",
+    "questionId": "RAP-16",
+    "prompt": "Three selected orders invoke Approve through one $batch. One order fails. What establishes whether the other two roll back together?",
+    "correctOption": "b",
+    "options": [
+      {
+        "id": "a",
+        "text": "The presence of /$batch alone.",
+        "explanation": "One batch can contain several independent changesets. The envelope alone does not prove atomic grouping."
+      },
+      {
+        "id": "b",
+        "text": "The shared changeset, requested with #CHANGE_SET and verified in metadata, payload and a failure test.",
+        "explanation": "InvocationGrouping configures the supporting UI. You must verify the actual common changeset and all-or-nothing persistence."
+      },
+      {
+        "id": "c",
+        "text": "Adding COMMIT WORK in each action handler.",
+        "explanation": "RAP owns commit. A provider-side COMMIT violates the transaction model instead of grouping requests."
+      },
+      {
+        "id": "d",
+        "text": "Assuming #ISOLATED means no batching at all.",
+        "explanation": "Isolated changesets may still travel together in a batch request."
+      }
+    ]
+  },
+  {
+    "id": "QUIZ-PRACTICAL-RAP-17",
+    "questionId": "RAP-17",
+    "prompt": "A legacy BAPI always executes COMMIT WORK internally. Which statement is correct?",
+    "correctOption": "b",
+    "options": [
+      {
+        "id": "a",
+        "text": "Moving it into save_modified makes the COMMIT legal.",
+        "explanation": "A saver is still RAP provider code. Changing the save option does not transfer commit ownership to the BAPI."
+      },
+      {
+        "id": "b",
+        "text": "Review or replace the API; neither BRFplus nor bgRFC automatically removes its transaction restrictions.",
+        "explanation": "BRFplus is a rules engine; ordinary bgRFC units forbid COMMIT. A supported bgPF uncontrolled operation is a separate option for logic needing its own commit. It still needs explicit completion, retry and partial-failure handling outside the original RAP transaction."
+      },
+      {
+        "id": "c",
+        "text": "Calling it through BRFplus guarantees one atomic LUW.",
+        "explanation": "A rules engine is not a transaction isolation mechanism."
+      },
+      {
+        "id": "d",
+        "text": "Any separate RFC can be rolled back by the original RAP transaction.",
+        "explanation": "A separately committed remote operation cannot be undone by local rollback."
+      }
+    ]
+  }
+]

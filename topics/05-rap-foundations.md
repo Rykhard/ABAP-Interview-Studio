@@ -506,22 +506,29 @@ Read from the client down to storage, then explain what each artifact contribute
 
 </details>
 
-## RAP-15 What should be checked before wrapping a BAPI in RAP?
+## RAP-15 Can you call a BAPI from RAP, and what happens if it executes COMMIT?
 
 **Level:** Advanced
 
-**Short answer:** First check whether the BAPI is allowed in the target system and whether it fits RAP's transaction rules. Find out how it validates, locks, checks permissions, writes, uses update tasks, and commits. Choose a RAP implementation option that matches that behavior. Map failures and messages correctly. A wrapper changes the calling interface, not what the BAPI does inside.
+**Short answer:** Some BAPIs can be used in RAP; some cannot. A BAPI does not always execute its own COMMIT. Check the specific API. A local COMMIT WORK or BAPI_TRANSACTION_COMMIT inside RAP handler or saver code breaks RAP transaction ownership and can cause a runtime error. Moving that call to unmanaged save or save_modified does not make the COMMIT legal.
 
-**Reasoning and example:** A BAPI that commits inside local RAP processing violates RAP's runtime rules and may cause a runtime error. Moving it to a separate transaction does not preserve atomicity: that transaction can commit a document that local RAP rollback cannot undo. Check the real API's writes, locks, and commit behavior before selecting the integration pattern.
+**Reasoning and example:** First inspect what the BAPI actually does: validation, authorization, locks, direct database writes, update tasks and internal COMMIT. Also check whether the API is permitted in the target ABAP language version. A released API is not automatically usable in every RAP phase.
 
-Authorization needs equal care. Some BAPI checks conflict with restrictions in particular RAP phases. Use the documented authorization-context pattern with RAP authorization handlers where supported. The permission decision must still happen at the allowed operation boundary. Suppressing a repeated check during validation or late save must never remove the user's actual permission check. Test rejection and recovery paths, not just successful creation.
+For a compatible legacy API, an action can collect the intent in the transactional buffer. The documented save integration performs the actual write later. In a managed BO with unmanaged save, save_modified replaces managed persistence; with additional save it supplements managed persistence. A fully unmanaged BO normally uses its saver save method. These are different options, not permission to end the LUW yourself. RAP owns the final commit.
 
-**Avoid this mistake:** A wrapper changes the interface; it does not erase the underlying API's transaction behavior or Clean Core classification.
+Example: an action requests an update through a suitable BAPI. Validate predictable errors before the point of no return, retain the request in the buffer, call the API in the documented late-save exit, map its responses correctly, and let RAP finish the transaction. For supported create scenarios with late numbering, SAP documents BAPI use in ADJUST_NUMBERS; check the exact release and failure-handling contract.
+
+If the BAPI inevitably commits internally, do not paste it into save_modified or hide it behind a wrapper. Look for a suitable API or redesign the process around an explicit asynchronous boundary. That changes when the business operation completes and needs visible pending/failed states. BRFplus is a rules engine, not a transaction workaround; see RAP-17. Keep the real permission check at the supported authorization boundary and use the documented authorization-context pattern where needed.
+
+**Avoid this mistake:** Unmanaged means you implement more of the behavior or persistence. It does not mean unrestricted COMMIT. A wrapper, BRFplus call or RFC destination cannot magically preserve one atomic LUW.
 
 **Read and verify this answer:**
 
 - [SAP BAPI consumption in RAP: late numbering and save sequence](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US) - Check the RAP implementation type and what is allowed at this point in the transaction.
 - [SAP BAPI consumption in RAP: Authorizations](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-authorizations) - Read the authorization-context pattern together with RAP authorization handling. If a repeated check must be suppressed in a restricted phase, the real permission check must still happen at the allowed boundary.
+- [SAP: RAP action with integrated BAPI business logic](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/implementing-rap-action-with-integrated-bapi-business-logic) - Compare collecting action intent with calling the compatible BAPI in late save.
+- [SAP exercise RAP640: implement unmanaged save](https://github.com/SAP-samples/abap-platform-rap640/blob/main/exercises/ex4/README.md) - Hands-on example of a managed BO with unmanaged save; inspect the prerequisites before adapting it.
+- [SAP: Transaction Model for Developing BAPIs](https://help.sap.com/docs/PRODUCT_ID/fe1c8e016c551014ba0ec92da35a91ee/4d5b102ba1483d8fe10000000a42189e.html) - BAPIs generally leave transaction control to the caller; documented historical exceptions exist. Inspect the actual API.
 
 <details>
 <summary>Visual: RAP transaction and workflow boundary</summary>
@@ -561,6 +568,48 @@ The remote commit belongs to another system, so local failure needs an explicit 
 **Limit:** This explains distributed consistency, not a particular messaging product guarantee.
 
 </details>
+
+## RAP-16 How do you group a multi-select Fiori action into one changeset with InvocationGrouping?
+
+**Level:** Advanced
+
+**Short answer:** For a supported Fiori elements action, set invocationGrouping: #CHANGE_SET on its @UI.lineItem action annotation. The default #ISOLATED allows separate changesets for the selected instances. Both can still travel inside one HTTP $batch request. $batch is the envelope; a changeset is the atomic group inside it. Check the generated metadata and the actual network request.
+
+**Reasoning and example:** Imagine selecting orders A, B and C and pressing Approve. B is invalid. With separate changesets, A and C may succeed while B fails. With one shared changeset, the intended result is all-or-nothing: B failing prevents A and C from being committed in that group.
+
+Put the annotation on the action entry in a CDS metadata extension. Keep type: #FOR_ACTION and the correct dataAction name. In OData metadata, verify UI.InvocationGrouping uses UI.OperationGroupingType/ChangeSet. Then inspect the browser Network tab: seeing /$batch alone is not proof that there is one shared changeset. Test one deliberately invalid selected order and check persisted data.
+
+This configures how the supporting UI invokes the action; it does not combine arbitrary requests from every client or promise one ABAP handler call. The handler must accept multiple keys correctly. A freestyle SAPUI5 client also needs the appropriate OData model group/submission configuration. Remote side effects that already committed cannot be undone by a local changeset rollback.
+
+**Avoid this mistake:** Do not equate #ISOLATED with no $batch, or #CHANGE_SET with automatic atomicity across remote systems. Verify the Fiori elements/OData version and service behavior.
+
+**Read and verify this answer:**
+
+- [SAP: UI.lineItem.invocationGrouping](https://help.sap.com/docs/abap-cloud/abap-keyword/ui-lineitem-invocationgrouping?locale=en-US) - Annotation values, default and intended multi-instance grouping.
+- [SAPUI5: action invocation grouping](https://help.sap.com/docs/SAPUI5/fbdf2b2c05364a829185721c6ce5daa0/cbf16c599f2d4b8796e3702f7d4aae6c.html) - Distinguish a batch request from the changesets carried inside it.
+
+## RAP-17 Do BRFplus, bgPF or bgRFC make an internally committing BAPI safe in RAP?
+
+**Level:** Advanced
+
+**Short answer:** BRFplus evaluates business rules; it does not fix a BAPI commit problem. bgPF is a background framework. Where supported, its uncontrolled operation variant can run logic that needs its own COMMIT. That work runs separately from the original RAP save, so it is not one immediate all-or-nothing transaction. Choose this only if the business process can accept a later result, retries and possible failure. An ordinary bgRFC unit still forbids COMMIT inside it.
+
+**Reasoning and example:** Example: saving an order should start slow follow-up processing. With a supported bgPF integration, register the background work at the allowed point in RAP save so it becomes eligible after the initiating transaction succeeds. The user can see Pending, then Completed or Failed. Design retries, duplicate protection, monitoring and recovery. If the later work fails, the already committed order is not automatically rolled back.
+
+Distinguish ordinary bgRFC units from the explicit bgPF uncontrolled operation contract. SAP provides IF_BGMC_OP_SINGLE_TX_UNCONTR and set_operation_tx_uncontrolled for the latter; its sample names COMMIT WORK as a use case. Check availability and restrictions in your target system. This does not allow COMMIT in the original RAP handler or saver. Intermediate commits in later processing can leave partial results, so retrying must not create duplicates.
+
+BRFplus might decide which approval rule applies. It does not schedule background work or repair RAP transaction consistency. If someone says use BRF+ for the BAPI commit problem, clarify whether they meant bgPF or bgRFC, then review that design on its own merits.
+
+**Avoid this mistake:** Do not confuse BRFplus with bgPF, or a bgPF uncontrolled operation with an ordinary bgRFC unit. A supported background COMMIT does not make it atomic with the original RAP save.
+
+**Read and verify this answer:**
+
+- [SAP: BRFplus business rules](https://help.sap.com/docs/SAP_S4HANA_CLOUD/8b78ae42ec1c4b75937806fcd4fd7d1c/9a6b67ce7c26446483af079719edf679.html) - BRFplus defines and evaluates business rules.
+- [SAP: Background Processing Framework](https://help.sap.com/docs/SAP_S4HANA_CLOUD/6aa39f1ac05441e5a23f484f31e477e7/0ad13bd0fafb46f08d3f5174d5fd01f9.html) - bgPF supports reliable asynchronous processing on top of bgRFC.
+- [SAP: CALL FUNCTION IN BACKGROUND UNIT](https://help.sap.com/doc/abapdocu_752_index_htm/7.52/en-US/abapcall_function_background_unit.htm) - Read transaction restrictions inside a bgRFC unit.
+- [SAP: Controlled SAP LUW](https://help.sap.com/docs/abap-cloud/abap-concepts/controlled-sap-luw) - RAP uses the controlled transaction model. Check the chosen bgPF operation variant separately.
+- [SAP: bgPF controlled and uncontrolled operation variants](https://help.sap.com/docs/ABAP_PLATFORM_NEW/8132142fd1a144a59303663a03a7c2d4/54886371defd410498df76d2c980c9ab.html) - The trace documentation lists both operation interfaces; use the target release documentation for their full contracts.
+- [SAP sample: bgPF controlled and uncontrolled execution](https://github.com/SAP-samples/abap-platform-bgpf-appl-log-events-side-effects/blob/main/src/zbgpfcl_calc_inventory_006.clas.abap) - The sample distinguishes the operation interfaces and illustrates registration with set_operation_tx_uncontrolled. Verify the target release and error/retry contract.
 
 ## Official references
 

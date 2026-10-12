@@ -1,0 +1,151 @@
+[
+  {
+    "id": "lesson-action-grouping",
+    "questions": [
+      "RAP-16"
+    ],
+    "title": "Three orders: compare Isolated and ChangeSet",
+    "scenario": "A and C can be approved. B has an invalid delivery date. Compare two independent runs from the same initial data.",
+    "goal": "Separate the HTTP batch envelope from the changeset rollback boundary.",
+    "nodes": [
+      {
+        "id": "select",
+        "label": "Select"
+      },
+      {
+        "id": "group",
+        "label": "Group"
+      },
+      {
+        "id": "check",
+        "label": "Check"
+      },
+      {
+        "id": "result",
+        "label": "Persist"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Select A, B and C",
+        "explanation": "Select all three and press Approve. No database result exists yet.",
+        "active": [
+          "select"
+        ],
+        "states": [
+          {
+            "label": "Order A",
+            "value": "Not approved"
+          },
+          {
+            "label": "Order B",
+            "value": "Not approved"
+          },
+          {
+            "label": "Order C",
+            "value": "Not approved"
+          }
+        ],
+        "outcome": "One UI selection does not define one transaction."
+      },
+      {
+        "title": "Run 1: isolated groups",
+        "explanation": "With #ISOLATED, each order has its own changeset. They can still share one $batch envelope.",
+        "active": [
+          "group"
+        ],
+        "states": [
+          {
+            "label": "Order A",
+            "value": "Own changeset"
+          },
+          {
+            "label": "Order B",
+            "value": "Own changeset"
+          },
+          {
+            "label": "Order C",
+            "value": "Own changeset"
+          }
+        ],
+        "outcome": "One HTTP request can carry independent outcomes."
+      },
+      {
+        "title": "B fails; A and C succeed",
+        "explanation": "The date check rejects B. Its failure does not require rollback of the two independent successful changesets.",
+        "active": [
+          "check",
+          "result"
+        ],
+        "states": [
+          {
+            "label": "Order A",
+            "value": "Approved"
+          },
+          {
+            "label": "Order B",
+            "value": "Rejected"
+          },
+          {
+            "label": "Order C",
+            "value": "Approved"
+          }
+        ],
+        "outcome": "Partial success is possible with independent changesets."
+      },
+      {
+        "title": "Run 2: start again, one group",
+        "explanation": "Reset to the original unsaved data and use #CHANGE_SET. The three actions now belong to one changeset in this supported scenario.",
+        "active": [
+          "group"
+        ],
+        "states": [
+          {
+            "label": "Order A",
+            "value": "Shared changeset"
+          },
+          {
+            "label": "Order B",
+            "value": "Shared changeset"
+          },
+          {
+            "label": "Order C",
+            "value": "Shared changeset"
+          }
+        ],
+        "outcome": "The rollback boundary now includes all three orders."
+      },
+      {
+        "title": "One rejection stops the group",
+        "explanation": "B fails again. None of the approvals from this shared changeset is committed. Correct B or choose a different intended grouping.",
+        "active": [
+          "check",
+          "result"
+        ],
+        "states": [
+          {
+            "label": "Order A",
+            "value": "Not approved"
+          },
+          {
+            "label": "Order B",
+            "value": "Rejected"
+          },
+          {
+            "label": "Order C",
+            "value": "Not approved"
+          }
+        ],
+        "outcome": "Verify persisted data, not just a successful HTTP response for the batch envelope."
+      }
+    ],
+    "takeaway": "$batch groups transport. A changeset groups the atomic local outcome.",
+    "limitation": "Illustrative supported Fiori elements service, not a live SAP execution. Actual request layout depends on the client and service version. Remote commits are outside this rollback boundary.",
+    "references": [
+      {
+        "title": "SAP: invocationGrouping",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/ui-lineitem-invocationgrouping?locale=en-US"
+      }
+    ]
+  }
+]

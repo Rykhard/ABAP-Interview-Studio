@@ -69,6 +69,8 @@ Trace the same request through three implementation choices and name the owner o
 
 Test order creation, update, deletion, and a rejected save. The business audit should match the actual saved outcome, rather than claiming a change happened when it rolled back. Technical diagnostics for the failure may have a separate purpose and lifecycle. Do not switch all order persistence to unmanaged save merely to add logging, or directly rewrite managed order tables from additional save.
 
+For a managed BO, with additional save keeps the framework's order persistence and adds save_modified for extra work. With unmanaged save replaces that persistence with your implementation of save_modified. A fully unmanaged BO has its own saver contract, commonly save. Neither variant allows your code to execute COMMIT WORK or BAPI_TRANSACTION_COMMIT. BRFplus does not change these rules. For a BAPI integration, review RAP-15 rather than assuming that any API is safe in the audit save hook.
+
 **Avoid this mistake:** Writing the audit in another LUW and claiming it is guaranteed to match the order, or updating managed order tables directly from additional save.
 
 **Interviewer follow-ups:**
@@ -87,6 +89,7 @@ Test order creation, update, deletion, and a rejected save. The business audit s
 **Read and verify this answer:**
 
 - [SAP: Save options](https://help.sap.com/docs/btp/fc4c71aa50014fd1b43721701471913d/11e2c9d9a2c8420f88d1cf2d6c015c2b.html?version=202310.002) - Read what this operation is allowed to do in this RAP phase, and check support on the target release.
+- [SAP: integrated BAPI action and late save](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/implementing-rap-action-with-integrated-bapi-business-logic) - A save extension still follows RAP transaction restrictions.
 
 <details>
 <summary>Visual: Save options: who writes the data and which method runs?</summary>

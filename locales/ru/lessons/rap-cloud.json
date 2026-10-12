@@ -1,0 +1,1987 @@
+[
+  {
+    "id": "lesson-rap-save",
+    "title": "Как один заказ проходит save sequence",
+    "questions": [
+      "RAP-05",
+      "SRAP-03"
+    ],
+    "scenario": "Заказ P1 содержит две позиции стоимостью 40 EUR и 60 EUR. Дата поставки корректна. Проследим успешное сохранение; неверная дата остановила бы его на шаге проверки.",
+    "goal": "Понять, когда RAP рассчитывает значения, проверяет данные, назначает номера, записывает изменения и очищает буфер.",
+    "nodes": [
+      {
+        "id": "finalize",
+        "label": "FINALIZE"
+      },
+      {
+        "id": "check",
+        "label": "Проверка"
+      },
+      {
+        "id": "boundary",
+        "label": "Точка невозврата"
+      },
+      {
+        "id": "number",
+        "label": "Нумерация"
+      },
+      {
+        "id": "save",
+        "label": "Сохранение"
+      },
+      {
+        "id": "cleanup",
+        "label": "Очистка"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Завершить расчёты",
+        "explanation": "FINALIZE получает 100 EUR из ожидающих сохранения сумм 40 EUR и 60 EUR. Это последняя фаза обычных изменений транзакционных данных.",
+        "active": [
+          "finalize"
+        ],
+        "states": [
+          {
+            "label": "Итого",
+            "value": "100 EUR"
+          },
+          {
+            "label": "Бизнес-проверка",
+            "value": "Ещё не завершена"
+          },
+          {
+            "label": "Номер заказа",
+            "value": "Предварительный P1"
+          },
+          {
+            "label": "БД",
+            "value": "Нового заказа нет"
+          }
+        ],
+        "outcome": "Вычисления должны предшествовать финальной проверке согласованности."
+      },
+      {
+        "title": "Проверить окончательные значения",
+        "explanation": "CHECK_BEFORE_SAVE проверяет дату поставки. В этом примере она верна. Ошибка даты остановила бы early save до final number и записи в БД, вернув сообщение для исправления.",
+        "active": [
+          "check"
+        ],
+        "states": [
+          {
+            "label": "Итого",
+            "value": "100 EUR"
+          },
+          {
+            "label": "Бизнес-проверка",
+            "value": "Успешно: дата поставки верна"
+          },
+          {
+            "label": "Номер заказа",
+            "value": "Предварительный P1"
+          },
+          {
+            "label": "БД",
+            "value": "Нового заказа нет"
+          }
+        ],
+        "outcome": "Предсказуемые бизнес-ошибки нужно обнаружить до late save."
+      },
+      {
+        "title": "Перейти общую границу",
+        "explanation": "Все BO этой транзакции прошли early checks. Достигнута point of no return: обычный late save теперь предполагает согласованные входные данные.",
+        "active": [
+          "boundary"
+        ],
+        "states": [
+          {
+            "label": "Итого",
+            "value": "100 EUR"
+          },
+          {
+            "label": "Бизнес-проверка",
+            "value": "Все участвующие BO прошли проверку"
+          },
+          {
+            "label": "Номер заказа",
+            "value": "Предварительный P1"
+          },
+          {
+            "label": "БД",
+            "value": "Нового заказа нет"
+          }
+        ],
+        "outcome": "Успех проверки одного BO недостаточен."
+      },
+      {
+        "title": "Назначить окончательный номер",
+        "explanation": "В ADJUST_NUMBERS заказ получает номер 4711. Mapping связывает предварительный ID P1 с 4711. Это numbering, а не новая возможность изменить сумму.",
+        "active": [
+          "number"
+        ],
+        "states": [
+          {
+            "label": "Итого",
+            "value": "100 EUR"
+          },
+          {
+            "label": "Бизнес-проверка",
+            "value": "Пройдена"
+          },
+          {
+            "label": "Номер заказа",
+            "value": "4711"
+          },
+          {
+            "label": "БД",
+            "value": "Нового заказа нет"
+          }
+        ],
+        "outcome": "Late numbering следует после point of no return."
+      },
+      {
+        "title": "Записать заказ и выполнить COMMIT",
+        "explanation": "SAVE записывает заказ 4711 и его позиции. COMMIT завершает runtime или внешний владелец транзакции; handler не должен делать собственный COMMIT.",
+        "active": [
+          "save"
+        ],
+        "states": [
+          {
+            "label": "Итого",
+            "value": "100 EUR"
+          },
+          {
+            "label": "Бизнес-проверка",
+            "value": "Пройдена"
+          },
+          {
+            "label": "Номер заказа",
+            "value": "4711"
+          },
+          {
+            "label": "БД",
+            "value": "4711 сохранён с суммой 100 EUR"
+          }
+        ],
+        "outcome": "Persistence и COMMIT остаются под управлением транзакции."
+      },
+      {
+        "title": "Сбросить состояние транзакции",
+        "explanation": "CLEANUP очищает transactional buffer завершённой транзакции. При ошибке early save отдельный hook CLEANUP_FINALIZE отменяет соответствующую early-save работу; это не показанный здесь успешный путь.",
+        "active": [
+          "cleanup"
+        ],
+        "states": [
+          {
+            "label": "Итого",
+            "value": "Сохранено: 100 EUR"
+          },
+          {
+            "label": "Буфер",
+            "value": "Очищен"
+          },
+          {
+            "label": "Номер заказа",
+            "value": "4711"
+          },
+          {
+            "label": "БД",
+            "value": "4711 сохранён с суммой 100 EUR"
+          }
+        ],
+        "outcome": "Несохранённое состояние не должно переходить в следующую транзакцию."
+      }
+    ],
+    "takeaway": "FINALIZE → CHECK_BEFORE_SAVE → точка невозврата → ADJUST_NUMBERS при необходимости → SAVE → CLEANUP.",
+    "limitation": "Это учебный успешный путь сохранения, а не трассировка каждого вызова. Для отдельных интеграций BAPI SAP описывает saver с поддержкой поздних ошибок. Перед использованием такого исключения проверьте целевую версию и сгенерированный контракт.",
+    "references": [
+      {
+        "title": "SAP: выполнение save sequence",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/save-sequence-runtime"
+      },
+      {
+        "title": "SAP: cleanup после ошибки early save",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/f030096abe1d41f9ac7549f0290b9c09.html"
+      },
+      {
+        "title": "SAP: numbering BAPI и save sequence",
+        "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence"
+      }
+    ]
+  },
+  {
+    "id": "lesson-rap-buffer-responses",
+    "title": "Принятое изменение ещё не означает COMMIT",
+    "questions": [
+      "RAP-03",
+      "RAP-07",
+      "SRAP-05"
+    ],
+    "scenario": "Внешний код через EML меняет количество в заказах 101, 102 и 999. Заказа 999 нет. По условиям примера разрешено продолжить обработку корректных заказов.",
+    "goal": "Правильно читать текущие значения и понимать FAILED, REPORTED и MAPPED, не объявляя COMMIT раньше времени.",
+    "nodes": [
+      {
+        "id": "request",
+        "label": "Запрос"
+      },
+      {
+        "id": "buffer",
+        "label": "Буфер"
+      },
+      {
+        "id": "response",
+        "label": "Ответы"
+      },
+      {
+        "id": "commit",
+        "label": "COMMIT"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Получить три входные записи",
+        "explanation": "Клиент просит изменить 101 с 1 на 2 и 102 с 2 на 3. Он также отправляет update отсутствующего ключа 999.",
+        "active": [
+          "request"
+        ],
+        "states": [
+          {
+            "label": "Входные данные",
+            "value": "101: 2; 102: 3; 999: 1"
+          },
+          {
+            "label": "Ожидают сохранения",
+            "value": "0"
+          },
+          {
+            "label": "FAILED",
+            "value": "Ещё не проверен"
+          },
+          {
+            "label": "БД",
+            "value": "101: 1; 102: 2"
+          }
+        ],
+        "outcome": "Для каждой входной записи нужен понятный результат."
+      },
+      {
+        "title": "Принять допустимые изменения в буфер",
+        "explanation": "Behavior принимает два существующих заказа и отклоняет 999. Транзакционное EML-чтение видит новые количества; SQL persistence всё ещё видит 1 и 2.",
+        "active": [
+          "buffer"
+        ],
+        "states": [
+          {
+            "label": "Входные данные",
+            "value": "Обработано 3"
+          },
+          {
+            "label": "Ожидают сохранения",
+            "value": "101: 2; 102: 3"
+          },
+          {
+            "label": "FAILED",
+            "value": "999: отсутствует"
+          },
+          {
+            "label": "БД",
+            "value": "101: 1; 102: 2"
+          }
+        ],
+        "outcome": "Буфер хранит рабочее состояние текущей транзакции."
+      },
+      {
+        "title": "Разобрать роли ответов",
+        "explanation": "FAILED указывает на 999. REPORTED содержит его ошибку и информационное сообщение для 101. MAPPED пуст, поскольку update не создаёт сопоставления новых ID.",
+        "active": [
+          "response"
+        ],
+        "states": [
+          {
+            "label": "FAILED",
+            "value": "999"
+          },
+          {
+            "label": "REPORTED",
+            "value": "999: ошибка; 101: информация"
+          },
+          {
+            "label": "MAPPED",
+            "value": "Пусто"
+          },
+          {
+            "label": "БД",
+            "value": "101: 1; 102: 2"
+          }
+        ],
+        "outcome": "Сообщение не всегда означает отказ, а MAPPED не является списком успехов."
+      },
+      {
+        "title": "Применить политику COMMIT клиента",
+        "explanation": "Внешний consumer решает сохранить два допустимых update и проверяет save response. В этом примере save checks проходят и COMMIT успешен.",
+        "active": [
+          "commit"
+        ],
+        "states": [
+          {
+            "label": "FAILED",
+            "value": "Interaction: 999; save: ошибок нет"
+          },
+          {
+            "label": "Ожидают сохранения",
+            "value": "0 после cleanup"
+          },
+          {
+            "label": "Сохранённые изменения",
+            "value": "101 и 102"
+          },
+          {
+            "label": "БД",
+            "value": "101: 2; 102: 3"
+          }
+        ],
+        "outcome": "Только успешное сохранение подтверждает persistence."
+      }
+    ],
+    "takeaway": "Принять изменение в буфер, проверить ответ операции и успешно выполнить COMMIT — три разных этапа.",
+    "limitation": "Учебная групповая обработка без draft, в которой явно разрешён частичный успех. В реальном сервисе атомарность changeset, контракт операции или требования клиента могут потребовать ROLLBACK всей операции.",
+    "references": [
+      {
+        "title": "SAP: Entity Manipulation Language",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/entity-manipulation-language-eml"
+      },
+      {
+        "title": "SAP: ответы COMMIT",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/commit-entities-response-of-long-form"
+      }
+    ]
+  },
+  {
+    "id": "lesson-rap-numbering",
+    "title": "Связать новый заказ и позицию до назначения номера",
+    "questions": [
+      "RAP-10",
+      "RAP-11",
+      "SRAP-07"
+    ],
+    "scenario": "Один запрос создаёт заказ и позицию до появления окончательного номера заказа. BO использует late numbering.",
+    "goal": "Различать идентификаторы создаваемых записей в запросе, идентичность в транзакции и окончательный бизнес-ключ.",
+    "nodes": [
+      {
+        "id": "request",
+        "label": "ID запроса"
+      },
+      {
+        "id": "identity",
+        "label": "Временный ID"
+      },
+      {
+        "id": "number",
+        "label": "Итоговый номер"
+      },
+      {
+        "id": "result",
+        "label": "Результат"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Связать операции create",
+        "explanation": "Новый заказ получает content ID H1, а позиция — I1. Позиция использует %cid_ref H1, чтобы указать parent create этого запроса.",
+        "active": [
+          "request"
+        ],
+        "states": [
+          {
+            "label": "Content ID родителя",
+            "value": "H1"
+          },
+          {
+            "label": "Content ID child",
+            "value": "I1 → родитель H1"
+          },
+          {
+            "label": "Предварительный ID",
+            "value": "Ещё не назначен"
+          },
+          {
+            "label": "Итоговый заказ",
+            "value": "Неизвестен"
+          }
+        ],
+        "outcome": "Content IDs связывают операции внутри запроса."
+      },
+      {
+        "title": "Сохранить transactional identity",
+        "explanation": "В этом учебном BO create response связывает H1 с предварительным ID P1. Следующие операции сохраняют generated %tky, а не придумывают окончательный номер заказа.",
+        "active": [
+          "identity"
+        ],
+        "states": [
+          {
+            "label": "Content ID родителя",
+            "value": "H1"
+          },
+          {
+            "label": "Связь child",
+            "value": "Позиция остаётся у P1"
+          },
+          {
+            "label": "Предварительный ID",
+            "value": "P1 доступен"
+          },
+          {
+            "label": "Итоговый заказ",
+            "value": "Неизвестен"
+          }
+        ],
+        "outcome": "К новому экземпляру можно обращаться до появления final key."
+      },
+      {
+        "title": "Сопоставить предварительный и окончательный ID",
+        "explanation": "После успешных early-save checks ADJUST_NUMBERS сопоставляет P1 заказу 4702. Реализация сохраняет parent-child связь по реальному mapping contract, полученному из BDEF.",
+        "active": [
+          "number"
+        ],
+        "states": [
+          {
+            "label": "Content ID родителя",
+            "value": "H1"
+          },
+          {
+            "label": "Связь child",
+            "value": "Позиция относится к 4702"
+          },
+          {
+            "label": "Предварительный ID",
+            "value": "P1 → 4702"
+          },
+          {
+            "label": "Итоговый заказ",
+            "value": "Назначен 4702"
+          }
+        ],
+        "outcome": "Late numbering требует полного identity mapping."
+      },
+      {
+        "title": "Вернуть сохранённый ID",
+        "explanation": "Транзакция сохраняется успешно. Внешний consumer получает final key через поддерживаемый commit/key-conversion contract и может обращаться к заказу 4702. H1 нельзя считать постоянным ключом.",
+        "active": [
+          "result"
+        ],
+        "states": [
+          {
+            "label": "Content ID родителя",
+            "value": "H1 действовал внутри запроса"
+          },
+          {
+            "label": "Связь child",
+            "value": "4702 / позиция 10 сохранены"
+          },
+          {
+            "label": "Предварительный ID",
+            "value": "Разрешён"
+          },
+          {
+            "label": "Итоговый заказ",
+            "value": "4702: COMMIT успешен"
+          }
+        ],
+        "outcome": "Возвращайте final identity после успешного save."
+      }
+    ],
+    "takeaway": "%cid и %cid_ref связывают операции создания. %tky идентифицирует экземпляр внутри транзакции. Окончательный ключ после late numbering получают по поддерживаемым правилам сопоставления.",
+    "limitation": "P1 — наглядное обозначение, а не рекомендуемый ABAP-тип или универсальное значение %pid. Сгенерированные компоненты идентификаторов зависят от настроек draft и назначения номеров. Урок не реализует адаптер BAPI.",
+    "references": [
+      {
+        "title": "SAP: ADJUST_NUMBERS",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/adjust-numbers"
+      },
+      {
+        "title": "SAP: примеры EML и производные ID",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/08_EML_ABAP_for_RAP.md"
+      }
+    ]
+  },
+  {
+    "id": "lesson-rap-draft",
+    "title": "Сохранить незавершённую работу, не меняя активный заказ",
+    "questions": [
+      "RAP-12",
+      "SRAP-09"
+    ],
+    "scenario": "Майя меняет сумму активного заказа 4703 с 80 EUR на 120 EUR. Бизнес-лимит — 100 EUR. Она закрывает приложение и возвращается позже.",
+    "goal": "Проследить сохранение draft, отказ в активации, исправление и успешную активацию.",
+    "nodes": [
+      {
+        "id": "edit",
+        "label": "Редактирование"
+      },
+      {
+        "id": "draft",
+        "label": "Сохранить draft"
+      },
+      {
+        "id": "check",
+        "label": "Prepare"
+      },
+      {
+        "id": "correct",
+        "label": "Исправление"
+      },
+      {
+        "id": "activate",
+        "label": "Activate"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Создать edit draft",
+        "explanation": "Редактирование копирует active state в draft Maya. Active order остаётся доступным с прежней committed-суммой.",
+        "active": [
+          "edit"
+        ],
+        "states": [
+          {
+            "label": "Active-сумма",
+            "value": "80 EUR"
+          },
+          {
+            "label": "Draft-сумма",
+            "value": "80 EUR"
+          },
+          {
+            "label": "Владелец draft",
+            "value": "Maya"
+          },
+          {
+            "label": "Activation",
+            "value": "Не запрошена"
+          }
+        ],
+        "outcome": "Draft и active — разные экземпляры."
+      },
+      {
+        "title": "Сохранить незавершённый draft",
+        "explanation": "Maya вводит 120 EUR; изменение draft сохраняется. Закрытие браузера не превращает draft в active business data.",
+        "active": [
+          "draft"
+        ],
+        "states": [
+          {
+            "label": "Active-сумма",
+            "value": "80 EUR"
+          },
+          {
+            "label": "Draft-сумма",
+            "value": "120 EUR сохранены"
+          },
+          {
+            "label": "Владелец draft",
+            "value": "Maya"
+          },
+          {
+            "label": "Activation",
+            "value": "Не запрошена"
+          }
+        ],
+        "outcome": "Даже сохранённый draft остаётся незавершённой работой."
+      },
+      {
+        "title": "Отклонить activation неверного draft",
+        "explanation": "Maya возвращается и запрашивает activation. Prepare/validation обнаруживает превышение лимита суммой 120 EUR. State message, связанное с полем, объясняет проблему; active data остаются равны 80 EUR.",
+        "active": [
+          "check"
+        ],
+        "states": [
+          {
+            "label": "Active-сумма",
+            "value": "80 EUR"
+          },
+          {
+            "label": "Draft-сумма",
+            "value": "120 EUR"
+          },
+          {
+            "label": "State message",
+            "value": "Сумма превышает 100 EUR"
+          },
+          {
+            "label": "Activation",
+            "value": "Отклонена"
+          }
+        ],
+        "outcome": "Validation защищает active data, сохраняя возможность исправить работу."
+      },
+      {
+        "title": "Исправить тот же draft",
+        "explanation": "Maya уменьшает сумму до 90 EUR; состояние проверки обновляется. В этом примере active data за время её отсутствия не менялись, поэтому draft concurrency checks также проходят.",
+        "active": [
+          "correct"
+        ],
+        "states": [
+          {
+            "label": "Active-сумма",
+            "value": "80 EUR"
+          },
+          {
+            "label": "Draft-сумма",
+            "value": "90 EUR"
+          },
+          {
+            "label": "State message",
+            "value": "Ошибка суммы очищена"
+          },
+          {
+            "label": "Activation",
+            "value": "Можно повторить"
+          }
+        ],
+        "outcome": "Исправление должно обновить и значения, и сообщения проверки."
+      },
+      {
+        "title": "Успешно активировать и сохранить",
+        "explanation": "Корректный draft активируется, active save проходит. Framework удаляет draft, а 90 EUR становится committed бизнес-значением.",
+        "active": [
+          "activate"
+        ],
+        "states": [
+          {
+            "label": "Active-сумма",
+            "value": "90 EUR: COMMIT успешен"
+          },
+          {
+            "label": "Draft-сумма",
+            "value": "Draft больше нет"
+          },
+          {
+            "label": "State message",
+            "value": "Нет"
+          },
+          {
+            "label": "Activation",
+            "value": "Успешна"
+          }
+        ],
+        "outcome": "Только успешные activation и save заменяют active state."
+      }
+    ],
+    "takeaway": "Draft сохраняет незавершённую работу. Успешная активация переносит исправленные значения в активные данные.",
+    "limitation": "Учебный managed exclusive draft. Запуск Prepare, повторное использование проверок, срок хранения draft и время блокировки зависят от версии и настройки BO. Напрямую менять draft-таблицы нельзя.",
+    "references": [
+      {
+        "title": "SAP: выполнение draft",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/draft-runtime"
+      },
+      {
+        "title": "SAP: реализация validations",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-validations"
+      },
+      {
+        "title": "SAP: state messages",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/state-messages"
+      }
+    ]
+  },
+  {
+    "id": "lesson-rap-etag",
+    "title": "Отклонить устаревшее изменение из второго браузера",
+    "questions": [
+      "ADV-01",
+      "OPS-05"
+    ],
+    "scenario": "Анна и Борис читают заказ 4704 с количеством 2 и одинаковым ETag. Анна сохраняет первой, затем Борис отправляет изменение на основе старой версии.",
+    "goal": "Показать optimistic concurrency на двух независимо прочитанных версиях.",
+    "nodes": [
+      {
+        "id": "read",
+        "label": "Чтение"
+      },
+      {
+        "id": "first",
+        "label": "Первый update"
+      },
+      {
+        "id": "stale",
+        "label": "Старый update"
+      },
+      {
+        "id": "refresh",
+        "label": "Обновление"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Дать клиентам одну исходную версию",
+        "explanation": "Ana и Ben независимо читают quantity 2 и ETag V1. V1 — условное обозначение version token, а не число, которое клиенты вычисляют сами.",
+        "active": [
+          "read"
+        ],
+        "states": [
+          {
+            "label": "Сервер",
+            "value": "Quantity 2 / V1"
+          },
+          {
+            "label": "Ana",
+            "value": "Quantity 2 / V1"
+          },
+          {
+            "label": "Ben",
+            "value": "Quantity 2 / V1"
+          },
+          {
+            "label": "Конфликт",
+            "value": "Нет"
+          }
+        ],
+        "outcome": "Проверка начинается с версии, которую клиент действительно прочитал."
+      },
+      {
+        "title": "Принять актуальный update Ana",
+        "explanation": "Ana отправляет quantity 3 с текущим ETag. Сервер принимает и сохраняет изменение, выдавая новый ETag V2.",
+        "active": [
+          "first"
+        ],
+        "states": [
+          {
+            "label": "Сервер",
+            "value": "Quantity 3 / V2"
+          },
+          {
+            "label": "Ana",
+            "value": "Quantity 3 / V2"
+          },
+          {
+            "label": "Ben",
+            "value": "Quantity 2 / V1"
+          },
+          {
+            "label": "Конфликт",
+            "value": "Нет"
+          }
+        ],
+        "outcome": "Сохранённое изменение делает старые version tokens неактуальными."
+      },
+      {
+        "title": "Отклонить устаревшее условие Ben",
+        "explanation": "Ben запрашивает quantity 4, передавая V1. ETag check обнаруживает несовпадение V1 с V2, и сервер сохраняет quantity 3 без изменений.",
+        "active": [
+          "stale"
+        ],
+        "states": [
+          {
+            "label": "Сервер",
+            "value": "Quantity 3 / V2"
+          },
+          {
+            "label": "Ana",
+            "value": "Quantity 3 / V2"
+          },
+          {
+            "label": "Ben",
+            "value": "Запрошено quantity 4 с V1"
+          },
+          {
+            "label": "Конфликт",
+            "value": "Устаревший update отклонён"
+          }
+        ],
+        "outcome": "Старый клиент не должен молча затереть новое сохранение."
+      },
+      {
+        "title": "Обновить данные перед новым решением",
+        "explanation": "Ben читает quantity 3 и V2, затем осознанно выбирает quantity 4 с текущей версией. Успешный повтор создаёт V3. Это новое решение на свежих данных, а не слепая повторная отправка.",
+        "active": [
+          "refresh"
+        ],
+        "states": [
+          {
+            "label": "Сервер",
+            "value": "Quantity 4 / V3"
+          },
+          {
+            "label": "Ana",
+            "value": "Всё ещё показывает quantity 3 / V2"
+          },
+          {
+            "label": "Ben",
+            "value": "Quantity 4 / V3"
+          },
+          {
+            "label": "Конфликт",
+            "value": "Решён обновлением и повтором"
+          }
+        ],
+        "outcome": "Locks координируют текущую работу; ETags обнаруживают старое состояние клиента."
+      }
+    ],
+    "takeaway": "Для проверки устаревшего изменения нужны два клиента или две независимо сохранённые версии. Убедитесь, что отклонённая запись ничего не изменила.",
+    "limitation": "Учебные условные OData-запросы с корректно обновляемыми ETag сущностей. HTTP-ответы и блокировки зависят от сервиса. V1–V3 — условные обозначения, а не буквальные значения SAP ETag.",
+    "references": [
+      {
+        "title": "SAP: optimistic concurrency control",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/optimistic-concurrency-control"
+      }
+    ]
+  },
+  {
+    "id": "lesson-rap-total-etag",
+    "title": "Обнаружить изменение позиции перед возобновлением draft",
+    "questions": [
+      "SRAP-10"
+    ],
+    "scenario": "Майя оставила открытым draft заказа 4705. После истечения исключительной блокировки фоновый процесс меняет активную позицию.",
+    "goal": "Объяснить, зачем всему BO нужен total ETag в дополнение к обычному entity ETag.",
+    "nodes": [
+      {
+        "id": "draft",
+        "label": "Открыть draft"
+      },
+      {
+        "id": "expire",
+        "label": "Lock истёк"
+      },
+      {
+        "id": "change",
+        "label": "Active изменён"
+      },
+      {
+        "id": "resume",
+        "label": "Resume"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Запомнить active version при редактировании",
+        "explanation": "Active order и edit draft соответствуют total ETag T1. У item 10 quantity 2, а Maya меняет комментарий draft.",
+        "active": [
+          "draft"
+        ],
+        "states": [
+          {
+            "label": "Active-позиция",
+            "value": "10: quantity 2"
+          },
+          {
+            "label": "Active total ETag",
+            "value": "T1"
+          },
+          {
+            "label": "Основа draft",
+            "value": "T1; комментарий изменён"
+          },
+          {
+            "label": "Lock",
+            "value": "Exclusive"
+          }
+        ],
+        "outcome": "Draft запоминает версию active BO, на которой основан."
+      },
+      {
+        "title": "Дождаться истечения exclusive lock",
+        "explanation": "Maya перестаёт редактировать; настроенный срок lock истекает. Draft сохраняется, но другой авторизованный процесс теперь может изменить active BO.",
+        "active": [
+          "expire"
+        ],
+        "states": [
+          {
+            "label": "Active-позиция",
+            "value": "10: quantity 2"
+          },
+          {
+            "label": "Active total ETag",
+            "value": "T1"
+          },
+          {
+            "label": "Основа draft",
+            "value": "T1; комментарий изменён"
+          },
+          {
+            "label": "Lock",
+            "value": "Истёк"
+          }
+        ],
+        "outcome": "Сохранённый draft не означает бессрочную exclusive lock."
+      },
+      {
+        "title": "Изменить active child",
+        "explanation": "Фоновый процесс сохраняет item 10 с quantity 3. Корректное обновление total ETag меняет общую версию BO у root на T2, хотя Maya редактировала поле заголовка.",
+        "active": [
+          "change"
+        ],
+        "states": [
+          {
+            "label": "Active-позиция",
+            "value": "10: quantity 3"
+          },
+          {
+            "label": "Active total ETag",
+            "value": "T2"
+          },
+          {
+            "label": "Основа draft",
+            "value": "По-прежнему T1"
+          },
+          {
+            "label": "Lock",
+            "value": "Exclusive lock Maya отсутствует"
+          }
+        ],
+        "outcome": "Изменение child должно учитываться как изменение BO."
+      },
+      {
+        "title": "Отклонить устаревший resume",
+        "explanation": "При resume runtime сравнивает T1 draft с active T2. Несовпадение не позволяет продолжить старый draft так, будто ничего не изменилось. Приложение должно помочь восстановить работу на актуальных данных.",
+        "active": [
+          "resume"
+        ],
+        "states": [
+          {
+            "label": "Active-позиция",
+            "value": "10: quantity 3"
+          },
+          {
+            "label": "Active total ETag",
+            "value": "T2"
+          },
+          {
+            "label": "Основа draft",
+            "value": "T1 конфликтует с T2"
+          },
+          {
+            "label": "Resume",
+            "value": "Отклонён: active state изменился"
+          }
+        ],
+        "outcome": "Total ETag закрывает промежуток после истечения draft lock."
+      }
+    ],
+    "takeaway": "ETag сущности защищает изменение, отправленное клиентом. Total ETag помогает проверить, не изменились ли активные данные всего BO перед продолжением работы с draft.",
+    "limitation": "Учебный exclusive edit draft с дочерней сущностью. Для автоматического обновления total ETag нужны документированные условия managed RAP. В unmanaged RAP реализация должна сама выполнять контракт обновления.",
+    "references": [
+      {
+        "title": "SAP: Total ETag",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/f5e8548c241b43ab82bceec030b5dc9a.html"
+      },
+      {
+        "title": "SAP: выполнение draft",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/draft-runtime"
+      }
+    ]
+  },
+  {
+    "id": "lesson-rap-side-effects",
+    "title": "Показать итог, уже рассчитанный сервером",
+    "questions": [
+      "ADV-07",
+      "SRAP-21",
+      "OPS-06"
+    ],
+    "scenario": "Страница Fiori показывает draft: количество 2, цена 15 EUR, итог 30 EUR. Пользователь меняет количество на 3.",
+    "goal": "Отделить правильность расчёта от обновления данных на экране.",
+    "nodes": [
+      {
+        "id": "input",
+        "label": "Ввод"
+      },
+      {
+        "id": "derive",
+        "label": "Расчёт"
+      },
+      {
+        "id": "metadata",
+        "label": "Правило обновления"
+      },
+      {
+        "id": "reload",
+        "label": "Перечитать"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Изменить исходное поле",
+        "explanation": "Пользователь вводит количество 3. Страница отправляет изменение серверу. Пока не получен ответ и не перечитаны зависимые данные, итог на экране может оставаться 30 EUR.",
+        "active": [
+          "input"
+        ],
+        "states": [
+          {
+            "label": "Количество на экране",
+            "value": "3"
+          },
+          {
+            "label": "Количество на сервере",
+            "value": "Ожидается изменение"
+          },
+          {
+            "label": "Итог на сервере",
+            "value": "30 EUR до изменения"
+          },
+          {
+            "label": "Итог на экране",
+            "value": "30 EUR"
+          }
+        ],
+        "outcome": "Изменение одного поля само по себе не обновляет остальные."
+      },
+      {
+        "title": "Проверить расчёт на сервере",
+        "explanation": "Determination обрабатывает количество 3 и рассчитывает 45 EUR в draft. Чтение с сервера подтверждает 45 EUR, но страница всё ещё показывает 30 EUR.",
+        "active": [
+          "derive"
+        ],
+        "states": [
+          {
+            "label": "Количество на экране",
+            "value": "3"
+          },
+          {
+            "label": "Количество на сервере",
+            "value": "3"
+          },
+          {
+            "label": "Итог на сервере",
+            "value": "45 EUR"
+          },
+          {
+            "label": "Итог на экране",
+            "value": "30 EUR"
+          }
+        ],
+        "outcome": "Расчёт верен: теперь нужно проверить обновление экрана."
+      },
+      {
+        "title": "Сообщить клиенту о зависимости",
+        "explanation": "Поддерживаемые метаданные side effects указывают: Quantity влияет на Total. Клиент, который поддерживает эти метаданные, запрашивает Total после изменения Quantity.",
+        "active": [
+          "metadata"
+        ],
+        "states": [
+          {
+            "label": "Количество на экране",
+            "value": "3"
+          },
+          {
+            "label": "Итог на сервере",
+            "value": "45 EUR"
+          },
+          {
+            "label": "Что перечитать",
+            "value": "Запрошен Total"
+          },
+          {
+            "label": "Итог на экране",
+            "value": "30 EUR до завершения чтения"
+          }
+        ],
+        "outcome": "Side effects описывают, какие зависимые значения нужно перечитать."
+      },
+      {
+        "title": "Показать полученное значение",
+        "explanation": "Чтение возвращает 45 EUR, и страница обновляет Total. Расчёт выполняется на сервере. Перечитывание данных не активирует draft.",
+        "active": [
+          "reload"
+        ],
+        "states": [
+          {
+            "label": "Количество на экране",
+            "value": "3"
+          },
+          {
+            "label": "Итог на сервере",
+            "value": "45 EUR"
+          },
+          {
+            "label": "Итог на экране",
+            "value": "45 EUR"
+          },
+          {
+            "label": "Активные данные",
+            "value": "Не изменились от перечитывания"
+          }
+        ],
+        "outcome": "Обновить экран и окончательно сохранить бизнес-изменение — разные действия."
+      }
+    ],
+    "takeaway": "Сначала проверьте значение на сервере, затем метаданные side effects, запрос зависимых данных и полученный ответ.",
+    "limitation": "Учебный процесс Fiori с managed draft. Синтаксис side effects, доступность полей в projection и поддержка клиента должны соответствовать версиям сервера, OData и SAPUI5. Показанные состояния не являются записью реального браузерного сеанса.",
+    "references": [
+      {
+        "title": "SAP: RAP side effect",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/rap-side-effect"
+      },
+      {
+        "title": "SAP: определение OData service",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/defining-odata-service?version=s4hana_cloud"
+      }
+    ]
+  },
+  {
+    "id": "lesson-rap-custom-query",
+    "title": "Страница и общее количество из одного разрешённого набора",
+    "questions": [
+      "ADV-10",
+      "MODEL-03",
+      "MODEL-05"
+    ],
+    "scenario": "Custom query содержит 12 заказов. Лее разрешена организация A: в ней шесть заказов, из них четыре открыты — 101, 104, 108 и 110.",
+    "goal": "Применить полномочия и фильтр до подсчёта строк и выбора страницы. Обеспечить однозначный порядок.",
+    "nodes": [
+      {
+        "id": "request",
+        "label": "Запрос"
+      },
+      {
+        "id": "restrict",
+        "label": "Ограничение"
+      },
+      {
+        "id": "sort",
+        "label": "Сортировка"
+      },
+      {
+        "id": "page",
+        "label": "Страница"
+      },
+      {
+        "id": "count",
+        "label": "Count"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Прочитать весь query request",
+        "explanation": "Lea запрашивает открытые заказы по CreatedAt, пропуская один и получая два, вместе с total count. Provider отдельно фиксирует требования к данным и count.",
+        "active": [
+          "request"
+        ],
+        "states": [
+          {
+            "label": "Исходные строки",
+            "value": "12"
+          },
+          {
+            "label": "Область пользователя",
+            "value": "Организация A"
+          },
+          {
+            "label": "Фильтр",
+            "value": "Status = Open"
+          },
+          {
+            "label": "Страница",
+            "value": "Пропустить 1, взять 2"
+          }
+        ],
+        "outcome": "Custom provider отвечает за запрошенное поведение query."
+      },
+      {
+        "title": "Получить разрешённый отфильтрованный набор",
+        "explanation": "Provider применяет область организации Lea и фильтр открытого статуса. Остаются 101, 104, 108 и 110. Неразрешённые строки не должны участвовать ни в данных, ни в count.",
+        "active": [
+          "restrict"
+        ],
+        "states": [
+          {
+            "label": "Исходные строки",
+            "value": "12"
+          },
+          {
+            "label": "Разрешённые совпадения",
+            "value": "4"
+          },
+          {
+            "label": "Совпавшие ID",
+            "value": "101, 104, 108, 110"
+          },
+          {
+            "label": "Страница",
+            "value": "Страница ещё не выделена"
+          }
+        ],
+        "outcome": "Одинаковое ограничение нужно всем частям ответа."
+      },
+      {
+        "title": "Задать однозначный порядок",
+        "explanation": "У 104 и 108 одинаковый CreatedAt. Добавленный уникальный OrderID разрешает равенство и даёт порядок 101, 104, 108, 110 для этого неизменного набора.",
+        "active": [
+          "sort"
+        ],
+        "states": [
+          {
+            "label": "Разрешённые совпадения",
+            "value": "4"
+          },
+          {
+            "label": "Порядок",
+            "value": "CreatedAt, затем OrderID"
+          },
+          {
+            "label": "Упорядоченные ID",
+            "value": "101, 104, 108, 110"
+          },
+          {
+            "label": "Страница",
+            "value": "Страница ещё не выделена"
+          }
+        ],
+        "outcome": "Одинаковые значения сортировки требуют стабильного tie-breaker."
+      },
+      {
+        "title": "Вернуть только нужную страницу",
+        "explanation": "Пропуск 101 и выбор двух следующих возвращает 104 и 108. Provider не называет эти две строки всем набором совпадений.",
+        "active": [
+          "page"
+        ],
+        "states": [
+          {
+            "label": "Разрешённые совпадения",
+            "value": "4"
+          },
+          {
+            "label": "Возвращённые ID",
+            "value": "104, 108"
+          },
+          {
+            "label": "Возвращено строк",
+            "value": "2"
+          },
+          {
+            "label": "Offset",
+            "value": "1"
+          }
+        ],
+        "outcome": "Размер страницы и total count отвечают на разные вопросы."
+      },
+      {
+        "title": "Вернуть число совпадений",
+        "explanation": "Count равен 4 при тех же authorization и filter. Для count-only request можно не получать данные страницы, сохранив те же ограничения.",
+        "active": [
+          "count"
+        ],
+        "states": [
+          {
+            "label": "Разрешённые совпадения",
+            "value": "4"
+          },
+          {
+            "label": "Возвращённые ID",
+            "value": "104, 108"
+          },
+          {
+            "label": "Возвращено строк",
+            "value": "2"
+          },
+          {
+            "label": "Общее число",
+            "value": "4"
+          }
+        ],
+        "outcome": "Ни 12 исходных строк, ни 2 строки страницы не являются правильным count."
+      }
+    ],
+    "takeaway": "Сначала ограничьте набор полномочиями и фильтром, задайте однозначный порядок, выделите страницу, а count считайте до выделения страницы.",
+    "limitation": "Учебный набор не меняется между запросами. В реальности новые записи могут сдвигать страницы с offset. Проверьте согласованность источника данных, поддерживаемые фильтры и API постраничной выдачи в целевой версии.",
+    "references": [
+      {
+        "title": "SAP: реализация unmanaged query",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-unmanaged-query"
+      },
+      {
+        "title": "SAP: запросы data и count",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/edb412d5647f457289f745c8be1b660d.html"
+      },
+      {
+        "title": "SAP: access control",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-data-models/cds-authorization-concept"
+      }
+    ]
+  },
+  {
+    "id": "lesson-cds-join-fanout",
+    "title": "Найти лишние строки за удвоенной суммой",
+    "questions": [
+      "CDS-03",
+      "MODEL-06",
+      "MODEL-10"
+    ],
+    "scenario": "Заказ 4710 имеет сумму 100 EUR. Для его статуса есть английский и немецкий текст; отчёт присоединяет оба только по ключу статуса.",
+    "goal": "Исправить реальную уникальность связи, а не скрывать повторяющиеся бизнес-строки.",
+    "nodes": [
+      {
+        "id": "base",
+        "label": "Исходная строка"
+      },
+      {
+        "id": "join",
+        "label": "JOIN"
+      },
+      {
+        "id": "diagnose",
+        "label": "Диагностика"
+      },
+      {
+        "id": "repair",
+        "label": "Исправление"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Определить смысл одной строки",
+        "explanation": "Источник содержит одну строку 4710 с суммой 100 EUR. Отчёт должен иметь одну строку на заказ на запрошенном языке.",
+        "active": [
+          "base"
+        ],
+        "states": [
+          {
+            "label": "Строки заказа",
+            "value": "1"
+          },
+          {
+            "label": "Тексты",
+            "value": "Английский и немецкий"
+          },
+          {
+            "label": "Сумма отчёта",
+            "value": "100 EUR до JOIN"
+          },
+          {
+            "label": "Нужная детализация",
+            "value": "Одна строка на заказ"
+          }
+        ],
+        "outcome": "Решите, что представляет одна строка результата."
+      },
+      {
+        "title": "Увидеть размножение строк",
+        "explanation": "JOIN только по status находит два текста. Заказ 4710 появляется дважды, по разу на язык; сумма становится 200 EUR.",
+        "active": [
+          "join"
+        ],
+        "states": [
+          {
+            "label": "Строки заказа",
+            "value": "2 после JOIN"
+          },
+          {
+            "label": "Тексты",
+            "value": "Совпали английский и немецкий"
+          },
+          {
+            "label": "Сумма отчёта",
+            "value": "200 EUR"
+          },
+          {
+            "label": "Объявленный ключ заказа",
+            "value": "4710 повторяется"
+          }
+        ],
+        "outcome": "Несколько подходящих текстов повторяют строку заказа вместе с её суммой."
+      },
+      {
+        "title": "Не исправлять результат одним объявлением cardinality",
+        "explanation": "Объявление association to-one не удаляет второй текст. DISTINCT также не объединит строки, если в них разные языки или тексты.",
+        "active": [
+          "diagnose"
+        ],
+        "states": [
+          {
+            "label": "Строки заказа",
+            "value": "По-прежнему 2"
+          },
+          {
+            "label": "Причина",
+            "value": "Язык не включён в условие"
+          },
+          {
+            "label": "Сумма отчёта",
+            "value": "По-прежнему 200 EUR"
+          },
+          {
+            "label": "Быстрое исправление",
+            "value": "Отклонено"
+          }
+        ],
+        "outcome": "Cardinality описывает ожидаемое число связанных записей, но не делает данные уникальными."
+      },
+      {
+        "title": "Привести связь к нужной детализации",
+        "explanation": "Исправленное условие включает английский язык. Ключ таблицы текстов уникален по статусу и языку. Отчёт снова возвращает один заказ с суммой 100 EUR.",
+        "active": [
+          "repair"
+        ],
+        "states": [
+          {
+            "label": "Строки заказа",
+            "value": "1"
+          },
+          {
+            "label": "Тексты",
+            "value": "Только английский"
+          },
+          {
+            "label": "Сумма отчёта",
+            "value": "100 EUR"
+          },
+          {
+            "label": "Объявленный ключ заказа",
+            "value": "4710 уникален"
+          }
+        ],
+        "outcome": "Исправьте JOIN и проверьте уникальность связанных записей."
+      }
+    ],
+    "takeaway": "Отслеживайте число строк на каждой связи до изменения агрегирования или добавления DISTINCT.",
+    "limitation": "Учебная таблица текстов имеет уникальный ключ из статуса и языка. В реальной модели могут понадобиться период действия, мандант и другие части ключа. Результат при отсутствии текста зависит от INNER или OUTER JOIN.",
+    "references": [
+      {
+        "title": "SAP: CDS cardinality",
+        "url": "https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/ABENCDS_CARDINALITY_V2.html"
+      }
+    ]
+  },
+  {
+    "id": "lesson-cds-security-stack",
+    "title": "Защитить сущность, которую действительно читает пользователь",
+    "questions": [
+      "CDS-07",
+      "MODEL-01",
+      "MODEL-11"
+    ],
+    "scenario": "Базовое CDS-представление заказов ограничивает доступ по сбытовой организации. Новое consumption view и его справка выбора клиента ошибочно показывают организацию B пользователю, которому разрешена только A.",
+    "goal": "Проверить полномочия в каждой доступной клиенту точке чтения.",
+    "nodes": [
+      {
+        "id": "base",
+        "label": "Base check"
+      },
+      {
+        "id": "expose",
+        "label": "Exposed view"
+      },
+      {
+        "id": "protect",
+        "label": "Access rule"
+      },
+      {
+        "id": "valuehelp",
+        "label": "Value help"
+      },
+      {
+        "id": "verify",
+        "label": "Проверка"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Проверить защищённую base entity",
+        "explanation": "Обычное чтение base entity пользователем Lea возвращает только A1. В источнике есть и B1, но Lea не вправе его видеть.",
+        "active": [
+          "base"
+        ],
+        "states": [
+          {
+            "label": "Пользователь",
+            "value": "Lea: организация A"
+          },
+          {
+            "label": "Результат base",
+            "value": "A1"
+          },
+          {
+            "label": "Результат exposed view",
+            "value": "Не проверен"
+          },
+          {
+            "label": "Value help",
+            "value": "Не проверен"
+          }
+        ],
+        "outcome": "Успешная base-проверка доказывает только этот путь доступа."
+      },
+      {
+        "title": "Проверить новую exposed entity",
+        "explanation": "В ошибочной настройке чтение consumption entity возвращает A1 и B1. Base DCL не применяется автоматически лишь потому, что другая CDS entity читает из base.",
+        "active": [
+          "expose"
+        ],
+        "states": [
+          {
+            "label": "Пользователь",
+            "value": "Lea: организация A"
+          },
+          {
+            "label": "Результат base",
+            "value": "A1"
+          },
+          {
+            "label": "Результат exposed view",
+            "value": "A1 и B1: утечка"
+          },
+          {
+            "label": "Value help",
+            "value": "Не проверен"
+          }
+        ],
+        "outcome": "Стек views не является автоматическим стеком полномочий."
+      },
+      {
+        "title": "Защитить consumption path",
+        "explanation": "Разработчик добавляет подходящее access rule, при необходимости используя поддерживаемые DCL inheritance и field mappings. Прямое чтение сервиса Lea теперь возвращает только A1.",
+        "active": [
+          "protect"
+        ],
+        "states": [
+          {
+            "label": "Пользователь",
+            "value": "Lea: организация A"
+          },
+          {
+            "label": "Результат base",
+            "value": "A1"
+          },
+          {
+            "label": "Результат exposed view",
+            "value": "A1"
+          },
+          {
+            "label": "Value help",
+            "value": "Не проверен"
+          }
+        ],
+        "outcome": "Exposed entity нужна действующая защита чтения."
+      },
+      {
+        "title": "Отдельно проверить value help",
+        "explanation": "Customer value help всё ещё раскрывает B-Customer, пока его путь чтения не защищён. После исправления Lea видит только разрешённый A-Customer.",
+        "active": [
+          "valuehelp"
+        ],
+        "states": [
+          {
+            "label": "Пользователь",
+            "value": "Lea: организация A"
+          },
+          {
+            "label": "Результат exposed view",
+            "value": "A1"
+          },
+          {
+            "label": "Value help",
+            "value": "Только A-Customer"
+          },
+          {
+            "label": "Вторая утечка",
+            "value": "Закрыта"
+          }
+        ],
+        "outcome": "Защита списка заказов автоматически не защищает его помощников."
+      },
+      {
+        "title": "Проверить под разными пользователями",
+        "explanation": "Отдельный тестовый пользователь организации B видит B1 и B-Customer, а Lea — только данные A. Тесты вызывают реальные service и value-help paths без privileged bypass.",
+        "active": [
+          "verify"
+        ],
+        "states": [
+          {
+            "label": "Заказы Lea",
+            "value": "A1"
+          },
+          {
+            "label": "Value help Lea",
+            "value": "A-Customer"
+          },
+          {
+            "label": "Заказы пользователя B",
+            "value": "B1"
+          },
+          {
+            "label": "Value help пользователя B",
+            "value": "B-Customer"
+          }
+        ],
+        "outcome": "Проверяйте и разрешённый доступ, и запрет чужой организации."
+      }
+    ],
+    "takeaway": "Защищайте каждую точку чтения, включая опубликованную сущность и справки выбора. Защита чтения не заменяет проверку права изменения в RAP.",
+    "limitation": "Учебные обычные пути чтения CDS. Синтаксис наследования правил зависит от типа сущности и версии. Аналитические запросы, привилегированный доступ и custom query требуют отдельной обработки полномочий по документации.",
+    "references": [
+      {
+        "title": "SAP: концепция CDS authorization",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-data-models/cds-authorization-concept"
+      },
+      {
+        "title": "SAP: замена при DCL inheritance",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/cds-dcl-define-role-replacing"
+      },
+      {
+        "title": "SAP: реализация authority checks",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks"
+      }
+    ]
+  },
+  {
+    "id": "lesson-cloud-api-dependency",
+    "title": "Проверить зависимости обёртки с released-контрактом",
+    "questions": [
+      "CORE-08",
+      "CORE-13",
+      "GOV-03"
+    ],
+    "scenario": "Расширение в Private Edition вызывает обёртку проведения, выпущенную командой для использования. Внутри остаётся внутренняя функция SAP без подтверждённого released-контракта или подходящей классификации.",
+    "goal": "Проверить всю цепочку зависимостей и назначение API перед оценкой соответствия Clean Core.",
+    "nodes": [
+      {
+        "id": "claim",
+        "label": "Утверждение"
+      },
+      {
+        "id": "trace",
+        "label": "Цепочка вызовов"
+      },
+      {
+        "id": "verify",
+        "label": "Проверка API"
+      },
+      {
+        "id": "decide",
+        "label": "Решение"
+      },
+      {
+        "id": "record",
+        "label": "Фиксация"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Записать исходное утверждение",
+        "explanation": "Команда называет extension Level A, потому что приложение вызывает released custom wrapper. SAP dependency внутри wrapper пока не исследована.",
+        "active": [
+          "claim"
+        ],
+        "states": [
+          {
+            "label": "Dependency приложения",
+            "value": "Custom posting wrapper"
+          },
+          {
+            "label": "Release wrapper",
+            "value": "Выпущен командой"
+          },
+          {
+            "label": "SAP dependency",
+            "value": "Не проверена"
+          },
+          {
+            "label": "Оценка",
+            "value": "Level A заявлен, не подтверждён"
+          }
+        ],
+        "outcome": "Public custom interface — только начало review."
+      },
+      {
+        "title": "Проследить вызов до SAP dependency",
+        "explanation": "Call graph обнаруживает internal SAP function за wrapper. Release wrapper не даёт функции SAP stability contract и не убирает upgrade risk.",
+        "active": [
+          "trace"
+        ],
+        "states": [
+          {
+            "label": "Dependency приложения",
+            "value": "Custom posting wrapper"
+          },
+          {
+            "label": "Release wrapper",
+            "value": "Без изменений"
+          },
+          {
+            "label": "SAP dependency",
+            "value": "Найдена internal function"
+          },
+          {
+            "label": "Оценка",
+            "value": "Level A не подтверждён"
+          }
+        ],
+        "outcome": "Инкапсуляция не меняет status исходной dependency."
+      },
+      {
+        "title": "Оценить настоящую альтернативу",
+        "explanation": "В условной целевой системе repository evidence подтверждает local released API с C1 и подходящей visibility. Команда также проверяет posting operation, authorization и transaction behavior.",
+        "active": [
+          "verify"
+        ],
+        "states": [
+          {
+            "label": "Кандидат",
+            "value": "Local released posting API"
+          },
+          {
+            "label": "Контракт",
+            "value": "C1: локальное использование"
+          },
+          {
+            "label": "Соответствие задаче",
+            "value": "Операция и LUW проверены"
+          },
+          {
+            "label": "Оценка",
+            "value": "Кандидат на замену принят"
+          }
+        ],
+        "outcome": "Назначение release и бизнес-пригодность проверяются отдельно."
+      },
+      {
+        "title": "Заменить dependency и повторить тесты",
+        "explanation": "Wrapper адаптируется к подходящему released API. Успешная проводка, отказ и ROLLBACK проверяются на новой dependency перед удалением internal call.",
+        "active": [
+          "decide"
+        ],
+        "states": [
+          {
+            "label": "Dependency приложения",
+            "value": "Тот же custom interface"
+          },
+          {
+            "label": "SAP dependency",
+            "value": "Local released API"
+          },
+          {
+            "label": "Internal call",
+            "value": "Удалён в этом сценарии"
+          },
+          {
+            "label": "Проверка",
+            "value": "Успех, отказ и ROLLBACK проверены"
+          }
+        ],
+        "outcome": "Изменение dependency всё равно требует доказательств поведения."
+      },
+      {
+        "title": "Сохранить доказательства с решением",
+        "explanation": "Запись содержит target release, API release state, contract, visibility, dependency scan и test revision. C1 — контракт использования, а не Clean Core Level C и не release remote API.",
+        "active": [
+          "record"
+        ],
+        "states": [
+          {
+            "label": "Подтверждение API",
+            "value": "Запись для целевой системы сохранена"
+          },
+          {
+            "label": "Оценка dependency",
+            "value": "Internal dependency удалена"
+          },
+          {
+            "label": "Смысл контракта",
+            "value": "C1: local; C2: remote"
+          },
+          {
+            "label": "Осталось проверить",
+            "value": "Проверки всего extension и delivery"
+          }
+        ],
+        "outcome": "Оценивайте всё решение, а не один wrapper отдельно."
+      }
+    ],
+    "takeaway": "Проследите косвенные зависимости, проверьте разрешённое использование API в целевой системе и протестируйте бизнес-поведение. Обёртка сама по себе не меняет статус внутреннего API.",
+    "limitation": "API и результаты проверок здесь условные, а не доказательства для реальной системы. Если подходящего released API нет, оцените возможности редакции продукта и оформленное исключение с ответственным владельцем. Не считайте любой классический BAPI уровнем B.",
+    "references": [
+      {
+        "title": "SAP: практики Clean Core extensibility",
+        "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487"
+      },
+      {
+        "title": "SAP: released APIs и release contracts",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis"
+      },
+      {
+        "title": "SAP: поиск released APIs",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/finding-released-apis-and-deprecated-objects"
+      }
+    ]
+  },
+  {
+    "id": "lesson-rap-reliable-event",
+    "title": "Запустить внешний workflow после сохранения согласования",
+    "questions": [
+      "ADV-11",
+      "SRAP-18",
+      "SRAP-04"
+    ],
+    "scenario": "Согласование заказа 4720 должно запускать внешний workflow. Первая попытка не проходит проверку. После исправления сохранение успешно, но доставка события временно задержана.",
+    "goal": "Разделить создание RAP event в поздней фазе сохранения, доставку после COMMIT и безопасную обработку дубликатов.",
+    "nodes": [
+      {
+        "id": "validate",
+        "label": "Проверка"
+      },
+      {
+        "id": "raise",
+        "label": "Event в save"
+      },
+      {
+        "id": "commit",
+        "label": "COMMIT"
+      },
+      {
+        "id": "deliver",
+        "label": "Доставка"
+      },
+      {
+        "id": "consume",
+        "label": "Обработка"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Отклонить первую попытку до внешней работы",
+        "explanation": "Первая попытка approval не проходит credit check. Вызов workflow endpoint из determination мог бы запустить работу для несохранённого согласования, поэтому здесь такого вызова нет.",
+        "active": [
+          "validate"
+        ],
+        "states": [
+          {
+            "label": "Заказ",
+            "value": "Ожидает согласования"
+          },
+          {
+            "label": "Сохранение",
+            "value": "Отклонён credit check"
+          },
+          {
+            "label": "Event",
+            "value": "Committed event отсутствует"
+          },
+          {
+            "label": "Workflow",
+            "value": "Не запущен"
+          }
+        ],
+        "outcome": "Ранние вычисления не должны объявлять бизнес-изменение завершённым."
+      },
+      {
+        "title": "Повторить и поднять event в поддерживаемом late save",
+        "explanation": "После исправления approval проходит проверки. В поддерживаемой save-реализации BO поднимает Approved с заказом 4720 и бизнес-ссылкой APPROVAL-4720-1.",
+        "active": [
+          "raise"
+        ],
+        "states": [
+          {
+            "label": "Заказ",
+            "value": "Approved, save ещё идёт"
+          },
+          {
+            "label": "Сохранение",
+            "value": "Выполняется late save"
+          },
+          {
+            "label": "Event",
+            "value": "Поднят через RAP"
+          },
+          {
+            "label": "Workflow",
+            "value": "Не запущен"
+          }
+        ],
+        "outcome": "RAP business event поднимается в рамках save lifecycle."
+      },
+      {
+        "title": "Выполнить COMMIT локального согласования",
+        "explanation": "Локальная транзакция успешно фиксируется. Event infrastructure получает committed notification для асинхронной доставки. У внешнего workflow своя транзакция и собственный результат.",
+        "active": [
+          "commit"
+        ],
+        "states": [
+          {
+            "label": "Заказ",
+            "value": "Approved и committed"
+          },
+          {
+            "label": "Сохранение",
+            "value": "Успешен"
+          },
+          {
+            "label": "Event",
+            "value": "Ожидает доставки"
+          },
+          {
+            "label": "Workflow",
+            "value": "Не запущен"
+          }
+        ],
+        "outcome": "Local COMMIT не может атомарно завершить remote workflow."
+      },
+      {
+        "title": "Восстановить задержанную доставку",
+        "explanation": "Настроенный event channel временно недоступен, затем доставка продолжается поддерживаемым retry. Эксплуатация наблюдает pending event, а не повторяет approval action.",
+        "active": [
+          "deliver"
+        ],
+        "states": [
+          {
+            "label": "Заказ",
+            "value": "Approved и committed"
+          },
+          {
+            "label": "Event",
+            "value": "Доставлен после retry"
+          },
+          {
+            "label": "Ссылка операции",
+            "value": "APPROVAL-4720-1"
+          },
+          {
+            "label": "Workflow",
+            "value": "Запрос получен"
+          }
+        ],
+        "outcome": "Восстановление доставки не должно создавать новое согласование."
+      },
+      {
+        "title": "Сделать повторную обработку безвредной",
+        "explanation": "Workflow consumer записывает APPROVAL-4720-1 вместе с результатом workflow. Повторное уведомление находит запись и подтверждается без создания второго workflow.",
+        "active": [
+          "consume"
+        ],
+        "states": [
+          {
+            "label": "Заказ",
+            "value": "Approved и committed"
+          },
+          {
+            "label": "Уведомления",
+            "value": "Получено 2"
+          },
+          {
+            "label": "Ссылка операции",
+            "value": "APPROVAL-4720-1 уже обработан"
+          },
+          {
+            "label": "Workflow",
+            "value": "В этом примере создан ровно 1"
+          }
+        ],
+        "outcome": "Спроектируйте и протестируйте дедупликацию; не предполагайте exactly-once delivery."
+      }
+    ],
+    "takeaway": "Создавайте событие в разрешённой фазе RAP save. Передавайте подтверждённое изменение асинхронно и защищайте получателя от повторной обработки.",
+    "limitation": "Учебная схема с настроенной надёжной доставкой событий. Получатель атомарно сохраняет результат и данные для распознавания дубликатов. Event bindings, гарантии доставки, повторы и мониторинг нужно проверить в целевой настройке. Реальный удалённый вызов здесь не выполнялся.",
+    "references": [
+      {
+        "title": "SAP: RAP business events",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/0b925bc556d4491aad395b21ec2566ff.html"
+      },
+      {
+        "title": "SAP: raising и обработка business events",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/raising-and-handling-business-events"
+      },
+      {
+        "title": "SAP: публикация RAP business event",
+        "url": "https://developers.sap.com/tutorials/abap-environment-expose-rap-business-events"
+      }
+    ]
+  }
+]

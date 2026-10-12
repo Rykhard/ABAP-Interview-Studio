@@ -1433,7 +1433,7 @@
    }
   ],
   "takeaway": "Trace row counts at each relationship before changing aggregation or adding DISTINCT.",
-  "limitation": "Illustrative text table with uniqueness on product and language. Real text models may also require validity, client or other keys; missing-text behavior depends on inner versus outer join semantics.",
+  "limitation": "Illustrative text table with uniqueness on status and language. Real text models may also require validity, client or other keys; missing-text behavior depends on inner versus outer join semantics.",
   "references": [
    {
     "title": "SAP: CDS cardinality",

@@ -46,7 +46,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 
 ## RAP business objects
 
-52 questions. Model behavior and reason through transactional state, consumer contracts and failure.
+54 questions. Model behavior and reason through transactional state, consumer contracts and failure.
 
 ### Model, implementation & exposure
 
@@ -69,7 +69,8 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | [RAP-03 - What is the transactional buffer?](../topics/05-rap-foundations.md#rap-03-what-is-the-transactional-buffer) | Core |
 | [RAP-04 - Where may COMMIT ENTITIES be called?](../topics/05-rap-foundations.md#rap-04-where-may-commit-entities-be-called) | Core |
 | [RAP-05 - What are the steps of the RAP save sequence, and where is the point of no return?](../topics/05-rap-foundations.md#rap-05-what-are-the-steps-of-the-rap-save-sequence-and-where-is-the-point-of-no-return) | Advanced |
-| [RAP-15 - What should be checked before wrapping a BAPI in RAP?](../topics/05-rap-foundations.md#rap-15-what-should-be-checked-before-wrapping-a-bapi-in-rap) | Advanced |
+| [RAP-15 - Can you call a BAPI from RAP, and what happens if it executes COMMIT?](../topics/05-rap-foundations.md#rap-15-can-you-call-a-bapi-from-rap-and-what-happens-if-it-executes-commit) | Advanced |
+| [RAP-17 - Do BRFplus, bgPF or bgRFC make an internally committing BAPI safe in RAP?](../topics/05-rap-foundations.md#rap-17-do-brfplus-bgpf-or-bgrfc-make-an-internally-committing-bapi-safe-in-rap) | Advanced |
 | [SRAP-02 - An audit record must be saved with every managed order change. Should you use a determination, additional save, or unmanaged save?](../topics/17-rap-transactions-senior.md#srap-02-an-audit-record-must-be-saved-with-every-managed-order-change-should-you-use-a-determination-additional-save-or-unmanaged-save) | Senior |
 | [SRAP-03 - A developer puts ordinary business validation in SAVE because the final data is available there. What would you change?](../topics/17-rap-transactions-senior.md#srap-03-a-developer-puts-ordinary-business-validation-in-save-because-the-final-data-is-available-there-what-would-you-change) | Senior |
 | [SRAP-04 - One action updates two local RAP BOs and then calls a remote payment service. Can the whole action be atomic?](../topics/17-rap-transactions-senior.md#srap-04-one-action-updates-two-local-rap-bos-and-then-calls-a-remote-payment-service-can-the-whole-action-be-atomic) | Senior |
@@ -97,6 +98,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | [RAP-06 - Determination validation action or precheck?](../topics/05-rap-foundations.md#rap-06-determination-validation-action-or-precheck) | Core |
 | [ADV-04 - Instance static and factory actions?](../topics/06-rap-advanced.md#adv-04-instance-static-and-factory-actions) | Core |
 | [RAP-13 - Can you rely on determination and validation order?](../topics/05-rap-foundations.md#rap-13-can-you-rely-on-determination-and-validation-order) | Advanced |
+| [RAP-16 - How do you group a multi-select Fiori action into one changeset with InvocationGrouping?](../topics/05-rap-foundations.md#rap-16-how-do-you-group-a-multi-select-fiori-action-into-one-changeset-with-invocationgrouping) | Advanced |
 | [ADV-05 - How do action parameters and results work?](../topics/06-rap-advanced.md#adv-05-how-do-action-parameters-and-results-work) | Advanced |
 | [ADV-06 - What is augmentation and how does it differ from additional save?](../topics/06-rap-advanced.md#adv-06-what-is-augmentation-and-how-does-it-differ-from-additional-save) | Advanced |
 | [SRAP-11 - Two determinations calculate discount and total. Production results depend on which one executes first. How would you redesign them?](../topics/17-rap-transactions-senior.md#srap-11-two-determinations-calculate-discount-and-total-production-results-depend-on-which-one-executes-first-how-would-you-redesign-them) | Senior |
@@ -256,7 +258,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 
 ## ABAP, OO & patterns
 
-69 questions. Predict language behavior and design clear contracts, lifetimes and replaceable collaborators.
+70 questions. Predict language behavior and design clear contracts, lifetimes and replaceable collaborators.
 
 ### Language & values
 
@@ -330,9 +332,10 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | Question | Level |
 | --- | --- |
 | [OO-15 - How does MVC separate responsibilities?](../topics/02-oo-clean-abap.md#oo-15-how-does-mvc-separate-responsibilities) | Core |
-| [OO-09 - When are Strategy and Factory useful?](../topics/02-oo-clean-abap.md#oo-09-when-are-strategy-and-factory-useful) | Advanced |
-| [OO-10 - What do Adapter and Facade solve in SAP integration code?](../topics/02-oo-clean-abap.md#oo-10-what-do-adapter-and-facade-solve-in-sap-integration-code) | Advanced |
-| [OO-11 - What are the limitations of Singleton in ABAP?](../topics/02-oo-clean-abap.md#oo-11-what-are-the-limitations-of-singleton-in-abap) | Advanced |
+| [OO-16 - Singleton, Factory or Facade: how do you choose with a simple example?](../topics/02-oo-clean-abap.md#oo-16-singleton-factory-or-facade-how-do-you-choose-with-a-simple-example) | Core |
+| [OO-09 - What is a Factory, when do you use it, and how does it work with Strategy?](../topics/02-oo-clean-abap.md#oo-09-what-is-a-factory-when-do-you-use-it-and-how-does-it-work-with-strategy) | Advanced |
+| [OO-10 - What is a Facade, when is it useful, and how does it differ from Adapter?](../topics/02-oo-clean-abap.md#oo-10-what-is-a-facade-when-is-it-useful-and-how-does-it-differ-from-adapter) | Advanced |
+| [OO-11 - What is Singleton in ABAP, how do you implement it, and when would you use it?](../topics/02-oo-clean-abap.md#oo-11-what-is-singleton-in-abap-how-do-you-implement-it-and-when-would-you-use-it) | Advanced |
 | [OO-12 - How do ABAP OO events differ from durable business events?](../topics/02-oo-clean-abap.md#oo-12-how-do-abap-oo-events-differ-from-durable-business-events) | Advanced |
 | [PAT-01 - Approval rules vary by country, while the application workflow should remain stable. Strategy or Template Method?](../topics/23-design-patterns-practice.md#pat-01-approval-rules-vary-by-country-while-the-application-workflow-should-remain-stable-strategy-or-template-method) | Senior |
 | [PAT-02 - A posting integration needs matching serializer and sender implementations for each provider. Is one static factory sufficient?](../topics/23-design-patterns-practice.md#pat-02-a-posting-integration-needs-matching-serializer-and-sender-implementations-for-each-provider-is-one-static-factory-sufficient) | Senior |

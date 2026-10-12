@@ -172,38 +172,43 @@ That does not mean every five-line helper needs its own interface and factory. I
 
 - [SAP Clean ABAP style guide](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md) - Compare the language contract with the Clean ABAP design guidance. Project conventions can differ from style recommendations.
 
-## OO-09 When are Strategy and Factory useful?
+## OO-09 What is a Factory, when do you use it, and how does it work with Strategy?
 
 **Level:** Advanced
 
-**Short answer:** Strategy puts different versions of a rule behind the same interface. A factory chooses and creates objects so callers do not need to know their setup. They can work together: a factory selects a country-specific pricing strategy. I use only as much structure as needed. A static creation helper is a simple factory, not automatically the formal Factory Method pattern.
+**Short answer:** A Factory creates the right object for the caller. Strategy is the object that contains one version of a rule. For example, a Factory chooses a domestic or export price calculator; both expose the same calculate method. Use a Factory when choosing or setting up objects is repeated or complicated. For one simple class, NEW at the entry point may be enough.
 
-**Reasoning and example:** A coordinator calculates prices for domestic and export orders. It receives a pricing strategy and asks it to calculate using explicit order data. The coordinator keeps the common workflow, while each strategy contains its own rule. Tests run the same coordinator with both strategies and verify the results.
+**Reasoning and example:** Imagine three reports need prices for domestic and export orders. Without a Factory, every report repeats the same IF and knows both concrete class names. Move that choice into a create_calculator method returning the calculator interface. A report then asks the returned object to calculate; it does not need to know which class was created. An unknown country must give a clear error, not silently choose a price rule.
 
-If configuration determines the choice, a factory can validate that configuration and build the right strategy. An unknown value should produce a useful error, not silently select a rule that could charge the wrong price. When only one straightforward implementation exists, direct construction at the application entry point may be enough. The pattern should remove confusion, not introduce a hierarchy without a need.
+Strategy separates the calculations. Factory separates object creation. The Factory can return a new object each time; it does not imply Singleton. Inject the resulting interface into the business service so a unit test can supply a fake calculator.
+
+A static method with CASE is commonly called a simple Factory. The formal Factory Method pattern lets subclasses decide which product to create. Abstract Factory creates related families, such as a serializer and sender for the same provider. Choose the simplest variant that solves the actual problem.
 
 **Avoid this mistake:** Do not call every method that returns an object Factory Method without distinguishing a simple factory from the formal pattern.
 
 **Read and verify this answer:**
 
-- [SAP ABAP object orientation examples](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md) - Compare the language contract with the Clean ABAP design guidance. Project conventions can differ from style recommendations.
-- [SAP Clean ABAP style guide](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md) - Compare the language contract with the Clean ABAP design guidance. Project conventions can differ from style recommendations.
+- [SAP Learning: Implementing Factory Methods](https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/implementing-factory-methods_ff885b1e-5e7c-4d73-b9df-b4be5112e1fa) - Read the documented mechanism, then try the small example in your own development system.
+- [SAP examples: Factory Method and Abstract Factory](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/34_OO_Design_Patterns.md#factory-method) - Read the documented mechanism, then try the small example in your own development system.
 
-## OO-10 What do Adapter and Facade solve in SAP integration code?
+## OO-10 What is a Facade, when is it useful, and how does it differ from Adapter?
 
 **Level:** Advanced
 
-**Short answer:** An Adapter translates between two interfaces. A Facade gives callers one simple operation over a process with several steps. For a legacy posting API, an adapter can map fields and errors, while a facade coordinates prepare, check and post. Both must keep commit rules, authorization and failure behavior visible. A wrapper does not make an unreleased API safe for ABAP Cloud.
+**Short answer:** A Facade gives a complicated subsystem a small, easy-to-use interface. Instead of making every caller run prepare, check and submit, expose one submit_request operation. An Adapter solves a different problem: it converts one interface or data format into another. You can use both. Neither pattern changes the transaction rules of the code it calls.
 
-**Reasoning and example:** The application has a simple posting request, but a function module expects several technical structures. An adapter translates those structures and converts the response into useful application errors. A facade can then offer one submit operation that runs the required steps in the right order and stops when checking fails.
+**Reasoning and example:** Suppose a delivery preview needs three services: read the order, calculate package sizes, and estimate delivery cost. A Facade offers preview_delivery(order_id). It coordinates those services and returns one result. The UI no longer repeats the sequence, and changing the packaging service affects fewer callers. This is useful when several screens or jobs use the same multi-step operation.
 
-I still inspect whether the underlying API commits internally or has a separate save step. Hiding that fact could leave a partial result when the caller expects rollback. Tests should cover field mapping, rejected checks and uncertain remote results. The wrapper also keeps its original SAP dependencies; adding a clean interface alone does not make those dependencies released or Clean Core Level A.
+If an old carrier API expects technical structures, an Adapter maps your request to those structures. The Facade coordinates the overall task; the Adapter translates one dependency. Keep the dependencies behind interfaces so tests can verify the sequence and stop on a failed check without contacting a carrier.
+
+For a posting Facade, explicitly document who owns COMMIT and what can be rolled back. A Facade is not a new LUW. Do not use it just to rename one trivial method, or hide unreleased SAP dependencies and claim they are now released.
 
 **Avoid this mistake:** Wrapping an unreleased SAP object does not by itself make that underlying dependency released, cloud compliant, or clean-core Level A.
 
 **Read and verify this answer:**
 
-- [SAP Clean ABAP style guide](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md) - Compare the language contract with the Clean ABAP design guidance. Project conventions can differ from style recommendations.
+- [SAP examples: Facade](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/34_OO_Design_Patterns.md#facade) - Read the documented mechanism, then try the small example in your own development system.
+- [SAP: a RAP facade over existing BAPIs](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/reference-scenario-material-classification) - This is a larger RAP integration example. A facade interface does not remove the underlying BAPI transaction requirements.
 
 <details>
 <summary>Visual: OO interfaces and dependency injection</summary>
@@ -231,21 +236,24 @@ Trace dependencies across the wrapper instead of classifying the solution from i
 
 </details>
 
-## OO-11 What are the limitations of Singleton in ABAP?
+## OO-11 What is Singleton in ABAP, how do you implement it, and when would you use it?
 
 **Level:** Advanced
 
-**Short answer:** A Singleton normally returns one stored object within an ABAP internal session. It is not one object for every user or application server. Shared mutable data can leak between operations and tests, and replacing the singleton can be difficult. I use it only when its lifetime is intentional. An explicitly supplied shared service is often easier to control.
+**Short answer:** Singleton lets callers reuse one object instead of creating a new one each time. In ABAP, a typical implementation uses CREATE PRIVATE, a static reference, and get_instance. The first call creates the object; later calls return the same reference. That instance belongs to an internal session, not the whole SAP system. Use it only when sharing that lifetime is intentional.
 
-**Reasoning and example:** A singleton caches configuration after the first read. Another operation changes the configuration, but the cached object still returns the old value. Creating a new caller does not necessarily refresh that singleton. Tests can show the same problem: one test changes shared state and a later test unexpectedly sees it.
+**Reasoning and example:** Imagine a report repeatedly needs the same read-only configuration. A Singleton can read it once and reuse the same cache during that internal session. Calling get_instance twice returns the same object. A different user or internal session can have another instance, so this is not a system-wide lock or shared cache.
 
-I define how the cache is keyed, when it expires and who may clear it. If no long-lived shared state is needed, I create a service for the operation and pass it to callers. A singleton is also not a locking mechanism. Separate sessions can each hold their own instance, so it cannot by itself prevent two users from changing the same business object.
+Do not store the current order, current approver, or other request-specific data in a long-lived Singleton. The next operation can see stale values; one test can affect another test. Define refresh and invalidation rules for configuration too. CREATE PRIVATE only prevents arbitrary construction: the class must also retain and reuse its instance.
+
+If shared lifetime is not needed, create an ordinary service and pass it into the caller through an interface. That is easier to replace in tests. Singleton answers how many instances to reuse; Factory answers how to create an object; Facade answers how to simplify a subsystem.
 
 **Avoid this mistake:** A singleton does not synchronize business updates across sessions, work processes, application servers, or users.
 
 **Read and verify this answer:**
 
-- [SAP ABAP object orientation examples](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md) - Compare the language contract with the Clean ABAP design guidance. Project conventions can differ from style recommendations.
+- [SAP: implementing a Singleton buffer](https://help.sap.com/docs/CP/c0d02c4330c34b3abca88bdd57eaccfc/71c0abf0e9bc4e3c84f82183890bd792.html?locale=en-US) - Study the instance access mechanism. A transaction buffer additionally needs its documented cleanup lifecycle.
+- [SAP Learning: controlling object creation](https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/implementing-factory-methods_ff885b1e-5e7c-4d73-b9df-b4be5112e1fa) - Read the documented mechanism, then try the small example in your own development system.
 
 ## OO-12 How do ABAP OO events differ from durable business events?
 
@@ -349,6 +357,23 @@ A disabled Submit button is useful feedback, but it cannot be the only enforceme
 **Read and verify this answer:**
 
 - [SAPUI5: Use the MVC Concept](https://help.sap.com/docs/SAPUI5/b2f662dd9d7a4ec680056733050b4d34/07afcf400eb344c2916e4eb3a400ff7b.html?version=1.148) - SAPUI5 example of the responsibility split. Select the documentation version matching the target application; MVC does not relocate backend business rules into the browser.
+
+## OO-16 Singleton, Factory or Facade: how do you choose with a simple example?
+
+**Level:** Core
+
+**Short answer:** Ask what problem you have. Need the right object created? Use a Factory. Need one deliberately shared instance? Consider Singleton. Need one easy entry point to several services? Use a Facade. These patterns can work together, but none is required just because the application uses ABAP Objects.
+
+**Reasoning and example:** For a delivery preview, a Factory can choose a carrier calculator. A Facade can then read the order, calculate package sizes and ask that calculator for a price. A read-only configuration cache might be shared within the internal session, but that is a separate lifetime decision.
+
+Start with ordinary classes. Add a Factory when creation logic repeats, a Facade when callers repeat a multi-step sequence, and Singleton only when one shared instance has a clear benefit and safe lifetime. In an interview, explain the problem and trade-off before naming the pattern. A report with one fixed calculation may need none of them.
+
+**Avoid this mistake:** A Factory does not require Singleton, and a Facade does not automatically add COMMIT, retries, authorization or transactional safety.
+
+**Read and verify this answer:**
+
+- [SAP Learning: Factory Methods](https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/implementing-factory-methods_ff885b1e-5e7c-4d73-b9df-b4be5112e1fa) - Read the documented mechanism, then try the small example in your own development system.
+- [SAP examples: OO design patterns](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/34_OO_Design_Patterns.md) - Read the documented mechanism, then try the small example in your own development system.
 
 ## Official references
 

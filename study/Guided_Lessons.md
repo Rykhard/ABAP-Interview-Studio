@@ -4,6 +4,72 @@ In the app, choose Guided Lesson below a supported question. Each step updates t
 
 Calm Study keeps the reading view. Developer Workspace makes code and diagrams larger. These views share the same question, sources and saved progress.
 
+## Three orders: compare Isolated and ChangeSet
+
+A and C can be approved. B has an invalid delivery date. Compare two independent runs from the same initial data.
+
+**Learn:** Separate the HTTP batch envelope from the changeset rollback boundary.
+
+Questions: [RAP-16](https://abap-interview-studio.pages.dev/#q-RAP-16)
+
+### 1. Select A, B and C
+
+Select all three and press Approve. No database result exists yet.
+
+- **Order A:** Not approved
+- **Order B:** Not approved
+- **Order C:** Not approved
+
+One UI selection does not define one transaction.
+
+### 2. Run 1: isolated groups
+
+With #ISOLATED, each order has its own changeset. They can still share one $batch envelope.
+
+- **Order A:** Own changeset
+- **Order B:** Own changeset
+- **Order C:** Own changeset
+
+One HTTP request can carry independent outcomes.
+
+### 3. B fails; A and C succeed
+
+The date check rejects B. Its failure does not require rollback of the two independent successful changesets.
+
+- **Order A:** Approved
+- **Order B:** Rejected
+- **Order C:** Approved
+
+Partial success is possible with independent changesets.
+
+### 4. Run 2: start again, one group
+
+Reset to the original unsaved data and use #CHANGE_SET. The three actions now belong to one changeset in this supported scenario.
+
+- **Order A:** Shared changeset
+- **Order B:** Shared changeset
+- **Order C:** Shared changeset
+
+The rollback boundary now includes all three orders.
+
+### 5. One rejection stops the group
+
+B fails again. None of the approvals from this shared changeset is committed. Correct B or choose a different intended grouping.
+
+- **Order A:** Not approved
+- **Order B:** Rejected
+- **Order C:** Not approved
+
+Verify persisted data, not just a successful HTTP response for the batch envelope.
+
+**Remember:** $batch groups transport. A changeset groups the atomic local outcome.
+
+**Scope:** Illustrative supported Fiori elements service, not a live SAP execution. Actual request layout depends on the client and service version. Remote commits are outside this rollback boundary.
+
+**Sources:**
+
+- [SAP: invocationGrouping](https://help.sap.com/docs/abap-cloud/abap-keyword/ui-lineitem-invocationgrouping?locale=en-US)
+
 ## Save an order and its items together
 
 A classic order editor must save order 4701 with two items. An email will be handled separately after the save.
@@ -1393,7 +1459,7 @@ Fix the join condition and verify the actual target uniqueness.
 
 **Remember:** Trace row counts at each relationship before changing aggregation or adding DISTINCT.
 
-**Scope:** Illustrative text table with uniqueness on product and language. Real text models may also require validity, client or other keys; missing-text behavior depends on inner versus outer join semantics.
+**Scope:** Illustrative text table with uniqueness on status and language. Real text models may also require validity, client or other keys; missing-text behavior depends on inner versus outer join semantics.
 
 **Sources:**
 

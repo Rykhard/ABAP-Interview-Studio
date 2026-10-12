@@ -60,6 +60,121 @@ ENDMETHOD.
 
 - [SAP Learning: Clean Core checks and release contracts](https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad)
 
+## Singleton: two calls, one reference
+
+The static reference retains the object. CREATE PRIVATE alone is not enough.
+
+Questions: [OO-11](https://abap-interview-studio.pages.dev/#q-OO-11), [OO-16](https://abap-interview-studio.pages.dev/#q-OO-16), [PAT-09](https://abap-interview-studio.pages.dev/#q-PAT-09)
+
+**Where this belongs:** Local class definitions and implementations in a teaching report or class pool.
+
+```abap
+CLASS lcl_settings DEFINITION FINAL CREATE PRIVATE.
+  PUBLIC SECTION.
+    CLASS-METHODS get_instance
+      RETURNING VALUE(instance) TYPE REF TO lcl_settings.
+  PRIVATE SECTION.
+    CLASS-DATA shared_instance TYPE REF TO lcl_settings.
+ENDCLASS.
+
+CLASS lcl_settings IMPLEMENTATION.
+  METHOD get_instance.
+    IF shared_instance IS NOT BOUND.
+      shared_instance = NEW #( ).
+    ENDIF.
+    instance = shared_instance.
+  ENDMETHOD.
+ENDCLASS.
+
+" Inside the caller's executable method:
+" DATA(first) = lcl_settings=>get_instance( ).
+" DATA(second) = lcl_settings=>get_instance( ).
+" ASSERT first = second.
+```
+
+**Read it step by step:**
+
+1. **Control creation** (lines 1, 3, 4, 6): Callers cannot use NEW directly. They request the object through get_instance. The class retains one reference in CLASS-DATA.
+2. **Create once, reuse later** (lines 11, 12, 14): The first call creates the object. Later calls skip NEW and return the already bound reference.
+3. **Check the lifetime** (lines 19, 20, 21): Put these statements in an executable method and remove the comment markers. Both references are equal within this internal session. Another session has its own static data.
+
+**What happens:** The caller gets the same instance twice in one internal session.
+
+**Scope:** This demonstrates instance lifetime, not a configuration loader. No shared memory, locking or automatic cache invalidation is implemented. Do not keep order-specific mutable state here.
+
+**Primary references:**
+
+- [SAP: Singleton buffer implementation](https://help.sap.com/docs/CP/c0d02c4330c34b3abca88bdd57eaccfc/71c0abf0e9bc4e3c84f82183890bd792.html?locale=en-US)
+
+## Facade: one preview operation, three collaborators
+
+The UI asks for a delivery preview. The facade coordinates the details.
+
+Questions: [OO-10](https://abap-interview-studio.pages.dev/#q-OO-10), [OO-16](https://abap-interview-studio.pages.dev/#q-OO-16), [PAT-03](https://abap-interview-studio.pages.dev/#q-PAT-03)
+
+**Where this belongs:** Method body of your application facade. The three collaborators are injected interfaces with the methods shown below.
+
+```abap
+METHOD preview_delivery.
+  DATA(ls_order) = order_reader->read( order_id ).
+  DATA(lt_packages) = packer->pack( ls_order ).
+  result = carrier->estimate( lt_packages ).
+ENDMETHOD.
+
+" The UI only needs this operation:
+" DATA(ls_preview) = delivery_facade->preview_delivery( order_id ).
+```
+
+**Read it step by step:**
+
+1. **Coordinate the steps** (lines 2, 3, 4): Read the order, calculate packages, then estimate delivery. If a collaborator raises a declared exception, the method does not continue to the next step.
+2. **Keep the caller simple** (lines 7, 8): The caller knows preview_delivery instead of repeating all three steps. The facade still exposes its result and failures clearly.
+
+**What happens:** Several callers can reuse one clearly named business operation.
+
+**Scope:** Teaching fragment: define the facade signature, result type, interfaces, constructor injection and declared exceptions in your application. These are fictional collaborators, not released SAP APIs. This read-only preview does not create a LUW or issue COMMIT.
+
+**Primary references:**
+
+- [SAP examples: Facade](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/34_OO_Design_Patterns.md#facade)
+
+## A table action with a shared changeset
+
+Request atomic grouping for selected instances in a supporting Fiori elements client.
+
+Questions: [RAP-16](https://abap-interview-studio.pages.dev/#q-RAP-16)
+
+**Where this belongs:** Metadata extension of your own projection ZC_Order, which allows metadata extensions and exposes the Approve action through its service.
+
+```sql
+@Metadata.layer: #CORE
+annotate entity ZC_Order with
+{
+  @UI.lineItem: [
+    { position: 10 },
+    { type: #FOR_ACTION,
+      dataAction: 'Approve',
+      label: 'Approve',
+      invocationGrouping: #CHANGE_SET }
+  ]
+  OrderID;
+}
+```
+
+**Read it step by step:**
+
+1. **Expose the action** (lines 6, 7, 8): Use the actual exposed RAP action name. The label is presentation text; it does not create the action implementation.
+2. **Choose the group** (lines 9): #CHANGE_SET requests one changeset for the selected instances. #ISOLATED is the default and allows independent changesets. Either may be carried in $batch.
+3. **Verify the failure case** (lines 4, 9, 11): Select three orders, make one invalid, inspect metadata and the network payload, then verify that none of the grouped updates persisted. Do not infer grouping from the URL alone.
+
+**What happens:** In the supported all-or-nothing scenario, one rejected order prevents the whole shared changeset from committing.
+
+**Scope:** Requires a matching projection, behavior, service and supported Fiori elements/OData version. The annotation does not configure arbitrary freestyle clients or provide rollback for already committed remote effects.
+
+**Primary references:**
+
+- [SAP: UI.lineItem.invocationGrouping](https://help.sap.com/docs/abap-cloud/abap-keyword/ui-lineitem-invocationgrouping?locale=en-US)
+
 ## One key, one order
 
 Choose a table that matches the lookup you need.

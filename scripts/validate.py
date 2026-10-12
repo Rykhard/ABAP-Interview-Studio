@@ -9,6 +9,7 @@ from study_topics import topic_catalog
 from code_examples import load_examples
 from guided_lessons import load_lessons
 from study_catalog import ordered_modules, is_cloud, catalog, track_key
+from localization import localized_payloads
 
 root=Path(__file__).resolve().parents[1]
 errors=[]
@@ -60,6 +61,13 @@ def check_flashcard_content(deck, label):
 
 check_flashcard_content(rows,'Anki')
 html=(root/'START_HERE.html').read_text(encoding='utf-8')
+localized_visuals=json.loads((root/'visuals/catalog.json').read_text(encoding='utf-8'))
+for visual in localized_visuals:
+    if Path(visual['image']).suffix == '.svg':
+        visual['darkImage']='assets/dark-diagrams/'+Path(visual['image']).name
+localized=localized_payloads(root,modules,topic_catalog(modules),load_examples(root,set(ids)),load_lessons(root,set(ids)),quiz_items,localized_visuals)
+localized_match=re.search(r'<script id="ru-data" type="application/json">(.*?)</script>',html,re.S)
+if not localized_match or json.loads(localized_match.group(1))!=localized:errors.append('Russian payload mismatch')
 examples=load_examples(root,set(ids))
 code_match=re.search(r'<script id="code-data" type="application/json">(.*?)</script>',html,re.S)
 if not code_match or json.loads(code_match.group(1))!=examples:errors.append('Code example payload mismatch')

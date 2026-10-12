@@ -6,6 +6,7 @@ from study_topics import topic_catalog
 from code_examples import load_examples, write_example_guide
 from theme_visuals import build_dark_visuals
 from guided_lessons import load_lessons, write_lesson_guide
+from localization import localized_payloads, read_json, translate_app
 
 
 def write_studio(root, modules, visual_metadata, quiz_items):
@@ -22,6 +23,15 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     app=app.replace('__LESSON_APP__', (root/'scripts/studio-lessons.js').read_text(encoding='utf-8'))
     examples=load_examples(root, {q['id'] for module in modules for q in module['questions']})
     write_example_guide(root, examples)
+    topic_data=topic_catalog(modules)
+    russian=localized_payloads(root, modules, topic_data, examples, lessons, quiz_items, visual_metadata)
+    ui_translations=read_json(root/'locales/ru/ui.json')
+    app+='\n'+(root/'scripts/studio-language.js').read_text(encoding='utf-8')
+    ru_app=translate_app(app, root, ui_translations)
+    bootstrap=(root/'scripts/studio-locale-bootstrap.js').read_text(encoding='utf-8')
+    app=bootstrap+'\nif(studioLocale===\'ru\'){\n'+ru_app+'\n}else{\n'+app+'\n}'
+    template=template.replace('__RU_DATA__',payload(russian)).replace('__UI_RU_DATA__',payload(ui_translations))
+    template=template.replace('__LANGUAGE_CSS__',(root/'scripts/language.css').read_text(encoding='utf-8'))
     values={'__MOTION_CSS__':(root/'scripts/motion.css').read_text(encoding='utf-8'),'__CODE_CSS__':(root/'scripts/code-examples.css').read_text(encoding='utf-8'),'__CODE_DATA__':payload(examples),'__USABILITY_CSS__':(root/'scripts/usability.css').read_text(encoding='utf-8'),'__PRACTICE_CSS__':(root/'scripts/practice.css').read_text(encoding='utf-8'),'__APP__':app,'__DATA__':payload(modules),'__VISUALS__':payload(visual_metadata),'__QUIZ__':payload(quiz_items),'__TRACKS__':payload(catalog(modules)),'__TOPICS__':payload(topic_catalog(modules))}
     values['__CALM_CSS__']=(root/'scripts/calm.css').read_text(encoding='utf-8')
     values['__LESSON_DATA__']=payload(lessons)

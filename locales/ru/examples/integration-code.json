@@ -1,0 +1,984 @@
+[
+  {
+    "id": "http-request-response",
+    "title": "Прочитать запрос сверху вниз",
+    "questions": [
+      "HTTP-01",
+      "HTTP-02",
+      "HTTP-05",
+      "HTTP-06"
+    ],
+    "intro": "Первая строка говорит, что сделать. Заголовки описывают сообщение, тело содержит данные.",
+    "language": "HTTP",
+    "context": "Учебный обмен по HTTPS с вымышленным адресом /orders. Заголовки аутентификации опущены для читаемости. Длина — число байтов ASCII в теле без завершающего перевода строки.",
+    "code": "POST /orders HTTP/1.1\nHost: api.example.com\nAccept: application/json\nContent-Type: application/json\nContent-Length: 32\n\n{\"customer\":\"C100\",\"quantity\":2}\n\nHTTP/1.1 201 Created\nLocation: /orders/4711\nContent-Type: application/json\nContent-Length: 29\n\n{\"id\":\"4711\",\"status\":\"Open\"}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3,
+          4,
+          7
+        ],
+        "label": "Отправить заказ",
+        "explanation": "POST просит создать заказ. Content-Type описывает JSON body; Accept запрашивает JSON-ответ."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          14
+        ],
+        "label": "Прочитать результат",
+        "explanation": "201 сообщает о созданном ресурсе. Location указывает на него, body возвращает ID.",
+        "questions": [
+          "HTTP-05",
+          "HTTP-06"
+        ]
+      }
+    ],
+    "outcome": "Клиент получает заказ 4711. Ответ 202 означал бы приём в обработку: окончательный результат ещё нужно получить.",
+    "caveat": "HTTP сам по себе не делает API сервисом OData. Адреса, содержимое сообщений и правила ошибок определяет конкретный API.",
+    "references": [
+      {
+        "title": "IETF: семантика HTTP",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html"
+      }
+    ]
+  },
+  {
+    "id": "http-idempotent-put",
+    "title": "Повторять замену, а не увеличение",
+    "questions": [
+      "HTTP-03",
+      "HTTP-04",
+      "HTTP-12"
+    ],
+    "intro": "Повтор одного желаемого состояния не должен добавлять ещё две позиции.",
+    "language": "HTTP",
+    "context": "Вымышленный REST API: PUT полностью заменяет ресурс количества. Показаны два независимых одинаковых запроса.",
+    "code": "PUT /orders/4711/quantity HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\nContent-Length: 11\n\n{\"value\":2}\n\nPUT /orders/4711/quantity HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\nContent-Length: 11\n\n{\"value\":2}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          6
+        ],
+        "label": "Установить нужное значение",
+        "explanation": "Запрос говорит «quantity равно 2», а не «увеличить quantity на 2»."
+      },
+      {
+        "lines": [
+          8,
+          13
+        ],
+        "label": "Повторить тот же запрос",
+        "explanation": "После одного или двух принятых запросов нужное quantity всё ещё равно 2.",
+        "questions": [
+          "HTTP-04",
+          "HTTP-12"
+        ]
+      }
+    ],
+    "outcome": "Операция идемпотентна, даже если первый ответ 201, а второй 200 или 204.",
+    "caveat": "Повторный запрос может конфликтовать с другим пользователем. При необходимости примените правила API для конкурентных изменений. POST и PATCH не становятся автоматически безопасными для повтора.",
+    "references": [
+      {
+        "title": "IETF: идемпотентные methods",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2"
+      }
+    ]
+  },
+  {
+    "id": "odata-etag-conflict",
+    "title": "Увидеть отказ устаревшей версии",
+    "questions": [
+      "ODATA-06",
+      "OPS-05"
+    ],
+    "intro": "Идентификатор версии позволяет серверу обнаружить чужое изменение заказа.",
+    "language": "HTTP",
+    "context": "Пример OData V4. Другой пользователь уже изменил заказ 4711 с v1 на v2. Показанный клиент всё ещё передаёт v1.",
+    "code": "PATCH /Orders(4711) HTTP/1.1\nHost: api.example.com\nIf-Match: W/\"v1\"\nContent-Type: application/json\nContent-Length: 28\n\n{\"Note\":\"Deliver on Friday\"}\n\nHTTP/1.1 412 Precondition Failed\nContent-Length: 0",
+    "highlights": [
+      {
+        "lines": [
+          3
+        ],
+        "label": "Передать прочитанную версию",
+        "explanation": "If-Match содержит прежний ETag, возвращённый этим OData service."
+      },
+      {
+        "lines": [
+          9
+        ],
+        "label": "Отклонить старый update",
+        "explanation": "Сервис обнаруживает несовпадение. Нельзя перезаписать новый заказ этим старым запросом."
+      }
+    ],
+    "outcome": "Клиент перечитывает заказ и помогает пользователю согласовать изменения до повторной отправки.",
+    "caveat": "Показанный слабый ETag соответствует правилам OData. Обычный HTTP If-Match использует сильное сравнение. Нельзя подставлять * только ради обхода конфликта.",
+    "references": [
+      {
+        "title": "OASIS: conditional requests OData",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Header_If-Match"
+      },
+      {
+        "title": "IETF: If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
+      }
+    ]
+  },
+  {
+    "id": "json-types-and-presence",
+    "title": "Различать код, число и null",
+    "questions": [
+      "HTTP-07"
+    ],
+    "intro": "На экране значения могут выглядеть похоже, но несут разную информацию.",
+    "language": "JSON",
+    "context": "Учебный JSON вымышленного API заказов. По его контракту null очищает note, а отсутствие note сохраняет прежнее значение.",
+    "code": "{\n  \"customerId\": \"0000123\",\n  \"quantity\": 0,\n  \"approved\": false,\n  \"note\": null,\n  \"amount\": \"12.30\",\n  \"currency\": \"EUR\"\n}",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4
+        ],
+        "label": "Сохранить типы",
+        "explanation": "Customer ID — текст с ведущими нулями. Zero — число, false — boolean; ни одно не означает отсутствие."
+      },
+      {
+        "lines": [
+          5
+        ],
+        "label": "Сохранить наличие поля",
+        "explanation": "Сообщение явно содержит note: null. Mapper без presence не отличит очистку note от сохранения прежнего значения."
+      },
+      {
+        "lines": [
+          6,
+          7
+        ],
+        "label": "Следовать контракту суммы",
+        "explanation": "Этот API использует decimal text и currency. Преобразуйте с объявленной точностью, а не через случайный binary floating point."
+      }
+    ],
+    "outcome": "Преобразование в ABAP должно сохранить и значение нужного типа, и факт передачи поля.",
+    "caveat": "JSON сам не определяет правила изменения данных или специальный тип денежных сумм. Очистка поля, сохранение старого значения и формат суммы здесь заданы контрактом конкретного API.",
+    "references": [
+      {
+        "title": "IETF: формат обмена JSON",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259.html"
+      }
+    ]
+  },
+  {
+    "id": "xml-namespace-and-escaping",
+    "title": "Прочитать имена, атрибуты и экранированный текст",
+    "questions": [
+      "HTTP-08"
+    ],
+    "intro": "Пространство имён определяет принадлежность элемента. Префикс — только короткое обозначение.",
+    "language": "XML",
+    "context": "Синтаксически корректный вымышленный XML-документ заказа. Это объяснение формата XML, а не схема интерфейса SAP.",
+    "code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ord:Order xmlns:ord=\"urn:example:orders:v1\"\n           id=\"4711\">\n  <ord:Customer>0000123</ord:Customer>\n  <ord:Note>A &amp; B &lt;priority&gt;</ord:Note>\n  <ord:Amount currency=\"EUR\">12.30</ord:Amount>\n</ord:Order>",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          4
+        ],
+        "label": "Определить namespace",
+        "explanation": "ord:Customer относится к urn:example:orders:v1. Замена prefix ord не меняет смысл, если URI прежний."
+      },
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Прочитать текст и attributes",
+        "explanation": "Note означает A & B <priority>. Currency — attribute Amount, а не часть его числового текста."
+      }
+    ],
+    "outcome": "Парсер с поддержкой пространств имён читает customer, note и amount, не путая текст с разметкой.",
+    "caveat": "Правильный синтаксис XML ещё не доказывает соответствие бизнес-схеме. Настройте безопасный разбор и отдельно проверяйте обязательные поля.",
+    "references": [
+      {
+        "title": "W3C: namespaces в XML",
+        "url": "https://www.w3.org/TR/xml-names/"
+      }
+    ]
+  },
+  {
+    "id": "abap-xml-roundtrip",
+    "title": "Преобразовать значение ABAP в XML и прочитать обратно",
+    "questions": [
+      "HTTP-09"
+    ],
+    "intro": "Используйте сериализацию XML вместо склейки строк и ручного экранирования.",
+    "language": "ABAP",
+    "context": "Фрагмент ABAP-метода со встроенной identity transformation. Значения учебные, собственные объекты не нужны. Проверьте поддержку в целевой версии языка.",
+    "code": "CONSTANTS co_note TYPE string VALUE `A & B`.\nDATA note TYPE string VALUE co_note.\nDATA xml TYPE xstring.\nDATA restored_note TYPE string.\n\nCALL TRANSFORMATION id\n  SOURCE note = note\n  RESULT XML xml.\n\nCALL TRANSFORMATION id\n  SOURCE XML xml\n  RESULT note = restored_note.",
+    "highlights": [
+      {
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "label": "Сериализовать значение",
+        "explanation": "Transformation пишет SAP canonical asXML и правильно экранирует амперсанд."
+      },
+      {
+        "lines": [
+          10,
+          11,
+          12
+        ],
+        "label": "Прочитать формат обратно",
+        "explanation": "Та же root binding note восстанавливает исходный текст в restored_note."
+      }
+    ],
+    "outcome": "restored_note содержит A & B. XML — представление для передачи; note не изменяется.",
+    "caveat": "Identity transformation создаёт asXML, а не произвольную схему партнёра. Для формата партнёра нужна соответствующая трансформация и обработка CX_TRANSFORMATION_ERROR вызывающим кодом. Пример не запускался в SAP.",
+    "references": [
+      {
+        "title": "SAP: CALL TRANSFORMATION",
+        "url": "https://help.sap.com/doc/abapdocu_750_index_htm/7.50/en-US/abapcall_transformation.htm"
+      }
+    ]
+  },
+  {
+    "id": "odata-query-options",
+    "title": "Запросить два поля и небольшую страницу",
+    "questions": [
+      "ODATA-03",
+      "OPS-07"
+    ],
+    "intro": "URL сообщает сервису, какие строки и поля нужны списку.",
+    "language": "HTTP",
+    "context": "Вымышленный набор сущностей OData V4 Orders с числовым ключом ID. Запросы независимы; второй дополнительно запрашивает общее количество.",
+    "code": "GET /Orders?$select=ID,Total&$top=20 HTTP/1.1\nHost: api.example.com\nAccept: application/json\n\nGET /Orders?$select=ID,Total&$top=20&$count=true HTTP/1.1\nHost: api.example.com\nAccept: application/json",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Ограничить payload списка",
+        "explanation": "$select запрашивает ID и Total. $top — максимум 20 строк, а не все заказы."
+      },
+      {
+        "lines": [
+          5
+        ],
+        "label": "Заметить дополнительную работу",
+        "explanation": "Второй запрос сохраняет поля и лимит, добавляя count совпадений. Измерение этой работы может объяснить медленный список."
+      }
+    ],
+    "outcome": "Сравните размер ответа и время сервера с подсчётом количества и без него, прежде чем искать проблему в сети или Fiori.",
+    "caveat": "В коротком примере нет фильтра и сортировки. Для настоящей постраничной выдачи нужен однозначный порядок и поддержка параметров сервисом. Сам $top не гарантирует дешёвый запрос к БД.",
+    "references": [
+      {
+        "title": "OASIS: query options OData",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "odata-filter-order",
+    "title": "Отфильтровать статус и задать однозначный порядок",
+    "questions": [
+      "ODATA-03",
+      "ODATA-04"
+    ],
+    "intro": "Фильтр выбирает записи, а сортировка задаёт их порядок.",
+    "language": "HTTP",
+    "context": "Вымышленная модель OData V4 Orders. Status — текст, ID — уникальный числовой ключ. Пробелы закодированы в URI.",
+    "code": "GET /Orders?$filter=Status%20eq%20%27Open%27 HTTP/1.1\nHost: api.example.com\nAccept: application/json\n\nGET /Orders?$orderby=ID&$skip=20&$top=20 HTTP/1.1\nHost: api.example.com\nAccept: application/json",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Выбрать совпадения",
+        "explanation": "Декодированный filter — Status eq 'Open'. Клиент запрашивает открытые заказы."
+      },
+      {
+        "lines": [
+          5
+        ],
+        "label": "Запросить следующую offset page",
+        "explanation": "Второй отдельный запрос сортирует все заказы по ID, пропускает 20 и запрашивает следующие 20."
+      }
+    ],
+    "outcome": "Можно объяснить, какая часть меняет набор результатов, а какая — возвращаемую страницу.",
+    "caveat": "Примеры намеренно разделяют параметры. Для страницы отфильтрованного списка объедините их. При изменении данных страницы с offset могут сдвигаться. Если сервер вернул nextLink, следуйте этой ссылке.",
+    "references": [
+      {
+        "title": "OASIS: query options OData",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "odata-server-paging",
+    "title": "Следовать nextLink, а не угадывать URL",
+    "questions": [
+      "ODATA-04"
+    ],
+    "intro": "Страница может быть меньше полного результата. Сервер может точно указать продолжение.",
+    "language": "JSON",
+    "context": "Учебный JSON-ответ OData V4 на запрос общего количества. Совпали три заказа, сервер вернул первые два.",
+    "code": "{\n  \"@odata.context\": \"$metadata#Orders\",\n  \"@odata.count\": 3,\n  \"value\": [\n    {\"ID\": 4711},\n    {\"ID\": 4712}\n  ],\n  \"@odata.nextLink\": \"Orders?$skiptoken=abc123\"\n}",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Отделить total от размера страницы",
+        "explanation": "Total равен 3, но value содержит только 2 заказа."
+      },
+      {
+        "lines": [
+          8
+        ],
+        "label": "Перейти по выданной ссылке",
+        "explanation": "Разрешите относительную ссылку от service URL и следуйте ей. Skip token считайте непрозрачным.",
+        "questions": [
+          "ODATA-04"
+        ]
+      }
+    ],
+    "outcome": "Клиент получает оставшийся заказ, не пытаясь самостоятельно вычислить токен следующей страницы.",
+    "caveat": "В OData V2 правила количества и следующей ссылки отличаются. NextLink не гарантирует неизменный снимок данных при работе других пользователей.",
+    "references": [
+      {
+        "title": "OASIS: server-driven paging OData",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
+      }
+    ],
+    "startFor": [
+      "ODATA-04"
+    ]
+  },
+  {
+    "id": "odata-json-batch-group",
+    "title": "Объединить две записи в atomicity group",
+    "questions": [
+      "ODATA-07"
+    ],
+    "intro": "Один контейнер batch не обязательно является одной группой «всё или ничего».",
+    "language": "JSON",
+    "context": "Тело OData 4.01 JSON batch для вымышленных Orders. Используйте его с $batch только при явной поддержке JSON batch этой версией сервиса SAP.",
+    "code": "{\n  \"requests\": [\n    {\n      \"id\": \"1\", \"atomicityGroup\": \"g1\",\n      \"method\": \"PATCH\", \"url\": \"Orders(4711)\",\n      \"headers\": {\"content-type\": \"application/json\"},\n      \"body\": {\"Note\": \"First\"}\n    },\n    {\n      \"id\": \"2\", \"atomicityGroup\": \"g1\",\n      \"method\": \"PATCH\", \"url\": \"Orders(4712)\",\n      \"headers\": {\"content-type\": \"application/json\"},\n      \"body\": {\"Note\": \"Second\"}\n    }\n  ]\n}",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          10
+        ],
+        "label": "Задать общую группу",
+        "explanation": "Обе записи входят в g1. При ошибке одной группа не должна оставить другую committed."
+      },
+      {
+        "lines": [
+          5,
+          11
+        ],
+        "label": "Отделить envelope от транзакции",
+        "explanation": "Два URL относятся к разным заказам. Другие запросы batch не обязаны разделять эту transaction boundary."
+      }
+    ],
+    "outcome": "Проверяйте каждый внутренний ответ и результат группы, а не только внешний HTTP-статус.",
+    "caveat": "Это не универсальный формат запросов RAP. Многие сервисы SAP используют multipart batch с changesets. Аутентификацию, CSRF и нужные заголовки If-Match добавляйте по контракту сервиса.",
+    "references": [
+      {
+        "title": "OASIS: JSON batch requests",
+        "url": "https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html#sec_BatchRequests"
+      }
+    ]
+  },
+  {
+    "id": "odata-metadata-fields",
+    "title": "Прочитать модель данных по метаданным",
+    "questions": [
+      "ODATA-02",
+      "ODATA-12"
+    ],
+    "intro": "Метаданные сообщают клиенту ключ и типы полей до чтения заказа.",
+    "language": "XML",
+    "context": "Корректный XML-фрагмент CSDL Schema из вымышленного OData V4 $metadata. Внешний документ edmx и EntityContainer опущены.",
+    "code": "<Schema Namespace=\"Demo\"\n xmlns=\"http://docs.oasis-open.org/odata/ns/edm\">\n  <EntityType Name=\"Order\">\n    <Key><PropertyRef Name=\"ID\"/></Key>\n    <Property Name=\"ID\" Type=\"Edm.Int32\"\n              Nullable=\"false\"/>\n    <Property Name=\"Note\" Type=\"Edm.String\"\n              MaxLength=\"80\"/>\n  </EntityType>\n</Schema>",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          5,
+          6
+        ],
+        "label": "Найти identity",
+        "explanation": "ID является key, имеет integer type и не допускает null."
+      },
+      {
+        "lines": [
+          7,
+          8
+        ],
+        "label": "Прочитать контракт поля",
+        "explanation": "Note — текст максимум 80 символов. Клиент может учитывать лимит при вводе."
+      }
+    ],
+    "outcome": "Изменение типа ID или сокращение Note до 20 символов может сломать существующего клиента.",
+    "caveat": "Фрагмент не описывает все полномочия, поведение и возможности. Изучите полные метаданные и аннотации, затем проверьте работу сервиса.",
+    "references": [
+      {
+        "title": "OASIS: OData CSDL",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part3-csdl/odata-v4.0-errata03-os-part3-csdl-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "odata-function-action",
+    "title": "Function читает данные, action может их менять",
+    "questions": [
+      "ODATA-05"
+    ],
+    "intro": "Function отвечает на вопрос. Action может менять бизнес-состояние.",
+    "language": "HTTP",
+    "context": "Два независимых вызова вымышленного OData V4-сервиса. Метаданные объявляют bound function Demo.CalculateTax и action Demo.Submit.",
+    "code": "GET /Orders(4711)/Demo.CalculateTax() HTTP/1.1\nHost: api.example.com\nAccept: application/json\n\nPOST /Orders(4711)/Demo.Submit HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\nContent-Length: 2\n\n{}",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Прочитать расчёт",
+        "explanation": "Function возвращает налоговый расчёт без изменения бизнес-состояния."
+      },
+      {
+        "lines": [
+          5,
+          10
+        ],
+        "label": "Запросить изменение состояния",
+        "explanation": "Action просит отправить заказ. Пустой объект означает отсутствие дополнительных параметров у этого учебного action."
+      }
+    ],
+    "outcome": "Клиент должен обрабатывать Submit как бизнес-операцию: возможны ошибки данных, отказ в полномочиях и конфликт одновременных изменений.",
+    "caveat": "Это не имена готовых SAP API. Используйте настоящие метаданные сервиса, обязательные заголовки и параметры action. GET не должен скрыто проводить документ.",
+    "references": [
+      {
+        "title": "OASIS: actions и functions",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "classic-rfc-call",
+    "title": "Отделить ошибку связи от бизнес-результата",
+    "questions": [
+      "RFC-01",
+      "RFC-03",
+      "RFC-12"
+    ],
+    "intro": "RFC может завершиться ошибкой до получения бизнес-результата.",
+    "language": "ABAP",
+    "context": "Фрагмент classic ABAP method. Custom remote-enabled Z_GET_ORDER принимает IV_ID и возвращает ES_ORDER. destination, order_id и типизированная ls_order уже существуют. В примере у FM нет application exceptions.",
+    "code": "DATA rfc_message TYPE c LENGTH 255.\nCALL FUNCTION 'Z_GET_ORDER'\n  DESTINATION destination\n  EXPORTING iv_id = order_id\n  IMPORTING es_order = ls_order\n  EXCEPTIONS\n    system_failure = 1 MESSAGE rfc_message\n    communication_failure = 2 MESSAGE rfc_message.\nDATA(rfc_result) = sy-subrc.\nIF rfc_result <> 0.\n  RETURN.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "label": "Вызвать remote-enabled function",
+        "explanation": "Destination выбирает соединение. Входные параметры идут функции, выходные возвращаются клиенту."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9
+        ],
+        "label": "Сразу зафиксировать transport failure",
+        "explanation": "Сохраните sy-subrc до его изменения другой командой. Эту ветку нельзя считать корректным ответом заказа.",
+        "questions": [
+          "RFC-12"
+        ]
+      }
+    ],
+    "outcome": "Успешный RFC-вызов ещё требует проверки бизнес-результата по контракту Z_GET_ORDER. Признак RFC-enabled не делает функцию released BAPI.",
+    "caveat": "RETURN только останавливает успешный путь. Рабочее приложение должно показать полученную ошибку и проверить полномочия. Собственные функции и типы нужно создать заранее. Классический RFC не считается автоматически разрешённым в ABAP Cloud. Пример не запускался в SAP.",
+    "references": [
+      {
+        "title": "SAP: варианты RFC",
+        "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/99b53cee2b73e7e10000000a42189b/content.htm"
+      },
+      {
+        "title": "SAP: BAPI transaction model",
+        "url": "https://help.sap.com/SAPHELP_SCM700_EHP02/helpdata/EN/4d/5b102ba1483d8fe10000000a42189e/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "classic-bapi-commit",
+    "title": "Оставить решение о COMMIT вызывающему коду BAPI",
+    "questions": [
+      "RFC-04",
+      "RFC-05"
+    ],
+    "intro": "Сначала проверьте результат BAPI. COMMIT выполняет компонент, отвечающий за транзакцию.",
+    "language": "ABAP",
+    "context": "Фрагмент классического вызывающего кода после локального BAPI. has_business_error получен по правилам RETURN конкретного BAPI. Вызывающий код управляет LUW; это не RAP handler.",
+    "code": "CONSTANTS co_error_types TYPE c LENGTH 3 VALUE 'AEX'.\nDATA ls_commit_return TYPE bapiret2.\nIF has_business_error = abap_true.\n  CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.\n  RETURN.\nENDIF.\n\nCALL FUNCTION 'BAPI_TRANSACTION_COMMIT'\n  EXPORTING wait = abap_true\n  IMPORTING return = ls_commit_return.\n\nIF ls_commit_return-type CA co_error_types.\n  RETURN.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5
+        ],
+        "label": "Остановиться при бизнес-ошибке",
+        "explanation": "Клиент делает ROLLBACK вместо проводки только на основании нормального возврата BAPI."
+      },
+      {
+        "lines": [
+          8,
+          9,
+          10
+        ],
+        "label": "Сделать COMMIT и проверить результат",
+        "explanation": "WAIT запрашивает синхронное завершение соответствующего update. Результат COMMIT отделён от прежнего BAPI result.",
+        "questions": [
+          "RFC-05"
+        ]
+      }
+    ],
+    "outcome": "Клиент различает отклонённый бизнес-запрос и неудачный COMMIT, правильно сообщая каждый исход.",
+    "caveat": "Ветки ошибок здесь только останавливаются: добавьте сообщение о причине. WAIT не ждёт все workflow и удалённые системы. Для удалённого BAPI COMMIT должен выполняться в том же удалённом транзакционном контексте, а не локально. Проверьте исключения API. Пример не разрешает COMMIT в RAP и не запускался в SAP.",
+    "references": [
+      {
+        "title": "SAP: BAPI transaction model",
+        "url": "https://help.sap.com/SAPHELP_SCM700_EHP02/helpdata/EN/4d/5b102ba1483d8fe10000000a42189e/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "classic-arfc-callback",
+    "title": "Получить результат исполнителя через callback",
+    "questions": [
+      "RFC-06",
+      "RFC-07"
+    ],
+    "intro": "Задача запускается раньше, чем приходит её результат.",
+    "language": "ABAP",
+    "context": "Фрагменты classic ABAP class. Custom remote FM Z_CALCULATE_PACKAGE возвращает EV_TOTAL. У on_end один importing character-like task_name; task_id, callback_done, result_code и total — class attributes. Клиент ограничивает число активных tasks.",
+    "code": "CALL FUNCTION 'Z_CALCULATE_PACKAGE'\n  STARTING NEW TASK task_id\n  DESTINATION IN GROUP DEFAULT\n  CALLING on_end ON END OF TASK\n  EXCEPTIONS\n    resource_failure = 1\n    communication_failure = 2\n    system_failure = 3.\nDATA(start_result) = sy-subrc.\n\nMETHOD on_end.\n  RECEIVE RESULTS FROM FUNCTION 'Z_CALCULATE_PACKAGE'\n    IMPORTING ev_total = total\n    EXCEPTIONS\n      communication_failure = 1\n      system_failure = 2.\n  result_code = sy-subrc.\n  callback_done = abap_true.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          6,
+          9
+        ],
+        "label": "Запустить без предположения об успехе",
+        "explanation": "Resource failure означает, что worker не стартовал. Нужен ограниченный retry/backoff, а не лавина новых tasks."
+      },
+      {
+        "lines": [
+          12,
+          17,
+          18
+        ],
+        "label": "Получить завершённую task",
+        "explanation": "RECEIVE получает результат или ошибку. Отметьте получение callback даже при ошибке, затем определите успех по result_code.",
+        "questions": [
+          "RFC-07"
+        ]
+      }
+    ],
+    "outcome": "Координатор отдельно хранит start_result и result_code и сопоставляет callback task_name с пакетом.",
+    "caveat": "Два фрагмента, а не полный класс. Нужны отдельное состояние каждой задачи, ошибки запуска, тайм-аут и безопасный повтор. Callback не доказывает сохранение бизнес-результата. Классический API не считается автоматически разрешённым для ABAP Cloud. В SAP пример не запускался.",
+    "references": [
+      {
+        "title": "SAP: реализация parallel processing",
+        "url": "https://help.sap.com/saphelp_ewm900/helpdata/en/4d/909309eba36e73e10000000a15822b/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "classic-wait-boundary",
+    "title": "Почему WAIT нужен вне незавершённых записей",
+    "questions": [
+      "RFC-08"
+    ],
+    "intro": "Ожидающий координатор должен учитывать границы БД.",
+    "language": "ABAP",
+    "context": "Фрагмент классического метода. Здесь не должно быть незавершённых записей БД или открытого курсора. callbacks_received обновляется обратными вызовами aRFC; tasks_started считает только успешно запущенные задачи.",
+    "code": "CONSTANTS co_timeout_seconds TYPE i VALUE 10.\n\nWAIT UNTIL callbacks_received = tasks_started\n  UP TO co_timeout_seconds SECONDS.\nDATA(wait_result) = sy-subrc.\n\nIF callbacks_received < tasks_started.\n  RETURN.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5
+        ],
+        "label": "Ограничить ожидание",
+        "explanation": "Клиент даёт callbacks время прийти и сохраняет результат WAIT. Бесконечного ожидания нет."
+      },
+      {
+        "lines": [
+          7,
+          8
+        ],
+        "label": "Явно обработать отсутствующие callbacks",
+        "explanation": "Некоторые tasks ещё могут работать. Нужны recovery или видимый оператору неполный результат, а не сообщение об успехе."
+      }
+    ],
+    "outcome": "После ожидания координатор проверяет результат каждого исполнителя. Получить все callbacks не значит успешно выполнить все задачи.",
+    "caveat": "Классический WAIT может выполнить COMMIT базы данных. Это не COMMIT WORK AND WAIT и не подтверждение бизнес-успеха. RETURN обозначает выход с неполным результатом для дальнейшей обработки. Не переносите этот подход в RAP handler. Пример не запускался в SAP.",
+    "references": [
+      {
+        "title": "SAP: WAIT UNTIL",
+        "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/9b958a1786062de10000000a42189d/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "classic-job-scheduling",
+    "title": "Создать задание, добавить шаг и разрешить запуск",
+    "questions": [
+      "RFC-10"
+    ],
+    "intro": "Один заголовок фонового задания ещё не задаёт полезную работу.",
+    "language": "ABAP",
+    "context": "Фрагмент classic method. job_name имеет TYPE tbtcjob-jobname, job_count — tbtcjob-jobcount, released — c LENGTH 1. Custom report Z_RECONCILE безопасен для background и не имеет обязательных selection parameters.",
+    "code": "CALL FUNCTION 'JOB_OPEN'\n  EXPORTING jobname = job_name\n  IMPORTING jobcount = job_count\n  EXCEPTIONS OTHERS = 1.\nIF sy-subrc <> 0.\n  RETURN.\nENDIF.\nSUBMIT z_reconcile\n  VIA JOB job_name NUMBER job_count AND RETURN.\nIF sy-subrc <> 0.\n  RETURN.\nENDIF.\nCALL FUNCTION 'JOB_CLOSE'\n  EXPORTING jobname = job_name\n            jobcount = job_count\n            strtimmed = abap_true\n  IMPORTING job_was_released = released\n  EXCEPTIONS OTHERS = 1.\nDATA(close_result) = sy-subrc.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3,
+          8,
+          9
+        ],
+        "label": "Создать header и step",
+        "explanation": "Сохраните job name и job count. SUBMIT добавляет report шагом именно этой job."
+      },
+      {
+        "lines": [
+          13,
+          16,
+          17,
+          19
+        ],
+        "label": "Запросить release и проверить его",
+        "explanation": "Немедленный start всё ещё зависит от release authorization и ресурсов обработки."
+      }
+    ],
+    "outcome": "По close_result и released определите результат планирования. Затем по тому же ID проверьте SM37, журнал и бизнес-итоги.",
+    "caveat": "Рабочий код должен сообщать каждую ошибку и обрабатывать частично созданное задание. Здесь неудачный путь только останавливается. Статус Finished не доказывает проведение всех записей. Классические API планировщика отличаются от application-job API в ABAP Cloud. В SAP пример не запускался.",
+    "references": [
+      {
+        "title": "SAP: function modules для background processing",
+        "url": "https://help.sap.com/doc/saphelp_snc70/7.0/en-US/4d/906689eba36e73e10000000a15822b/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "idoc-control-and-segments",
+    "title": "Отличить управляющие поля IDoc от данных заказа",
+    "questions": [
+      "INTF-01",
+      "INTF-02",
+      "INTF-03",
+      "RICEFW-02"
+    ],
+    "intro": "Управляющие поля описывают обмен, сегменты содержат бизнес-значения.",
+    "language": "XML",
+    "context": "Сокращённое учебное XML-представление собственного IDoc. ZORDERS01, ZORDER и Z1ORDER вымышлены: это не полная сгенерированная XML-схема.",
+    "code": "<ZORDERS01>\n  <IDOC BEGIN=\"1\">\n    <EDI_DC40 SEGMENT=\"1\">\n      <IDOCTYP>ZORDERS01</IDOCTYP>\n      <MESTYP>ZORDER</MESTYP>\n      <SNDPRN>PARTNER_A</SNDPRN>\n      <RCVPRN>ERP_100</RCVPRN>\n    </EDI_DC40>\n    <Z1ORDER SEGMENT=\"1\">\n      <EXTERNAL_ID>PO-0071</EXTERNAL_ID>\n      <CUSTOMER>0000123</CUSTOMER>\n    </Z1ORDER>\n  </IDOC>\n</ZORDERS01>",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "label": "Прочитать control information",
+        "explanation": "Basic type описывает segment structure, message type — бизнес-сообщение. Sender и receiver помогают выбрать processing configuration."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11
+        ],
+        "label": "Прочитать бизнес-данные",
+        "explanation": "Order segment содержит external order ID и customer. Эти значения всё ещё должны пройти application checks.",
+        "questions": [
+          "INTF-03"
+        ]
+      }
+    ],
+    "outcome": "Неверный получатель или отсутствующий профиль партнёра — проблема маршрутизации и настройки. Неизвестный клиент — проблема бизнес-данных.",
+    "caveat": "Настоящие управляющие записи и схемы содержат дополнительные обязательные поля. Порты, профили партнёров и process codes настраиваются отдельно, содержимое сообщения их не создаёт. Реальный IDoc не генерировался.",
+    "references": [
+      {
+        "title": "SAP: IDoc control record и структура",
+        "url": "https://help.sap.com/saphelp_snc700_ehp01/helpdata/en/78/2177f051ce11d189570000e829fbbd/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "idoc-status-evidence",
+    "title": "Различать отправку, ошибку и проводку",
+    "questions": [
+      "INTF-04",
+      "INTF-05",
+      "RICEFW-06"
+    ],
+    "intro": "Успешный статус отправки не означает, что получатель провёл заказ.",
+    "language": "JSON",
+    "context": "Учебная диагностическая запись в JSON, а не формат SAP API. У отправителя и получателя разные локальные номера IDoc.",
+    "code": "{\n  \"businessKey\": \"PARTNER_A/PO-0071\",\n  \"outbound\": {\n    \"system\": \"SOURCE\", \"idoc\": \"0000000000000101\",\n    \"status\": \"03\"\n  },\n  \"inbound\": {\n    \"system\": \"ERP\", \"idoc\": \"0000000000000822\",\n    \"status\": \"51\", \"error\": \"Customer not found\"\n  },\n  \"applicationDocument\": null\n}",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5
+        ],
+        "label": "Проверить sender",
+        "explanation": "Status 03 означает передачу порту. Он не доказывает создание заказа в ERP."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          11
+        ],
+        "label": "Найти бизнес-ошибку receiver",
+        "explanation": "У receiver status 51 и нет подтверждённого application document. До retry изучите подробные status messages.",
+        "questions": [
+          "INTF-05",
+          "RICEFW-06"
+        ]
+      }
+    ],
+    "outcome": "Поддержка связывает сообщения по бизнес-ссылке, исправляет данные клиента или сопоставление значений и затем контролируемо повторяет обработку.",
+    "caveat": "Показаны обычные классические статусы. Используйте подробные сообщения и реальные данные приложения. Пустое поле учебной записи не доказывает отсутствие документа. Настоящие клиенты и IDoc здесь не представлены.",
+    "references": [
+      {
+        "title": "SAP: IDoc communication status и application outcome",
+        "url": "https://help.sap.com/docs/ERP_HCM/d9cb82c153454334bee3e640fc0b311e/058ce0535e56424de10000000a174cb4.html"
+      }
+    ]
+  },
+  {
+    "id": "aif-mapping-fixture",
+    "title": "Разделить сопоставление полей и преобразование значений",
+    "questions": [
+      "INTF-08",
+      "INTF-10"
+    ],
+    "intro": "Один шаг переносит поле, другой преобразует его значение.",
+    "language": "JSON",
+    "context": "Учебные входные данные и ожидаемый результат вымышленного интерфейса AIF. Это не синтаксис настройки AIF; механизм обработки и сопоставления настраиваются отдельно.",
+    "code": "{\n  \"incoming\": {\n    \"company\": \"EXT01\",\n    \"orderRef\": \"PO-0071\"\n  },\n  \"expectedTarget\": {\n    \"companyCode\": \"1000\",\n    \"externalOrderId\": \"PO-0071\"\n  },\n  \"unmappedCompany\": \"EXT99\",\n  \"expectedOnUnmapped\": \"Reject before posting\"\n}",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          7
+        ],
+        "label": "Преобразовать company value",
+        "explanation": "Поддерживаемый mapping превращает EXT01 в 1000. Для отсутствующего EXT99 нужен определённый путь ошибки."
+      },
+      {
+        "lines": [
+          4,
+          8
+        ],
+        "label": "Перенести reference field",
+        "explanation": "Structure mapping переносит orderRef в externalOrderId без изменения самой reference."
+      },
+      {
+        "lines": [
+          10,
+          11
+        ],
+        "label": "Проверить отказ",
+        "explanation": "Неудачный mapping не должен молча проводить в угаданный default company code.",
+        "questions": [
+          "INTF-10"
+        ]
+      }
+    ],
+    "outcome": "Оператор находит исходное значение с ошибочным соответствием, исправляет его и повторяет обработку по правилам восстановления интерфейса.",
+    "caveat": "Порядок обработки AIF зависит от настроенного механизма. Для проведения по-прежнему нужны полномочия, защита от дублей и правильное управление транзакцией.",
+    "references": [
+      {
+        "title": "SAP: создание AIF interface",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/4db1676c3f114f119b500bd80ccd944d/f0d1b60ff43c45efad71398b1214db04.html"
+      }
+    ]
+  },
+  {
+    "id": "event-id-versus-business-id",
+    "title": "Отделить ID доставки от версии бизнес-объекта",
+    "questions": [
+      "BTP-08",
+      "RICEFW-12",
+      "INTF-06",
+      "OPS-11"
+    ],
+    "intro": "Новая доставка не обязательно означает новую бизнес-команду.",
+    "language": "JSON",
+    "context": "Учебный пример доставки в интеграции согласования. Одна версия заказа приходит дважды с разными техническими ID доставки.",
+    "code": "[\n  {\n    \"deliveryId\": \"delivery-901\",\n    \"source\": \"ERP\", \"orderId\": \"4711\",\n    \"version\": 3, \"event\": \"Submitted\"\n  },\n  {\n    \"deliveryId\": \"delivery-902\",\n    \"source\": \"ERP\", \"orderId\": \"4711\",\n    \"version\": 3, \"event\": \"Submitted\"\n  }\n]",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          8
+        ],
+        "label": "Заметить две доставки",
+        "explanation": "Technical delivery IDs различаются. Дедупликация только по ним позволила бы обоим сообщениям запустить approval."
+      },
+      {
+        "lines": [
+          4,
+          5,
+          9,
+          10
+        ],
+        "label": "Сопоставить бизнес-операцию",
+        "explanation": "Source, order, version и event здесь определяют одну отправку. Сохраняйте принятую операцию устойчиво вместе с результатом."
+      }
+    ],
+    "outcome": "На повтор получатель возвращает известный результат согласования, а не согласовывает заказ второй раз.",
+    "caveat": "Ключ примера определяется приложением. Проверка дубля и бизнес-действие должны быть защищены от одновременной обработки: простой проверки перед вставкой недостаточно. После тайм-аута удалённого вызова сначала ищите уже полученный результат.",
+    "references": [
+      {
+        "title": "SAP: RAP business-object contract",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract"
+      },
+      {
+        "title": "SAP: область гарантий RFC quality of service",
+        "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/99b53cee2b73e7e10000000a42189b/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "badi-filter-selection",
+    "title": "Дать BAdI выбрать реализацию",
+    "questions": [
+      "RICEFW-03"
+    ],
+    "intro": "Приложение вызывает предусмотренную точку расширения вместо изменения стандартной реализации.",
+    "language": "ABAP",
+    "context": "Учебный custom single-use new-style BAdI. У ZBADI_ORDER_CHECK есть COUNTRY filter и CHECK с importing IS_ORDER и exporting EV_ALLOWED. order_check имеет REF TO zbadi_order_check; ls_order и allowed соответствуют интерфейсу. Fallback implementation настроена.",
+    "code": "CONSTANTS co_country TYPE c LENGTH 2 VALUE 'PL'.\n\nGET BADI order_check\n  FILTERS country = co_country.\n\nCALL BADI order_check->check\n  EXPORTING is_order = ls_order\n  IMPORTING ev_allowed = allowed.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4
+        ],
+        "label": "Выбрать через extension definition",
+        "explanation": "GET BADI по filter value находит configured implementation или fallback."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "label": "Вызвать согласованный метод",
+        "explanation": "Host передаёт order и получает решение через BAdI interface, не зная implementation class."
+      }
+    ],
+    "outcome": "Другая реализация поддержит другую страну, а клиент продолжит использовать тот же интерфейс.",
+    "caveat": "Все Z-объекты и сигнатуры вымышлены; их нужно определить заранее. В настоящем BAdI учитывайте исключения и допустимое число реализаций. Видимый BAdI не становится автоматически released для ABAP Cloud или допустимым в любой фазе транзакции. Пример не запускался в SAP.",
+    "references": [
+      {
+        "title": "SAP: object plug-ins и BAdIs",
+        "url": "https://help.sap.com/docs/SAP_NETWEAVER_AS_ABAP_FOR_SOH_740/7bfe8cdcfbb040dcb6702dada8c3e2f0/a085408fd34b496798872ae307c0adb2.html"
+      },
+      {
+        "title": "SAP: single-use и multiple-use BAdIs",
+        "url": "https://help.sap.com/saphelp_autoid2007/helpdata/en/e4/5c3642eca5033be10000000a1550b0/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "abap-http-client-status",
+    "title": "Выполнить запрос и проверить ответ",
+    "questions": [
+      "HTTP-10",
+      "BTP-06"
+    ],
+    "intro": "Destination задаёт соединение, но приложение всё равно должно проверить HTTP-ответ.",
+    "language": "ABAP",
+    "context": "Фрагмент метода для системы с этими released HTTP interfaces. destination — уже разрешённый IF_HTTP_DESTINATION из поддерживаемой communication/destination setup. Внешний метод объявляет CX_WEB_HTTP_CLIENT_ERROR и CX_WEB_MESSAGE_ERROR.",
+    "code": "DATA(client) =\n  cl_web_http_client_manager=>create_by_http_destination(\n    i_destination = destination ).\n\nDATA(response) = client->execute(\n  i_method = if_web_http_client=>get ).\nDATA(ls_status) = response->get_status( ).\nDATA(response_text) = response->get_text( ).\nclient->close( ).\n\nIF ls_status-code < 200 OR ls_status-code >= 300.\n  RETURN.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Использовать настроенную destination",
+        "explanation": "Client использует endpoint и connection setup, разрешённые приложением. Не храните пароли в исходнике."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Отделить transport от HTTP result",
+        "explanation": "Вызов может выбросить client exception. Если response получен, сначала проверьте status, потом считайте body бизнес-данными."
+      },
+      {
+        "lines": [
+          9,
+          11,
+          12
+        ],
+        "label": "Закрыть соединение и направить ошибку",
+        "explanation": "Успешный путь закрывает соединение. Non-2xx responses идут в обработку ошибок, а не JSON parser успеха."
+      }
+    ],
+    "outcome": "Полученные 401, 403 и 500 — HTTP-ответы. Исключение установления соединения обрабатывается на внешнем уровне.",
+    "caveat": "RETURN — учебная точка остановки. Добавьте преобразование ошибок, тайм-ауты и освобождение ресурсов при исключениях. Проверьте статус API и создание destination для целевой редакции. Destination сама не подтверждает бизнес-полномочия.",
+    "references": [
+      {
+        "title": "SAP: использование HTTP client",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/setting-http-logon-popup-policy"
+      },
+      {
+        "title": "SAP: интеграция и connectivity",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf"
+      },
+      {
+        "title": "SAP sample: HTTP response и message errors",
+        "url": "https://github.com/SAP-samples/abap-oo-basics/blob/main/src/zcl_obj_xml_test.clas.abap"
+      }
+    ]
+  }
+]

@@ -99,7 +99,7 @@
       "level": "Senior",
       "question": "An audit record must be saved with every managed order change. Should you use a determination, additional save, or unmanaged save?",
       "answer": "For an audit that must be saved with a managed order change, additional save may fit. RAP still writes the order, and the supported save extension writes the audit without committing separately. A determination is for deriving object data, not recording an already completed save. Distinguish this business audit from technical logs that may need to survive a rejected transaction.",
-      "detail": "An audit record may need the user, operation, changed values, and an identifier linking it to the order change. Check which data the save extension actually receives. Changed-field input is not necessarily a complete before-and-after image; use the documented data options and obtain any required previous values correctly. Explicitly cleared fields matter too.\n\nTest order creation, update, deletion, and a rejected save. The business audit should match the actual saved outcome, rather than claiming a change happened when it rolled back. Technical diagnostics for the failure may have a separate purpose and lifecycle. Do not switch all order persistence to unmanaged save merely to add logging, or directly rewrite managed order tables from additional save.",
+      "detail": "An audit record may need the user, operation, changed values, and an identifier linking it to the order change. Check which data the save extension actually receives. Changed-field input is not necessarily a complete before-and-after image; use the documented data options and obtain any required previous values correctly. Explicitly cleared fields matter too.\n\nTest order creation, update, deletion, and a rejected save. The business audit should match the actual saved outcome, rather than claiming a change happened when it rolled back. Technical diagnostics for the failure may have a separate purpose and lifecycle. Do not switch all order persistence to unmanaged save merely to add logging, or directly rewrite managed order tables from additional save.\n\nFor a managed BO, with additional save keeps the framework's order persistence and adds save_modified for extra work. With unmanaged save replaces that persistence with your implementation of save_modified. A fully unmanaged BO has its own saver contract, commonly save. Neither variant allows your code to execute COMMIT WORK or BAPI_TRANSACTION_COMMIT. BRFplus does not change these rules. For a BAPI integration, review RAP-15 rather than assuming that any API is safe in the audit save hook.",
       "pitfall": "Writing the audit in another LUW and claiming it is guaranteed to match the order, or updating managed order tables directly from additional save.",
       "followups": [
         "How do you obtain a trustworthy before-image?",
@@ -116,6 +116,11 @@
           "title": "SAP: Save options",
           "url": "https://help.sap.com/docs/btp/fc4c71aa50014fd1b43721701471913d/11e2c9d9a2c8420f88d1cf2d6c015c2b.html?version=202310.002",
           "note": "Read what this operation is allowed to do in this RAP phase, and check support on the target release."
+        },
+        {
+          "title": "SAP: integrated BAPI action and late save",
+          "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/implementing-rap-action-with-integrated-bapi-business-logic",
+          "note": "A save extension still follows RAP transaction restrictions."
         }
       ]
     },
