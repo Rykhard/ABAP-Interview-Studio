@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">Different wrappers solve different problems</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Worked posting boundary: translate data, simplify steps, observe execution</text>
+			<rect x="36" y="283" width="246" height="172" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="36" y="416" width="246" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="50" y="429" style="font-family: Helvetica-Bold; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,858) scale(1,-1)">ADAPTER</text>
+			<text x="51" y="391" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,782) scale(1,-1)">Domain input:</text>
+			<text x="51" y="367" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,734) scale(1,-1)">amount = 0, currency = EUR</text>
+			<text x="51" y="343" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,686) scale(1,-1)"></text>
+			<text x="51" y="319" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,638) scale(1,-1)">Legacy mapping:</text>
+			<text x="51" y="295" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,590) scale(1,-1)">value + change indicators</text>
+			<rect x="316" y="283" width="246" height="172" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="316" y="416" width="246" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="330" y="429" style="font-family: Helvetica-Bold; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,858) scale(1,-1)">FACADE</text>
+			<text x="331" y="391" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,782) scale(1,-1)">One business operation:</text>
+			<text x="331" y="367" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,734) scale(1,-1)">post purchase request</text>
+			<text x="331" y="343" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,686) scale(1,-1)"></text>
+			<text x="331" y="319" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,638) scale(1,-1)">Coordinates:</text>
+			<text x="331" y="295" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,590) scale(1,-1)">prepare -&gt; check -&gt; post</text>
+			<rect x="596" y="283" width="246" height="172" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="596" y="416" width="246" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="610" y="429" style="font-family: Helvetica-Bold; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,858) scale(1,-1)">DECORATOR</text>
+			<text x="611" y="391" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,782) scale(1,-1)">Same service interface:</text>
+			<text x="611" y="367" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,734) scale(1,-1)">timing around the call</text>
+			<text x="611" y="343" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,686) scale(1,-1)"></text>
+			<text x="611" y="319" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,638) scale(1,-1)">Preserves:</text>
+			<text x="611" y="295" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,590) scale(1,-1)">result + failure contract</text>
+			<rect x="36" y="127" width="806" height="127" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="52" y="224" style="font-family: Helvetica-Bold; font-size: 17px;fill: #9bdac1; stroke:none;" transform="translate(0,448) scale(1,-1)">Worked ordering: one logical call, two attempts</text>
+			<rect x="56" y="151" width="232" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="328" y="151" width="229" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="601" y="151" width="220" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="70" y="169" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)">Outer log: 1 operation</text>
+			<text x="342" y="169" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)">Retry: 2 attempts</text>
+			<text x="615" y="169" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)">Eligible read client</text>
+			<path d="M 294,174 L 320,174 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="320 174, 310 169, 310 179" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<path d="M 563,174 L 593,174 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="593 174, 583 169, 583 179" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<text x="38" y="103" style="font-family: Helvetica; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,206) scale(1,-1)">Move logging inside Retry -&gt; observe 2 attempts instead of 1 logical call.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">Retry is not safe for every write. These patterns cannot remove nested commits, authorize an operation,</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">or release an internal SAP dependency.</text>
+		</g>
+	</g>
+</svg>

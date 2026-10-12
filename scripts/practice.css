@@ -4,7 +4,7 @@
   margin: 18px 0 24px;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
 }
 
 #practiceSetup .practice-intro h3 {
@@ -36,7 +36,7 @@
   border: 1px solid var(--line);
   border-radius: 10px;
   text-align: left;
-  background: #fff;
+  background: var(--surface);
   color: var(--ink);
   overflow-wrap: anywhere;
 }
@@ -61,12 +61,12 @@
 #practiceSetup .format-card[aria-pressed="true"] {
   border-color: var(--green);
   box-shadow: inset 0 0 0 1px var(--green);
-  background: #edf5f0;
+  background: var(--soft);
 }
 
 #practiceSetup .format-card:hover {
   border-color: var(--green);
-  background: #f5f9f6;
+  background: var(--soft);
 }
 
 #practiceSetup #practiceFiltersHost #filters {
@@ -128,7 +128,7 @@
   margin: 12px 0;
   padding: 10px 13px;
   border-radius: 7px;
-  background: #f3f6f3;
+  background: var(--soft);
   color: var(--muted);
   font-size: 12px;
   line-height: 1.6;
@@ -144,7 +144,7 @@
   border: 0;
   border-radius: 2px;
   background: transparent;
-  color: #12618a;
+  color: var(--link);
   font-size: inherit;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -253,7 +253,7 @@
 }
 
 #view .session-progress::-webkit-progress-bar {
-  background: #e1e8e3;
+  background: var(--line);
 }
 
 #view .session-progress::-webkit-progress-value {
@@ -325,18 +325,18 @@
 #view .session-feedback {
   margin: 20px 0 12px;
   padding: 13px 16px;
-  border: 1px solid #c3dccb;
+  border: 1px solid var(--line);
   border-left: 4px solid var(--green);
   border-radius: 7px;
-  background: #edf6ef;
+  background: var(--soft);
   font-size: 14px;
 }
 
 #view .session-feedback.wrong,
 #view .session-feedback.incorrect {
-  border-color: #ead4c6;
-  border-left-color: #b75f33;
-  background: #fff4ec;
+  border-color: var(--line);
+  border-left-color: var(--accent);
+  background: var(--warm);
 }
 
 #view .session-feedback p {
@@ -360,7 +360,7 @@
 
 #view .review-answer > summary {
   font-size: 14px;
-  color: #12618a;
+  color: var(--link);
 }
 
 #view .review-answer[open] > summary {
@@ -370,7 +370,7 @@
 #view .recall-prompt {
   margin: 16px 0;
   padding: 14px 17px;
-  background: #f3f6f3;
+  background: var(--soft);
   border-radius: 8px;
   font-size: 14px;
   color: var(--muted);
@@ -411,7 +411,7 @@
 #view .self-rating-buttons button.selected,
 #view .self-rating-buttons button[aria-pressed="true"] {
   border-color: var(--green);
-  background: #edf5f0;
+  background: var(--soft);
 }
 
 /* Results separate the current session from the cumulative study record. */
@@ -440,7 +440,7 @@
   padding: 15px 17px;
   border: 1px solid var(--line);
   border-radius: 9px;
-  background: #fff;
+  background: var(--surface);
 }
 
 #view .result-metrics strong {
@@ -464,7 +464,7 @@
 #view .result-list .status {
   padding: 2px 8px;
   border-radius: 5px;
-  background: #e9eee9;
+  background: var(--line);
   color: var(--muted);
   font-size: 11px;
   font-weight: 650;
@@ -472,14 +472,14 @@
 
 #view .result-list .status.correct,
 #view .result-list .status.ready {
-  background: #e4f1e8;
+  background: var(--soft);
   color: var(--green);
 }
 
 #view .result-list .status.incorrect,
 #view .result-list .status.retry {
-  background: #fff0e5;
-  color: #984920;
+  background: var(--warm);
+  color: var(--accent);
 }
 
 #view .result-actions {
@@ -504,7 +504,7 @@
 #practiceSetup :is(button, input, select, summary):focus-visible,
 #view .session-shell :is(button, input, select, summary, a):focus-visible,
 #view .session-results :is(button, summary, a):focus-visible {
-  outline: 3px solid #12618a;
+  outline: 3px solid var(--link);
   outline-offset: 3px;
 }
 

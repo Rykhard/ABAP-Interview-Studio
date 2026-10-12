@@ -20,8 +20,11 @@ For offline use, download this repository, keep its folders together and open `S
 
 ## Learn and practice
 
-- Browse subjects and subtopics with all difficulty levels together. Read plain-English answers followed by a concrete example in two short paragraphs, common mistakes, references and compact diagrams with an enlarged viewer.
+- Browse subjects and subtopics with all difficulty levels together. Read plain-English answers followed by concrete examples, common mistakes, references and compact diagrams with an enlarged viewer.
 - Open a question's code example, select a step to highlight its lines, and read what happens. Use the larger code view or copy the excerpt. Process diagrams remain available beside code where useful. Teaching fragments state their prerequisites and link to primary sources.
+- Switch between light and dark with the animated sun/moon control. Reading preferences include system appearance, larger answer text and a focus mode that hides topic navigation. Theme and reading choices stay in this browser. Choose Balanced or Larger examples in Reading to adjust the answer layout.
+- Save questions into a personal collection, resume the last opened question and move between neighboring questions in a subtopic. Progress exports include saved questions.
+- Follow structured explanations such as the RAP save sequence one step at a time, or expand all steps together.
 - Show all answers / Questions only has an explicit selected state and remembers your preference.
 - Search the whole library with Ctrl+K / Cmd+K. The separate text filter narrows the current view.
 - Interview practice covers every question: answer aloud, reveal the model and self-rate 0-3.
@@ -63,7 +66,7 @@ Technical questions carry primary references and release/context notes. Personal
 
 Run `python scripts/build_site.py` to create the static `dist` directory and `dist.zip`. The hosting build needs Python's standard library only. For Cloudflare Pages use project `abap-interview-studio`, production branch `main`, build command `python scripts/build_site.py` and output directory `dist`. See the [deployment guide](docs/Deployment.md).
 
-For content changes, edit `content/*.json` and `quiz/*.json`, install `requirements.txt`, regenerate with `python scripts/build.py`, and run `python scripts/validate.py` before building the site. Existing question IDs keep browser progress and Anki updates compatible. The app source is in `scripts/study-template.html`, `scripts/studio*.js`, `scripts/practice.css` and `scripts/usability.css`.
+For content changes, edit `content/*.json` and `quiz/*.json`, install `requirements.txt`, regenerate with `python scripts/build.py`, and run `python scripts/validate.py` before building the site. Existing question IDs keep browser progress and Anki updates compatible. The app source is in `scripts/study-template.html`, `scripts/studio*.js`, `scripts/calm.css`, `scripts/practice.css` and `scripts/usability.css`.
 
 This public repository contains the reviewed app and publishable study materials. Personal source documents, old private Git history, credentials and learner progress exports are excluded.
 """

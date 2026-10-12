@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">A buffer is a working set, not a second commit owner</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">The same business object can have different in-memory and saved states</text>
+			<rect x="40" y="381" width="202.0" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="50" y="394" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,788) scale(1,-1)">Saved database</text>
+			<rect x="244.0" y="381" width="134.0" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="254.0" y="394" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,788) scale(1,-1)">Value</text>
+			<rect x="40" y="342" width="202.0" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="50" y="355" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,710) scale(1,-1)">Order 4711</text>
+			<rect x="244.0" y="342" width="134.0" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="254.0" y="355" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,710) scale(1,-1)">100 EUR</text>
+			<rect x="40" y="303" width="202.0" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="50" y="316" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,632) scale(1,-1)">Status</text>
+			<rect x="244.0" y="303" width="134.0" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="254.0" y="316" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,632) scale(1,-1)">Open</text>
+			<rect x="495" y="381" width="212.07407407407402" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="505" y="394" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,788) scale(1,-1)">Current RAP buffer</text>
+			<rect x="709.074074074074" y="381" width="123.92592592592598" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="719.074074074074" y="394" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,788) scale(1,-1)">Value</text>
+			<rect x="495" y="342" width="212.07407407407402" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="505" y="355" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,710) scale(1,-1)">Order 4711</text>
+			<rect x="709.074074074074" y="342" width="123.92592592592598" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="719.074074074074" y="355" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,710) scale(1,-1)">120 EUR</text>
+			<rect x="495" y="303" width="212.07407407407402" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="505" y="316" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,632) scale(1,-1)">Status</text>
+			<rect x="709.074074074074" y="303" width="123.92592592592598" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="719.074074074074" y="316" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,632) scale(1,-1)">Open</text>
+			<path d="M 385,362 L 488,362 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="488 362, 478 357, 478 367" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<text x="392" y="384" style="font-family: Helvetica-Bold; font-size: 13px;fill: #9bdac1; stroke:none;" transform="translate(0,768) scale(1,-1)">modify</text>
+			<rect x="43" y="123" width="340" height="112" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="43" y="196" width="340" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="57" y="209" style="font-family: Helvetica-Bold; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,418) scale(1,-1)">Transactional read</text>
+			<text x="57" y="171" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,342) scale(1,-1)">Use EML for BO semantics and the current</text>
+			<text x="57" y="152" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,304) scale(1,-1)">transactional view.</text>
+			<rect x="493" y="123" width="340" height="112" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="493" y="196" width="340" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="507" y="209" style="font-family: Helvetica-Bold; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,418) scale(1,-1)">Completion owner</text>
+			<text x="507" y="171" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,342) scale(1,-1)">Framework or external EML consumer</text>
+			<text x="507" y="152" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,304) scale(1,-1)">requests transaction completion.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">Behavior handlers and savers must not issue COMMIT WORK or COMMIT ENTITIES themselves.</text>
+		</g>
+	</g>
+</svg>

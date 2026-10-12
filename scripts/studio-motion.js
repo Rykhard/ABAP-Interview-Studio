@@ -27,7 +27,8 @@ window.addEventListener('scroll',()=>{
 window.addEventListener('resize',updateTopButton);
 updateTopButton();
 $('backToTop').onclick=()=>{
- $('heading').focus({preventScroll:true});
+ const heading=document.querySelector('main.single-question .focused-card>h3')||$('sessionQuestion')||$('heading');
+ heading.focus({preventScroll:true});
  window.scrollTo({top:0,behavior:reducedMotion.matches?'instant':'smooth'});
 };
 $('brandHome').onclick=event=>{

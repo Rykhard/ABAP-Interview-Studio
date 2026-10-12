@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">Read an HTTP exchange as a contract</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Illustrative HTTP/1.1 layout; HTTPS protects the transport</text>
+			<rect x="37" y="156" width="389" height="285" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="37" y="402" width="389" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="51" y="415" style="font-family: Helvetica-Bold; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,830) scale(1,-1)">REQUEST: client to service</text>
+			<rect x="454" y="156" width="389" height="285" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="454" y="402" width="389" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="468" y="415" style="font-family: Helvetica-Bold; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,830) scale(1,-1)">RESPONSE: service to client</text>
+			<text x="53" y="375" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,750) scale(1,-1)">GET /orders/4711 HTTP/1.1</text>
+			<text x="53" y="349" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,698) scale(1,-1)">Host: api.example.test</text>
+			<text x="53" y="323" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,646) scale(1,-1)">Accept: application/json</text>
+			<text x="53" y="297" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,594) scale(1,-1)"></text>
+			<text x="53" y="271" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,542) scale(1,-1)">Method + target identify the request.</text>
+			<text x="53" y="245" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,490) scale(1,-1)">Accept asks for a representation.</text>
+			<text x="53" y="219" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,438) scale(1,-1)">Credentials are intentionally omitted.</text>
+			<text x="469" y="375" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,750) scale(1,-1)">HTTP/1.1 200 OK</text>
+			<text x="469" y="349" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,698) scale(1,-1)">Content-Type: application/json</text>
+			<text x="469" y="323" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,646) scale(1,-1)">ETag: &quot;v7&quot;</text>
+			<text x="469" y="297" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,594) scale(1,-1)"></text>
+			<text x="469" y="271" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,542) scale(1,-1)">{&quot;id&quot;:&quot;4711&quot;,&quot;status&quot;:&quot;Open&quot;}</text>
+			<text x="469" y="245" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,490) scale(1,-1)"></text>
+			<text x="469" y="219" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,438) scale(1,-1)">ETag is an opaque version validator.</text>
+			<path d="M 360,120 L 525,120 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="525 120, 515 115, 515 125" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<text x="60" y="115" style="font-family: Helvetica-Bold; font-size: 15px;fill: #9bdac1; stroke:none;" transform="translate(0,230) scale(1,-1)">Transport / HTTP</text>
+			<text x="544" y="115" style="font-family: Helvetica-Bold; font-size: 15px;fill: #9bdac1; stroke:none;" transform="translate(0,230) scale(1,-1)">Representation / JSON</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">REST is an architectural style; JSON and XML are payload formats. OData adds service conventions on top</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">of HTTP.</text>
+		</g>
+	</g>
+</svg>

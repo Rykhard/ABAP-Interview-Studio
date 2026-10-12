@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">Permission for the old state does not approve the new state</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Policy fixture: user may edit organization A, but may not transfer an order to B</text>
+			<rect x="36" y="410" width="99.85436893203882" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="46" y="423" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,846) scale(1,-1)">Order</text>
+			<rect x="137.85436893203882" y="410" width="201.70873786407765" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="147.85436893203882" y="423" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,846) scale(1,-1)">Existing organization</text>
+			<rect x="341.5631067961165" y="410" width="217.37864077669906" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="351.5631067961165" y="423" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,846) scale(1,-1)">Proposed organization</text>
+			<rect x="560.9417475728155" y="410" width="280.05825242718447" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="570.9417475728155" y="423" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,846) scale(1,-1)">Decision</text>
+			<rect x="36" y="363" width="99.85436893203882" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="46" y="376" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)">4711</text>
+			<rect x="137.85436893203882" y="363" width="201.70873786407765" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="147.85436893203882" y="376" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)">A</text>
+			<rect x="341.5631067961165" y="363" width="217.37864077669906" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="351.5631067961165" y="376" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)">A</text>
+			<rect x="560.9417475728155" y="363" width="280.05825242718447" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="570.9417475728155" y="376" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)">Allowed if other rules pass</text>
+			<rect x="36" y="316" width="99.85436893203882" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="46" y="329" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,658) scale(1,-1)">4712</text>
+			<rect x="137.85436893203882" y="316" width="201.70873786407765" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="147.85436893203882" y="329" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,658) scale(1,-1)">A</text>
+			<rect x="341.5631067961165" y="316" width="217.37864077669906" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="351.5631067961165" y="329" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,658) scale(1,-1)">B</text>
+			<rect x="560.9417475728155" y="316" width="280.05825242718447" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="570.9417475728155" y="329" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,658) scale(1,-1)">Reject target change</text>
+			<rect x="36" y="269" width="99.85436893203882" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="46" y="282" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,564) scale(1,-1)">4713</text>
+			<rect x="137.85436893203882" y="269" width="201.70873786407765" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="147.85436893203882" y="282" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,564) scale(1,-1)">A</text>
+			<rect x="341.5631067961165" y="269" width="217.37864077669906" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="351.5631067961165" y="282" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,564) scale(1,-1)">(omitted)</text>
+			<rect x="560.9417475728155" y="269" width="280.05825242718447" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="570.9417475728155" y="282" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,564) scale(1,-1)">Keep A; check actual intent</text>
+			<circle cx="143" cy="191" r="58" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 3; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="97.656" y="210" style="font-family: Helvetica-Bold; font-size: 16px;fill: #9bdac1; stroke:none;" transform="translate(0,420) scale(1,-1)">EXISTING A</text>
+			<text x="108.5155" y="184" style="font-family: Helvetica-Bold; font-size: 17px;fill: #9bdac1; stroke:none;" transform="translate(0,368) scale(1,-1)">may edit</text>
+			<text x="100.316" y="163" style="font-family: Helvetica; font-size: 12px;fill: #9bdac1; stroke:none;" transform="translate(0,326) scale(1,-1)">current instance</text>
+			<path d="M 212,190 L 310,190 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="310 190, 300 185, 300 195" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<rect x="323" y="140" width="255" height="107" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="337" y="220" style="font-family: Helvetica-Bold; font-size: 17px;fill: #9bdac1; stroke:none;" transform="translate(0,440) scale(1,-1)">Merge partial request</text>
+			<text x="337" y="195" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,390) scale(1,-1)">Existing state + supplied fields</text>
+			<text x="337" y="172" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,344) scale(1,-1)">Determine actual target state.</text>
+			<path d="M 586,190 L 639,190 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="639 190, 629 185, 629 195" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<circle cx="741" cy="191" r="59" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="700.112" y="210" style="font-family: Helvetica-Bold; font-size: 16px;fill: #efb384; stroke:none;" transform="translate(0,420) scale(1,-1)">TARGET B</text>
+			<text x="693.0825" y="184" style="font-family: Helvetica-Bold; font-size: 15px;fill: #efb384; stroke:none;" transform="translate(0,368) scale(1,-1)">not permitted</text>
+			<text x="694.974" y="163" style="font-family: Helvetica; font-size: 12px;fill: #efb384; stroke:none;" transform="translate(0,326) scale(1,-1)">reject the change</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">Use the supported authorization and incoming-change checks for the scenario. A hidden or disabled UI</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">field is not the backend security boundary.</text>
+		</g>
+	</g>
+</svg>

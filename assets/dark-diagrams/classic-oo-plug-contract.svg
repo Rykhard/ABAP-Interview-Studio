@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="1" y="1" width="878" height="558" style="stroke: #10191f; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<rect x="26" y="512" width="7" height="24" rx="2" ry="2" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="46" y="514" style="font-family: Helvetica-Bold; font-size: 26px;fill: #e7eff2; stroke:none;" transform="translate(0,1028) scale(1,-1)">One contract; production and test can plug in</text>
+			<text x="28" y="483" style="font-family: Helvetica; font-size: 14px;fill: #aabdc6; stroke:none;" transform="translate(0,966) scale(1,-1)">Constructor injection supplies a collaborator. Polymorphism selects its implementation at runtime.</text>
+			<rect x="40" y="215" width="266" height="215" rx="20" ry="20" style="stroke: #e7eff2; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<rect x="61" y="315" width="224" height="87" rx="8" ry="8" style="stroke: #10191f; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="96.4395" y="374" style="font-family: Helvetica-Bold; font-size: 19px;fill: #e7eff2; stroke:none;" transform="translate(0,748) scale(1,-1)">Approval service</text>
+			<text x="115.89500000000001" y="347" style="font-family: Helvetica; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,694) scale(1,-1)">uses a repository</text>
+			<path d="M 63,275 L 145,275 Z" style="stroke: #203c35; stroke-linecap: butt; stroke-width: 4;"/>
+			<path d="M 63,263 L 145,263 Z" style="stroke: #203c35; stroke-linecap: butt; stroke-width: 4;"/>
+			<path d="M 63,251 L 145,251 Z" style="stroke: #203c35; stroke-linecap: butt; stroke-width: 4;"/>
+			<circle cx="261" cy="259" r="13" style="stroke: #203c35; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="117.088" y="183" style="font-family: Helvetica-Bold; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,366) scale(1,-1)">Business rules</text>
+			<rect x="306" y="280" width="118" height="75" rx="8" ry="8" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<rect x="401" y="296" width="8" height="13" rx="1" ry="1" style="stroke: #e7eff2; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<rect x="401" y="326" width="8" height="13" rx="1" ry="1" style="stroke: #e7eff2; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="324.946" y="370" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,740) scale(1,-1)">INTERFACE</text>
+			<text x="340.552" y="317" style="font-family: Helvetica-Bold; font-size: 16px;fill: #9bdac1; stroke:none;" transform="translate(0,634) scale(1,-1)">read( )</text>
+			<text x="315.763" y="257" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,514) scale(1,-1)">Same contract</text>
+			<polyline points="427 318, 468 318, 468 396, 522 396" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 3; fill: None; fill-rule: evenodd;"/>
+			<polyline points="468 318, 468 218, 522 218" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3; fill: None; fill-rule: evenodd;"/>
+			<text x="457.5" y="286" style="font-family: Helvetica-Bold; font-size: 14px;fill: #aabdc6; stroke:none;" transform="translate(0,572) scale(1,-1)">OR</text>
+			<rect x="540" y="375" width="57" height="42" rx="8" ry="8" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<rect x="522" y="384" width="19" height="7" rx="1" ry="1" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<rect x="522" y="402" width="19" height="7" rx="1" ry="1" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<path d="M 597,396 L 624,396 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 6;"/>
+			<text x="546" y="391" style="font-family: Helvetica-Bold; font-size: 12px;fill: #192730; stroke:none;" transform="translate(0,782) scale(1,-1)">DB</text>
+			<rect x="540" y="197" width="57" height="42" rx="8" ry="8" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;"/>
+			<rect x="522" y="206" width="19" height="7" rx="1" ry="1" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;"/>
+			<rect x="522" y="224" width="19" height="7" rx="1" ry="1" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;"/>
+			<path d="M 597,218 L 624,218 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 6;"/>
+			<text x="546" y="213" style="font-family: Helvetica-Bold; font-size: 12px;fill: #192730; stroke:none;" transform="translate(0,426) scale(1,-1)">TEST</text>
+			<rect x="650" y="339" width="145" height="76" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<ellipse cx="722.5" cy="415.0" rx="72.5" ry="17.0" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2; fill: #203c35; fill-rule: evenodd;"/>
+			<ellipse cx="722.5" cy="339.0" rx="72.5" ry="17.0" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="681.986" y="375" style="font-family: Helvetica-Bold; font-size: 18px;fill: #9bdac1; stroke:none;" transform="translate(0,750) scale(1,-1)">Database</text>
+			<text x="648.656" y="303" style="font-family: Helvetica-Bold; font-size: 16px;fill: #9bdac1; stroke:none;" transform="translate(0,606) scale(1,-1)">Production adapter</text>
+			<rect x="650" y="171" width="145" height="89" rx="5" ry="5" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 1; fill: #463125; fill-rule: evenodd;"/>
+			<rect x="666" y="229" width="112" height="14" rx="2" ry="2" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="666" y="208" width="112" height="14" rx="2" ry="2" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="666" y="187" width="112" height="14" rx="2" ry="2" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="642.41" y="146" style="font-family: Helvetica-Bold; font-size: 15px;fill: #efb384; stroke:none;" transform="translate(0,292) scale(1,-1)">Controlled test double</text>
+			<text x="40" y="91" style="font-family: Helvetica-Bold; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,182) scale(1,-1)">A test checks service behavior; a real integration check still verifies database behavior.</text>
+			<path d="M 28,51 L 850,51 Z" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 2;"/>
+			<text x="28" y="27" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,54) scale(1,-1)">Inject one suitable implementation per instance. An adapter does not make an unreleased API released.</text>
+		</g>
+	</g>
+</svg>

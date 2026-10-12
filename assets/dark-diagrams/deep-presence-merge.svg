@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">Preserving a base is not the same as preserving omission</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Saved structure: status = Approved; note = Old</text>
+			<rect x="34" y="413" width="277.6888888888889" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="44" y="426" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,852) scale(1,-1)">Source shape / value</text>
+			<rect x="313.6888888888889" y="413" width="259.64444444444433" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="323.6888888888889" y="426" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,852) scale(1,-1)">Plain CORRESPONDING</text>
+			<rect x="575.3333333333333" y="413" width="268.66666666666674" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="585.3333333333333" y="426" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,852) scale(1,-1)">With BASE(existing)</text>
+			<rect x="34" y="364" width="277.6888888888889" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="44" y="377" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,754) scale(1,-1)">note = New; no status field</text>
+			<rect x="313.6888888888889" y="364" width="259.64444444444433" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="323.6888888888889" y="377" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,754) scale(1,-1)">status becomes initial</text>
+			<rect x="575.3333333333333" y="364" width="268.66666666666674" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="585.3333333333333" y="377" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,754) scale(1,-1)">status stays Approved</text>
+			<rect x="34" y="315" width="277.6888888888889" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="44" y="328" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,656) scale(1,-1)">note = New; status is initial</text>
+			<rect x="313.6888888888889" y="315" width="259.64444444444433" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="323.6888888888889" y="328" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,656) scale(1,-1)">status becomes initial</text>
+			<rect x="575.3333333333333" y="315" width="268.66666666666674" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="585.3333333333333" y="328" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,656) scale(1,-1)">status becomes initial</text>
+			<rect x="34" y="266" width="277.6888888888889" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="44" y="279" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,558) scale(1,-1)">note = New; status = Draft</text>
+			<rect x="313.6888888888889" y="266" width="259.64444444444433" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="323.6888888888889" y="279" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,558) scale(1,-1)">status becomes Draft</text>
+			<rect x="575.3333333333333" y="266" width="268.66666666666674" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="585.3333333333333" y="279" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,558) scale(1,-1)">status becomes Draft</text>
+			<text x="40" y="230" style="font-family: Helvetica-Bold; font-size: 18px;fill: #9bdac1; stroke:none;" transform="translate(0,460) scale(1,-1)">Optional parameter presence is another explicit signal</text>
+			<rect x="39" y="172" width="324.93877551020404" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="49" y="185" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,370) scale(1,-1)">Call</text>
+			<rect x="365.93877551020404" y="172" width="112.42857142857139" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="375.93877551020404" y="185" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,370) scale(1,-1)">Value</text>
+			<rect x="480.3673469387754" y="172" width="161.46938775510205" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="490.3673469387754" y="185" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,370) scale(1,-1)">IS INITIAL</text>
+			<rect x="643.8367346938775" y="172" width="194.1632653061224" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="653.8367346938775" y="185" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,370) scale(1,-1)">IS SUPPLIED</text>
+			<rect x="39" y="142" width="324.93877551020404" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="49" y="155" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,310) scale(1,-1)">Argument omitted</text>
+			<rect x="365.93877551020404" y="142" width="112.42857142857139" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="375.93877551020404" y="155" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,310) scale(1,-1)">0</text>
+			<rect x="480.3673469387754" y="142" width="161.46938775510205" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="490.3673469387754" y="155" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,310) scale(1,-1)">true</text>
+			<rect x="643.8367346938775" y="142" width="194.1632653061224" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="653.8367346938775" y="155" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,310) scale(1,-1)">false</text>
+			<rect x="39" y="112" width="324.93877551020404" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="49" y="125" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,250) scale(1,-1)">Argument explicitly zero</text>
+			<rect x="365.93877551020404" y="112" width="112.42857142857139" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="375.93877551020404" y="125" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,250) scale(1,-1)">0</text>
+			<rect x="480.3673469387754" y="112" width="161.46938775510205" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="490.3673469387754" y="125" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,250) scale(1,-1)">true</text>
+			<rect x="643.8367346938775" y="112" width="194.1632653061224" height="28" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="653.8367346938775" y="125" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,250) scale(1,-1)">true</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">A wrapper that always forwards an optional argument makes it supplied downstream. BASE only preserves</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">components not overwritten by matching source components.</text>
+		</g>
+	</g>
+</svg>

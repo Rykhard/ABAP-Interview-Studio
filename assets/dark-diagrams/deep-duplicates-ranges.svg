@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">An empty set and an empty selection range are not alike</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Two boundary cases that need an explicit business policy</text>
+			<text x="39" y="441" style="font-family: Helvetica-Bold; font-size: 17px;fill: #9bdac1; stroke:none;" transform="translate(0,882) scale(1,-1)">UNIQUE INTERNAL-TABLE INSERT</text>
+			<rect x="39" y="385" width="116.0" height="40" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="49" y="398" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,796) scale(1,-1)">Key</text>
+			<rect x="157.0" y="385" width="234.0" height="40" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="167.0" y="398" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,796) scale(1,-1)">Saved amount</text>
+			<rect x="39" y="343" width="116.0" height="40" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="49" y="356" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,712) scale(1,-1)">7</text>
+			<rect x="157.0" y="343" width="234.0" height="40" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="167.0" y="356" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,712) scale(1,-1)">10</text>
+			<text x="446" y="407" style="font-family: Helvetica-Bold; font-size: 19px;fill: #e7eff2; stroke:none;" transform="translate(0,814) scale(1,-1)">Try key 7 / amount 20</text>
+			<path d="M 439,362 L 403,362 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="403 362, 413 367, 413 357" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;"/>
+			<text x="446" y="351" style="font-family: Helvetica-Bold; font-size: 17px;fill: #efb384; stroke:none;" transform="translate(0,702) scale(1,-1)">Duplicate: not an update.</text>
+			<text x="446" y="320" style="font-family: Helvetica; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,640) scale(1,-1)">Existing amount remains 10.</text>
+			<text x="39" y="261" style="font-family: Helvetica-Bold; font-size: 17px;fill: #9bdac1; stroke:none;" transform="translate(0,522) scale(1,-1)">NO PERMITTED PLANTS</text>
+			<rect x="40" y="148" width="180" height="76" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="79.5265" y="181" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,362) scale(1,-1)">range = [ ]</text>
+			<path d="M 232,188 L 310,188 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="310 188, 300 183, 300 193" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;"/>
+			<rect x="323" y="139" width="513" height="91" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="342" y="202" style="font-family: Helvetica-Bold; font-size: 18px;fill: #efb384; stroke:none;" transform="translate(0,404) scale(1,-1)">IN initial_range means no restriction.</text>
+			<text x="342" y="173" style="font-family: Helvetica; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,346) scale(1,-1)">No authorization must return no rows or reject</text>
+			<text x="342" y="151" style="font-family: Helvetica; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,302) scale(1,-1)">before the otherwise unrestricted query.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">Duplicate rejection does not define a merge policy. Empty authorization is not an optional empty filter;</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">keep the permission decision explicit.</text>
+		</g>
+	</g>
+</svg>

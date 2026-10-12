@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">An exception separates reference and value-result paths</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">A plain CHANGING integer starts at 10; the method sets 20, then raises an exception</text>
+			<text x="39" y="434" style="font-family: Helvetica-Bold; font-size: 18px;fill: #efb384; stroke:none;" transform="translate(0,868) scale(1,-1)">By reference</text>
+			<rect x="40" y="336" width="192" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="53" y="391" style="font-family: Helvetica-Bold; font-size: 14px;fill: #efb384; stroke:none;" transform="translate(0,782) scale(1,-1)">CALLER BEFORE</text>
+			<text x="53" y="359" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,718) scale(1,-1)">10</text>
+			<rect x="308" y="336" width="245" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="321" y="391" style="font-family: Helvetica-Bold; font-size: 14px;fill: #efb384; stroke:none;" transform="translate(0,782) scale(1,-1)">METHOD WRITES</text>
+			<text x="321" y="359" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,718) scale(1,-1)">20</text>
+			<rect x="644" y="336" width="195" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="657" y="391" style="font-family: Helvetica-Bold; font-size: 14px;fill: #efb384; stroke:none;" transform="translate(0,782) scale(1,-1)">CALLER AFTER</text>
+			<text x="657" y="359" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,718) scale(1,-1)">Caller: 20</text>
+			<path d="M 241,378 L 298,378 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="298 378, 288 373, 288 383" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;"/>
+			<path d="M 563,378 L 632,378 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2;"/>
+			<path d="M 584,368 L 603,388 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3;"/>
+			<path d="M 584,388 L 603,368 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3;"/>
+			<text x="571.32" y="408" style="font-family: Helvetica; font-size: 12px;fill: #efb384; stroke:none;" transform="translate(0,816) scale(1,-1)">exception</text>
+			<text x="39" y="286" style="font-family: Helvetica-Bold; font-size: 18px;fill: #9bdac1; stroke:none;" transform="translate(0,572) scale(1,-1)">CHANGING VALUE</text>
+			<rect x="40" y="188" width="192" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="53" y="243" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,486) scale(1,-1)">CALLER BEFORE</text>
+			<text x="53" y="211" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,422) scale(1,-1)">10</text>
+			<rect x="308" y="188" width="245" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="321" y="243" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,486) scale(1,-1)">METHOD WRITES</text>
+			<text x="321" y="211" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,422) scale(1,-1)">20</text>
+			<rect x="644" y="188" width="195" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="657" y="243" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,486) scale(1,-1)">CALLER AFTER</text>
+			<text x="657" y="211" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,422) scale(1,-1)">Caller: 10</text>
+			<path d="M 241,230 L 298,230 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="298 230, 288 225, 288 235" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<path d="M 563,230 L 632,230 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;"/>
+			<path d="M 584,220 L 603,240 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3;"/>
+			<path d="M 584,240 L 603,220 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3;"/>
+			<text x="571.32" y="260" style="font-family: Helvetica; font-size: 12px;fill: #efb384; stroke:none;" transform="translate(0,520) scale(1,-1)">exception</text>
+			<text x="44" y="136" style="font-family: Helvetica-Bold; font-size: 16px;fill: #efb384; stroke:none;" transform="translate(0,272) scale(1,-1)">Reference: caller data was already changed.</text>
+			<text x="44" y="108" style="font-family: Helvetica-Bold; font-size: 16px;fill: #9bdac1; stroke:none;" transform="translate(0,216) scale(1,-1)">Value-result: no normal copy-back occurred.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">The caller catches the exception. This is a scalar parameter example: database writes and mutations</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">through object references are separate side effects.</text>
+		</g>
+	</g>
+</svg>

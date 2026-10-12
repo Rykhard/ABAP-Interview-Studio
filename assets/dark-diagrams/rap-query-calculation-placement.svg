@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">Optimize at the layer that owns the requirement</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">A remote virtual field changes the query cost and supported operations</text>
+			<rect x="35" y="402" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="45" y="415" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,830) scale(1,-1)">Requirement</text>
+			<rect x="263.7058823529412" y="402" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="273.7058823529412" y="415" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,830) scale(1,-1)">Possible design</text>
+			<rect x="578.1764705882354" y="402" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="588.1764705882354" y="415" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,830) scale(1,-1)">Verification</text>
+			<rect x="35" y="355" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="45" y="368" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,736) scale(1,-1)">Display enrichment</text>
+			<rect x="263.7058823529412" y="355" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="273.7058823529412" y="368" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,736) scale(1,-1)">Batch remote lookup</text>
+			<rect x="578.1764705882354" y="355" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="588.1764705882354" y="368" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,736) scale(1,-1)">Calls and missing-data policy</text>
+			<rect x="35" y="308" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="45" y="321" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,642) scale(1,-1)">Filter before paging</text>
+			<rect x="263.7058823529412" y="308" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="273.7058823529412" y="321" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,642) scale(1,-1)">Push predicate / persisted value</text>
+			<rect x="578.1764705882354" y="308" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="588.1764705882354" y="321" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,642) scale(1,-1)">Complete result semantics</text>
+			<rect x="35" y="261" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="45" y="274" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,548) scale(1,-1)">Sort million-row list</text>
+			<rect x="263.7058823529412" y="261" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="273.7058823529412" y="274" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,548) scale(1,-1)">Supported sortable data model</text>
+			<rect x="578.1764705882354" y="261" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="588.1764705882354" y="274" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,548) scale(1,-1)">Stable global order</text>
+			<rect x="35" y="214" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="45" y="227" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,454) scale(1,-1)">Analytical aggregate</text>
+			<rect x="263.7058823529412" y="214" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="273.7058823529412" y="227" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,454) scale(1,-1)">Correct grain / pushdown</text>
+			<rect x="578.1764705882354" y="214" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="588.1764705882354" y="227" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,454) scale(1,-1)">Units, currency and row count</text>
+			<rect x="38" y="110" width="806" height="94" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="38" y="165" width="806" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="52" y="178" style="font-family: Helvetica-Bold; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,356) scale(1,-1)">Bad shortcut: enrich one page, then sort it</text>
+			<text x="52" y="140" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,280) scale(1,-1)">Sorting ten fetched rows does not produce the correct top ten across a million candidates. A display</text>
+			<text x="52" y="121" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,242) scale(1,-1)">calculation does not automatically support database filtering or sorting.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">Choose supported provider and consumer capabilities on the target release; do not assume every virtual</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">element can push filters or ordering down.</text>
+		</g>
+	</g>
+</svg>

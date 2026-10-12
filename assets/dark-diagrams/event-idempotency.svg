@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">One business effect, even if the message arrives twice</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Idempotency needs a key, a state check and safe persistence</text>
+			<rect x="40" y="386" width="150.08333333333334" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="50" y="399" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,798) scale(1,-1)">Delivery</text>
+			<rect x="192.08333333333334" y="386" width="210.91666666666666" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="202.08333333333334" y="399" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,798) scale(1,-1)">Business event ID</text>
+			<rect x="40" y="343" width="150.08333333333334" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="50" y="356" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,712) scale(1,-1)">Attempt 1</text>
+			<rect x="192.08333333333334" y="343" width="210.91666666666666" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="202.08333333333334" y="356" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,712) scale(1,-1)">EVT-204</text>
+			<rect x="40" y="300" width="150.08333333333334" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="50" y="313" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,626) scale(1,-1)">Retry</text>
+			<rect x="192.08333333333334" y="300" width="210.91666666666666" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="202.08333333333334" y="313" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,626) scale(1,-1)">EVT-204</text>
+			<rect x="505" y="266" width="335" height="164" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="505" y="391" width="335" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="519" y="404" style="font-family: Helvetica-Bold; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,808) scale(1,-1)">Consumer transaction</text>
+			<text x="519" y="366" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,732) scale(1,-1)">Check event identity and current state.</text>
+			<text x="519" y="347" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,694) scale(1,-1)">Apply an allowed transition and record</text>
+			<text x="519" y="328" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,656) scale(1,-1)">processing safely together.</text>
+			<path d="M 412,352 L 497,352 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="497 352, 487 347, 487 357" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<rect x="58" y="190" width="209.8723404255319" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="68" y="203" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,406) scale(1,-1)">Current state</text>
+			<rect x="269.8723404255319" y="190" width="193.57446808510633" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="279.8723404255319" y="203" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,406) scale(1,-1)">Incoming request</text>
+			<rect x="465.4468085106382" y="190" width="356.5531914893618" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="475.4468085106382" y="203" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,406) scale(1,-1)">Result</text>
+			<rect x="58" y="154" width="209.8723404255319" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="68" y="167" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,334) scale(1,-1)">Pending / new event</text>
+			<rect x="269.8723404255319" y="154" width="193.57446808510633" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="279.8723404255319" y="167" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,334) scale(1,-1)">Approve</text>
+			<rect x="465.4468085106382" y="154" width="356.5531914893618" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="475.4468085106382" y="167" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,334) scale(1,-1)">Apply once</text>
+			<rect x="58" y="118" width="209.8723404255319" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="68" y="131" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,262) scale(1,-1)">Approved / same event</text>
+			<rect x="269.8723404255319" y="118" width="193.57446808510633" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="279.8723404255319" y="131" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,262) scale(1,-1)">Approve again</text>
+			<rect x="465.4468085106382" y="118" width="356.5531914893618" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="475.4468085106382" y="131" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,262) scale(1,-1)">Return prior outcome or no-op</text>
+			<rect x="58" y="82" width="209.8723404255319" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="68" y="95" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,190) scale(1,-1)">Changed / stale version</text>
+			<rect x="269.8723404255319" y="82" width="193.57446808510633" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="279.8723404255319" y="95" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,190) scale(1,-1)">Old approval</text>
+			<rect x="465.4468085106382" y="82" width="356.5531914893618" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="475.4468085106382" y="95" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,190) scale(1,-1)">Reject or reconcile; do not overwrite</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">A check-then-write race is not solved by an in-memory set. Enforce the concurrency and persistence</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">boundary.</text>
+		</g>
+	</g>
+</svg>

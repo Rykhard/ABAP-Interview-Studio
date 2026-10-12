@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">Three response channels; three different meanings</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Illustrative create interaction: C1 and C3 accepted into the buffer; C2 rejected</text>
+			<rect x="39" y="414" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="49" y="427" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,854) scale(1,-1)">Input %cid</text>
+			<rect x="193.4230769230769" y="414" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="203.4230769230769" y="427" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,854) scale(1,-1)">Amount</text>
+			<rect x="347.8461538461538" y="414" width="492.1538461538462" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="357.8461538461538" y="427" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,854) scale(1,-1)">Interaction outcome</text>
+			<rect x="39" y="377" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="49" y="390" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,780) scale(1,-1)">C1</text>
+			<rect x="193.4230769230769" y="377" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="203.4230769230769" y="390" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,780) scale(1,-1)">100 EUR</text>
+			<rect x="347.8461538461538" y="377" width="492.1538461538462" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="357.8461538461538" y="390" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,780) scale(1,-1)">Accepted; assigned key 4711</text>
+			<rect x="39" y="340" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="49" y="353" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,706) scale(1,-1)">C2</text>
+			<rect x="193.4230769230769" y="340" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="203.4230769230769" y="353" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,706) scale(1,-1)">-5 EUR</text>
+			<rect x="347.8461538461538" y="340" width="492.1538461538462" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="357.8461538461538" y="353" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,706) scale(1,-1)">Rejected: amount must be positive</text>
+			<rect x="39" y="303" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="49" y="316" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,632) scale(1,-1)">C3</text>
+			<rect x="193.4230769230769" y="303" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="203.4230769230769" y="316" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,632) scale(1,-1)">80 EUR</text>
+			<rect x="347.8461538461538" y="303" width="492.1538461538462" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="357.8461538461538" y="316" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,632) scale(1,-1)">Accepted; key 4712; informational message</text>
+			<rect x="38" y="135" width="236" height="145" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="38" y="238" width="236" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;"/>
+			<text x="52" y="252" style="font-family: Helvetica-Bold; font-size: 18px;fill: #192730; stroke:none;" transform="translate(0,504) scale(1,-1)">FAILED</text>
+			<rect x="322" y="135" width="236" height="145" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="322" y="238" width="236" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="336" y="252" style="font-family: Helvetica-Bold; font-size: 18px;fill: #192730; stroke:none;" transform="translate(0,504) scale(1,-1)">REPORTED</text>
+			<rect x="606" y="135" width="236" height="145" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="606" y="238" width="236" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="620" y="252" style="font-family: Helvetica-Bold; font-size: 18px;fill: #192730; stroke:none;" transform="translate(0,504) scale(1,-1)">MAPPED</text>
+			<text x="52" y="212" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,424) scale(1,-1)">C2: rejected create</text>
+			<text x="52" y="189" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,378) scale(1,-1)"></text>
+			<text x="52" y="166" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,332) scale(1,-1)">Identity + failure cause</text>
+			<text x="336" y="212" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,424) scale(1,-1)">C2: amount error</text>
+			<text x="336" y="189" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,378) scale(1,-1)">C3: information</text>
+			<text x="336" y="166" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,332) scale(1,-1)">Message + instance context</text>
+			<text x="620" y="212" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,424) scale(1,-1)">C1 -&gt; 4711</text>
+			<text x="620" y="189" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,378) scale(1,-1)">C3 -&gt; 4712</text>
+			<text x="620" y="166" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,332) scale(1,-1)">Creation / key correlation</text>
+			<text x="40" y="105" style="font-family: Helvetica-Bold; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,210) scale(1,-1)">Interaction responses are not a commit receipt. Inspect the subsequent save outcome.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">A REPORTED message is not always a failure; MAPPED is not a universal success list. The consumer and</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">request boundary determine the atomicity policy.</text>
+		</g>
+	</g>
+</svg>

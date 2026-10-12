@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">Build a valid object, then test the real decision</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Approval service: a repository is mandatory; the discount threshold remains real code</text>
+			<rect x="39" y="352" width="366" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="52" y="407" style="font-family: Helvetica-Bold; font-size: 14px;fill: #efb384; stroke:none;" transform="translate(0,814) scale(1,-1)">CREATION INPUT</text>
+			<text x="52" y="375" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,750) scale(1,-1)">Repository: initial</text>
+			<rect x="474" y="352" width="366" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="487" y="407" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,814) scale(1,-1)">CREATION INPUT</text>
+			<text x="487" y="375" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,750) scale(1,-1)">Repository: bound</text>
+			<path d="M 219,342 L 219,287 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="219 287, 214 297, 224 297" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;"/>
+			<path d="M 653,342 L 653,287 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="653 287, 648 297, 658 297" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="103.459" y="260" style="font-family: Helvetica-Bold; font-size: 18px;fill: #efb384; stroke:none;" transform="translate(0,520) scale(1,-1)">Reject before business use</text>
+			<text x="534.967" y="260" style="font-family: Helvetica-Bold; font-size: 18px;fill: #9bdac1; stroke:none;" transform="translate(0,520) scale(1,-1)">Construct a usable instance</text>
+			<rect x="37" y="116" width="239" height="103" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="54" y="188" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,376) scale(1,-1)">CONTROLLED DEPENDENCY</text>
+			<text x="54" y="164" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,328) scale(1,-1)">Price source double</text>
+			<text x="54" y="140" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,280) scale(1,-1)">Returns 100 EUR</text>
+			<rect x="318" y="116" width="248" height="103" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="336" y="188" style="font-family: Helvetica; font-size: 14px;fill: #192730; stroke:none;" transform="translate(0,376) scale(1,-1)">REAL CALCULATION</text>
+			<text x="336" y="164" style="font-family: Helvetica; font-size: 14px;fill: #192730; stroke:none;" transform="translate(0,328) scale(1,-1)">Threshold and discount</text>
+			<text x="336" y="140" style="font-family: Helvetica; font-size: 14px;fill: #192730; stroke:none;" transform="translate(0,280) scale(1,-1)">Actual result: 90 EUR</text>
+			<rect x="609" y="116" width="230" height="103" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="625" y="188" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,376) scale(1,-1)">ASSERTION</text>
+			<text x="625" y="164" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,328) scale(1,-1)">Expected: 90 EUR</text>
+			<text x="625" y="140" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,280) scale(1,-1)">Broken rule must fail</text>
+			<path d="M 281,164 L 311,164 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="311 164, 301 159, 301 169" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<path d="M 573,164 L 601,164 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="601 164, 591 159, 591 169" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">A narrow test friendship may expose a necessary seam; it is unilateral and broader than public access.</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">Prefer observable behavior over private representation checks.</text>
+		</g>
+	</g>
+</svg>

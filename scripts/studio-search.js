@@ -38,7 +38,7 @@ function renderGlobalSearch(){
 }
 function updateGlobalSearch(){searchQuery=$('globalSearchInput').value;searchLimit=20;renderGlobalSearch();}
 function openGlobalSearch(opener=document.activeElement){
- if($('toolsDialog').open||$('visualDialog').open)return;
+ if($('toolsDialog').open||$('visualDialog').open||$('codeDialog').open||$('readingDialog').open)return;
  searchOpener=opener;searchDestination=null;$('globalSearchInput').value=searchQuery;renderGlobalSearch();
  if(!$('searchDialog').open)$('searchDialog').showModal();$('globalSearchInput').focus();
 }

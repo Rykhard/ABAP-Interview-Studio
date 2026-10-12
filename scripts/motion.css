@@ -6,7 +6,7 @@
 }
 .brand-home {
  display: inline-block;
- color: white;
+ color: var(--surface);
  text-decoration: none;
  border-radius: 5px;
  transition: color var(--motion-fast) var(--motion-ease);
@@ -24,7 +24,7 @@
  min-height: 46px;
  padding: 10px 13px;
  background: var(--ink);
- color: white;
+ color: var(--surface);
  border-color: var(--ink);
  box-shadow: 0 3px 10px #122b3e14;
  opacity: 0;
@@ -45,7 +45,7 @@ button, .question-index a, .resource-grid a {
  transition: opacity var(--motion-enter) var(--motion-ease),
   visibility var(--motion-enter), background-color var(--motion-fast) var(--motion-ease);
 }
-aside nav button:not(.active):hover { background: #203e51; color: white; }
+aside nav button:not(.active):hover { background: #203e51; color: var(--surface); }
 .topic-card {
  transition: transform var(--motion-enter) var(--motion-ease),
   box-shadow var(--motion-enter) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
@@ -55,7 +55,7 @@ aside nav button:not(.active):hover { background: #203e51; color: white; }
 }
 @media (hover: hover) and (pointer: fine) {
  .topic-card:hover { transform: translateY(-2px); box-shadow: 0 9px 24px #122b3e0c; }
- .topic-card:hover .topic-icon { background: #dceee5; color: #0c5243; }
+ .topic-card:hover .topic-icon { background: var(--soft); color: var(--green); }
  .topic-card:active { transform: translateY(0); }
 }
 dialog[open] { animation: dialog-enter var(--motion-enter) var(--motion-ease); }

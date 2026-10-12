@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">State messages need an invalidation story</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Example: an invalid child date is corrected in a later draft request</text>
+			<rect x="34" y="405" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="44" y="418" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,836) scale(1,-1)">Moment</text>
+			<rect x="247.1904761904762" y="405" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="257.1904761904762" y="418" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,836) scale(1,-1)">Business state</text>
+			<rect x="518.5238095238095" y="405" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="528.5238095238095" y="418" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,836) scale(1,-1)">Message decision</text>
+			<rect x="34" y="358" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="44" y="371" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,742) scale(1,-1)">Request 1</text>
+			<rect x="247.1904761904762" y="358" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="257.1904761904762" y="371" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,742) scale(1,-1)">Child date inconsistent</text>
+			<rect x="518.5238095238095" y="358" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="528.5238095238095" y="371" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,742) scale(1,-1)">Report state error for that child</text>
+			<rect x="34" y="311" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="44" y="324" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,648) scale(1,-1)">Request 2</text>
+			<rect x="247.1904761904762" y="311" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="257.1904761904762" y="324" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,648) scale(1,-1)">User corrects the date</text>
+			<rect x="518.5238095238095" y="311" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="528.5238095238095" y="324" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,648) scale(1,-1)">Invalidate relevant prior state message</text>
+			<rect x="34" y="264" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="44" y="277" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,554) scale(1,-1)">Revalidation</text>
+			<rect x="247.1904761904762" y="264" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="257.1904761904762" y="277" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,554) scale(1,-1)">State is now consistent</text>
+			<rect x="518.5238095238095" y="264" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="528.5238095238095" y="277" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,554) scale(1,-1)">Do not recreate the old error</text>
+			<rect x="34" y="217" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="44" y="230" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,460) scale(1,-1)">Transition failure</text>
+			<rect x="247.1904761904762" y="217" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="257.1904761904762" y="230" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,460) scale(1,-1)">Operation itself failed</text>
+			<rect x="518.5238095238095" y="217" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="528.5238095238095" y="230" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,460) scale(1,-1)">Return transition-related feedback</text>
+			<text x="45" y="146" style="font-family: Helvetica; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,292) scale(1,-1)">Trace instance identity, state area and element/path targeting. A correct text attached to the wrong</text>
+			<text x="45" y="126" style="font-family: Helvetica; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,252) scale(1,-1)">child is still incorrect behavior.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">REPORTED carries messages; the supported FAILED response rejects instances. Message severity alone is</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">not a general rejection mechanism.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">BTP organization and runtime are different axes</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">A schematic Cloud Foundry example</text>
+			<rect x="36" y="124" width="807" height="316" rx="8" ry="8" style="stroke: #e7eff2; stroke-linecap: butt; stroke-width: 1; fill: #203540; fill-rule: evenodd;"/>
+			<text x="56" y="409" style="font-family: Helvetica-Bold; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,818) scale(1,-1)">GLOBAL ACCOUNT / commercial scope and entitlements</text>
+			<rect x="58" y="145" width="764" height="231" rx="8" ry="8" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="77" y="349" style="font-family: Helvetica-Bold; font-size: 15px;fill: #9bdac1; stroke:none;" transform="translate(0,698) scale(1,-1)">SUBACCOUNT / region, services, trust and subscriptions</text>
+			<rect x="78" y="169" width="369" height="145" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="93" y="286" style="font-family: Helvetica-Bold; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,572) scale(1,-1)">Cloud Foundry org / space</text>
+			<rect x="96" y="190" width="145" height="62" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="108" y="215" style="font-family: Helvetica-Bold; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,430) scale(1,-1)">Application</text>
+			<rect x="265" y="190" width="161" height="62" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="276" y="215" style="font-family: Helvetica-Bold; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,430) scale(1,-1)">Service instance</text>
+			<path d="M 245,220 L 258,220 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="258 220, 248 215, 248 225" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<text x="176" y="264" style="font-family: Helvetica; font-size: 12px;fill: #e7eff2; stroke:none;" transform="translate(0,528) scale(1,-1)">binding provides access</text>
+			<text x="478" y="278" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,556) scale(1,-1)">A service key can support a separate</text>
+			<text x="478" y="259" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,518) scale(1,-1)">client. Do not assume every service uses</text>
+			<text x="478" y="240" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,480) scale(1,-1)">the same binding mechanism.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">Cloud Foundry spaces do not describe every BTP runtime. Avoid placing service credentials in source</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">control.</text>
+		</g>
+	</g>
+</svg>

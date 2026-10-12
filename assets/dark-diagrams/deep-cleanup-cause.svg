@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">CLEANUP is unwinding work, not a universal finally</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">An application-owned resource has an explicit release obligation</text>
+			<rect x="36" y="407" width="225.7826086956522" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="46" y="420" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,840) scale(1,-1)">Exit path</text>
+			<rect x="263.7826086956522" y="407" width="278.34782608695656" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="273.7826086956522" y="420" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,840) scale(1,-1)">CLEANUP in this TRY?</text>
+			<rect x="544.1304347826087" y="407" width="295.86956521739125" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="554.1304347826087" y="420" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,840) scale(1,-1)">Required design</text>
+			<rect x="36" y="363" width="225.7826086956522" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="46" y="376" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)">Normal completion</text>
+			<rect x="263.7826086956522" y="363" width="278.34782608695656" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="273.7826086956522" y="376" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)">No</text>
+			<rect x="544.1304347826087" y="363" width="295.86956521739125" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="554.1304347826087" y="376" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)">Explicit normal release</text>
+			<rect x="36" y="319" width="225.7826086956522" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="46" y="332" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,664) scale(1,-1)">Handled by same TRY</text>
+			<rect x="263.7826086956522" y="319" width="278.34782608695656" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="273.7826086956522" y="332" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,664) scale(1,-1)">Not merely for this catch</text>
+			<rect x="544.1304347826087" y="319" width="295.86956521739125" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="554.1304347826087" y="332" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,664) scale(1,-1)">Cover this handled path</text>
+			<rect x="36" y="275" width="225.7826086956522" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="46" y="288" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,576) scale(1,-1)">Propagates to outer handler</text>
+			<rect x="263.7826086956522" y="275" width="278.34782608695656" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="273.7826086956522" y="288" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,576) scale(1,-1)">Relevant unwinding path</text>
+			<rect x="544.1304347826087" y="275" width="295.86956521739125" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="554.1304347826087" y="288" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,576) scale(1,-1)">Restore local consistency</text>
+			<text x="39" y="231" style="font-family: Helvetica-Bold; font-size: 18px;fill: #9bdac1; stroke:none;" transform="translate(0,462) scale(1,-1)">Translate meaning; retain the diagnostic cause</text>
+			<rect x="39" y="115" width="360" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="52" y="170" style="font-family: Helvetica-Bold; font-size: 14px;fill: #efb384; stroke:none;" transform="translate(0,340) scale(1,-1)">TECHNICAL EXCEPTION</text>
+			<text x="52" y="138" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,276) scale(1,-1)">Connection unavailable</text>
+			<rect x="483" y="115" width="357" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="496" y="170" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,340) scale(1,-1)">SERVICE EXCEPTION</text>
+			<text x="496" y="138" style="font-family: Helvetica-Bold; font-size: 21px;fill: #e7eff2; stroke:none;" transform="translate(0,276) scale(1,-1)">Price service unavailable</text>
+			<path d="M 409,159 L 474,159 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="474 159, 464 154, 464 164" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="414.824" y="213" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,426) scale(1,-1)">previous</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">An empty price is not a safe default for a failed lookup. Release the resource you own, preserve the</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">cause, and do not hide technical failure as business absence.</text>
+		</g>
+	</g>
+</svg>

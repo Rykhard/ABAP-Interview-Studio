@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">One variation: replace a rule or specialize a step?</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Worked choice: approval policy varies by country; process ownership must stay stable</text>
+			<rect x="35" y="190" width="393" height="267" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<rect x="452" y="190" width="393" height="267" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="52" y="429" style="font-family: Helvetica-Bold; font-size: 18px;fill: #9bdac1; stroke:none;" transform="translate(0,858) scale(1,-1)">STRATEGY / composition</text>
+			<text x="470" y="429" style="font-family: Helvetica-Bold; font-size: 17px;fill: #9bdac1; stroke:none;" transform="translate(0,858) scale(1,-1)">TEMPLATE METHOD / inheritance</text>
+			<rect x="55" y="354" width="349" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="69" y="371" style="font-family: Helvetica; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,742) scale(1,-1)">Approval coordinator -&gt; rule interface</text>
+			<path d="M 229,349 L 229,321 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="229 321, 224 331, 234 331" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<rect x="56" y="249" width="166" height="69" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="66" y="293" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,586) scale(1,-1)">Country A rule</text>
+			<text x="66" y="269" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,538) scale(1,-1)">Limit: 500 EUR</text>
+			<rect x="238" y="249" width="166" height="69" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="248" y="293" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,586) scale(1,-1)">Country B rule</text>
+			<text x="248" y="269" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,538) scale(1,-1)">Limit: 900 EUR</text>
+			<text x="56" y="216" style="font-family: Helvetica; font-size: 12px;fill: #e7eff2; stroke:none;" transform="translate(0,432) scale(1,-1)">700 EUR: A rejects; B accepts under this fixture.</text>
+			<circle cx="492" cy="371" r="15" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="488.386" y="366" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,732) scale(1,-1)">1</text>
+			<text x="518" y="366" style="font-family: Helvetica-Bold; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,732) scale(1,-1)">Read inputs</text>
+			<path d="M 492,351 L 492,335 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="492 335, 487 345, 497 345" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<circle cx="492" cy="314" r="15" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="488.386" y="309" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,618) scale(1,-1)">2</text>
+			<text x="518" y="309" style="font-family: Helvetica-Bold; font-size: 15px;fill: #9bdac1; stroke:none;" transform="translate(0,618) scale(1,-1)">Calculate policy</text>
+			<path d="M 492,294 L 492,278 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="492 278, 487 288, 497 288" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;"/>
+			<circle cx="492" cy="257" r="15" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="488.386" y="252" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,504) scale(1,-1)">3</text>
+			<text x="518" y="252" style="font-family: Helvetica-Bold; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,504) scale(1,-1)">Return decision</text>
+			<text x="471" y="216" style="font-family: Helvetica; font-size: 12px;fill: #e7eff2; stroke:none;" transform="translate(0,432) scale(1,-1)">Stable skeleton; subclass supplies the chosen step.</text>
+			<rect x="37" y="140" width="259.95" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="47" y="153" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,306) scale(1,-1)">Assembly decision</text>
+			<rect x="298.95" y="140" width="542.05" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="308.95" y="153" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,306) scale(1,-1)">Boundary to keep</text>
+			<rect x="37" y="111" width="259.95" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="47" y="124" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,248) scale(1,-1)">Factory selects policy</text>
+			<rect x="298.95" y="111" width="542.05" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="308.95" y="124" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,248) scale(1,-1)">Validate country and policy version</text>
+			<rect x="37" y="82" width="259.95" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="47" y="95" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,190) scale(1,-1)">Constructor receives rule</text>
+			<rect x="298.95" y="82" width="542.05" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="308.95" y="95" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,190) scale(1,-1)">Rule returns a decision; does not commit</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">The amounts are fictional policy fixtures. Choose a real variation point; a reusable calculation alone</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">does not require an inheritance hierarchy.</text>
+		</g>
+	</g>
+</svg>

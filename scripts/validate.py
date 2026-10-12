@@ -88,7 +88,18 @@ if any(token in html for token in ['__QUIZ__','__APP__','__QUIZ_APP__','__READIN
 if '__DATA__' in html:errors.append('HTML template placeholder remains')
 catalog=json.loads((root/'visuals'/'catalog.json').read_text(encoding='utf-8'))
 visual_match=re.search(r'<script id="visual-data" type="application/json">(.*?)</script>',html,re.S)
-if not visual_match or json.loads(visual_match.group(1))!=catalog:errors.append('HTML visual catalog mismatch')
+embedded_visuals=json.loads(visual_match.group(1)) if visual_match else []
+if [{key:value for key,value in visual.items() if key!='darkImage'} for visual in embedded_visuals]!=catalog:errors.append('HTML visual catalog mismatch')
+from theme_visuals import PALETTE
+for visual in embedded_visuals:
+    if visual['image'].endswith('.svg'):
+        expected='assets/dark-diagrams/'+Path(visual['image']).name
+        if visual.get('darkImage')!=expected or not (root/expected).is_file():
+            errors.append('Missing themed diagram: '+visual['id'])
+        else:
+            source=(root/visual['image']).read_text(encoding='utf-8')
+            themed=re.sub(r'rgb\([^)]*\)',lambda match:PALETTE.get(match[0],match[0]),source)
+            if (root/expected).read_text(encoding='utf-8')!=themed:errors.append('Themed diagram content mismatch: '+visual['id'])
 if '__VISUALS__' in html:errors.append('Visual template placeholder remains')
 if len({v['id'] for v in catalog})!=len(catalog):errors.append('Duplicate visual IDs')
 visual_questions=set()

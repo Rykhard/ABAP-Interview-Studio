@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">Row contents, allocation, and class state are different</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Conceptual memory ledger: bars are not measured sizes</text>
+			<text x="40" y="410" style="font-family: Helvetica-Bold; font-size: 17px;fill: #e7eff2; stroke:none;" transform="translate(0,820) scale(1,-1)">Populated table</text>
+			<rect x="257" y="391" width="120" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="301.054" y="421" style="font-family: Helvetica; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,842) scale(1,-1)">initial</text>
+			<text x="291.656" y="402" style="font-family: Helvetica; font-size: 12px;fill: #e7eff2; stroke:none;" transform="translate(0,804) scale(1,-1)">allocation</text>
+			<rect x="390" y="391" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="408.552" y="411" style="font-family: Helvetica; font-size: 16px;fill: #192730; stroke:none;" transform="translate(0,822) scale(1,-1)">1</text>
+			<rect x="447" y="391" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="465.552" y="411" style="font-family: Helvetica; font-size: 16px;fill: #192730; stroke:none;" transform="translate(0,822) scale(1,-1)">2</text>
+			<rect x="504" y="391" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="522.552" y="411" style="font-family: Helvetica; font-size: 16px;fill: #192730; stroke:none;" transform="translate(0,822) scale(1,-1)">3</text>
+			<rect x="561" y="391" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="579.552" y="411" style="font-family: Helvetica; font-size: 16px;fill: #192730; stroke:none;" transform="translate(0,822) scale(1,-1)">4</text>
+			<rect x="618" y="391" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="636.552" y="411" style="font-family: Helvetica; font-size: 16px;fill: #192730; stroke:none;" transform="translate(0,822) scale(1,-1)">5</text>
+			<rect x="675" y="391" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="693.552" y="411" style="font-family: Helvetica; font-size: 16px;fill: #192730; stroke:none;" transform="translate(0,822) scale(1,-1)">6</text>
+			<rect x="732" y="391" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="750.552" y="411" style="font-family: Helvetica; font-size: 16px;fill: #192730; stroke:none;" transform="translate(0,822) scale(1,-1)">7</text>
+			<text x="40" y="318" style="font-family: Helvetica-Bold; font-size: 17px;fill: #e7eff2; stroke:none;" transform="translate(0,636) scale(1,-1)">After CLEAR</text>
+			<rect x="257" y="299" width="120" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="301.054" y="329" style="font-family: Helvetica; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,658) scale(1,-1)">initial</text>
+			<text x="291.656" y="310" style="font-family: Helvetica; font-size: 12px;fill: #e7eff2; stroke:none;" transform="translate(0,620) scale(1,-1)">allocation</text>
+			<rect x="390" y="299" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="410.336" y="319" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,638) scale(1,-1)">-</text>
+			<rect x="447" y="299" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="467.336" y="319" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,638) scale(1,-1)">-</text>
+			<rect x="504" y="299" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="524.336" y="319" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,638) scale(1,-1)">-</text>
+			<rect x="561" y="299" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="581.336" y="319" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,638) scale(1,-1)">-</text>
+			<rect x="618" y="299" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="638.336" y="319" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,638) scale(1,-1)">-</text>
+			<rect x="675" y="299" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="695.336" y="319" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,638) scale(1,-1)">-</text>
+			<rect x="732" y="299" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="752.336" y="319" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,638) scale(1,-1)">-</text>
+			<text x="40" y="226" style="font-family: Helvetica-Bold; font-size: 17px;fill: #e7eff2; stroke:none;" transform="translate(0,452) scale(1,-1)">After FREE</text>
+			<rect x="257" y="207" width="120" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="301.054" y="237" style="font-family: Helvetica; font-size: 14px;fill: #aabdc6; stroke:none;" transform="translate(0,474) scale(1,-1)">initial</text>
+			<text x="293.99" y="218" style="font-family: Helvetica; font-size: 12px;fill: #e7eff2; stroke:none;" transform="translate(0,436) scale(1,-1)">released</text>
+			<rect x="390" y="207" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="410.336" y="227" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,454) scale(1,-1)">-</text>
+			<rect x="447" y="207" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="467.336" y="227" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,454) scale(1,-1)">-</text>
+			<rect x="504" y="207" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="524.336" y="227" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,454) scale(1,-1)">-</text>
+			<rect x="561" y="207" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="581.336" y="227" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,454) scale(1,-1)">-</text>
+			<rect x="618" y="207" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="638.336" y="227" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,454) scale(1,-1)">-</text>
+			<rect x="675" y="207" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="695.336" y="227" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,454) scale(1,-1)">-</text>
+			<rect x="732" y="207" width="47" height="54" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="752.336" y="227" style="font-family: Helvetica; font-size: 16px;fill: #aabdc6; stroke:none;" transform="translate(0,454) scale(1,-1)">-</text>
+			<text x="41" y="165" style="font-family: Helvetica-Bold; font-size: 17px;fill: #9bdac1; stroke:none;" transform="translate(0,330) scale(1,-1)">NEW service( ) resets neither a class cache nor another reference.</text>
+			<text x="41" y="133" style="font-family: Helvetica-Bold; font-size: 17px;fill: #e7eff2; stroke:none;" transform="translate(0,266) scale(1,-1)">Instance lifetime != static lifetime != resource ownership.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">CLEAR retains the table initial allocation; FREE releases it too. Neither guarantees immediate</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">operating-system memory shrinkage or resets CLASS-DATA.</text>
+		</g>
+	</g>
+</svg>

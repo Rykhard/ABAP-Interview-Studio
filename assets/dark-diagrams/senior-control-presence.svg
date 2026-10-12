@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">An initial value is not the same as an omitted update</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Worked EML mapping: saved Comment = &quot;Urgent&quot;; saved Amount = 120 EUR</text>
+			<rect x="34" y="414" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="44" y="427" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,854) scale(1,-1)">Update intent</text>
+			<rect x="223.71962616822432" y="414" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="233.71962616822432" y="427" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,854) scale(1,-1)">Comment value</text>
+			<rect x="413.43925233644865" y="414" width="202.89719626168227" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="423.43925233644865" y="427" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,854) scale(1,-1)">%control-Comment</text>
+			<rect x="618.3364485981309" y="414" width="225.6635514018692" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;"/>
+			<text x="628.3364485981309" y="427" style="font-family: Helvetica-Bold; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,854) scale(1,-1)">Resulting Comment</text>
+			<rect x="34" y="366" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="44" y="379" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,758) scale(1,-1)">Leave unchanged</text>
+			<rect x="223.71962616822432" y="366" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="233.71962616822432" y="379" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,758) scale(1,-1)">Initial / blank</text>
+			<rect x="413.43925233644865" y="366" width="202.89719626168227" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="423.43925233644865" y="379" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,758) scale(1,-1)">off</text>
+			<rect x="618.3364485981309" y="366" width="225.6635514018692" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="628.3364485981309" y="379" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,758) scale(1,-1)">Urgent</text>
+			<rect x="34" y="318" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="44" y="331" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,662) scale(1,-1)">Explicitly clear</text>
+			<rect x="223.71962616822432" y="318" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="233.71962616822432" y="331" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,662) scale(1,-1)">Initial / blank</text>
+			<rect x="413.43925233644865" y="318" width="202.89719626168227" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="423.43925233644865" y="331" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,662) scale(1,-1)">on</text>
+			<rect x="618.3364485981309" y="318" width="225.6635514018692" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="628.3364485981309" y="331" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,662) scale(1,-1)">(empty)</text>
+			<rect x="34" y="270" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="44" y="283" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,566) scale(1,-1)">Replace text</text>
+			<rect x="223.71962616822432" y="270" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="233.71962616822432" y="283" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,566) scale(1,-1)">Follow up</text>
+			<rect x="413.43925233644865" y="270" width="202.89719626168227" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="423.43925233644865" y="283" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,566) scale(1,-1)">on</text>
+			<rect x="618.3364485981309" y="270" width="225.6635514018692" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="628.3364485981309" y="283" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,566) scale(1,-1)">Follow up</text>
+			<rect x="38" y="139" width="382" height="96" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;"/>
+			<text x="55" y="207" style="font-family: Helvetica-Bold; font-size: 17px;fill: #9bdac1; stroke:none;" transform="translate(0,414) scale(1,-1)">Same value, different intent</text>
+			<text x="55" y="180" style="font-family: Helvetica; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,360) scale(1,-1)">Blank + off preserves the old text.</text>
+			<text x="55" y="157" style="font-family: Helvetica; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,314) scale(1,-1)">Blank + on requests a clear.</text>
+			<rect x="458" y="139" width="383" height="96" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="475" y="207" style="font-family: Helvetica-Bold; font-size: 17px;fill: #9bdac1; stroke:none;" transform="translate(0,414) scale(1,-1)">Untouched fields stay untouched</text>
+			<text x="475" y="180" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,360) scale(1,-1)">Amount remains 120 EUR in all three cases.</text>
+			<text x="475" y="157" style="font-family: Helvetica; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,314) scale(1,-1)">Do not turn every control flag on.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">Use the generated field control or UPDATE FIELDS contract. Trace payload mapping and determinations; do</text>
+			<text x="42" y="42" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)">not use IS INITIAL as a universal presence test.</text>
+		</g>
+	</g>
+</svg>

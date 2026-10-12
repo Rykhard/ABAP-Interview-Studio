@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="560"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;"/>
+			<text x="28" y="518" style="font-family: Helvetica-Bold; font-size: 25px;fill: #e7eff2; stroke:none;" transform="translate(0,1036) scale(1,-1)">A strong interview answer has a visible chain of evidence</text>
+			<text x="28" y="490" style="font-family: Helvetica; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)">Build a truthful story that an interviewer can follow</text>
+			<circle cx="58" cy="400" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="53" y="394" style="font-family: Helvetica-Bold; font-size: 17px;fill: #192730; stroke:none;" transform="translate(0,788) scale(1,-1)">1</text>
+			<rect x="96" y="376" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="111" y="405" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,810) scale(1,-1)">Context</text>
+			<text x="239" y="396" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,792) scale(1,-1)">What business problem and constraints mattered?</text>
+			<circle cx="58" cy="339" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="53" y="333" style="font-family: Helvetica-Bold; font-size: 17px;fill: #192730; stroke:none;" transform="translate(0,666) scale(1,-1)">2</text>
+			<rect x="96" y="315" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="111" y="344" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,688) scale(1,-1)">Decision</text>
+			<text x="239" y="335" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,670) scale(1,-1)">What did you choose, and which alternative did you reject?</text>
+			<circle cx="58" cy="278" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="53" y="272" style="font-family: Helvetica-Bold; font-size: 17px;fill: #192730; stroke:none;" transform="translate(0,544) scale(1,-1)">3</text>
+			<rect x="96" y="254" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="111" y="283" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,566) scale(1,-1)">Mechanism</text>
+			<text x="239" y="274" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,548) scale(1,-1)">How did the code or architecture produce the behavior?</text>
+			<circle cx="58" cy="217" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="53" y="211" style="font-family: Helvetica-Bold; font-size: 17px;fill: #192730; stroke:none;" transform="translate(0,422) scale(1,-1)">4</text>
+			<rect x="96" y="193" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="111" y="222" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,444) scale(1,-1)">Evidence</text>
+			<text x="239" y="213" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,426) scale(1,-1)">What did you measure or test? State actual results.</text>
+			<circle cx="58" cy="156" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;"/>
+			<text x="53" y="150" style="font-family: Helvetica-Bold; font-size: 17px;fill: #192730; stroke:none;" transform="translate(0,300) scale(1,-1)">5</text>
+			<rect x="96" y="132" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;"/>
+			<text x="111" y="161" style="font-family: Helvetica-Bold; font-size: 14px;fill: #9bdac1; stroke:none;" transform="translate(0,322) scale(1,-1)">Limit</text>
+			<text x="239" y="152" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,304) scale(1,-1)">What remains uncertain, release-specific or incomplete?</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;"/>
+			<text x="42" y="60" style="font-family: Helvetica; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)">Use your own experience. If you only prepared a test or proposed a design, say so explicitly.</text>
+		</g>
+	</g>
+</svg>
