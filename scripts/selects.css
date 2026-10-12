@@ -1,0 +1,23 @@
+/* Keep native selection, keyboard navigation and form semantics. */
+select{border:1px solid var(--line);border-radius:10px;background-color:var(--surface);color:var(--ink);font:inherit;font-size:14px;min-height:44px;padding:10px 14px;cursor:pointer;max-width:100%;transition:border-color 140ms ease,background-color 140ms ease,box-shadow 140ms ease}
+select:hover:not(:disabled){border-color:var(--green)}
+select:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+select:disabled{cursor:not-allowed;opacity:.6;background-color:var(--paper)}
+select option{background:var(--surface);color:var(--ink)}
+@supports (appearance:base-select){
+ select,select::picker(select){appearance:base-select}
+ select{align-items:center;gap:12px;text-align:start;line-height:1.5}
+ select::picker-icon{content:"";width:8px;height:8px;border-right:1.7px solid currentColor;border-bottom:1.7px solid currentColor;color:var(--green);rotate:45deg;translate:0 -2px;margin-inline:auto 2px;transition:rotate 180ms ease;flex:none}
+ select:open{border-color:var(--green);box-shadow:0 0 0 3px var(--soft)}
+ select:open::picker-icon{rotate:225deg;translate:0 2px}
+ select::picker(select){background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 12px 32px #071d2926;max-block-size:min(360px,55dvh);max-inline-size:calc(100vw - 24px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;margin-block:6px;font:inherit;font-size:14px}
+ select option{display:flex;align-items:center;gap:12px;min-height:44px;line-height:1.45;padding:10px 12px;border-radius:7px;border:1px solid transparent;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
+ select option:checked{background:var(--soft);color:var(--green);font-weight:650}
+ select option:hover,select option:focus{background:var(--soft-blue);color:var(--ink);outline:none;border-color:var(--focus)}
+ select option::checkmark{order:1;margin-inline-start:auto;color:var(--green);font-size:16px;flex:none}
+ select option:disabled{opacity:.5;cursor:not-allowed}
+ select optgroup{font-size:12px;color:var(--muted);padding:6px}
+ @media(prefers-reduced-motion:no-preference){select:open::picker(select){animation:picker-arrive 140ms ease-out}@keyframes picker-arrive{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}}
+}
+@media(prefers-reduced-motion:reduce){select,select::picker-icon{transition:none!important}select::picker(select){animation:none!important}}
+@media(forced-colors:active){select:open{outline:2px solid Highlight}select option:checked{color:HighlightText;background:Highlight}select option:hover,select option:focus{border-color:Highlight}}

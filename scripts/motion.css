@@ -83,3 +83,13 @@ dialog[open]::backdrop { animation: backdrop-enter var(--motion-enter) ease-out;
  dialog[open], dialog[open]::backdrop { animation: none !important; }
 }
 @media print { .back-to-top { display: none; } }
+
+/* Moving selection markers are decorative; text and focus never move with them. */
+#segments{position:relative;isolation:isolate}
+#segments>button{position:relative;z-index:1}
+#segments>.nav-motion-indicator{position:absolute;z-index:0;pointer-events:none;background:var(--soft);border-left:3px solid var(--green);border-radius:7px;transform-origin:top left}
+aside nav button.active.nav-motion-current{background:transparent;border-left-color:transparent}
+.study-view-picker{position:relative;isolation:isolate}
+.study-motion-indicator{position:absolute;bottom:0;height:2px;background:var(--green);pointer-events:none;transform-origin:left center}
+.study-view-picker button[aria-pressed=true].study-motion-current{border-bottom-color:transparent}
+@media(prefers-reduced-motion:reduce){.nav-motion-indicator,.study-motion-indicator{display:none}}

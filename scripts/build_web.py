@@ -39,6 +39,7 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     values['__LESSON_DATA__']=payload(lessons)
     values['__SIMPLIFY_CSS__']=(root/'scripts/simplify.css').read_text(encoding='utf-8')
     values['__SIMPLIFY_CSS__']+='\n'+(root/'scripts/diagrams.css').read_text(encoding='utf-8')+'\n'+diagram_theme_css()
+    values['__SIMPLIFY_CSS__']+='\n'+(root/'scripts/selects.css').read_text(encoding='utf-8')
     values['__DIAGRAM_DATA__']=payload(diagrams)
     values['__LESSON_CSS__']=(root/'scripts/lessons.css').read_text(encoding='utf-8')
     for token,value in values.items():template=template.replace(token,value)

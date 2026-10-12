@@ -58,11 +58,11 @@ function checkQuiz(){
  const previous=quizProgress.attempts[item.id]||{tries:0,correct:0,lastCorrect:false};
  quizProgress.attempts[item.id]={tries:previous.tries+1,correct:previous.correct+(correct?1:0),lastCorrect:correct};
  if(correct&&!quizProgress.mastered.includes(item.id)){quizProgress.mastered.push(item.id);s.earnedXp+=10;}
- saveQuiz();render();$('sessionFeedback')?.focus({preventScroll:true});
+ saveQuiz();render();$('sessionFeedback')?.focus({preventScroll:true});animateEntrance($('sessionFeedback'));
 }
 function rateRecall(score){
  const s=activeSession;if(!s||s.done||s.kind!=='recall'||!s.revealed||!Number.isInteger(score)||score<0||score>3)return;const id=s.ids[s.index];if(s.answers[id])return;
- s.answers[id]={score,correct:score>=2};ratings[id]=score;if(score>=2)state[id]=true;else delete state[id];save();render();$('sessionFeedback')?.focus({preventScroll:true});
+ s.answers[id]={score,correct:score>=2};ratings[id]=score;if(score>=2)state[id]=true;else delete state[id];save();render();$('sessionFeedback')?.focus({preventScroll:true});animateEntrance($('sessionFeedback'));
 }
 function sessionProgress(s){return `<div class="session-bar"><div><h3>${s.kind==='quiz'?'Multiple-choice quiz':'Interview practice'}</h3><div class="small subtle">${esc(s.title)}</div></div><button id="finishPractice">Finish session</button></div><div class="session-count">Question ${s.index+1} of ${s.ids.length} · ${Object.keys(s.answers).length} ${s.kind==='quiz'?'answered':'self-rated'}</div><progress class="session-progress" value="${s.index+(s.answers[s.ids[s.index]]?1:0)}" max="${s.ids.length}" aria-label="Session progress"></progress>`;}
 function quizQuestion(s,q){

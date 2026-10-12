@@ -38,10 +38,13 @@ function guidedLesson(q){
  <details class="lesson-sources"><summary>Scope &amp; sources</summary><p>${esc(lesson.goal)}</p><p>${esc(lesson.limitation)}</p><ul>${lesson.references.map(ref=>`<li><a href="${esc(ref.url)}" target="_blank" rel="noopener">${esc(ref.title)} &#8599;</a></li>`).join('')}</ul></details></section>`;
 }
 function replaceStudyExperience(region,q,view){
+ if(selectedStudyView(q)===view)return;
+ const previousTab=region.querySelector('[data-study-view][aria-pressed=true]')?.getBoundingClientRect();
  studyViewChoices.set(q.id,view);saveOptional('abap-studio-study-views-v1',JSON.stringify(Object.fromEntries(studyViewChoices)));
 
  const holder=document.createElement('div');holder.innerHTML=answer(q);const replacement=holder.firstElementChild;region.replaceWith(replacement);
  replacement.querySelector(`[data-study-view="${view}"]`)?.focus({preventScroll:true});
+ animateStudySelection(replacement,previousTab);
 }
 $('view').addEventListener('click',event=>{
  const choice=event.target.closest('button[data-study-view]');
@@ -54,6 +57,7 @@ $('view').addEventListener('click',event=>{
  const holder=document.createElement('div');holder.innerHTML=guidedLesson(byId.get(player.dataset.lessonQuestion));const next=holder.firstElementChild;player.replaceWith(next);
  const focusTarget=fromFooter?(index<previousIndex&&index>0?next.querySelector('.lesson-navigation button:first-child'):next.querySelector('.lesson-navigation button:last-child')):next.querySelector(`.lesson-step-list [data-lesson-step="${index}"]`);
  focusTarget.focus({preventScroll:true});
+ animateLessonStep(next);
  const stage=next.querySelector('.lesson-stage');if(stage.getBoundingClientRect().top<0||stage.getBoundingClientRect().top>innerHeight*.6)stage.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 });
 function openLessonLibrary(){
