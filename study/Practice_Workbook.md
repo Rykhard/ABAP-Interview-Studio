@@ -8,7 +8,9 @@ You receive 100,000 unique order IDs. For each of 40,000 incoming messages, you 
 
 ### Model answer
 
-For repeated complete unique-key lookups, consider a hashed table with the order ID as unique key. For grouped ordered processing, use a sorted table with a suitable leading customer key or a standard table with a named sorted secondary key. Account for writes, memory, key-maintenance cost and whether input order must be preserved. Do not describe partial hashed-key access as constant time.
+For the 40,000 complete order-ID lookups, I would consider a hashed table with a unique order-ID key. It can find the order without checking each row. For processing orders by customer, I would use a suitable sorted key. A standard table with a sorted secondary key can also work when I must keep the original file order.
+
+I would measure the whole job, including loading and changing the table. Extra keys need memory and maintenance. A hashed table's fast complete-key lookup does not mean searching by any partial key is equally fast.
 
 ### Follow-up
 
@@ -20,7 +22,9 @@ An import selects details with FOR ALL ENTRIES using an internal table of select
 
 ### Model answer
 
-Guard against an empty driver before issuing the query; otherwise the FOR ALL ENTRIES condition can be ignored and a much larger result retrieved. Consider whether a join, range or another supported query better expresses the requirement. FOR ALL ENTRIES also removes duplicate result rows, so the projected columns and intended multiplicity matter. Deduplicate a driver only when that preserves the intended semantics and reduces redundant work.
+First, check whether the list of document IDs is empty. If it is, do not run this FOR ALL ENTRIES query as though it meant 'select nothing': its WHERE condition is ignored, which can return far more data within the query's remaining implicit scope. Decide explicitly what the empty-input case should do.
+
+FOR ALL ENTRIES also removes duplicate result rows. Check which columns the query returns and whether two different business records could therefore look identical. Compare a join, a range or another supported query with the same expected result. Removing duplicate input IDs can reduce work, but only do it if it preserves the intended result.
 
 ### Follow-up
 
@@ -32,7 +36,9 @@ A flight entity exposes CARRID and CONNID as its only keys while reading SFLIGHT
 
 ### Model answer
 
-Include FLDATE in the identity because departures can share carrier and connection but differ by date. Verify the actual SCARR element, CARRNAME, rather than a guessed `name` element. Model the carrier relationship with truthful to-one cardinality according to the ON condition and completeness of data. Do not claim a CDS key enforces database uniqueness. For a new supported model prefer a view entity; omit the legacy SQL-view-name annotation.
+Add FLDATE to the key: the same carrier and connection can have flights on different dates. Without the date, the client cannot reliably tell those departures apart. Use the actual SCARR field CARRNAME rather than guessing a field called name.
+
+Check the association's ON condition and the data. One flight should match at most the intended carrier row; declaring a cardinality does not force the data to obey it. Likewise, a CDS key describes identity but does not create a database uniqueness check. For a new model on a release that supports it, prefer a CDS view entity and leave out the old SQL-view-name annotation.
 
 ### Follow-up
 
@@ -44,7 +50,9 @@ A proposed action changes a request, attempts COMMIT ENTITIES, then would invoke
 
 ### Model answer
 
-Remove the independent commit from the behavior implementation. The RAP framework owns transaction completion; moving it to a saver does not fix the violation. Derive data through appropriate behavior, reject invalid instances before persistence, and coordinate workflow publication with committed state through a supported transactional mechanism. The external EML consumer, if present, checks modification responses and owns the outer COMMIT ENTITIES.
+Remove COMMIT ENTITIES from the action. Moving it into the saver would still be wrong: behavior code must let RAP finish the transaction. Put the date check where RAP can reject an invalid request before it is saved. Use the appropriate behavior logic for values that need to be calculated.
+
+Start the workflow through a supported mechanism tied to the committed request. Otherwise a workflow might start for a request that later fails to save. If an external ABAP program calls EML, that outer caller checks the modification results and calls COMMIT ENTITIES. A rollback in the local database cannot undo an ordinary remote workflow call.
 
 ### Follow-up
 
@@ -56,7 +64,9 @@ A validation returns an error message in REPORTED but does not fill FAILED. A de
 
 ### Model answer
 
-The validation needs to identify the rejected instance in FAILED and return the contextual message in REPORTED. Determinations do not expose FAILED; design expected rejection in an appropriate validation, precheck or action. Creation mapping must preserve the required correlation, including %cid where the contract requires it. Return the correct transactional identity in instance-related responses, including draft or preliminary context where applicable.
+In the validation, put the rejected instance in FAILED and its error message in REPORTED. The message should identify the right instance and, where relevant, the field and path. Sending an error message alone is not the same as rejecting the change.
+
+A determination has no FAILED response. Use a supported validation, precheck or action for the expected rejection. For a create, return the required mapping between the caller's %cid and the created instance. Keep the complete RAP instance identity in responses, including draft or preliminary-key information when the operation needs it. Otherwise the caller may not know which record a result belongs to.
 
 ### Follow-up
 
@@ -68,7 +78,9 @@ An app hides the Approve button for ordinary users. Its DCL filters one base CDS
 
 ### Model answer
 
-Implement the appropriate operation authorization for approval and keep business-state availability in feature control. Establish read authorization on the consumed projection, using supported DCL inheritance where appropriate. Check service access, instance scope and downstream APIs separately. Test direct requests and known keys as well as the UI. A value help or hidden field does not protect the data.
+Add a backend permission check for Approve. A hidden button does not stop someone from sending the request directly. Separately use feature control to express whether approval is available in the request's current state.
+
+Protect reads of the projection that the service actually uses. Do not assume the base entity's DCL automatically applies there; use the appropriate rules or supported explicit inheritance. Test an ordinary user reading another company's known key and calling Approve directly. Also check service access and any downstream API permissions. A value help or hidden field is not a security check.
 
 ### Follow-up
 
@@ -97,7 +109,9 @@ An OData batch returns HTTP 200 but one inner response is 412. The UI reports su
 
 ### Model answer
 
-Inspect all inner responses and identify the atomic group. HTTP 412 indicates a failed precondition, commonly a stale ETag. Reload current state and resolve the conflict instead of automatically overwriting a newer version. Verify whether sibling operations rolled back under the supported changeset or atomicity-group semantics. A wildcard is not a sound default repair for lost-update protection.
+Open the batch response and inspect each inner result. The outer 200 does not mean every operation succeeded. The inner 412 says a precondition failed; a stale ETag is a common cause. Read the current record and resolve the user's conflicting edit.
+
+Do not automatically replace If-Match with a wildcard just to make the update succeed. That can remove protection against overwriting someone else's change. Check which operations belong to the same changeset or atomicity group and therefore succeed or fail together. Other groups in the same batch can have a different outcome.
 
 ### Follow-up
 
@@ -109,7 +123,9 @@ A committed request event is delivered twice. Approval later arrives after the r
 
 ### Model answer
 
-Use correlation and idempotency to avoid duplicate workflow creation. Validate current status, request version and actor on every decision. Reject a stale approval of a withdrawn request. A repeated callback for an already accepted decision should return a stable outcome; a timeout means the result may be uncertain, so reconcile before retrying an irreversible operation. Monitor failed deliveries and provide controlled recovery.
+Store a stable request/event identifier so the same event does not start the workflow twice. When an approval arrives, check the request's current status, version and approver. If the request has been withdrawn, the old approval must not move it forward.
+
+If the backend accepted a callback but its reply was lost, a retry should recognize the same decision and return the agreed result. A timeout means 'we do not yet know the outcome', not 'nothing happened'. Check the recorded outcome before repeating an irreversible action. Give support staff a way to find failed deliveries and retry only the work that is safe to repeat.
 
 ### Follow-up
 
@@ -121,7 +137,9 @@ A report method selects data, calculates discounts, writes a file and commits th
 
 ### Model answer
 
-Establish existing behavior, callers and transaction ownership. Separate the pure calculation from data and I/O dependencies and inject a clock where it improves deterministic tests. Measure database execution count before redesigning the read path. Keep commit with the appropriate transaction owner and preserve required output semantics. Add focused regression cases and change incrementally rather than rewriting every statement.
+First, record what the report currently does and who controls its commit. Protect those behaviors with focused tests before changing the design. Move the discount calculation into code that can be tested without selecting data or writing a file. Pass in a clock when tests need to control the date.
+
+Measure how many database calls the nested SELECT produces. Then change the read strategy while checking that the same business rows and output remain. Keep the commit with the correct transaction owner. Test missing data, discount limits and file-write failure as well as the successful run. Small verified changes make faults easier to locate.
 
 ### Follow-up
 
@@ -133,7 +151,9 @@ Your ABAP caller sends a create-order request with JSON. The service commits the
 
 ### Model answer
 
-Treat the outcome as unknown, not as a proven failure. Determine whether the contract supports an idempotency key or a query by stable business correlation. Reconcile the result before retrying a non-idempotent creation. Validate Content-Type, response status and error payload independently. Preserve identifiers such as leading-zero customer numbers and distinguish missing fields, null and empty values.
+Do not assume the timeout means creation failed. The service may already have saved the order. Look it up using a stable business identifier, or use the API's supported idempotency key so repeating the same request does not create a second order.
+
+Before retrying, establish the original outcome as far as the API allows. Check the response status and error body when a response does arrive. Send the required Content-Type and preserve the payload's meaning: a customer number such as 00123 may need to stay a string. An omitted field, JSON null and an empty string can request different behavior.
 
 ### Follow-up
 
@@ -145,7 +165,9 @@ A classic background job sends three independent work partitions through aRFC. W
 
 ### Model answer
 
-Identify each partition and its actual business outcome. Do not assume that rollback in the coordinator undoes worker A. Collect callbacks and RFC exceptions, persist checkpoints under an explicit transaction design, and handle ambiguous outcomes through reconciliation. Bound parallelism by available resources and avoid overlapping locked records. Retry only safe unfinished units. Verify the effect of WAIT and task processing on the database LUW for the chosen implementation.
+Give each partition a stable ID and record what it actually completed. Worker A's committed changes remain even if the coordinator rolls back. Check B's failure and find out whether C finished after the timeout before rerunning either one.
+
+Collect callbacks and RFC exceptions, and save checkpoints under a clear transaction design. Make unfinished work safe to repeat without duplicating completed business changes. Limit the number of workers to available resources and avoid sending overlapping locked records to different workers. Also check how the chosen WAIT and task-processing statements affect the database LUW. A finished job status alone does not prove every business item succeeded.
 
 ### Follow-up
 
@@ -157,7 +179,9 @@ An inbound integration reports a mapping or application error. The business user
 
 ### Model answer
 
-Correlate the message, external business key and existing document. Inspect the original IDoc control/data/status records and the configured AIF processing/error context. Correct the root cause with the proper authorization, then use the owning reprocessing mechanism. Preserve audit evidence and protect against a duplicate business effect or a stale-state overwrite. AIF is not a new transport that replaces all IDoc or OData behavior.
+Find the incoming message, its external business key and any document already created for that key. Check the IDoc control, data and status records, then the processing details shown by the configured AIF monitor. This tells you whether transport, mapping or business posting failed.
+
+Fix the cause with the required permission, then use the mechanism that owns reprocessing. Before resubmitting, make sure the earlier message has not already produced the same business effect. Keep a record of the diagnosis and retry. AIF helps monitor and handle errors; it does not replace the underlying IDoc or OData processing rules.
 
 ### Follow-up
 

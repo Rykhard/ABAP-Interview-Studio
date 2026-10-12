@@ -8,43 +8,49 @@ Explain the data model before discussing annotations. A strong answer connects e
 
 **Level:** Core
 
-**Short answer:** CDS defines reusable, semantically enriched data models in the ABAP repository. A model can describe elements, associations, annotations and access control, and can serve different consumers. SQL computes the result; CDS also supplies a stable model contract. Transactional behavior is added separately through RAP.
+**Short answer:** CDS turns a database query into a reusable ABAP data model. It can describe fields, relationships, currency meanings, annotations, and read-access rules. Several apps can use that model instead of rebuilding the same query. SQL still produces the database result. If users must create or change business objects, RAP behavior supplies those operations separately.
 
-**Example and follow-up:** For a sales-order list, expose keys, customer associations, currency semantics and authorized rows once. Several consumers can use that model without each recreating the joins.
+**Reasoning and example:** A sales-order list needs an order number, customer, and amount. A CDS model can expose these fields, connect the customer data, and identify the amount's currency. Appropriate access control can restrict which orders the caller reads. Another application can reuse this model instead of copying all the joins and rules.
+
+That reuse also means the exposed fields and meanings matter to callers. Changing a field's meaning can break an app even when the query still runs. And a readable order model does not automatically support creating an order. For that, define the supported business operations and their behavior rather than treating a CDS SELECT as a complete transaction implementation.
 
 **Avoid this mistake:** A CDS definition does not automatically implement create, update and delete operations.
 
 **Read and verify this answer:**
 
-- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check the entity type, provider contract and target-release restrictions.
+- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 ## CDS-02 What is the difference between a classic CDS view and a CDS view entity?
 
 **Level:** Core
 
-**Short answer:** A classic define view creates a CDS entity plus a separately named DDIC SQL view using AbapCatalog.sqlViewName. A define view entity avoids that separate DDIC SQL-view artifact and is the preferred choice for new supported scenarios. Choose according to the target release and consumer compatibility.
+**Short answer:** A classic CDS view creates both a CDS entity and a separately named DDIC SQL view. A CDS view entity does not create that separate SQL-view object. For new development, prefer view entities where the target release and consumers support them. Migration needs care because existing programs may call the old SQL-view name directly.
 
-**Example and follow-up:** During migration, inventory consumers that refer directly to the generated SQL-view name. Changing the source definition is not sufficient if those consumers still depend on the old object.
+**Reasoning and example:** Suppose a classic view declares a SQL-view name that several reports use in SELECT statements. Replacing the CDS definition with a view entity changes more than the source syntax: those reports still expect the separately named object. Find the consumers and plan how they will use the replacement.
+
+Check release support and the requirements of tools that consume the view before converting it. Test representative reads after changing the callers, including their fields and result identity. Do not copy AbapCatalog.sqlViewName into the view entity, because it belongs to the classic pattern. The useful interview distinction is which repository objects exist and who depends on them, rather than simply calling one syntax old and the other new.
 
 **Avoid this mistake:** Do not copy AbapCatalog.sqlViewName into a view entity or assume all older systems support view entities.
 
 **Read and verify this answer:**
 
-- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check the entity type, provider contract and target-release restrictions.
+- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 ## CDS-03 Association or join and how do you select cardinality?
 
 **Level:** Core
 
-**Short answer:** An association models a reusable relationship; a path expression can cause a join when the relationship is consumed. A join explicitly combines sources in the current query. Cardinality must describe the actual data relationship and ON condition. Wrong to-one assumptions can produce incorrect or optimizer-dependent results.
+**Short answer:** A join combines sources in the current query. An association defines a relationship that a consumer can follow, often producing a join when used. Cardinality describes how many related rows can really match the ON condition. It must match the data. Declaring a relationship to-one when several rows can match can lead to incorrect results.
 
-**Example and follow-up:** For a flight-to-carrier association, an ON condition matching the carrier key can justify a to-one target cardinality if the data satisfies it. The flight's own identity is a separate question: it may require carrier, connection and flight date. Adding a date to the flight key does not establish the carrier relationship's cardinality. Test duplicate and missing target rows.
+**Reasoning and example:** A flight can point to its carrier by the carrier key. If that condition matches at most one carrier row, a to-one target cardinality may be correct. Test both a missing carrier and unexpected duplicates. The association declaration does not create a foreign-key constraint that fixes bad data for you.
+
+The flight's own key is a separate issue. It may need carrier, connection, and flight date to identify one flight. Adding the date to that key does not prove the carrier association is to-one; the ON condition and target data do. Also measure performance where needed. An association is useful for modeling relationships, but is not automatically faster than writing a join.
 
 **Avoid this mistake:** Associations are not automatically faster than joins and do not enforce referential integrity.
 
 **Read and verify this answer:**
 
-- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check the entity type, provider contract and target-release restrictions.
+- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 <details>
 <summary>Visual: CDS links and ownership</summary>
@@ -63,15 +69,17 @@ Items belong to the order BO; a partner reference crosses to an independently ma
 
 **Level:** Core
 
-**Short answer:** An association represents a relationship. A composition describes ownership within a RAP business-object tree, such as order and items. The root defines the aggregate boundary, with dependent locking and authorization where modeled. Exposed projections redirect associations and compositions to the corresponding projected entities.
+**Short answer:** Use an association for a relationship between entities. Use a composition when a child belongs to a parent within one RAP business object, such as an order item belonging to its order. That ownership affects the object's lifecycle and modeled lock and authorization dependencies. When exposing projections, redirect these relationships to the matching projected entities.
 
-**Example and follow-up:** An item cannot be treated as an unrelated aggregate just because it has its own table. Explain create-by-association and what happens when the parent is deleted.
+**Reasoning and example:** An order item has its own table row, but it normally exists as part of an order. A composition expresses that ownership and supports operations such as creating items through their parent. Review the modeled delete behavior and how children depend on the root for locking and authorization. Those choices must match the business object's lifecycle.
+
+A customer linked to the order is different: deleting the order should not normally delete the customer. That relationship belongs as an association rather than a composition. In the app's projections, make sure navigation points to the projected order and item entities. A foreign key alone does not decide whether the target is an owned child.
 
 **Avoid this mistake:** Not every foreign key should become a composition; lifecycle ownership is the deciding factor.
 
 **Read and verify this answer:**
 
-- [SAP Learning on compositions](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-compositions-in-odata-ui-services) - Check the entity type, provider contract and target-release restrictions.
+- [SAP Learning on compositions](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-compositions-in-odata-ui-services) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 <details>
 <summary>Visual: CDS links and ownership</summary>
@@ -90,15 +98,17 @@ Items belong to the order BO; a partner reference crosses to an independently ma
 
 **Level:** Core
 
-**Short answer:** Interface and consumption names describe modeling roles, while VDM basic, composite and consumption annotations describe a virtual data model convention. A RAP projection adapts one underlying entity for a use case under its provider contract. These labels are not interchangeable and do not themselves publish a service.
+**Short answer:** These names describe different modeling jobs. Interface views aim at reuse, and consumption views serve particular consumers. VDM basic, composite, and consumption annotations describe a modeling convention. A RAP projection exposes a supported view of one underlying entity for a use case. Its provider contract limits what it can do. None of these labels publishes a service by itself.
 
-**Example and follow-up:** Keep reusable business semantics below the consumer projection. Expose only needed fields and operations, and redirect associations consistently. Avoid adding layers whose only purpose is a naming pattern.
+**Reasoning and example:** Two apps may share the same request model but need different fields and operations. Keep common meanings in the reusable model. Give each app an appropriate projection, and redirect its relationships consistently so navigation reaches the intended projected entities. This avoids copying core business definitions for every screen.
+
+Do not add an extra CDS layer just to satisfy a naming diagram if it adds no useful responsibility. Likewise, labeling a view composite does not make it eligible for every projection feature or create a service binding. Check the provider contract before adding joins or expressions. The key explanation is what each layer does for a consumer and what changes it protects that consumer from.
 
 **Avoid this mistake:** A VDM composite annotation is neither a prerequisite for service binding nor permission to perform arbitrary joins in a RAP projection.
 
 **Read and verify this answer:**
 
-- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check the entity type, provider contract and target-release restrictions.
+- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 <details>
 <summary>Visual: RAP contract stack</summary>
@@ -117,29 +127,33 @@ Read from the client down to storage, then explain what each artifact contribute
 
 **Level:** Advanced
 
-**Short answer:** An abstract entity describes a structured type without a database result, often for action parameters, results or events. A custom entity represents a query model whose data is supplied by an ABAP implementation instead of a generated SQL query. Neither is an object-oriented abstract superclass.
+**Short answer:** An abstract entity defines a structured type, for example the input of an action. It does not produce a database query result. A custom entity defines query data that an ABAP provider supplies instead of generated SQL. Neither means an abstract ABAP superclass. Choose according to whether you need a data shape or an implemented query.
 
-**Example and follow-up:** A Submit action may accept an abstract entity containing a comment. A custom query provider may assemble data from a remote service and must handle requested filters, paging and count.
+**Reasoning and example:** A Submit action might need a comment and requested approval date. An abstract entity can describe that input shape; the action is still declared in the behavior definition. There is no table of action parameters to read merely because this type exists.
+
+For a supplier search backed by a remote service, a custom entity can describe the result fields while an ABAP query provider fetches the data. That provider must respect the requested filters, ordering, paging, count, and permissions as applicable. Returning the remote service's first page without honoring the caller's request can make the list misleading. The custom entity supplies the model, not an automatic implementation of those query rules.
 
 **Avoid this mistake:** Do not describe an abstract entity as a BO that other CDS entities inherit and persist.
 
 **Read and verify this answer:**
 
-- [SAP CDS abstract entities](https://help.sap.com/docs/abap-cloud/abap-data-models/cds-abstract-entities) - Check the entity type, provider contract and target-release restrictions.
+- [SAP CDS abstract entities](https://help.sap.com/docs/abap-cloud/abap-data-models/cds-abstract-entities) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 ## CDS-07 Does DCL on a base view automatically protect every higher view?
 
 **Level:** Core
 
-**Short answer:** No. Read authorization must be designed for each externally accessed CDS entity. A higher view can use its own access control with inherited conditions where supported. Merely adding AccessControl.authorizationCheck: #CHECK does not invent an access rule. RAP operation authorization is a separate concern.
+**Short answer:** No. Access control on a lower CDS view does not automatically protect every view built on it. Design the read rules for the entity that callers actually access. Supported DCL inheritance can reuse conditions with the required mappings. The #CHECK annotation alone creates no rule. RAP permissions for changing objects are a separate check.
 
-**Example and follow-up:** Test the projection used by the actual service with users from different company codes. Inspect the effective DCL and inheritance mapping, not just a protected lower-layer view.
+**Reasoning and example:** Assume the base model has a company-code restriction, and a service exposes a higher projection. Test the projection through the actual read path with a user allowed to see only company code 1000. If rows from 2000 appear, the protected base view has not proved the service is protected.
+
+Inspect the effective DCL on the accessed entity and any inherited conditions and field mappings. Include users with different permissions and realistic filters in the test. Then test update or approval permission separately in RAP. A correct read filter limits visible rows; it does not automatically decide whether the user may execute every action on those rows.
 
 **Avoid this mistake:** DCL on one layer does not automatically secure an arbitrary view-on-view stack.
 
 **Read and verify this answer:**
 
-- [SAP Learning on DCL inheritance](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks) - Check the entity type, provider contract and target-release restrictions.
+- [SAP Learning on DCL inheritance](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 <details>
 <summary>Visual: CDS security boundaries</summary>
@@ -158,15 +172,17 @@ Review security where consumers enter the model, rather than assuming that lower
 
 **Level:** Core
 
-**Short answer:** Use metadata extensions for supported UI and consumption annotations when the model permits extensions. Keep core data semantics, such as amount and currency relationships, in the data model. Check annotation eligibility, layer precedence and release support rather than moving every annotation mechanically.
+**Short answer:** Put supported UI and value-help annotations in metadata extensions when the model allows it. Keep data meanings, such as the link between an amount and its currency, in the data model. Check which annotations and extension layers the release supports. A value help makes input easier, but the backend must still check submitted values and permissions.
 
-**Example and follow-up:** A Fiori elements list can use line-item annotations and a currency-aware amount. A value help supports selection, but the backend must still validate submitted values and authorizations.
+**Reasoning and example:** A Fiori elements list shows a request amount and offers a cost-center value help. A metadata extension can describe the list columns and the supported value-help setup. The CDS data model still needs to say which currency belongs to the amount so consumers interpret the value correctly.
+
+Now call the service directly and submit a cost center that the value help would never offer. The backend must reject it when it violates a business rule or permission. Hiding a field or narrowing a picker is not enough. Also check annotation layer precedence: a customer or partner extension may interact with existing metadata, so moving every annotation mechanically can change the resulting UI.
 
 **Avoid this mistake:** UI.hidden and a value help are not security or data-integrity controls.
 
 **Read and verify this answer:**
 
-- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check the entity type, provider contract and target-release restrictions.
+- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 <details>
 <summary>Visual: RAP contract stack</summary>
@@ -185,15 +201,17 @@ Read from the client down to storage, then explain what each artifact contribute
 
 **Level:** Advanced
 
-**Short answer:** A virtual element is calculated in the application layer for a supported query scenario, commonly through a SADL calculation exit. It does not become a database column. Filtering, sorting and requesting the element need explicit supported handling and may differ by service and release.
+**Short answer:** A virtual element is calculated in ABAP for a supported query scenario, often through a SADL calculation exit. It is not a stored database column. That matters when callers want to filter or sort by it. Those operations need explicit supported handling, and support varies by service and release. Use database-side modeling when efficient database filtering is essential.
 
-**Example and follow-up:** A display-only status text derived from an external source may fit. A field needed for efficient database filtering usually belongs in SQL/CDS or persistence instead. Fetch only needed calculation inputs.
+**Reasoning and example:** A list might display a status description calculated from data that is not stored in its main table. A virtual element can be suitable if the supported query flow calls the calculation and supplies the needed input fields. Request only the inputs required rather than fetching unrelated data for every row.
+
+Now suppose users need to sort thousands of rows by that value before paging. A calculation performed after reading a page cannot automatically produce the correct global order. Check supported sorting or filtering handling, or choose a different model. A UI requestAtLeast hint can help a particular UI request fields, but it is not a guarantee for every possible consumer.
 
 **Avoid this mistake:** requestAtLeast is a UI request hint, not a universal guarantee that every consumer calculates a virtual element.
 
 **Read and verify this answer:**
 
-- [SAP RAP: implementing sorting of virtual elements](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-sorting-of-virtual-elements) - Explains transformation of supported virtual-element sort requests before retrieval. Verify projection, protocol, interface release and consumer restrictions on the target release.
+- [SAP RAP: implementing sorting of virtual elements](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-sorting-of-virtual-elements) - Explains supported ways to translate sorting by a virtual element before reading the data. Check support for the projection, protocol, released interface, and actual client on the target release.
 
 <details>
 <summary>Visual: Calculation placement and query semantics</summary>
@@ -212,29 +230,33 @@ Use the requirement to decide where a value must exist before filtering, orderin
 
 **Level:** Advanced
 
-**Short answer:** Analytical models organize measures and dimensions, often around a cube and an analytical query or analytical projection. Transactional RAP models focus on identifiable instances and business operations. Aggregations must respect units, currencies and the query engine. One model is not automatically suitable for both purposes.
+**Short answer:** An analytical model answers questions such as totals by month or company. It organizes measures, dimensions, and supported aggregation rules. A transactional RAP model identifies individual objects and exposes operations such as Create or Approve. A model designed for one job is not automatically correct for the other. Always account for currencies, units, and the actual query engine.
 
-**Example and follow-up:** Never sum EUR and USD amounts without the intended conversion or grouping. Confirm which analytical features the chosen protocol and consuming application actually execute.
+**Reasoning and example:** An order app may display individual orders and allow approval. A spending report instead groups values by supplier and month. If some orders are in EUR and others in USD, adding the raw amounts gives a number without a valid common currency. Group them appropriately or use the intended conversion before interpreting a total.
+
+Check what the selected analytical engine, service protocol, and client actually support. A cube or analytical query has responsibilities that an ordinary transactional list does not. Merely adding a VDM annotation or sending $apply does not prove that grouping, conversion, and aggregation have the intended meaning. Test a small dataset with known mixed currencies before trusting the totals.
 
 **Avoid this mistake:** A VDM annotation or an OData $apply request alone does not guarantee correct analytical semantics.
 
 **Read and verify this answer:**
 
-- [SAP analytical projection views](https://learning.sap.com/courses/developing-analytical-models-with-cds-based-analytical-projection-views/describing-the-role-of-a-cds-analytical-projection-view) - Check the entity type, provider contract and target-release restrictions.
+- [SAP analytical projection views](https://learning.sap.com/courses/developing-analytical-models-with-cds-based-analytical-projection-views/describing-the-role-of-a-cds-analytical-projection-view) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 ## CDS-11 How do CDS keys and database keys relate?
 
 **Level:** Core
 
-**Short answer:** A CDS key communicates entity identity to consumers but does not automatically enforce uniqueness in the query result. Database keys enforce uniqueness in persistence. Joins, missing key elements and aggregations can change result uniqueness. RAP and OData need stable, truly unique entity identities.
+**Short answer:** A CDS key tells consumers which fields identify a row. It does not force the query result to be unique. A database key enforces uniqueness in a table, but joins and grouping can change the result. RAP and OData need a stable, truly unique identity. Check the complete result, not just the key declarations.
 
-**Example and follow-up:** If SFLIGHT rows differ by CARRID, CONNID and FLDATE, exposing only the first two as identity can merge or confuse rows in a client. Include the full business-relevant identity.
+**Reasoning and example:** Imagine flight rows identified by carrier, connection, and flight date. If a CDS entity marks only carrier and connection as keys, two flights on different dates appear to have the same identity to the client. A list may confuse them or address the wrong row even though the database has two valid records.
+
+Include the fields needed to identify one result row and check what joins do to that uniqueness. Joining a flight to several related rows can multiply the result again. Marking another field as key does not remove duplicates or repair the underlying query. Test with realistic repeated business values, not just sample data where every connection happens to appear once.
 
 **Avoid this mistake:** Marking an element key does not remove duplicate rows.
 
 **Read and verify this answer:**
 
-- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check the entity type, provider contract and target-release restrictions.
+- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 <details>
 <summary>Visual: CDS links and ownership</summary>
@@ -253,16 +275,18 @@ Items belong to the order BO; a partner reference crosses to an independently ma
 
 **Level:** Core
 
-**Short answer:** A classic DDIC maintenance view belongs to table/view maintenance, often with generated maintenance dialogs. A RAP application uses a CDS model and behavior instead. RAP defaults may be implemented with determinations or supported defaulting functions; field visibility depends on the chosen UI and metadata.
+**Short answer:** A classic maintenance view belongs to DDIC table or view maintenance, often used through SM30. A RAP app uses a CDS model and behavior to provide a different kind of maintenance application. In RAP, determinations or supported defaulting functions can supply defaults. The chosen UI and metadata control presentation. First clarify which maintenance approach the question means.
 
-**Example and follow-up:** First clarify whether the interviewer means SM30 maintenance or a Fiori RAP maintenance app. Then explain the appropriate maintenance events or RAP behavior mechanism.
+**Reasoning and example:** A team asks for a small configuration maintenance screen. If it means an existing SM30 dialog, examine its maintenance events and supported classic setup. If it means a Fiori RAP app, design the CDS entities and behavior, including who may change entries and how default values are supplied. The word maintenance does not make these the same technology.
+
+For example, a RAP determination may fill an initial currency while backend checks still reject invalid input. UI annotations can help present the fields, but they do not replace that behavior. Do not invent generic Metadata.ignore or Metadata.defaultValue annotations as a shortcut: verify the actual supported defaulting and visibility mechanisms for the chosen app.
 
 **Avoid this mistake:** Metadata.ignore and Metadata.defaultValue are not generic annotations that implement maintenance behavior.
 
 **Read and verify this answer:**
 
-- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check the entity type, provider contract and target-release restrictions.
-- [SAP Learning on DCL inheritance](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks) - Check the entity type, provider contract and target-release restrictions.
+- [SAP Learning on CDS concepts](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/exploring-abap-core-data-services_f6b58d1f-ca51-461b-8355-aef95aa3864e) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
+- [SAP Learning on DCL inheritance](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks) - Check which CDS entity type is used, what its provider contract allows, and what the target release supports.
 
 ## Official references
 

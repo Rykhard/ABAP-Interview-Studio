@@ -7,22 +7,22 @@
       {
         "id": "a",
         "text": "Inject an approval Strategy selected for the current country.",
-        "explanation": "The varying calculation is composed into a stable coordinator through a common contract."
+        "explanation": "The coordinator calls the same approval interface. Supplying another country rule changes the calculation without changing the coordinator class."
       },
       {
         "id": "b",
         "text": "Subclass the coordinator for every country and UI channel.",
-        "explanation": "This combines independent variations and couples policy changes to the coordinator hierarchy."
+        "explanation": "This ties country rules and UI choices to the same hierarchy. Separate combinations can require many subclasses even though the calculation is independently replaceable."
       },
       {
         "id": "c",
         "text": "Put the current country in a mutable singleton coordinator.",
-        "explanation": "Hidden session state does not provide a replaceable calculation contract and complicates tests."
+        "explanation": "A mutable current country can leak between calls and tests. It does not provide a clear way to supply and test a different calculation."
       },
       {
         "id": "d",
         "text": "Use Template Method because any reused algorithm requires inheritance.",
-        "explanation": "A subclass template can fit a stable extension skeleton, but inheritance is not required here."
+        "explanation": "Template Method can fit a fixed process with subclass steps. This requirement can be met by supplying a rule object, without subclassing the coordinator."
       }
     ],
     "correctOption": "a"
@@ -35,22 +35,22 @@
       {
         "id": "a",
         "text": "Add an unrelated static creation method to each component.",
-        "explanation": "Independent construction does not itself prevent callers from combining incompatible providers."
+        "explanation": "Two independent creation methods can still return mismatched products. Nothing here ensures the serializer and sender belong to the same provider."
       },
       {
         "id": "b",
         "text": "Provide a provider-specific Abstract Factory for related components.",
-        "explanation": "It centralizes creation of compatible families while hiding their concrete implementations."
+        "explanation": "The factory supplies the related products for one provider. Callers can obtain a compatible family without choosing each concrete class themselves."
       },
       {
         "id": "c",
         "text": "Let each sender dynamically cast any serializer at runtime.",
-        "explanation": "Late type inspection defers the compatibility error rather than protecting the construction boundary."
+        "explanation": "The wrong combination is detected late, when a sender inspects the serializer. Construction should prevent or clearly reject that combination earlier."
       },
       {
         "id": "d",
         "text": "Subclass a single serializer and call that Abstract Factory.",
-        "explanation": "Subclassing one product does not express creation of a related product family."
+        "explanation": "One serializer subclass is only one product. It does not define how to create a compatible serializer-and-sender family."
       }
     ],
     "correctOption": "b"
@@ -63,22 +63,22 @@
       {
         "id": "a",
         "text": "Adapter owns commits; Facade guarantees authorization across all calls.",
-        "explanation": "Neither pattern supplies transaction ownership or security guarantees by its name."
+        "explanation": "The pattern names do not decide who commits or how authorization is checked. Those rules must be designed and preserved explicitly."
       },
       {
         "id": "b",
         "text": "Adapter releases the dependency; Facade makes its failures recoverable.",
-        "explanation": "API release and failure semantics require actual platform and dependency contracts."
+        "explanation": "A wrapper cannot release an SAP dependency or guarantee recovery. Those facts depend on the real API and its failure behavior."
       },
       {
         "id": "c",
         "text": "Adapter translates contracts; Facade offers simpler subsystem orchestration.",
-        "explanation": "The responsibilities differ even when one implementation combines them."
+        "explanation": "An Adapter maps the interface, data and errors. A Facade coordinates subsystem steps behind a simpler operation, and one implementation may do both."
       },
       {
         "id": "d",
         "text": "Adapter simplifies method names; Facade must preserve every legacy parameter.",
-        "explanation": "Their purpose concerns usable contracts and orchestration, not these arbitrary signature rules."
+        "explanation": "An Adapter does more than rename methods, and a Facade need not expose every legacy parameter. Their jobs are translation and simpler use of the subsystem."
       }
     ],
     "correctOption": "c"
@@ -91,22 +91,22 @@
       {
         "id": "a",
         "text": "Assume diagnostic decorators may swallow wrapped-client exceptions without changing the service contract.",
-        "explanation": "Swallowing an exception can change observable behavior and break the wrapped service contract. Diagnostic decoration must preserve the agreed semantics."
+        "explanation": "Hiding an exception can make a failed service call look successful. Logging and timing must preserve the result and error behavior callers were promised."
       },
       {
         "id": "b",
         "text": "Whether the retry decorator makes every future write idempotent.",
-        "explanation": "A wrapper cannot create business idempotency for arbitrary remote writes."
+        "explanation": "A retry wrapper cannot make every remote write safe to repeat. That depends on the business operation and how duplicates are handled."
       },
       {
         "id": "c",
         "text": "Whether all decorators must inherit the client's concrete class.",
-        "explanation": "Decorators can wrap an interface-compatible object without that inheritance requirement."
+        "explanation": "Decorators can wrap an object through its interface. They do not have to inherit its concrete implementation."
       },
       {
         "id": "d",
         "text": "Whether logs represent logical calls or individual retry attempts.",
-        "explanation": "Wrapper order affects which executions are observed and how diagnostics should be correlated."
+        "explanation": "Logging outside retry can observe one overall call; logging inside can observe each attempt. The team should decide which records and timing it needs."
       }
     ],
     "correctOption": "d"
@@ -119,22 +119,22 @@
       {
         "id": "a",
         "text": "Distinguish handled, not applicable and failed, with defined precedence.",
-        "explanation": "This makes routing and failure behavior explicit and testable."
+        "explanation": "The rules say when to stop, when to continue and when to fail. A defined order makes overlapping matches predictable and testable."
       },
       {
         "id": "b",
         "text": "Treat every handler exception as not applicable and continue.",
-        "explanation": "A technical or business failure must not silently become permission to choose another route."
+        "explanation": "A failure may mean the rule could not determine a route. Continuing as if it did not apply can choose an incorrect or less restrictive approver."
       },
       {
         "id": "c",
         "text": "Execute every handler and keep whichever result arrives last.",
-        "explanation": "This contradicts first-match precedence and can produce unintended routing."
+        "explanation": "Keeping the last result conflicts with the required first matching rule. Later handlers could overwrite the intended route."
       },
       {
         "id": "d",
         "text": "Stop after the first handler regardless of its applicability.",
-        "explanation": "That prevents later valid rules from handling requests outside the first rule's scope."
+        "explanation": "The first rule may not apply to the request. Later handlers must have a chance unless a previous one handled the request or failed."
       }
     ],
     "correctOption": "a"
@@ -147,22 +147,22 @@
       {
         "id": "a",
         "text": "Another SET HANDLER registration with a static receiver method.",
-        "explanation": "Registration changes the local listener arrangement, not its durability guarantees."
+        "explanation": "Another registration only adds a local listener. It does not persist delivery or ensure that the document commit succeeds first."
       },
       {
         "id": "b",
         "text": "Transactional publication plus durable consumer retry and correlation.",
-        "explanation": "Local observation alone does not provide committed, recoverable external delivery."
+        "explanation": "The design must connect publication to a successful save and support delivery recovery. A persistent operation link also helps the consumer recognize retries and duplicates."
       },
       {
         "id": "c",
         "text": "A singleton listener shared by all callers in the session.",
-        "explanation": "Session-lifetime state cannot substitute for persistent delivery and recovery."
+        "explanation": "A singleton lives in a runtime session. It does not replace a stored message and recovery process after a failure or restart."
       },
       {
         "id": "d",
         "text": "Raising the same event twice to ensure at least one delivery.",
-        "explanation": "Repeated local callbacks can duplicate effects without proving durable publication."
+        "explanation": "Raising a local event twice can repeat side effects. It still does not prove reliable after-commit delivery."
       }
     ],
     "correctOption": "b"
@@ -175,22 +175,22 @@
       {
         "id": "a",
         "text": "An execute method that belongs to a dedicated command class.",
-        "explanation": "Encapsulating execution does not make repeated execution idempotent."
+        "explanation": "A command class packages the work, but execute can still perform it twice. Duplicate handling needs explicit business rules and state."
       },
       {
         "id": "b",
         "text": "A new command object created for every delivery attempt.",
-        "explanation": "Fresh objects do not recognize that an earlier attempt already completed."
+        "explanation": "A new object does not know that an earlier object already submitted the request. Recreating it cannot by itself prevent another effect."
       },
       {
         "id": "c",
         "text": "A durable operation identity with a defined replay outcome.",
-        "explanation": "The application must coordinate identity and state, independently of using the Command pattern."
+        "explanation": "A saved operation ID lets the application recognize the same request again. Its state and repeat-response rules must be coordinated with the submission."
       },
       {
         "id": "d",
         "text": "An undo method that deletes any duplicate after detection.",
-        "explanation": "Compensation may be necessary but does not prevent duplicates or guarantee a valid inverse."
+        "explanation": "An undo method does not prevent the second submission. A valid reversal may not even exist, and compensation has its own business rules."
       }
     ],
     "correctOption": "c"
@@ -203,22 +203,22 @@
       {
         "id": "a",
         "text": "Commit inside the repository before selecting its data.",
-        "explanation": "That violates behavior transaction ownership rather than fixing the repository contract."
+        "explanation": "A commit inside RAP behavior breaks framework transaction ownership. It is not a valid way to make a stale read current."
       },
       {
         "id": "b",
         "text": "Store a second mutable cache for every managed BO field.",
-        "explanation": "Duplicating RAP buffering introduces synchronization and cleanup risks without a justified contract."
+        "explanation": "A second cache duplicates RAP state and needs its own synchronization. It can create more stale reads instead of using the existing BO state."
       },
       {
         "id": "c",
         "text": "Keep the implementation because its interface is easy to mock.",
-        "explanation": "Mockability does not prove correct transactional behavior."
+        "explanation": "An easy-to-mock interface can still return the wrong data in production. The real implementation must read the state its caller needs."
       },
       {
         "id": "d",
         "text": "Define transactional-read semantics and use appropriate BO access.",
-        "explanation": "EML access can observe the relevant buffered state that direct persistence reads miss."
+        "explanation": "The read must include pending RAP changes when that is what the action needs. Suitable EML access can see relevant buffered state that a table SELECT misses."
       }
     ],
     "correctOption": "d"
@@ -231,22 +231,22 @@
       {
         "id": "a",
         "text": "Make request context explicit and align service lifetime with it.",
-        "explanation": "The cached value's scope must match its use; fresh services or deliberate caches improve isolation."
+        "explanation": "The service receives the actual request context and keeps data for an appropriate lifetime. That prevents an old approver from silently becoming the answer for another request."
       },
       {
         "id": "b",
         "text": "Run the approving test first in every suite.",
-        "explanation": "Ordering tests hides leaked state and leaves the production lifetime defect unchanged."
+        "explanation": "Fixed test order only hides shared-state leakage. The production service can still reuse a decision from the wrong context."
       },
       {
         "id": "c",
         "text": "Make the cache static so all test classes see one value.",
-        "explanation": "That reinforces shared mutable state instead of removing the hidden dependency."
+        "explanation": "Making more state static strengthens the sharing that caused the problem. It does not define a correct request lifetime."
       },
       {
         "id": "d",
         "text": "Assume a singleton is globally unique across all SAP users.",
-        "explanation": "A conventional ABAP singleton normally has internal-session scope, not landscape-wide scope."
+        "explanation": "A conventional ABAP singleton normally belongs to one internal session. It is not automatically one synchronized object for every SAP user."
       }
     ],
     "correctOption": "a"
@@ -259,22 +259,22 @@
       {
         "id": "a",
         "text": "Add unsupported constructor arguments to the generated handler contract.",
-        "explanation": "Invented framework signatures are not a reliable injection mechanism."
+        "explanation": "The framework will not necessarily call a constructor with invented parameters. Its required signatures must be respected."
       },
       {
         "id": "b",
         "text": "Delegate to an explicitly wired service using a supported seam.",
-        "explanation": "Framework constraints can be respected while application dependencies remain replaceable."
+        "explanation": "A small application service can receive controlled dependencies while the framework handler keeps its required shape. Use a seam supported by the framework and release."
       },
       {
         "id": "c",
         "text": "Resolve every collaborator from a global factory in each method.",
-        "explanation": "Repeated lookup hides dependencies and risks accidental live access during tests."
+        "explanation": "Hidden global lookups make tests unable to see or control all dependencies. They can also accidentally obtain a live posting client."
       },
       {
         "id": "d",
         "text": "Create a generic DI container before writing the first business test.",
-        "explanation": "A container may be useful at scale but is not required for this small boundary."
+        "explanation": "Explicit construction is enough for a small service. A generic container is optional and can add work before solving the actual testing problem."
       }
     ],
     "correctOption": "b"
@@ -287,22 +287,22 @@
       {
         "id": "a",
         "text": "Patterns are incompatible with classic ABAP reports.",
-        "explanation": "Classic ABAP can use patterns; suitability depends on the design problem."
+        "explanation": "Classic ABAP can use design patterns. The question is whether this particular calculation needs one."
       },
       {
         "id": "b",
         "text": "Unit tests require all calculations to stay in one large method.",
-        "explanation": "Focused methods and tests are compatible without a hierarchy."
+        "explanation": "A calculation can be split into clear small methods and tested without a Strategy hierarchy. Unit tests do not require one large method."
       },
       {
         "id": "c",
         "text": "No actual variation or test obstacle currently requires the abstraction.",
-        "explanation": "A small explicit method can meet the requirement; a concrete future variation can trigger extraction."
+        "explanation": "A clear method already meets the current need. A real second rule or testing problem can justify extracting a Strategy later."
       },
       {
         "id": "d",
         "text": "Only performance measurements can justify any new interface.",
-        "explanation": "Interfaces may serve variation and dependency isolation independently of runtime performance."
+        "explanation": "Interfaces can help replace behavior and control outside dependencies even without a speed improvement. Performance is not their only possible purpose."
       }
     ],
     "correctOption": "c"
@@ -315,22 +315,22 @@
       {
         "id": "a",
         "text": "Default to the Strategy that approves the largest number of requests.",
-        "explanation": "That creates a business authorization risk from missing configuration."
+        "explanation": "Missing configuration must not silently choose a permissive approval rule. That could approve work the intended policy would reject."
       },
       {
         "id": "b",
         "text": "Interpret the country value as any dynamically constructed class name.",
-        "explanation": "Uncontrolled class selection is not a safe implementation registry or release boundary."
+        "explanation": "Arbitrary class names are not a safe list of supported strategies. Allowed implementations and dependency release rules still need to be controlled."
       },
       {
         "id": "c",
         "text": "Return an empty successful decision and let the UI decide.",
-        "explanation": "The backend would lose a trustworthy business outcome and allow inconsistent consumers."
+        "explanation": "An empty success hides the missing rule and lets different clients invent different outcomes. The backend should give an explicit failure."
       },
       {
         "id": "d",
         "text": "Reject unsupported configuration with a clear diagnosable outcome.",
-        "explanation": "Failing explicitly prevents an accidental permissive decision and separates selection from rejection."
+        "explanation": "A clear configuration error prevents accidental approval. It also tells support that strategy selection failed, rather than that a valid rule rejected the request."
       }
     ],
     "correctOption": "d"

@@ -8,28 +8,30 @@ Defend the evidence behind a cloud service: observable behavior, failure recover
 
 **Level:** Senior
 
-**Short answer:** Keep the Submit implementation and its relevant BO behavior real. Isolate true dependencies such as database tables, external service adapters or other BOs using the appropriate supported doubles. Drive the operation through a meaningful boundary, often EML, and assert state changes, failures and messages. A double of the very action under test would prove the configured double response rather than the business rule.
+**Short answer:** I run the real Submit action and keep the business rules I want to test. I replace only outside dependencies, such as another service or business object, with suitable test doubles. Then I call the action, often through EML, and check its results, errors and saved state. Mocking Submit itself would not test Submit.
 
-**Example and follow-up:** A purchase request can be submitted only when every item has an account assignment. Test a valid request and a missing assignment, including persisted outcome after the supported save boundary. If another BO supplies a limit, double that dependency and vary its response.
+**Reasoning and example:** A purchase request may be submitted only when every item has an account assignment. I create one valid request and another with an assignment missing. Both tests execute the real Submit implementation. I check that the valid request reaches the intended state and that the invalid one is rejected with the correct message.
+
+If a different business object supplies a spending limit, I can replace that dependency with a supported double and choose its returned limit. That keeps this test focused on Submit. I also verify the saved outcome through the test framework's supported save boundary. A predefined successful response from a fake Submit would prove none of these rules.
 
 **Avoid this mistake:** Do not label a test of a mocked Submit response as a test of Submit.
 
 **Interviewer follow-ups:**
 
-- Which behavior remains real?
-- How do you prove rejected data was not persisted?
+- Which real business rule must this test execute?
+- Which outside dependency can be replaced without replacing that rule?
 
 **Strong answer criteria:**
 
-- Defines the unit/contract under test
-- Doubles only dependencies
-- Asserts state plus response semantics
+- Names the real behavior being tested
+- Replaces only outside dependencies
+- Checks the result, errors and saved state
 
-**Verification evidence:** Show the dependency diagram and a failing test when the real Submit check is deliberately broken.
+**Verification evidence:** Show the dependencies and a test that fails when the real Submit check is deliberately broken.
 
 **Read and verify this answer:**
 
-- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Testing scope and evidence</summary>
@@ -61,29 +63,31 @@ Two deliberately different inputs exercise the real Submit rule while a separate
 
 **Level:** Senior
 
-**Short answer:** They isolate different dependencies. SQL doubles replace table access, CDS doubles support tests of CDS logic, and RAP BO doubles isolate dependent EML behavior. Choose the boundary according to the risk being tested. Generic BO buffer doubles do not execute arbitrary custom provider rules, and access-control behavior needs explicit treatment. Complement isolated tests with targeted integration tests for actual persistence, authorization and service contracts.
+**Short answer:** Test doubles replace particular dependencies; they do not prove the whole application works. SQL doubles help isolate database access, CDS doubles help test CDS logic, and RAP BO doubles can replace another object's EML behavior. I choose the double for the rule being tested. Real persistence, permissions and service behavior still need suitable integration checks.
 
-**Example and follow-up:** A calculation test may use a SQL double successfully while a dependent action contract changes unnoticed. Conversely, a mocked EML response can test consumer error handling without proving the provider action. Name exactly which conclusion each test supports.
+**Reasoning and example:** A pricing calculation reads a table. A SQL double can supply controlled prices so the test checks the calculation without depending on production data. That test does not prove an external action is still compatible. Likewise, a fake EML error response can test how a consumer handles failure, but it does not test the provider that would produce the real error.
+
+I state what each test actually executes and replaces. A generic BO buffer double does not run arbitrary custom provider logic, and access-control behavior needs explicit checks. Focused integration tests then cover the real save, authorization and service path. A more advanced-looking double does not automatically supply stronger evidence.
 
 **Avoid this mistake:** A more sophisticated double does not automatically provide broader integration evidence.
 
 **Interviewer follow-ups:**
 
-- Does this double execute custom determinations?
-- Which real boundary still needs verification?
+- Which behavior is replaced by the double?
+- Which important behavior still needs a real integration test?
 
 **Strong answer criteria:**
 
-- Matches doubles to dependency type
-- States excluded behavior
-- Adds focused integration evidence
+- Chooses doubles for the dependency being replaced
+- Explains what the test does not execute
+- Checks the real integration separately
 
-**Verification evidence:** Record test scope and verify one representative path through the real provider and service.
+**Verification evidence:** Record what each test covers, then verify one relevant path through the real provider and service.
 
 **Read and verify this answer:**
 
-- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
-- [SAP transactional buffer double support](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/transactional-buffer-double-support) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
+- [SAP transactional buffer double support](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/transactional-buffer-double-support) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Testing scope and evidence</summary>
@@ -115,28 +119,30 @@ Two deliberately different inputs exercise the real Submit rule while a separate
 
 **Level:** Senior
 
-**Short answer:** Assert each input-to-result correlation and the intended atomicity contract, not just the number of messages. Verify which identities appear in FAILED, where reported messages point, and what changes remain buffered or persisted after transaction completion. Cover failures during interaction and save separately. The desired all-or-nothing or permitted partial-result behavior must be explicit and supported by the chosen request boundary.
+**Short answer:** I check which specific requests succeeded or failed, using their identities rather than row positions. I verify FAILED entries, message targets and the resulting data. I also test whether the chosen operation should allow partial success or require everything to succeed together. A successful interaction is not enough if saving later rejects the change.
 
-**Example and follow-up:** Use nonsequential keys and distinct invalid reasons so accidental row-position correlation is visible. Reorder input and response fixtures. Include a successful interaction followed by a save rejection, and ensure the consumer does not report that object as durably complete.
+**Reasoning and example:** I send ten requests with deliberately nonsequential keys. Two have different invalid values. The test checks that exactly those identities appear as failed, that each message points to the right request and that valid requests receive the intended treatment. Reordering inputs helps reveal code that accidentally matches results by row number.
 
-**Avoid this mistake:** Do not equate ten returned messages with ten correct operation outcomes.
+Next, I test a failure during save after the interaction step appeared successful. The consumer must not report that object as permanently completed. I inspect buffered and saved state according to the supported test boundary. The expected all-or-nothing or partial-result rule must be defined first; counting ten messages cannot tell me whether ten operations were handled correctly.
+
+**Avoid this mistake:** Ten messages do not prove ten correct results. Match outcomes to the actual request identities.
 
 **Interviewer follow-ups:**
 
-- Which failures occur only on save?
-- Can the caller correlate reordered results?
+- Must all requests succeed together, or is partial success allowed here?
+- How will the test detect a failure that happens only during save?
 
 **Strong answer criteria:**
 
-- Checks per-instance correlation
-- Separates interaction and persistence
-- Tests the declared atomicity rule
+- Matches every result to its input identity
+- Checks interaction results and saved data separately
+- Tests the intended all-or-nothing or partial-success rule
 
-**Verification evidence:** Show expected accepted/rejected identities, field messages and final persisted rows for each failure phase.
+**Verification evidence:** Show which requests should succeed or fail, where their messages point and which rows remain after each failure case.
 
 **Read and verify this answer:**
 
-- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: FAILED, REPORTED, and MAPPED in a worked create</summary>
@@ -168,9 +174,11 @@ Two deliberately different inputs exercise the real Submit rule while a separate
 
 **Level:** Senior
 
-**Short answer:** Inspect shared fixtures, draft and active identities, transactional buffers, locks and double-environment lifecycle. Each test must establish its own relevant state and release/reset supported test resources. Do not use uncontrolled commits to make a suite pass. Verify draft-specific actions and the chosen test framework boundaries rather than assuming an active-instance fixture represents a draft.
+**Short answer:** I look for state left behind by the earlier test. That can include draft or active data, transaction buffers, locks and configured test-double responses. Each test should set up its own state and clean up through supported test mechanisms. I do not add random commits to hide the problem, because that can change what the test proves.
 
-**Example and follow-up:** Two tests reuse the same business key but differ in draft context. One leaves a buffer or configured double response behind. Run the pair in reversed order and with distinct fixtures, then fix lifecycle isolation while preserving the scenario being tested.
+**Reasoning and example:** Two tests use request 4711. The first leaves a draft or a configured double response behind, while the second assumes a clean active request. Running the second alone works; running the pair fails. I run them in the opposite order and inspect setup and teardown to find the shared state.
+
+Distinct fixture keys can help confirm the cause, but the final fix should still manage the test environment correctly. I check active and draft identities separately, release supported resources and reset doubles as required. A fixture for an active instance is not automatically a valid draft fixture. An order-dependent pass is weak evidence of correct draft behavior.
 
 **Avoid this mistake:** A test that depends on execution order is unreliable evidence for draft behavior.
 
@@ -181,15 +189,15 @@ Two deliberately different inputs exercise the real Submit rule while a separate
 
 **Strong answer criteria:**
 
-- Tracks complete transactional identity
-- Resets supported resources
-- Checks ordering independence
+- Distinguishes active and draft identities
+- Resets the test resources correctly
+- Proves tests do not depend on their order
 
-**Verification evidence:** Run the isolated tests, both orders and the suite; retain evidence of deterministic results.
+**Verification evidence:** Run the tests separately, in both orders and in the suite. Keep results showing they behave consistently.
 
 **Read and verify this answer:**
 
-- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Draft lifecycle</summary>
@@ -221,28 +229,30 @@ The desk represents the current transactional buffer; the draft cabinet represen
 
 **Level:** Senior
 
-**Short answer:** Use independent consumers or sessions that read the same initial version, then perform conflicting updates in a controlled order. Assert that the first permitted write succeeds and the stale second precondition is rejected without lost data. For draft, separately test the exclusive-lock and total-ETag situations. A sequential test that rereads after every update never exercises a stale writer.
+**Short answer:** I use two independent clients that read the same version before either saves. The first update should succeed; the second should be rejected when it sends the old ETag. I check that the first user's data remains intact. Draft locks and the draft total ETag need separate tests because they protect different parts of the editing flow.
 
-**Example and follow-up:** Alice and Ben read the same entity instance with its entity ETag. Alice updates that instance successfully; Ben submits an update to that same instance using the stale ETag and must not overwrite it. Separately test child-only active changes against the configured draft total ETag when resuming an expired draft lock. Keep entity-level conditional update and draft-resume concurrency assertions distinct.
+**Reasoning and example:** Alice and Ben both read one entity instance and keep its ETag. Alice changes it and saves. Ben then updates that same instance with his old token. The expected result is a stale-version rejection, not an overwrite. If Ben rereads first, he gets the new token and the test no longer exercises a stale writer.
+
+For draft, I separately test editing while an exclusive lock is valid and resuming after it expires. A child-only change to active data should be considered by the configured draft total ETag check. That is different from the entity-level If-Match test. Two updates inside one shared transaction do not reproduce two users with independent versions.
 
 **Avoid this mistake:** Two updates in one shared transaction are not a realistic two-user concurrency test.
 
 **Interviewer follow-ups:**
 
-- How do you control the interleaving?
-- Which field protects the whole draft object?
+- Which token protects this entity update?
+- What separate case should the draft total ETag test cover?
 
 **Strong answer criteria:**
 
-- Uses independent contexts
-- Creates a deliberately stale request
-- Asserts unchanged data after rejection
+- Uses independent clients or sessions
+- Sends an intentionally old version token
+- Checks that rejected updates leave data intact
 
-**Verification evidence:** Capture request versions, responses and final values for the orchestrated conflicting sessions.
+**Verification evidence:** Record each client version, request, response and final value from the controlled two-user test.
 
 **Read and verify this answer:**
 
-- [SAP total ETag and draft concurrency](https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/f5e8548c241b43ab82bceec030b5dc9a.html) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP total ETag and draft concurrency](https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/f5e8548c241b43ab82bceec030b5dc9a.html) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Two ETag boundaries</summary>
@@ -274,9 +284,11 @@ Alice and Ben read version 7. Alice updates successfully, producing version 8. B
 
 **Level:** Senior
 
-**Short answer:** Check the actual operation response and a fresh read of the authoritative BO state. If the backend value is wrong, inspect derivation triggers and transactional reads. If the backend is correct, inspect the action result, side-effect declarations, requested fields and consumer support. Avoid adding a second calculation in the UI that conceals missing backend consistency. Test the real deployed metadata rather than only a local preview.
+**Short answer:** I first read the business object again to see whether the server saved the right value. If the value is wrong there, I investigate the backend calculation. If it is right, I check what the UI refreshes after the action. The action result, side effects and deployed metadata must tell the client what changed.
 
-**Example and follow-up:** Changing an item updates the server total but the header remains stale. Compare a direct read, a new UI session and the original session network requests. The correction may be a targeted refresh contract, not another commit or a full-page reload.
+**Reasoning and example:** An item quantity changes and the server recalculates the order total, but the original Fiori screen still shows the old amount. I compare a direct read, a new UI session and the original session's network requests. If both fresh reads show the correct total, the likely problem is that the original screen did not request the changed field.
+
+I inspect the supported side-effect declaration and action result, then test a targeted refresh with the actual deployed metadata. I do not add a second total calculation in the browser to hide a backend problem. Another commit or a full-page reload may mask the symptom without fixing the missing refresh behavior.
 
 **Avoid this mistake:** A page reload workaround does not explain whether the backend or refresh contract was defective.
 
@@ -287,15 +299,15 @@ Alice and Ben read version 7. Alice updates successfully, producing version 8. B
 
 **Strong answer criteria:**
 
-- Establishes the authoritative value
-- Traces metadata and network behavior
-- Keeps business calculation server-side
+- Checks the value actually held by the backend
+- Inspects metadata and network requests
+- Keeps the business calculation on the server
 
-**Verification evidence:** Record action and follow-up reads with before/after values in the actual consumer.
+**Verification evidence:** Record the action and later reads, showing values before and after in the actual app.
 
 **Read and verify this answer:**
 
-- [SAP RAP side effects](https://help.sap.com/docs/abap-cloud/abap-rap/side-effects) - Read the field/action trigger and refresh-target contract; verify the actual UI consumer support.
+- [SAP RAP side effects](https://help.sap.com/docs/abap-cloud/abap-rap/side-effects) - Check which field or action triggers a refresh, what gets refreshed and whether the actual UI supports it.
 
 <details>
 <summary>Visual: Side effects and stale UI diagnosis</summary>
@@ -314,9 +326,11 @@ Use the observed backend value to choose the next debugging branch.
 
 **Level:** Senior
 
-**Short answer:** Decompose the request into data selection, total count, expansion, authorization and any ABAP or remote enrichment. Use available traces and representative parameters to measure rows, calls, database time and application time. Optimize the observed bottleneck while preserving query and security semantics. Restrict unnecessary fields or expansions where the contract permits, and verify changes with the same workload rather than an unrelated microbenchmark.
+**Short answer:** I measure where the request spends its time: selecting rows, counting, loading children or doing extra ABAP and remote work. I use representative data and the affected user's permissions. Then I change the largest proven cost and repeat the same test. I preserve filtering, count correctness and access checks while reducing unnecessary work.
 
-**Example and follow-up:** A 20-row page triggers an expensive count across millions of authorized records plus child expansion. Removing a SELECT from one handler may be irrelevant. Compare page-only, count-only and expanded requests, including a restricted user whose authorization predicate changes the plan.
+**Reasoning and example:** A page shows only 20 orders, but its count scans millions of allowed records and its expansion loads many child items. I compare a page-only request, a request with count and one with expansion. Traces show database time, application time, rows and any remote calls, so I can see which addition causes the delay.
+
+I repeat the measurement with a restricted user because authorization filtering can change the database work. If expansion is the issue, the consumer may not need every child on the first screen. If count dominates, changing a small handler calculation will do little. I compare before and after using the same parameters and volume.
 
 **Avoid this mistake:** Do not optimize the shortest visible SELECT before finding the dominant request cost.
 
@@ -327,15 +341,15 @@ Use the observed backend value to choose the next debugging branch.
 
 **Strong answer criteria:**
 
-- Breaks down the actual request
-- Measures representative volume and identity
-- Preserves semantics while optimizing
+- Measures the separate parts of the request
+- Uses realistic data and user permissions
+- Keeps correct results and access checks while improving speed
 
-**Verification evidence:** Retain comparable request traces and latency/row/call measurements before and after the change.
+**Verification evidence:** Keep comparable before-and-after traces showing total time, rows and calls.
 
 **Read and verify this answer:**
 
-- [SAP SQL analysis in ADT](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/analyzing-sql-statements) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP SQL analysis in ADT](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/analyzing-sql-statements) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Filtering, paging and total count</summary>
@@ -367,9 +381,11 @@ The same authorized logical set contains IDs 2, 4, and 6. Counting it returns th
 
 **Level:** Senior
 
-**Short answer:** Look for supported bulk reads, selective remote filters or bounded prefetch keyed by the requested result set. Consider a governed cache or read model only with explicit freshness and scope rules. Avoid fetching the whole remote dataset to save call overhead. Propagate partial and transient failures honestly, protect credentials and tenant boundaries, and define an upper bound on work per request.
+**Short answer:** I look for a supported bulk request instead of one remote call per row. I fetch only the references needed for the current result and limit request size. A cache is an option only with clear freshness and access rules. I still handle missing results, throttling and partial failures rather than hide them behind a faster response.
 
-**Example and follow-up:** One list page of 50 items makes 51 remote calls. A bulk endpoint can retrieve the needed reference data in one request, but may return partial failures. Test missing references, duplicate keys and service throttling, not only the happy-path call count.
+**Reasoning and example:** A page reads 50 orders and then calls a remote service once for each supplier. Together with the original read, that is 51 calls. A supported bulk endpoint may fetch the needed supplier references in one request. I remove duplicate keys and keep the batch within the service's limits instead of downloading every supplier.
+
+The bulk response may still contain missing references or individual errors. I test those cases and rate limits, not just the reduced call count. If caching is needed, I define how long values remain valid and which user or tenant may reuse them. A shared cache must not expose one customer's data to another.
 
 **Avoid this mistake:** An unbounded cache can trade latency for stale or cross-user data leakage.
 
@@ -380,15 +396,15 @@ The same authorized logical set contains IDs 2, 4, and 6. Counting it returns th
 
 **Strong answer criteria:**
 
-- Uses bounded bulk access
-- Defines freshness and scope
-- Handles partial and throttled responses
+- Uses bulk requests with size limits
+- Defines cache freshness and who may reuse data
+- Handles missing results and rate limits
 
-**Verification evidence:** Measure remote-call count and transferred rows while testing missing data and rate limits.
+**Verification evidence:** Measure remote calls and transferred rows, including tests for missing data and rate limits.
 
 **Read and verify this answer:**
 
-- [SAP: Implementing an Unmanaged Query](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-unmanaged-query) - Check the supported request contract and target release. Scenario-specific bulk access and caching decisions still need their own correctness and performance evidence.
+- [SAP: Implementing an Unmanaged Query](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-unmanaged-query) - Check the supported request options and target release. Test bulk reads and caching for correct results, access control and speed in your own scenario.
 
 <details>
 <summary>Visual: Calculation placement and query semantics</summary>
@@ -407,11 +423,13 @@ Use the requirement to decide where a value must exist before filtering, orderin
 
 **Level:** Senior
 
-**Short answer:** Separate transported repository artifacts from required configuration, communication setup, identities, roles, endpoint exposure and frontend deployment. Verify dependency order and the exact active source/version in the target. A published local service binding or preview in development does not establish a consumable production endpoint. The handoff should identify owners and verifiable readiness checks for each non-code dependency.
+**Short answer:** A transport moves code, but the service may also need configuration, roles, communication setup and frontend deployment. I verify the active version and dependencies in the target system. The handoff should name these requirements and their owners. A working development preview or successful import does not prove that the real production user can use the service.
 
-**Example and follow-up:** The behavior activates, but an outbound destination or communication arrangement is missing. Another issue is a target role not granting the service. Diagnose using the failure boundary and configuration evidence; do not change business code until the deployed source and configuration are reconciled.
+**Reasoning and example:** The RAP behavior activates after import, but an action fails because the destination or communication arrangement is missing. In another system, the endpoint exists but the intended user's role does not grant access. These are different failures from a defect in the business calculation, so I inspect the actual target setup before changing code.
 
-**Avoid this mistake:** A green transport import is not end-to-end service acceptance.
+The handoff should list the code and non-code prerequisites, installation order and a small end-to-end check. I verify the imported revision, service exposure, communication settings and consuming identity. Each item needs a responsible person and an observed result. Publishing a binding locally in development does not establish a usable production endpoint.
+
+**Avoid this mistake:** A successful transport import does not prove that the service works for its real users.
 
 **Interviewer follow-ups:**
 
@@ -420,15 +438,15 @@ Use the requirement to decide where a value must exist before filtering, orderin
 
 **Strong answer criteria:**
 
-- Inventories code and configuration separately
-- Checks active target state
-- Assigns operational owners
+- Lists code and required configuration separately
+- Checks the version and setup in the target
+- Names who owns each operating requirement
 
-**Verification evidence:** Use a target readiness checklist with actual endpoint, role, communication and smoke-test outcomes.
+**Verification evidence:** Record actual endpoint, role, communication and service-test results in the target readiness checklist.
 
 **Read and verify this answer:**
 
-- [SAP RAP service binding](https://help.sap.com/docs/abap-cloud/abap-rap/service-binding) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP service binding](https://help.sap.com/docs/abap-cloud/abap-rap/service-binding) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Testing scope and evidence</summary>
@@ -460,11 +478,13 @@ Review eligibility, behavior and delivery as separate evidence gates.
 
 **Level:** Senior
 
-**Short answer:** Treat a new mandatory parameter as a potential breaking contract change. Assess existing consumers and choose a compatible optional/defaulted path only if its business meaning is valid; otherwise introduce a deliberate successor operation or version under the supported lifecycle. Keep old behavior operational during migration and provide deprecation guidance. Validate generated clients, metadata-driven UIs and non-UI consumers separately.
+**Short answer:** A new required parameter can break every existing caller that does not send it. I check whether a valid optional value or default can preserve old behavior. If not, I plan a new operation or version and a controlled migration. The change must meet the real business rule while giving consumers an explicit path to update.
 
-**Example and follow-up:** An approval action now requires a legal justification that old clients cannot supply. An empty default may violate the real business rule. Plan a transition with a measurable consumer migration target rather than silently accepting invalid data or breaking every caller at once.
+**Reasoning and example:** An approval action now needs a legal justification. Old clients have no field for it. Supplying an empty default would keep calls running but might violate the new requirement, so technical compatibility alone is not enough. I agree a supported transition that respects when the new business rule must take effect.
 
-**Avoid this mistake:** Do not call a signature change compatible merely because the server activates.
+That may involve a successor action, an announced retirement date and updates to both UI and integration clients. I test generated clients, metadata-driven screens and direct API consumers separately. I track actual use of the old operation before retiring it where the policy permits a transition. Successful server activation does not prove that existing requests still work.
+
+**Avoid this mistake:** A changed action can activate successfully while still breaking existing callers.
 
 **Interviewer follow-ups:**
 
@@ -473,15 +493,15 @@ Review eligibility, behavior and delivery as separate evidence gates.
 
 **Strong answer criteria:**
 
-- Identifies the breaking semantic change
-- Chooses an explicit transition
-- Verifies existing consumers
+- Explains why old callers may break
+- Plans a clear migration
+- Tests existing consumers
 
-**Verification evidence:** Run old/new consumer contract tests and track observed usage before retiring the old operation.
+**Verification evidence:** Run old and new client tests, and track use of the old operation before retiring it.
 
 **Read and verify this answer:**
 
-- [SAP RAP service binding](https://help.sap.com/docs/abap-cloud/abap-rap/service-binding) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP service binding](https://help.sap.com/docs/abap-cloud/abap-rap/service-binding) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: RAP release and consumption gates</summary>
@@ -500,28 +520,30 @@ Review eligibility, behavior and delivery as separate evidence gates.
 
 **Level:** Senior
 
-**Short answer:** Treat the outcome as uncertain until reconciled using stable correlation. Do not blindly resubmit a non-idempotent business action. Identify which system owns each committed effect and use the documented status query, idempotency contract or compensation process. Preserve a durable recovery record and route unresolved cases to an owner. A local rollback cannot erase a remote commit.
+**Short answer:** A timeout leaves the result unknown until I check it. I use the request's stable reference to find the remote approval before submitting again. If it exists, recovery should reuse that result. If it cannot be determined, the case needs a visible status and an owner. Local rollback cannot erase an approval already committed remotely.
 
-**Example and follow-up:** The remote workflow created an approval instance, but its response was lost. A retry should find or reuse that instance rather than create another. Include a later duplicate callback and an approval referring to an outdated local version.
+**Reasoning and example:** The remote workflow creates approval 9001, but its response never reaches the RAP caller. A new creation request could start approval 9002 for the same submission. I query by the original reference or use the service's documented idempotency rule so a retry returns or reuses the first result. The local app records the resolved workflow link.
+
+If the remote outcome cannot be queried, I keep a durable recovery record and use the agreed operator or compensation procedure. I also test a late duplicate callback and a callback for a request version that has since changed. A delayed response must not approve stale local data or repeat an already completed decision.
 
 **Avoid this mistake:** A timeout is not evidence that the other system performed no work.
 
 **Interviewer follow-ups:**
 
-- What is the stable correlation key?
-- Who resolves an outcome that cannot be queried?
+- Which stable reference identifies the original request?
+- Who investigates when the remote outcome cannot be queried?
 
 **Strong answer criteria:**
 
-- Separates unknown from failed outcome
-- Reconciles before unsafe retry
-- Handles duplicate and stale callbacks
+- Distinguishes unknown from failed
+- Finds the original result before unsafe retry
+- Handles duplicate and outdated callbacks
 
-**Verification evidence:** Simulate lost responses and verify one intended business effect plus a visible recoverable status.
+**Verification evidence:** Simulate a lost response. Verify one intended business effect and a visible status from which recovery is possible.
 
 **Read and verify this answer:**
 
-- [SAP RAP business-object contract](https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP business-object contract](https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Local and remote transaction boundaries</summary>
@@ -566,65 +588,71 @@ The local application durably records intent before separately owned delivery. T
 
 **Level:** Senior
 
-**Short answer:** Distinguish transactional business audit data from operational diagnostics and user-facing messages. Data written in the same rolled-back transaction may disappear, while independent commits from behavior code violate transaction ownership. Use supported logging/monitoring facilities with documented lifecycle and privacy behavior. Correlate failures without exposing secrets or persisting a false successful business event.
+**Short answer:** I separate business audit records from technical diagnostics and user messages. A log written inside a rolled-back transaction may disappear too. I use supported monitoring for diagnostics that must survive, rather than add a commit inside RAP behavior code. Logs should identify the failed request without exposing secrets or claiming that a rejected business change succeeded.
 
-**Example and follow-up:** A validation rejects an order and REPORTED provides a user message. Support needs a correlation to an observed request failure. Decide what belongs in the service/application monitoring layer and what must be saved only alongside a successful business transition.
+**Reasoning and example:** An order fails validation. FAILED identifies the rejection and REPORTED supplies the relevant message, but no order is saved. Support still needs to connect that user error to the failed request. I use the available service or application monitoring facilities with their documented save and privacy behavior for that diagnostic purpose.
+
+A business audit entry saying 'order submitted' has a different meaning and should accompany a successful business transition, not survive a rejected submission as a false fact. I test success and rollback and inspect which records remain. Adding COMMIT WORK in a handler just to keep a log would break RAP's ownership of transaction completion.
 
 **Avoid this mistake:** Do not add COMMIT WORK inside a handler just to preserve a log entry.
 
 **Interviewer follow-ups:**
 
-- Should this record survive a rollback?
-- Is it diagnostic evidence or a business audit event?
+- Should this record remain after rollback?
+- Does it describe a technical failure or a completed business event?
 
 **Strong answer criteria:**
 
-- Separates log purposes and lifetimes
-- Respects RAP completion ownership
-- Redacts sensitive diagnostic content
+- Separates business audit from technical diagnostics
+- Lets RAP control transaction completion
+- Keeps sensitive values out of logs
 
-**Verification evidence:** Test success and rollback, then inspect which messages and logs survive through supported mechanisms.
+**Verification evidence:** Test success and rollback, then inspect which supported messages and logs remain.
 
 **Read and verify this answer:**
 
-- [SAP RAP business-object contract](https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP business-object contract](https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 ## OPS-13 A production incident starts after a release. How do you contain it without making the data worse?
 
 **Level:** Senior
 
-**Short answer:** Establish affected scope, current version and the failing transaction boundary before changing code or replaying messages. Stop or limit the damaging path through authorized operational controls, preserve diagnostic evidence and assess already committed effects. Reconcile data and queues before choosing rollback, forward fix or controlled replay. A code rollback is not a general data rollback.
+**Short answer:** I first limit the harmful processing through authorized operational controls and preserve the evidence. Then I identify the affected records and what has already committed. I choose a code fix, rollback or replay only after understanding those effects. Reverting code does not reverse business data, and replaying a backlog can repeat the damage.
 
-**Example and follow-up:** A new Submit action duplicates downstream approvals. Disable the affected scheduled initiation if authorized, retain correlations and identify duplicate effects. Repair idempotency and reconcile existing approvals before resuming a backlog, with a measured recovery window.
+**Reasoning and example:** A new Submit implementation starts duplicate remote approvals. I stop the affected scheduled initiation through the authorized control and record the release, request references and time window. Then I compare local requests with the remote approvals to find what was already created. Simply deploying the old code would not remove those duplicates.
+
+After fixing duplicate handling, I test recovery on a controlled sample and reconcile existing approvals using supported business procedures. Only then do I resume the backlog, watching error counts and the rate of processing. The recovery plan needs a clear condition for resuming and an owner for unresolved records. Replaying everything before the fix could create even more approvals.
 
 **Avoid this mistake:** Do not rerun the whole backlog while the duplicate-creation defect remains active.
 
 **Interviewer follow-ups:**
 
-- What effects are already durable?
-- What proves it is safe to resume processing?
+- Which business changes have already been saved?
+- What result proves processing can safely resume?
 
 **Strong answer criteria:**
 
-- Contains before replaying
-- Separates code from data recovery
-- Defines a measurable resume criterion
+- Stops harmful work before replaying it
+- Repairs code and business data separately
+- Defines when processing can safely resume
 
-**Verification evidence:** Produce an incident timeline, affected-record reconciliation and a controlled post-fix replay result.
+**Verification evidence:** Keep an incident timeline, a list of checked affected records and the result of a controlled replay after the fix.
 
 **Read and verify this answer:**
 
-- [SAP RAP business-object contract](https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP business-object contract](https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 ## OPS-14 What belongs in a RAP release gate beyond a passing ATC run?
 
 **Level:** Senior
 
-**Short answer:** Combine static findings with contract and behavior tests, relevant authorization cases, concurrency and rollback checks, representative performance evidence, dependency/API compatibility and target configuration readiness. Scale the gate to the changed risks. ATC can identify configured code issues but does not prove all business invariants or real integration behavior. Record unexecuted checks explicitly rather than converting missing evidence into a pass.
+**Short answer:** ATC is one check, not proof that the feature works. I also test the business rules, failures, permissions and integrations affected by the change. Changes involving saves or concurrency need matching rollback and conflict tests. I record the version and environment for each result, and clearly mark anything not run rather than count it as passed.
 
-**Example and follow-up:** A change touches an action signature and an approval event. Required evidence differs from a label-only UI change: include old consumer compatibility, duplicate delivery and negative authorization. Tie each check to the relevant source revision and environment.
+**Reasoning and example:** A release changes an action parameter and publishes a new approval event. I test existing callers against the new action, verify the event after a successful save and check duplicate delivery. I also test a user who must not submit. These checks address the risks of this change; they are more useful than repeating an unrelated checklist.
 
-**Avoid this mistake:** A universal checklist is not a substitute for checking the risks actually changed.
+For a label-only adjustment, the required evidence would be much smaller. For this release, I also verify relevant performance, dependency compatibility and target configuration. ATC can find issues covered by its configured checks, but it cannot prove every business rule or external connection. The release record should show executed results, pending checks and their owners.
+
+**Avoid this mistake:** Choose tests for the failure risks this change creates; a generic checklist alone is not enough.
 
 **Interviewer follow-ups:**
 
@@ -633,16 +661,16 @@ The local application durably records intent before separately owned delivery. T
 
 **Strong answer criteria:**
 
-- Builds a risk-based gate
-- Separates static and runtime evidence
-- Records versions and pending checks
+- Chooses checks for the risks of this change
+- Separates source checks from runtime tests
+- Records tested versions and pending checks
 
-**Verification evidence:** Present a concise release matrix linking changed behavior to executed results, owners and remaining risks.
+**Verification evidence:** Link each changed behavior to actual test results, responsible people and remaining risks.
 
 **Read and verify this answer:**
 
-- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
-- [SAP RAP feature and release overview](https://help.sap.com/docs/abap-cloud/abap-rap/what-s-new) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
+- [SAP RAP feature and release overview](https://help.sap.com/docs/abap-cloud/abap-rap/what-s-new) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Testing scope and evidence</summary>
@@ -674,29 +702,31 @@ Review eligibility, behavior and delivery as separate evidence gates.
 
 **Level:** Senior
 
-**Short answer:** Treat coverage as a reachability signal, not proof of correct behavior. Identify critical invariants and failure modes, then add assertions that would fail if those rules were broken. Cover rejected operations, message identity, transactional cleanup and unintended side effects. Avoid adding dummy executable code or tests that merely mirror assignments. Use coverage to locate blind spots after meaningful test design.
+**Short answer:** Coverage tells me which statements ran, not whether the results were correct. I add checks that fail when an important business rule is broken. For RAP, that can include rejected identities, messages, saved state and unwanted side effects. I then use coverage to find remaining gaps instead of adding meaningless code or repeating happy-path calls.
 
-**Example and follow-up:** A test executes a validation but never checks whether the invalid instance is rejected. Temporarily remove the rejection logic: if the test stays green, it does not prove the rule. Improve the assertion rather than increasing the number of similar happy-path calls.
+**Reasoning and example:** A test executes a validation for a missing account assignment and reports high coverage. However, it never checks FAILED, the message target or whether the invalid request can be saved. If I temporarily remove the rejection and the test still passes, it does not prove the validation works. I strengthen those assertions and restore the implementation.
 
-**Avoid this mistake:** High statement coverage can coexist with a broken business contract.
+I apply the same idea to successful processing: the test must check the expected state and absence of unintended changes. Coverage remains useful for locating paths we never executed, but the percentage is not the acceptance criterion by itself. A smaller set of failure-sensitive tests can provide stronger evidence than many calls without meaningful checks.
+
+**Avoid this mistake:** High statement coverage can still miss a broken business rule.
 
 **Interviewer follow-ups:**
 
-- Would the test fail if the rule were removed?
-- Which invariant is more important than the percentage?
+- Would the test fail if the business check were removed?
+- Which business rule matters more than increasing the coverage percentage?
 
 **Strong answer criteria:**
 
-- Prioritizes observable behavior
-- Uses fault-sensitive assertions
-- Reports coverage without overstating evidence
+- Checks meaningful outcomes
+- Uses tests that fail when the rule is broken
+- Does not treat coverage as proof of correctness
 
-**Verification evidence:** Demonstrate tests that fail for deliberately broken rejection or persistence behavior, then restore the implementation.
+**Verification evidence:** Demonstrate a test failing when rejection or saving is deliberately broken, then restore the code.
 
 **Read and verify this answer:**
 
-- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
-- [SAP transactional buffer double support](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/transactional-buffer-double-support) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
+- [SAP transactional buffer double support](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/transactional-buffer-double-support) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Testing scope and evidence</summary>
@@ -728,28 +758,30 @@ Two deliberately different inputs exercise the real Submit rule while a separate
 
 **Level:** Senior
 
-**Short answer:** Inventory the actual used APIs, extension contracts, classifications and target-release changes. Prioritize critical business paths and known exceptions, then run focused regression and consumer tests in a representative target environment. Verify generated metadata, authorization, draft behavior, performance and required configuration where affected. A previously released API reduces a category of risk but does not remove the need to test your own assumptions and integration.
+**Short answer:** I list the APIs and extension points the application actually uses, then check what changes in the target release. I prioritize important business flows and known exceptions. Tests run against a representative target system and include affected consumers, permissions and behavior. Released APIs reduce some upgrade risk, but they do not remove the need to test our application.
 
-**Example and follow-up:** The extension uses a classic dependency behind a wrapper and a released service consumed externally. Give each a named owner and an upgrade test strategy. A deprecated successor path may require consumer migration before the old dependency can be retired.
+**Reasoning and example:** An extension calls a classic dependency through a wrapper and also exposes a released service to another system. I give each dependency an owner and check its target-release status, including any deprecation or successor. A wrapper does not make an underlying upgrade risk disappear. Existing external clients need testing against the upgraded service too.
+
+I then run focused regression tests for the affected metadata, draft behavior, authorization, performance and configuration. If an API must be replaced, the plan includes moving consumers before retiring the old path. Last year's ATC result is not evidence for this year's target release. I retain the tested versions and actual results for the important flows.
 
 **Avoid this mistake:** Do not treat last year's clean ATC report as evidence for the new target release.
 
 **Interviewer follow-ups:**
 
-- Which dependencies drive the upgrade risk?
-- What behavior did your code assume beyond the documented contract?
+- Which dependencies create the biggest upgrade risk?
+- Does the application assume behavior the API documentation does not promise?
 
 **Strong answer criteria:**
 
-- Uses an actual dependency inventory
-- Tests target-specific risks
-- Tracks exception and deprecation owners
+- Lists actual API and extension dependencies
+- Tests risks for the target release
+- Assigns owners for exceptions and deprecated APIs
 
-**Verification evidence:** Record target versions, dependency classification and regression results for the highest-impact flows.
+**Verification evidence:** Record target versions, dependency classifications and regression results for the most important flows.
 
 **Read and verify this answer:**
 
-- [SAP RAP feature and release overview](https://help.sap.com/docs/abap-cloud/abap-rap/what-s-new) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP feature and release overview](https://help.sap.com/docs/abap-cloud/abap-rap/what-s-new) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Testing scope and evidence</summary>
@@ -768,28 +800,30 @@ The widening base suggests many focused checks, but there is no mandatory numeri
 
 **Level:** Senior
 
-**Short answer:** Partition work into bounded, restartable units with stable business identities and checkpoints. Use supported background/application-job capabilities for the target environment rather than assuming classic task APIs are available. Control parallelism, database contention and remote limits. Define which units commit independently and how uncertain outcomes are reconciled. Progress reporting should distinguish processed, failed and pending items.
+**Short answer:** I split the work into limited-size packages that can restart safely. Each package has stable record IDs, a clear commit boundary and recorded progress. I use background or application-job features supported by the target system and limit parallel work. Recovery checks what actually completed, including changes that may have saved just before the job failed.
 
-**Example and follow-up:** A pricing recalculation finishes the first 20 partitions before failure. A restart should skip safely completed work and detect conflicting newer updates. Test a crash between the business effect and checkpoint handling so the design does not rely on an unproven exactly-once assumption.
+**Reasoning and example:** A pricing job finishes 20 packages and crashes during the next. On restart, it should not blindly repeat the completed work. I use recorded progress plus stable business references to distinguish completed, failed, pending and uncertain results. I also check whether a user edited a record after the original calculation so recovery does not overwrite newer data.
+
+A critical test crashes between the business update and checkpoint handling. The design must detect the existing effect or repeat it safely; a checkpoint alone may not prove exactly-once execution. I tune package size and concurrency against database locks and remote limits. Moving one huge loop into a background job does not solve its restart problem.
 
 **Avoid this mistake:** Moving a huge synchronous loop into a background job does not solve its transaction or restart design.
 
 **Interviewer follow-ups:**
 
-- What is one independently recoverable unit?
-- How do newer user edits interact with retry?
+- What is one package that can recover independently?
+- How does recovery avoid overwriting newer user changes?
 
 **Strong answer criteria:**
 
-- Bounds work and contention
-- Defines durable restart semantics
-- Uses supported cloud execution APIs
+- Limits package size and competing work
+- Defines how to find completed work after a crash
+- Uses supported cloud job features
 
-**Verification evidence:** Inject mid-partition failures and verify recovery, resource limits and final reconciliation.
+**Verification evidence:** Simulate a failure inside a package, then verify restart, resource limits and final business totals.
 
 **Read and verify this answer:**
 
-- [SAP application job catalog and template](https://help.sap.com/docs/btp/sap-business-technology-platform/creating-job-catalog-entry-and-job-template-in-adt) - Read the supported job execution model, then design bounded units and restart checkpoints for the workload.
+- [SAP application job catalog and template](https://help.sap.com/docs/btp/sap-business-technology-platform/creating-job-catalog-entry-and-job-template-in-adt) - Check how supported jobs run, then split the work into limited-size packages with clear restart points.
 
 <details>
 <summary>Visual: Parallel processing inside a job</summary>
@@ -808,9 +842,11 @@ A coordinator schedules bounded independent work and collects explicit outcomes;
 
 **Level:** Senior
 
-**Short answer:** Separate what was inspected, prepared and actually executed. A local source review can identify contract defects and propose tests, but cannot establish activation, real authorization, ATC results or measured SAP runtime behavior. Provide a precise target execution handoff with expected outcomes and dependencies. This is stronger evidence than inventing a pass or quoting performance numbers from a different environment.
+**Short answer:** I say clearly what I reviewed, what I prepared and what I actually ran. Local review can find defects and produce useful tests, but it cannot prove SAP activation or real runtime behavior. I provide exact target-system steps and expected results. Missing evidence stays pending; I do not replace it with a guessed pass or unrelated performance number.
 
-**Example and follow-up:** For a RAP approval change, supply positive/negative EML cases, a two-session concurrency script, role prerequisites and a service smoke test. State the relevant source revision and what must be returned from the target before claiming acceptance.
+**Reasoning and example:** For a RAP approval change, I can review the source and prepare tests for a valid submission, a denied user and a rejected save. I can also provide a two-session concurrency scenario and a service smoke test. The handoff states which source revision to transfer, which roles are needed and what each result should show.
+
+The person with target access then runs syntax and activation checks, ATC and the relevant tests, returning logs tied to that revision and environment. Until then, prepared test code is not an executed result. A UI running against mocks also does not prove integration with RAP. Clear limits make the evidence more useful, not less credible.
 
 **Avoid this mistake:** Do not present prepared test code or a mocked UI as successful SAP integration.
 
@@ -821,15 +857,15 @@ A coordinator schedules bounded independent work and collects explicit outcomes;
 
 **Strong answer criteria:**
 
-- Labels evidence honestly
-- Gives executable acceptance scenarios
-- Ties results to source and environment
+- Clearly separates prepared and executed work
+- Provides runnable steps and expected results
+- Links results to the source revision and environment
 
-**Verification evidence:** Provide a prepared/executed/pending matrix with specific acceptance criteria and accountable owners.
+**Verification evidence:** List prepared, executed and pending checks, with expected outcomes and the person responsible for each.
 
 **Read and verify this answer:**
 
-- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the framework contract to design the proposed evidence; no runtime result is claimed here.
+- [SAP RAP test frameworks and boundaries](https://help.sap.com/docs/abap-cloud/abap-rap/used-frameworks-and-tools) - Use the documented framework rules to design these checks. These examples are proposed tests, not claimed SAP runtime results.
 
 <details>
 <summary>Visual: Testing scope and evidence</summary>

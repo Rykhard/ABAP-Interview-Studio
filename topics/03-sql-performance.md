@@ -8,59 +8,67 @@ Start with correct result semantics, then measure execution cost. Be ready to ex
 
 **Level:** Core
 
-**Short answer:** ABAP SQL provides database access integrated with ABAP types and supported platform semantics. CDS defines reusable data models with additional semantics. Native SQL exposes database-specific capabilities with more responsibility on the developer. AMDP manages database procedures through ABAP repository objects, commonly using SQLScript on HANA. I choose the simplest supported option that meets the requirement.
+**Short answer:** ABAP SQL is the usual way to read and change database data from ABAP. CDS defines reusable data models and queries. Native SQL uses database-specific SQL, so the developer must handle more details. AMDP manages database procedures, commonly written in HANA SQLScript, through ABAP objects. I start with the simplest supported option and check client, authorization and release rules.
 
-**Example and follow-up:** A filtered aggregate usually needs ABAP SQL or CDS, not a database procedure. A complex HANA-specific operation may justify AMDP after measurement. Release availability, client handling, authorization, and dependency release status must be checked for the chosen path.
+**Reasoning and example:** A report needs totals for one company and month. ABAP SQL may express the whole selection and sum clearly. CDS becomes useful when the same data model should be reused by several consumers. Neither requirement automatically needs a database procedure.
+
+If a necessary calculation cannot be expressed well in supported ABAP SQL or CDS, I consider AMDP and measure the result. I also check which dependencies are allowed in the target environment. Writing SQLScript inside an ABAP-managed method does not turn it into ABAP SQL. In particular, direct table reads must not be assumed to apply the access control of a CDS entity that would otherwise protect those records.
 
 **Avoid this mistake:** ABAP syntax around an AMDP method does not turn its SQLScript body into ABAP SQL or automatically apply CDS access control.
 
 **Read and verify this answer:**
 
-- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Verify the database access semantics and measure on the target system before choosing an optimization.
-- [SAP AMDP use and selection guidance](https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/example-amdp-procedure-implementations) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
+- [SAP AMDP use and selection guidance](https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/example-amdp-procedure-implementations) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 ## SQL-02 What is the empty-table trap in FOR ALL ENTRIES?
 
 **Level:** Core
 
-**Short answer:** If the driver internal table is empty, FOR ALL ENTRIES can cause the WHERE condition to be ignored and read all rows in scope. I guard the selection with a nonempty check and define the empty-input result explicitly. I also consider duplicate driver values, result duplicate elimination, and whether a join expresses the requirement better.
+**Short answer:** An empty FOR ALL ENTRIES driver is dangerous: the WHERE condition is ignored, so the query can read all rows in scope. I check that the driver is not empty before selecting. I also decide how duplicates should be handled. FOR ALL ENTRIES removes duplicate result rows, which can matter when selected columns do not uniquely identify records.
 
-**Example and follow-up:** For lt_customer_ids, an empty input should usually produce an empty result rather than all customers. Deduplicating repeated driver keys can reduce work. Because duplicate result rows are eliminated, omitting distinguishing columns may collapse records the application intended to keep separate.
+**Reasoning and example:** A report receives a list of customer IDs and should read their orders. If the list is empty, I normally return an empty result without running the selection. Adding another condition in the same WHERE clause is not a replacement for that guard: the empty-driver rule still applies.
+
+I can remove repeated driver keys to reduce unnecessary work, but I separately check the output. Two different orders may have the same selected customer and amount. If I omit the order identity, result duplicate elimination can collapse those rows. I test empty input, repeated IDs and distinct records with equal displayed values before deciding the query is correct.
 
 **Avoid this mistake:** An empty FAE driver does not mean no rows; a separate filter in the same WHERE clause is not a safe replacement for the guard.
 
 **Read and verify this answer:**
 
-- [SAP FOR ALL ENTRIES selection semantics](https://help.sap.com/saphelp_em900/helpdata/en/fc/eb3a1f358411d1829f0000e829fbfe/content.htm) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP FOR ALL ENTRIES selection semantics](https://help.sap.com/saphelp_em900/helpdata/en/fc/eb3a1f358411d1829f0000e829fbfe/content.htm) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 ## SQL-03 When would you use a join instead of FOR ALL ENTRIES?
 
 **Level:** Core
 
-**Short answer:** I favor a join when related database sources and their matching rules can be expressed clearly in one set-based operation. FOR ALL ENTRIES can be useful when driver data already exists in ABAP and the release or access constraints support it. Neither is universally faster; I compare semantics, transferred rows, buffering, and the measured execution plan.
+**Short answer:** A join is useful when related database rows can be selected together with clear matching rules. FOR ALL ENTRIES can fit when the driver data already exists in ABAP. Neither is always faster. They can return different duplicates and row counts, so I check the required result first. Then I compare database work, transferred data and performance with realistic inputs.
 
-**Example and follow-up:** An order-to-item join naturally returns one row per matching item, while FAE may eliminate duplicates. If the caller needs orders only, EXISTS or a suitable projection may express the requirement more directly. Benchmark realistic volumes, including sparse and skewed keys.
+**Reasoning and example:** An order-to-item join produces a row for each matching item. That is useful when the report needs the item details, but it repeats order fields. If the report only needs orders that have an item meeting a condition, an EXISTS selection may describe the requirement more clearly than joining and removing duplicates afterward.
+
+FOR ALL ENTRIES also has its own duplicate elimination and empty-driver behavior. Replacing it with a join requires tests for those differences, not just a runtime comparison. I include large customers, customers with no matching items and repeated driver values. A faster statement is only an improvement if it still produces the business result the caller expects.
 
 **Avoid this mistake:** Replacing FAE with a join can change duplicates and row counts even when the new query runs faster.
 
 **Read and verify this answer:**
 
-- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Verify the database access semantics and measure on the target system before choosing an optimization.
-- [SAP FOR ALL ENTRIES selection semantics](https://help.sap.com/saphelp_em900/helpdata/en/fc/eb3a1f358411d1829f0000e829fbfe/content.htm) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
+- [SAP FOR ALL ENTRIES selection semantics](https://help.sap.com/saphelp_em900/helpdata/en/fc/eb3a1f358411d1829f0000e829fbfe/content.htm) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 ## SQL-04 How can a LEFT OUTER JOIN accidentally behave like an inner join?
 
 **Level:** Advanced
 
-**Short answer:** A left outer join preserves unmatched left rows and supplies NULL for the missing right side. A WHERE condition requiring a right-side value can reject those unmatched rows. If the condition belongs to matching, I put it in ON; if it is intended to filter the final result, WHERE may be correct.
+**Short answer:** A LEFT OUTER JOIN keeps left-side rows even when no right-side row matches. The missing right side contains SQL NULL values. A WHERE condition demanding a right-side value can remove those rows again. I put a condition in ON when it defines which right rows may match. I use WHERE when I really want to filter the final result.
 
-**Example and follow-up:** To list every order with its optional English description, the language condition often belongs in ON. Putting description-language equals English in WHERE can remove orders with no matching description. The intended business result determines placement, not a mechanical rule.
+**Reasoning and example:** The report must show every order, with an English description where available. I join the description using the order key and language condition in ON. An order without English text remains in the list, with no matching description. The user can still see that the order exists.
+
+If I put the right-side language condition in WHERE instead, the unmatched row does not meet it and disappears. The report now hides some orders, even though the SQL still says LEFT OUTER JOIN. I test an order with English text, one with only another language and one with no text. That makes the intended behavior visible before tuning the query.
 
 **Avoid this mistake:** Moving conditions between ON and WHERE is not always semantics-preserving for outer joins.
 
 **Read and verify this answer:**
 
-- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 <details>
 <summary>Visual: SQL join multiplication</summary>
@@ -79,29 +87,33 @@ Joining two order headers to three items repeats order 10's total, inflating a n
 
 **Level:** Advanced
 
-**Short answer:** NULL represents missing or unknown SQL information; an ABAP initial value is a defined value for its type. SQL predicates use three-valued logic, so comparison to NULL does not behave like comparison to zero or an empty string. I use IS NULL, COALESCE, or supported null indicators when the distinction matters.
+**Short answer:** SQL NULL means a value is missing or unknown. An ABAP initial value is a real value, such as zero or blank. Comparing something with NULL does not behave like comparing it with zero. I use IS NULL to check for NULL and COALESCE when a replacement is intended. Supported null indicators can preserve the distinction when reading into ABAP.
 
-**Example and follow-up:** After an outer join, a missing amount and a real zero amount are different business facts. Plain transfer into an ABAP field can make both appear initial unless the query or result handling preserves the distinction deliberately.
+**Reasoning and example:** A left outer join reads orders and optional payments. One order has a payment of zero; another has no payment row. Those are different facts, but a plain transfer into an ABAP amount field can make both look like zero. I preserve the missing-row information if the report needs to distinguish them.
+
+For example, I can include a suitable existence indicator or use supported null handling rather than guessing from the amount. COALESCE replaces NULL with a chosen value, but that deliberately loses the distinction unless I keep it elsewhere. It does not replace an ordinary stored zero or blank. I test both cases so missing data is not shown as a confirmed amount.
 
 **Avoid this mistake:** COALESCE replaces NULL, not every initial or blank value, and WHERE column = NULL is not a correct null test.
 
 **Read and verify this answer:**
 
-- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 ## SQL-06 How do GROUP BY, WHERE, and HAVING work together?
 
 **Level:** Core
 
-**Short answer:** WHERE selects input rows before grouping. GROUP BY defines the groups, and aggregate expressions calculate a result per group. HAVING filters those groups using group-level conditions. I push suitable filtering and aggregation to the database while preserving currency, unit, and join semantics, rather than moving a large raw dataset to ABAP unnecessarily.
+**Short answer:** WHERE filters the rows before grouping. GROUP BY collects rows with the same chosen fields, and functions such as SUM calculate a result for each group. HAVING filters the resulting groups. I let the database do this work when it is appropriate. I still check currencies and joins, because a fast sum can be wrong if it adds incompatible or repeated amounts.
 
-**Example and follow-up:** For sales totals by company and currency, first restrict the posting period, group by company and currency, then apply a threshold to each total. Joining items to several partners before summing may multiply each item amount and produce an inflated total.
+**Reasoning and example:** To show monthly sales totals above a threshold, I first use WHERE to select the month. I group by company and currency so euros and dollars remain separate. SUM calculates each total, and HAVING keeps only groups above the required threshold. The application receives a small result instead of every sales row.
+
+Before trusting it, I check any join added to the query. If one sales item matches three partner rows, its amount may be counted three times. A small fixture with one known item and several partners reveals that error. The right fix is to model the required rows correctly, not simply to accept the database total because aggregation ran successfully.
 
 **Avoid this mistake:** Database aggregation is not automatically correct if different currencies are mixed or joins multiply the rows being aggregated.
 
 **Read and verify this answer:**
 
-- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 <details>
 <summary>Visual: SQL join multiplication</summary>
@@ -120,15 +132,17 @@ Joining two order headers to three items repeats order 10's total, inflating a n
 
 **Level:** Advanced
 
-**Short answer:** Cardinality describes how many matching rows a relationship can produce. The complete join condition and actual data determine the result. Incorrect to-one assumptions can hide multiplication or mislead optimization. I verify keys and optionality and test missing and multiple matches. A declared CDS key or association cardinality alone does not repair inconsistent data.
+**Short answer:** Cardinality describes how many matches a relationship can have: none, one or many. The actual join fields and data decide which rows are returned. Missing key fields can multiply rows or join unrelated records. I check the complete identity and test missing and multiple matches. A CDS key or a to-one declaration does not repair incorrect data or matching logic.
 
-**Example and follow-up:** Joining a document only by its number can be wrong if company code or year also belongs to its identity. Language-dependent text and time-dependent validity records are common sources of unexpected extra rows. Test those dimensions explicitly.
+**Reasoning and example:** A document number may be unique only together with company code and year. Joining by number alone can connect an item to a different document with the same number. Text tables introduce another common issue: one record can have several languages, so omitting language can multiply the result.
+
+I prepare test data with the same number in different years and with several text languages. Then I compare the returned rows with the intended matches. DISTINCT may hide duplicated output rows, but it does not correct a wrong selected description or an inflated sum. I fix the join condition and only declare cardinality that the model and data actually support.
 
 **Avoid this mistake:** DISTINCT can conceal an incomplete join condition while leaving aggregates or selected attributes logically wrong.
 
 **Read and verify this answer:**
 
-- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 <details>
 <summary>Visual: SQL join multiplication</summary>
@@ -160,30 +174,34 @@ Items belong to the order BO; a partner reference crosses to an independently ma
 
 **Level:** Core
 
-**Short answer:** SELECT SINGLE is suitable when the conditions identify the required single record or any matching record is genuinely sufficient. Without unique conditions it does not define a business ordering. If I need the latest or highest-priority record, I use a supported limited selection with an explicit deterministic ORDER BY and a tie-breaker.
+**Short answer:** SELECT SINGLE does not mean the latest, smallest or first business record. It is suitable when the conditions identify one required row, or when any match is acceptable. If several rows match and their order matters, I use a supported limited query with ORDER BY. I include a unique tie-breaker so equal sort values still give a predictable result.
 
-**Example and follow-up:** For the latest status, order by the event timestamp and a unique sequence identifier before limiting to one row. A query without ordering may return a different matching row after an index, plan, or data distribution changes.
+**Reasoning and example:** A status table contains several events for one order. Reading one matching row without ordering can return an old event. If I need the latest status, I sort by event time and a unique sequence or ID, then limit the result to one row using supported syntax.
+
+The unique extra sort field matters when two events have the same timestamp. Without it, either tied row may be chosen. I test those equal timestamps and an order with no events. I do not rely on the row that happened to be returned in development: a changed index, execution plan or data distribution can change that result without any change to the ABAP statement.
 
 **Avoid this mistake:** The primary key definition or a convenient current execution plan is not an implicit ORDER BY guarantee.
 
 **Read and verify this answer:**
 
-- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 ## SQL-09 What do you optimize first in a slow data selection?
 
 **Level:** Core
 
-**Short answer:** I first establish the correct result and a reproducible baseline. Then I inspect unnecessary rows and columns, repeated calls, missing filters, costly joins, and excessive round trips. I prefer reducing work at the data source before micro-optimizing ABAP expressions. Each change is measured with representative data and checked for unchanged business semantics.
+**Short answer:** I first confirm the correct result and measure a repeatable slow case. Then I look for too many rows, unnecessary columns, repeated queries and joins that create extra work. Reducing database calls and data transfer often helps more than changing ABAP syntax. I measure each change with realistic data and verify that permissions and business results stay correct.
 
-**Example and follow-up:** A loop issuing one SELECT for each of thousands of items may spend time on repeated database calls. A set-based fetch can help, but it must preserve authorization and transaction consistency. Fetching every column or an unbounded result can dominate memory and transfer cost.
+**Reasoning and example:** A report loops over thousands of items and issues one SELECT for each item. Even a fast individual query can become expensive when called thousands of times. Reading the required data together can reduce those round trips, provided the new query preserves the intended matching and authorization rules.
+
+I compare total runtime, number of calls and transferred rows before and after the change. I also test missing records and a large customer whose data is much less evenly distributed than the development sample. Selecting every column or returning an unlimited result can still waste memory after the repeated calls are removed. The goal is less necessary work, supported by measurements.
 
 **Avoid this mistake:** A query that is fast on ten development rows may be unsuitable for millions of production rows or a different key distribution.
 
 **Read and verify this answer:**
 
-- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Verify the database access semantics and measure on the target system before choosing an optimization.
-- [SAP HANA secondary indexes](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-performance-guide-for-developers/3441acf7dcf64e169ba94121acaf2350.html) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
+- [SAP HANA secondary indexes](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-performance-guide-for-developers/3441acf7dcf64e169ba94121acaf2350.html) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 <details>
 <summary>Visual: Performance diagnosis</summary>
@@ -202,9 +220,11 @@ Inspect database work, ABAP computation, transferred volume, and repeated calls 
 
 **Level:** Advanced
 
-**Short answer:** ST05 helps inspect traced database access for a scoped execution. SAT shows ABAP runtime distribution and call behavior. SQL Monitor helps find important SQL across a broader workload. A database execution plan explains how the database processes a statement. I select the tool according to whether the bottleneck is database work, ABAP processing, or call volume.
+**Short answer:** ST05 shows database accesses for a traced execution. SAT shows where ABAP runtime is spent and which calls are made. SQL Monitor helps find costly SQL across a wider workload. A database plan shows how a particular statement is executed. I choose the tool for the suspected problem and use the tools and permissions available in the target environment.
 
-**Example and follow-up:** For a slow report, identify the expensive processing segment, trace a representative run, and compare executions, rows, and time. In cloud editions the available tools and permissions differ; use the supported ADT or monitoring equivalent for that environment.
+**Reasoning and example:** A report is slow, but one SQL statement does not explain the whole delay. I first find whether time is spent in ABAP processing, database calls or another dependency. Then I trace a representative run and compare execution count, rows and total time. A statement taking a small amount of time can dominate if it runs thousands of times.
+
+For expensive database work, the execution plan helps explain scans, joins and large intermediate results. I measure again after a focused change. Classic ST05 and SAT access is not available in every cloud environment, so I use supported ADT or monitoring tools there rather than promise the same transaction codes everywhere.
 
 **Avoid this mistake:** The slowest individual SQL statement may not be the largest total cost if another cheap statement is executed thousands of times.
 
@@ -229,15 +249,17 @@ Inspect database work, ABAP computation, transferred volume, and repeated calls 
 
 **Level:** Advanced
 
-**Short answer:** No. HANA's column storage, compression, and execution engine change the tradeoffs, but large scans, poor selectivity, row multiplication, and expensive intermediate results still matter. Secondary indexes can help specific access patterns and also consume memory and maintenance effort. I evaluate the actual table organization, workload, and execution evidence before proposing an index.
+**Short answer:** HANA still needs performance analysis. Its storage and processing are fast, but a query can still read too much data or create huge intermediate results. A secondary index may help a particular lookup, while costing memory and extra update work. I decide from the actual table, workload and execution plan. I do not add indexes just because another database used them.
 
-**Example and follow-up:** A selective lookup repeatedly filtering the same attribute combination may benefit from a supported secondary index. That is different from assuming a SQL Server-style clustered index controls physical row ordering. HANA column-store index structures have their own documented behavior.
+**Reasoning and example:** A service repeatedly finds a tiny number of records using the same combination of attributes. I inspect how HANA executes that selection and whether a supported secondary index could help. I compare the lookup gain with memory use and the effect on inserts and updates, because the workload includes writes too.
+
+For a query that legitimately reads much of a column, the same index may offer little benefit. I also avoid describing every primary key as a SQL Server-style clustered index that defines physical row order. HANA has its own storage and index structures. Query correctness and explicit ORDER BY remain necessary regardless of which access path the optimizer selects.
 
 **Avoid this mistake:** Do not say HANA needs no indexes or that every primary key is a clustered index with a predictable physical row order.
 
 **Read and verify this answer:**
 
-- [SAP HANA secondary indexes](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-performance-guide-for-developers/3441acf7dcf64e169ba94121acaf2350.html) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP HANA secondary indexes](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-performance-guide-for-developers/3441acf7dcf64e169ba94121acaf2350.html) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 <details>
 <summary>Visual: Performance diagnosis</summary>
@@ -256,9 +278,11 @@ Inspect database work, ABAP computation, transferred volume, and repeated calls 
 
 **Level:** Advanced
 
-**Short answer:** Buffering can benefit small, relatively stable data read frequently through access patterns supported by the ABAP table buffer. It is usually unsuitable for highly volatile transactional data or requirements needing immediate cross-instance freshness. I check the table's buffering configuration and statement behavior, because some query forms bypass the buffer and buffering changes consistency tradeoffs.
+**Short answer:** The ABAP table buffer can help with small, rarely changing tables that are read often in supported ways. It is a poor default for constantly changing business data or reads that need immediate freshness across servers. I check the table setting and the actual SQL form, because some statements bypass the buffer. This buffer is separate from HANA caches and internal tables.
 
-**Example and follow-up:** A small customizing table may be a candidate after checking change frequency and access. An order status updated continuously is different. The ABAP table buffer is separate from HANA caches and internal tables held by an individual application session.
+**Reasoning and example:** A small customizing table is read for nearly every document, while its values change only occasionally. Buffering may reduce repeated database access if the table and its reads qualify. I inspect both the configuration and the query forms instead of assuming the buffered setting benefits every SELECT.
+
+An order status that changes continuously has different needs. A buffered value on another application server may not immediately reflect a change, so it may be unsuitable for a decision requiring the latest state. I test the expected consistency and workload before choosing buffering. An internal table used by one ABAP session is another mechanism again; it does not provide shared buffer synchronization.
 
 **Avoid this mistake:** Buffering is not universally faster, and reading buffered data does not guarantee immediate visibility of every change across application servers.
 
@@ -283,29 +307,33 @@ Inspect database work, ABAP computation, transferred volume, and repeated calls 
 
 **Level:** Core
 
-**Short answer:** Normalization organizes relational data around dependencies to reduce update, insert, and delete anomalies. First normal form avoids repeating groups; second removes partial dependency on a candidate key; third addresses unsuitable transitive dependencies of non-key attributes. Denormalization deliberately duplicates or precomputes data for a measured need and requires an explicit consistency strategy.
+**Short answer:** Normalization stores facts where they belong so one change does not require repairing many copies. First normal form avoids repeating groups; second removes dependence on only part of a candidate key; third removes unsuitable indirect dependencies between non-key facts. Denormalization deliberately stores extra copies or calculated results. I use it for a clear need and define how those copies stay correct.
 
-**Example and follow-up:** Keeping a customer's current address on every order row creates update problems if those copies are intended to remain synchronized. An immutable address snapshot on a historical invoice can instead be a deliberate business requirement. Clarify the semantics before calling duplication a defect.
+**Reasoning and example:** If a customer current address is copied onto every order and all copies are meant to stay current, an address change becomes difficult: some rows may be missed. Keeping that current fact with the customer avoids the repeated update. The order can refer to the customer when it needs the latest address.
+
+An issued invoice may instead need the address exactly as it was when issued. Keeping that historical snapshot is an intentional business rule, not automatically a design error. I clarify which meaning is required before removing duplication. Similarly, a stored total may improve a measured read problem, but it needs a clear update rule so the total cannot silently become stale.
 
 **Avoid this mistake:** NoSQL is not automatically faster or better for large data, and normalization is not a rule against all intentionally stored business snapshots.
 
 **Read and verify this answer:**
 
-- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 ## SQL-14 When is AMDP justified, and what risks must you address?
 
 **Level:** Advanced
 
-**Short answer:** I consider AMDP when supported ABAP SQL or CDS cannot express a necessary database-specific operation well, or measurement shows that keeping a substantial calculation on HANA avoids repeated large transfers. I account for SQLScript skills, testability, dependencies, client and authorization handling, and the release's restrictions. Database pushdown must preserve business correctness, not just reduce ABAP code.
+**Short answer:** I consider AMDP when a required HANA operation is difficult to express with supported ABAP SQL or CDS, or measurements justify keeping a large calculation in the database. I check release support, dependencies, client handling and authorization. The team also needs SQLScript skills and suitable tests. AMDP should solve a real problem, not be a default replacement for a simple SELECT.
 
-**Example and follow-up:** A complex analytical calculation may justify an AMDP or CDS table function after simpler options are evaluated. A plain filtered SELECT normally does not. Database logic must not assume that selecting underlying tables automatically enforces the DCL of a CDS entity.
+**Reasoning and example:** A complex analytical calculation repeatedly transfers a large dataset to ABAP and back. After trying simpler supported SQL and CDS options, I may compare an AMDP implementation that keeps the calculation on HANA. I measure the full operation and compare the actual result, including empty data and unusual values.
+
+I also inspect access rules. Reading an underlying table inside database logic does not automatically enforce the DCL attached to a CDS entity used elsewhere. Transaction ownership still matters: the procedure must not introduce an independent commit into the application operation. A short filtered selection normally gains little from an extra SQLScript layer and may become harder to maintain.
 
 **Avoid this mistake:** AMDP is not a universal performance upgrade, and an AMDP method should not introduce an independent commit into an application transaction.
 
 **Read and verify this answer:**
 
-- [SAP AMDP use and selection guidance](https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/example-amdp-procedure-implementations) - Verify the database access semantics and measure on the target system before choosing an optimization.
+- [SAP AMDP use and selection guidance](https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/example-amdp-procedure-implementations) - Check what the query returns and measure it in the target system before choosing a performance change.
 
 ## Official references
 

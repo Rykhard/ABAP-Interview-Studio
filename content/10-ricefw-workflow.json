@@ -40,235 +40,235 @@
     {
       "id": "RICEFW-01",
       "question": "What does RICEFW mean, and how would you scope a deliverable?",
-      "answer": "RICEFW means Reports, Interfaces, Conversions, Enhancements, Forms, and Workflows. I scope the business outcome, users, source and target data, volume, dependencies, error handling, security, and acceptance criteria. I also identify the deployment edition, released extension options, operational ownership, and cutover needs. The acronym organizes work but does not decide the technology.",
-      "detail": "For a supplier import, define supported fields, validation rules, duplicate handling, reconciliation totals, retry behavior, and the approved API. A count of one conversion object is not enough to estimate mapping, cleansing, testing, and recovery effort.",
+      "answer": "RICEFW groups work into Reports, Interfaces, Conversions, Enhancements, Forms and Workflows. I still need a clear business result before estimating any of them. I ask what data is involved, who uses it and what happens on failure. I also check the target system, supported options and who will operate the solution.",
+      "detail": "A request says 'build one supplier conversion.' That sounds small, but it hides several jobs: cleaning source data, mapping fields, checking mandatory values, loading through a supported interface and proving the right suppliers were created. I clarify duplicate rules and expected volume before giving an estimate.\n\nI also define acceptance checks, such as matching supplier counts and recording every rejected row. The cutover plan needs an owner and a safe restart procedure. If standard migration functionality already meets these needs, custom code may be unnecessary. The RICEFW label helps organize delivery; it does not select the technology or tell us the true effort.",
       "pitfall": "RICEFW is a delivery classification, not a requirement to build custom code when standard functionality already fits.",
       "level": "Core",
       "references": [
         {
           "title": "SAP migration cockpit: objects, mapping, simulation and monitoring",
           "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/29193bf0ebdd4583930b2176cb993268/2f0dbe4111214bcf9b2d57eca26f0525.html",
-          "note": "Supports the migration example. Scoping and selection criteria are original scenario analysis, not a prescribed SAP checklist. Verify the edition and supported migration object."
+          "note": "Provides background for the migration example. The planning questions are original study guidance, not a prescribed SAP checklist. Check the product edition and supported migration object."
         }
       ]
     },
     {
       "id": "RICEFW-02",
       "question": "How do you choose between a standard API, IDoc, migration tooling, and BDC?",
-      "answer": "I first identify the supported business interface and deployment constraints. Standard APIs, IDocs, or migration tooling can preserve application validation and provide documented contracts. In classic environments BDC can be a fallback for a suitable screen-based process, but it is sensitive to screen flow and configuration. Volume, completeness, error recovery, and supportability drive the choice.",
-      "detail": "For a one-time migration, supported migration objects may be preferable to building a permanent integration. BDC is not a general option for ABAP Cloud. A BAPI's existence does not prove that it is released for the target development model or supports every needed field.",
-      "pitfall": "Do not call every BAPI clean-core Level B or assume every API is suitable for mass load without checking its contract.",
+      "answer": "I choose the supported business interface that fits the task and target system. A one-time migration may suit migration tooling; ongoing integration may suit an API or IDoc. BDC can be a classic-system fallback, but screen changes make it fragile. I check required fields, volume and recovery instead of choosing by name alone.",
+      "detail": "For a one-time supplier migration, I first check the delivered migration objects and supported fields. If they cover the requirement, building a permanent custom interface may add needless maintenance. For a continuing partner feed, I compare the available APIs or IDoc scenarios and how they report and recover from individual errors.\n\nBDC drives screens, so its suitability depends on the screen flow and configuration. It is not a general ABAP Cloud option. A BAPI may also lack a required field or be unavailable for direct cloud development. I verify release status and Clean Core classification individually; the word BAPI does not automatically mean Level B or suitability for mass loading.",
+      "pitfall": "Check each BAPI's classification and supported use. Its name alone proves neither Clean Core Level B nor suitability for mass loading.",
       "level": "Core",
       "references": [
         {
           "title": "SAP migration cockpit: objects, mapping, simulation and monitoring",
           "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/29193bf0ebdd4583930b2176cb993268/2f0dbe4111214bcf9b2d57eca26f0525.html",
-          "note": "Supports the migration example. Scoping and selection criteria are original scenario analysis, not a prescribed SAP checklist. Verify the edition and supported migration object."
+          "note": "Provides background for the migration example. The planning questions are original study guidance, not a prescribed SAP checklist. Check the product edition and supported migration object."
         },
         {
           "title": "SAP IDoc control record, message type, basic type, and extension",
           "url": "https://help.sap.com/saphelp_snc700_ehp01/helpdata/en/78/2177f051ce11d189570000e829fbbd/content.htm",
-          "note": "IDoc structure is one candidate integration contract; the selection trade-off is original analysis, not a universal technology ranking."
+          "note": "Describes the IDoc structure. The example compares possible choices; it does not rank one technology as best for every integration."
         }
       ]
     },
     {
       "id": "RICEFW-03",
       "question": "How do BAdIs, customer exits, and user exits differ?",
-      "answer": "A BAdI exposes an object-oriented extension contract, with capabilities such as filters or multiple implementations depending on its definition. Classic customer exits include function, screen, and menu exits managed through enhancement projects. User exit often refers to older application-specific routines. I inspect the actual extension, its timing, and its supported release status before choosing it.",
-      "detail": "SMOD describes classic enhancement components and CMOD manages customer enhancement projects. Some SD USEREXIT routines are a different older technique. A released BAdI is preferable when it covers the requirement, but the name BAdI alone does not establish cloud availability or upgrade guarantees.",
-      "pitfall": "CMOD/SMOD customer exits and all routines named USEREXIT are not interchangeable, and not every BAdI is filter-dependent or multi-use.",
+      "answer": "A BAdI is an object-oriented extension interface. Classic customer exits can add function, screen or menu behavior through enhancement projects. User exit often means an older application-specific routine. I check the actual extension's timing and allowed use. A BAdI is only suitable if it supports the needed change in the target release.",
+      "detail": "Suppose an order must reject an invalid reference before saving. I look for a supported extension that runs early enough and can report that error. An extension that runs only after posting would not solve the requirement, even if its name sounds relevant. For a BAdI, I also inspect whether filters or multiple implementations are supported by its definition.\n\nIn classic systems, SMOD describes customer-enhancement components and CMOD manages their projects. Some SD routines named USEREXIT use another older mechanism. These names are not interchangeable. A released BAdI is a good choice when it fits, but being a BAdI alone does not prove ABAP Cloud availability or eliminate upgrade testing.",
+      "pitfall": "CMOD/SMOD exits and routines named USEREXIT are not the same mechanism. Filters and multiple implementations depend on the BAdI definition.",
       "level": "Core",
       "references": [
         {
           "title": "SAP explicit and implicit enhancement options",
           "url": "https://help.sap.com/saphelp_SCM700_ehp02/helpdata/en/fb/e3d8403e37762ae10000000a155106/content.htm",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     },
     {
       "id": "RICEFW-04",
       "question": "What is the difference between implicit and explicit enhancement options?",
-      "answer": "Explicit enhancement options are deliberately provided in source, such as enhancement points or sections. Implicit options exist at predefined positions without an explicit marker there. A point adds implementation code, while a section can replace a defined section's implementation. Both are enhancement mechanisms; explicit enhancement does not automatically mean directly modifying SAP's original source.",
-      "detail": "An enhancement spot organizes explicit options, while an enhancement implementation supplies customer code. A section replacement deserves particular care because it can bypass standard behavior. Availability and suitability differ from the released extension contracts expected in ABAP Cloud.",
-      "pitfall": "The distinction is not 'implicit preserves SAP code, explicit modifies it'; source modification is a separate concept.",
+      "answer": "Explicit enhancement options are places deliberately marked for extensions. Implicit options exist at predefined positions without a marker there. An enhancement point adds code; an enhancement section can replace the defined section's implementation. These are extension mechanisms. Explicit enhancement does not automatically mean editing SAP's original source directly.",
+      "detail": "A standard program contains an explicit enhancement point after a calculation. A customer implementation can add permitted logic at that point. An implicit option may instead be available at a predefined location, such as a procedure boundary, without a dedicated enhancement marker in that location. I inspect the actual option and surrounding behavior before using either.\n\nAn enhancement spot organizes explicit options; an enhancement implementation contains the customer logic. Replacing an enhancement section deserves extra care because it can remove standard processing the application needs. These classic mechanisms are also different from released ABAP Cloud extension contracts. I check target support instead of assuming every available editor option is an approved extension.",
+      "pitfall": "Explicit enhancement does not simply mean modifying SAP source. Source modification is a separate technique.",
       "level": "Core",
       "references": [
         {
           "title": "SAP explicit and implicit enhancement options",
           "url": "https://help.sap.com/saphelp_SCM700_ehp02/helpdata/en/fb/e3d8403e37762ae10000000a155106/content.htm",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     },
     {
       "id": "RICEFW-05",
       "question": "How would you design a reliable interface?",
-      "answer": "I define the business contract, authentication, validation, mapping, response semantics, and operational recovery. Synchronous interfaces suit immediate results; asynchronous processing can decouple systems and tolerate temporary outages. I make duplicate handling, correlation identifiers, timeouts, retries, and reconciliation explicit. Choosing OData, SOAP, IDoc, or another supported API follows those requirements and the landscape.",
-      "detail": "A network timeout after posting creates an uncertain outcome: blindly retrying may post twice. A business idempotency key and a way to query the original outcome help. Retry policies should distinguish transient technical failures from permanent validation errors.",
-      "pitfall": "Transport-level success or an accepted message does not prove that the target business transaction was posted successfully.",
+      "answer": "I define what the message means, who may send it and how success or failure is reported. Synchronous calls fit immediate answers; asynchronous processing can let systems work at different times. Both need clear duplicate and recovery rules. I choose the protocol after understanding these needs, including what to do when the outcome is unknown.",
+      "detail": "An interface posts an invoice, but the sender times out before receiving the result. The receiver may already have saved it. I use a stable request reference and a documented way to query or reuse the original result before retrying. Otherwise, a temporary network problem can become a duplicate invoice.\n\nA temporary outage may justify delayed retries. An invalid company code needs correction instead of repeated automatic posting attempts. I record correlation information so support can follow the same request through both systems. Whether the interface uses OData, SOAP or IDoc, a transport acknowledgment or accepted message is not proof that the business document was posted.",
+      "pitfall": "A delivered or accepted message does not prove that the receiver posted the business document.",
       "level": "Advanced",
       "references": [
         {
           "title": "SAP IDoc communication status and application outcome",
           "url": "https://help.sap.com/docs/ERP_HCM/d9cb82c153454334bee3e640fc0b311e/058ce0535e56424de10000000a174cb4.html",
-          "note": "Distinguishes communication status from application outcome. Retry and reconciliation design are original scenario analysis. Use the supported interface contract."
+          "note": "Separates message delivery from the business result. The retry and recovery example is original study guidance; follow the actual interface rules."
         }
       ]
     },
     {
       "id": "RICEFW-06",
       "question": "How would you troubleshoot a failed IDoc in a classic system?",
-      "answer": "I correlate the business document with the IDoc, inspect its control record, data, status history, and detailed messages, then identify configuration, mapping, master-data, authorization, or application errors. I resolve the cause before controlled reprocessing. I also determine whether the business effect already occurred and how duplicates are prevented before repeating a posting.",
-      "detail": "WE02 or WE05 can support inspection, and BD87 can support reprocessing where authorized and appropriate. Partner profiles, ports, process codes, and application logs may explain the failure. The exact processing path depends on direction and configured integration.",
+      "answer": "I find the IDoc for the business request and read its control data, segments and status history. The detailed error usually shows whether the problem is routing, mapping, master data, permissions or posting logic. I fix that cause before retrying. I also check for an existing business document so recovery does not post it twice.",
+      "detail": "A supplier-order IDoc has an application error because a material is unknown. In a classic system, WE02 or WE05 can show the IDoc and its messages. I inspect the incoming material value and its mapping, then correct the master data or mapping through the approved process. Changing a destination would not fix that particular error.\n\nIf the IDoc never reached application processing, partner profiles, ports, process codes or communication logs may be the right next check. Where appropriate and authorized, BD87 supports reprocessing. After retry, I inspect the linked business result. Repeated retries or a manual status change can hide the original problem and may create duplicate effects.",
       "pitfall": "Changing a status or repeatedly reprocessing without checking business effects can hide the cause or create duplicates.",
       "level": "Core",
       "references": [
         {
           "title": "SAP IDoc control and message structure",
           "url": "https://help.sap.com/saphelp_snc700_ehp01/helpdata/en/78/2177f051ce11d189570000e829fbbd/content.htm",
-          "note": "Start from IDoc control/message structure, then inspect partner/process configuration for the actual interface."
+          "note": "Read the IDoc control and message structure, then check the partner and processing settings of the actual interface."
         }
       ]
     },
     {
       "id": "RICEFW-07",
       "question": "What makes a data conversion safe and supportable?",
-      "answer": "I separate extraction, cleansing, mapping, validation, loading, and reconciliation. A conversion needs stable source identifiers, restart behavior, error records, and business totals that can be checked. Trial loads establish throughput and uncover data-quality issues. Cutover includes sequencing, freeze assumptions, ownership, and recovery plans, using supported business interfaces rather than uncontrolled table updates.",
-      "detail": "For document migration, reconcile counts and values by company and currency, not only a total row count. Distinguish rejected records from accepted records whose follow-up processing is pending. Repeating a failed package must not recreate already posted documents.",
-      "pitfall": "A technically successful load is not evidence that balances, relationships, and business status are correct.",
+      "answer": "I separate cleaning and checking the data from loading it. Every source record needs a stable identity, a visible result and a safe restart rule. I use supported business interfaces and reconcile business totals after loading. Trial runs reveal bad data and realistic runtime. The cutover plan must also say who stops, restarts or repairs the load.",
+      "detail": "A document migration loads 10,000 source records. Matching that count is not enough: some documents may have wrong currencies, values or relationships. I reconcile counts and amounts by company and currency, and keep rejected records separate from accepted records whose follow-up work is still pending. Trial loads help discover these problems before cutover.\n\nIf one package fails, the rerun must skip or safely identify documents already posted. Stable source references help link the source to the actual business results. I also plan load order, data freezes and recovery ownership. Direct table updates may bypass application rules, so a technically completed write is not evidence of a correct migration.",
+      "pitfall": "A completed load can still contain wrong totals, relationships or business states. Check those results separately.",
       "level": "Advanced",
       "references": [
         {
           "title": "SAP migration cockpit: objects, mapping, simulation and monitoring",
           "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/29193bf0ebdd4583930b2176cb993268/2f0dbe4111214bcf9b2d57eca26f0525.html",
-          "note": "Supports the migration example. Scoping and selection criteria are original scenario analysis, not a prescribed SAP checklist. Verify the edition and supported migration object."
+          "note": "Provides background for the migration example. The planning questions are original study guidance, not a prescribed SAP checklist. Check the product edition and supported migration object."
         }
       ]
     },
     {
       "id": "RICEFW-08",
       "question": "How do you choose between SAPscript, Smart Forms, and Adobe output forms?",
-      "answer": "I start from the application's supported output framework, release, and document requirements. SAPscript and Smart Forms remain relevant in existing landscapes. Adobe-based output forms are common in newer scenarios and require the appropriate rendering setup. S/4HANA output management coexists with other frameworks; I do not assume a universal BRF+ migration for every application.",
-      "detail": "Separate output determination from form layout and data provision. Test language, fonts, multi-page item tables, totals, attachments, recipients, and reprints. An invoice rendering correctly once does not verify email routing, spool behavior, or all business variants.",
+      "answer": "I start with the output framework supported by the business application. Existing systems may use SAPscript or Smart Forms; other scenarios use Adobe-based forms with the required rendering setup. S/4HANA does not use one universal output solution for everything. I check document needs, languages and delivery channels before choosing or replacing a form technology.",
+      "detail": "An invoice PDF looks correct in one test, but that proves only part of the output process. I separately check how the application decides to generate it, how data reaches the form, how the layout renders and how the result reaches the customer. Email routing or spool processing can fail even when the PDF itself is fine.\n\nMy test set includes long item lists, page breaks, totals, several languages, fonts, attachments and reprints. I also verify the application's actual output framework before proposing a BRF+ or Adobe change. An Adobe output form need not be interactive, and not every S/4HANA application follows the same framework or migration path.",
       "pitfall": "All S/4HANA output is not automatically BRF+ plus Adobe, and an output form need not be an interactive form.",
       "level": "Core",
       "references": [
         {
           "title": "SAP S/4HANA output control and framework coexistence",
           "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/21aead0c98bd4755abdacd91c99e3393/d736578415a340cba84b944798a699b5.html",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     },
     {
       "id": "RICEFW-09",
       "question": "How do classic Workflow, Flexible Workflow, and SAP Build Process Automation differ?",
-      "answer": "Classic SAP Business Workflow offers technical workflow modeling in the ABAP landscape. Flexible Workflow builds on SAP workflow concepts and offers configuration-oriented approval scenarios, often through Manage Workflows apps. SAP Build Process Automation runs on BTP and supports broader automation and integration. I choose according to the delivered scenario, landscape, extensibility, and operational needs.",
-      "detail": "For a supported purchase approval scenario, first evaluate the delivered Flexible Workflow features. For a cross-system custom process, a BTP option may fit. A custom RAP application does not automatically receive a complete approval workflow merely because it has a submit action.",
-      "pitfall": "Flexible Workflow is not a completely unrelated replacement engine, and identical features are not available in every application scenario.",
+      "answer": "Classic SAP Business Workflow models processes in the ABAP system. Flexible Workflow offers configurable approval scenarios using SAP workflow concepts. SAP Build Process Automation runs on BTP and supports automation across systems. I first check the delivered business scenario, then choose the option that fits its approval rules, integrations and operating needs.",
+      "detail": "For purchase approval, I first inspect the supported Flexible Workflow scenario and its available start conditions, steps and extensions. It may already cover the business requirement without a custom process. A cross-system approval involving several applications may instead need a BTP-based solution, depending on available connectors and requirements.\n\nThese options are not automatic substitutes for each other. Flexible Workflow builds on SAP workflow concepts, and its features vary by business scenario. A custom RAP Submit action also does not create a complete approval process by itself. We still need process creation, approver selection, decisions, callbacks, permissions and a way to handle failures.",
+      "pitfall": "Flexible Workflow uses SAP workflow concepts, and available features depend on the business scenario.",
       "level": "Core",
       "references": [
         {
           "title": "SAP workflow solution overview",
           "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/a602ff71a47c441bb3000504ec938fea/fc563415ab87456293406ad0775ad5ae.html",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         },
         {
           "title": "SAP flexible workflow scenario and configuration concepts",
           "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/0e602d466b99490187fcbb30d1dc897c/10e7e36908184328aab7d5007d9ecb13.html",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     },
     {
       "id": "RICEFW-10",
       "question": "What are a workflow container, task, work item, and agent?",
-      "answer": "The container holds process context, and bindings map data between workflow components. A task defines work to perform; a work item is a runtime instance. Agent determination identifies the responsible processor, considering the scenario's rules and restrictions. A complete process also needs decisions, deadlines, exception handling, and a reliable update to the business object.",
-      "detail": "For an approval, the context might carry a request identifier and amount rather than a stale copy of every field. If no valid approver is found, the design needs an explicit error or fallback path; silent continuation would violate the approval requirement.",
+      "answer": "A workflow container holds the process data. Bindings pass that data between workflow components. A task defines work; a work item is one running instance of that task. Agent determination finds the person who should do it. The process also needs a clear response when nobody can act or a decision cannot be completed.",
+      "detail": "A request for 5,000 EUR starts an approval workflow. The container might carry the request ID and the information needed to choose an approver. Bindings pass the relevant values to the approval task. The created work item is the actual item the selected approver handles; the task is its reusable definition.\n\nI avoid copying every field if that would leave the workflow using stale business data. I also test the case where no valid approver is found and define an error or fallback route. An email notification is only a notification, not the work item itself. Being selected as an agent does not remove the need for business authorization.",
       "pitfall": "A notification email is not the work item itself, and being selected as an agent does not replace business authorization checks.",
       "level": "Core",
       "references": [
         {
           "title": "SAP workflow solution overview",
           "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/a602ff71a47c441bb3000504ec938fea/fc563415ab87456293406ad0775ad5ae.html",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     },
     {
       "id": "RICEFW-11",
       "question": "How should a RAP submit action start an approval process reliably?",
-      "answer": "The action should validate the requested transition and update the business object through its transaction contract. Starting an external process must be coordinated with successful persistence using supported event or integration mechanisms. I design correlation, retries, and idempotency so rollback does not leave an orphan approval and duplicate delivery does not create duplicate workflows.",
-      "detail": "A conceptual flow is Draft or Created to Submitted, committed event delivery, workflow creation, then an authorized approval callback. Actual draft activation is a separate RAP operation unless the application explicitly orchestrates it. Available event mechanisms depend on release and deployment.",
+      "answer": "Submit should check the request and change its state through RAP's transaction rules. The external approval process should start in a way coordinated with a successful save. I use the supported event or integration mechanism for that release. Stable identifiers and duplicate handling stop retries from starting several workflows for the same submission.",
+      "detail": "A request moves from Created to Submitted. Only after that change is successfully committed should the integration create its external approval process using the supported mechanism. If save fails, we must not leave an approval waiting for a request that never became submitted. If delivery is repeated, the receiver should find the existing process rather than create another.\n\nI link the request version and workflow instance so an authorized callback can later update the correct state. Draft activation is a separate RAP operation unless the application explicitly coordinates it with submission. I verify the target's event capabilities instead of assuming one universal implementation. Calling a workflow endpoint before save completes is not a reliable substitute.",
       "pitfall": "Calling an external workflow endpoint before save succeeds can start approval for a document that never committed.",
       "level": "Advanced",
       "references": [
         {
           "title": "SAP flexible workflow scenario and configuration concepts",
           "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/0e602d466b99490187fcbb30d1dc897c/10e7e36908184328aab7d5007d9ecb13.html",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     },
     {
       "id": "RICEFW-12",
       "question": "How do you handle duplicate events, stale approvals, and callback retries?",
-      "answer": "I assume retries can occur and make the consumer identify an already processed business event or process instance. Approval callbacks validate the current document state, version, actor, and correlation before applying a permitted transition. A repeated successful callback should produce a stable outcome. Conflicting or stale decisions need an explicit business response and audit trail.",
-      "detail": "If a submitted request is withdrawn or materially changed, an old approval must not silently approve the new version. Store enough correlation to distinguish request versions and workflow instances. Deadline escalation also needs a clear rule for a concurrent original approver decision.",
-      "pitfall": "Exactly-once business behavior does not follow automatically from a queue, an event name, or an HTTP success response.",
+      "answer": "I assume events and callbacks can arrive more than once. The receiver checks a stable event or process identifier before repeating work. An approval also checks the current request version, state and caller permissions. An old decision must not approve a changed or withdrawn request. Repeated successful callbacks should have a stable, safe result.",
+      "detail": "A manager receives approval for version one of a request. Before the manager answers, the requester withdraws it or changes a material detail. When the old approval arrives, the callback compares the stored workflow link and request version with the current record. It rejects or handles the stale decision according to the business rule instead of approving the new data.\n\nA retry of a decision already applied should return a safe result without applying the effect twice. I retain an audit trail and test deadline escalation racing with the original approver. A queue or HTTP success response alone does not provide exactly-once business behavior; the application must enforce the intended transitions.",
+      "pitfall": "A queue or HTTP success response does not automatically prevent duplicate business effects.",
       "level": "Advanced",
       "references": [
         {
           "title": "SAP flexible workflow scenario and configuration concepts",
           "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/0e602d466b99490187fcbb30d1dc897c/10e7e36908184328aab7d5007d9ecb13.html",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     },
     {
       "id": "RICEFW-13",
       "question": "How would you diagnose a workflow that did not start or is stuck?",
-      "answer": "I follow the chain from committed business change to event delivery, receiver or start-condition selection, workflow creation, agent determination, task execution, and callback. I inspect context bindings and logs at the failing boundary. In classic systems event traces and work-item administration help; in cloud scenarios I use the supported workflow administration and integration monitors.",
-      "detail": "Where available, SWEL shows recorded event trace entries after tracing is enabled, and SWI1 helps inspect work items and logs. No work item can mean a missing event or failed start condition; an existing item without a recipient points to a different problem.",
+      "answer": "I find the step where progress stopped: the business save, event delivery, start condition, workflow creation, approver selection or callback. Then I inspect the data and logs for that step. Classic and cloud systems provide different administration tools. I do not assume a missing inbox item means the workflow never started.",
+      "detail": "A request is submitted but nobody sees an approval. First, I confirm that submission actually committed. Then I check whether an event was sent and whether the start conditions selected the intended workflow. If a workflow exists, I inspect its context and agent determination. An existing work item with no recipient needs a different fix from a missing start event.\n\nIn classic systems, SWEL can show recorded events when tracing is enabled, and SWI1 can help inspect work items and logs. Cloud scenarios use their supported monitors. No SWEL entry proves little if tracing was off. A session breakpoint may also miss background processing that runs under another user.",
       "pitfall": "An absent trace entry proves little if tracing was disabled, and a session breakpoint may not catch background processing under another user.",
       "level": "Advanced",
       "references": [
         {
           "title": "SAP workflow solution overview",
           "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/a602ff71a47c441bb3000504ec938fea/fc563415ab87456293406ad0775ad5ae.html",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     },
     {
       "id": "RICEFW-14",
       "question": "How would you test a workflow or enhancement end to end?",
-      "answer": "I test the happy path and rejected, missing, duplicate, concurrent, and recovery cases. For workflow that includes no approver, substitution, deadline escalation, stale decisions, and failed callbacks. For enhancements I verify when the extension runs, the data it may change, and its effect on the surrounding transaction. Evidence must include the real integration boundaries.",
-      "detail": "A useful approval test changes a request after submission and attempts an old decision, then checks state and audit history. A mocked endpoint can verify request composition, but only a real authorized integration test can establish delivery, identity, and callback behavior.",
-      "pitfall": "A successful unit test or inbox screenshot alone does not prove business authorization, persistence, and reliable process completion.",
+      "answer": "I test the full business result, including failures and recovery. For workflow, that means approvals, missing approvers, substitutions, deadlines, duplicate callbacks and stale decisions. For an enhancement, I check when it runs and what it does to the surrounding transaction. Unit tests help, but real integration tests must prove actual delivery, permissions and saved state.",
+      "detail": "A request is submitted, then changed before the manager answers. My test sends the old approval and checks that it cannot silently approve the new request version. I inspect the current business state and audit history, not just the inbox message. Other cases cover a missing approver and a failed callback that is safely retried.\n\nFor an enhancement, I test a normal save and a rejected save to check its timing and transaction effects. A mock endpoint is useful for checking request contents and simulated errors. It does not prove the real system's identity setup, event delivery or callback behavior. I record which checks used real integration and which used doubles.",
+      "pitfall": "A unit-test pass or inbox screenshot does not prove real permissions, saved data or successful process completion.",
       "level": "Advanced",
       "references": [
         {
           "title": "SAP flexible workflow scenario and configuration concepts",
           "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/0e602d466b99490187fcbb30d1dc897c/10e7e36908184328aab7d5007d9ecb13.html",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     },
     {
       "id": "RICEFW-15",
       "question": "Which S/4HANA changes can affect existing ABAP developments?",
-      "answer": "Check target-release simplification items and custom-code findings before changing the application. Relevant areas include inventory data modeling around MATDOC, the Universal Journal around ACDOCA, Business Partner and CVI, and application-specific output and transaction changes. Compatibility mechanisms and migration prerequisites vary; do not infer behavior from a table name alone.",
-      "detail": "Inventory direct reads, writes and called transactions, then verify each affected business process. Business Partner integration does not mean every customer and supplier table has simply vanished. Compare functional results and performance on the actual target release.",
+      "answer": "I check the simplification information and custom-code findings for the target S/4HANA release. Important areas can include MATDOC, ACDOCA, Business Partner and changed output or transactions. I trace how the existing application uses the affected objects. Replacing a table name mechanically is not enough; the business meaning and supported access may have changed.",
+      "detail": "A report reads inventory data directly from old tables. Before changing it, I list its reads, writes and called transactions and check the target release's recommended access. I compare the old report's intended result with the new data model, then test totals, filters and runtime using representative business cases.\n\nThe same care applies to finance and Business Partner changes. Business Partner integration does not mean every customer and supplier table simply disappeared. Compatibility mechanisms and migration prerequisites vary. I use release-specific findings and functional tests to decide the change, rather than assume that replacing a reference with MATDOC or ACDOCA preserves the original behavior.",
       "pitfall": "Replacing a legacy table name with MATDOC or ACDOCA mechanically is not a migration strategy.",
       "level": "Advanced",
       "references": [
         {
           "title": "SAP S/4HANA 2025 upgrade guide",
           "url": "https://help.sap.com/doc/760ce610a2af4174a329d2d8315378e2",
-          "note": "Classic-platform background; verify supported alternatives in the target edition."
+          "note": "Describes classic systems. Check which alternatives your target product supports."
         }
       ]
     }

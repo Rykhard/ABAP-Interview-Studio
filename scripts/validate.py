@@ -1,6 +1,7 @@
 """Validate public content, portable artifacts and local links."""
 import csv,hashlib,json,re
 from html.parser import HTMLParser
+from html import escape as html_escape
 from pathlib import Path
 from urllib.parse import unquote
 import pymupdf as fitz
@@ -42,6 +43,20 @@ if len({item['questionId'] for item in quiz_items})!=len(quiz_items):errors.appe
 if (root/'originals').exists():errors.append('Personal original documents must stay outside the public repository')
 rows=list(csv.reader((root/'flashcards'/'ABAP_Interview_Anki.tsv').open(encoding='utf-8'),delimiter='\t'))
 if len(rows)!=len(questions) or any(len(r)!=3 for r in rows):errors.append('Flashcard shape/count mismatch')
+
+def check_flashcard_content(deck, label):
+    by_front={row[0]:row for row in deck if len(row)==3}
+    for q in questions:
+        front=html_escape(q['id']+' | '+q['question'])
+        row=by_front.get(front)
+        if not row:
+            errors.append(label+' missing question '+q['id'])
+            continue
+        for field in ['answer','detail','pitfall']:
+            expected='<br><br>'.join(html_escape(part.strip()) for part in re.split(r'\n\s*\n',q[field]) if part.strip())
+            if expected not in row[1]:errors.append(label+' stale '+field+' '+q['id'])
+
+check_flashcard_content(rows,'Anki')
 html=(root/'START_HERE.html').read_text(encoding='utf-8')
 match=re.search(r'<script id="study-data" type="application/json">(.*?)</script>',html,re.S)
 if not match or json.loads(match.group(1))!=modules:errors.append('HTML data does not match content')
@@ -86,6 +101,7 @@ if new_ids-{item['questionId'] for item in quiz_items}:errors.append('New questi
 illustrated=list(csv.reader((root/'flashcards'/'ABAP_Interview_Illustrated_Anki.tsv').open(encoding='utf-8'),delimiter='\t'))
 if len(illustrated)!=len(questions) or any(len(r)!=3 for r in illustrated):errors.append('Illustrated flashcard shape/count mismatch')
 if [r[0] for r in illustrated]!=[r[0] for r in rows]:errors.append('Anki front fields differ between deck options')
+check_flashcard_content(illustrated,'Illustrated Anki')
 for row in illustrated:
     for img in re.findall(r'<img src="([^"]+)"',row[1]):
         if not (root/'flashcards'/'media'/img).exists():errors.append('Missing Anki image '+img)

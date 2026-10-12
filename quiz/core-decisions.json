@@ -7,22 +7,22 @@
       {
         "id": "a",
         "text": "A standard table with an empty key",
-        "explanation": "It does not provide a key lookup structure for these repeated reads."
+        "explanation": "Without a suitable key, these repeated business-key reads can scan the table each time."
       },
       {
         "id": "b",
         "text": "A hashed table with that unique key",
-        "explanation": "Full unique-key lookup is the intended access pattern; account for memory and mutation costs."
+        "explanation": "A hashed table is designed for lookup by its complete unique key. I still consider memory use and the cost of changes."
       },
       {
         "id": "c",
         "text": "A sorted table accessed only by table index",
-        "explanation": "The requirement is business-key lookup, and row indexes are not stable business identities."
+        "explanation": "A row number does not identify the business record you are looking for, and positions can change."
       },
       {
         "id": "d",
         "text": "A standard table sorted before every lookup",
-        "explanation": "Repeated sorting adds avoidable work; choose a suitable maintained key and measure."
+        "explanation": "Sorting before every read repeats expensive work. A suitable maintained key avoids that repeated sorting."
       }
     ],
     "correctOption": "b"
@@ -35,22 +35,22 @@
       {
         "id": "a",
         "text": "Nothing, because either sort field is sufficient",
-        "explanation": "Binary search needs an order compatible with the search key, not any column in the sort."
+        "explanation": "Sorting by Customer then Date groups dates within each customer, not across the whole table. Searching only by Date does not match that order."
       },
       {
         "id": "b",
         "text": "Convert Date to a string before the read",
-        "explanation": "Changing the type does not establish the missing sort order."
+        "explanation": "Changing Date to a string does not sort the table by Date."
       },
       {
         "id": "c",
         "text": "Use an access path ordered for the actual search key",
-        "explanation": "The ordering must match the searched leading key; an appropriate sorted key is another option."
+        "explanation": "The sort must start with the fields used for this binary search, in the right order. A suitable sorted table key can provide that access."
       },
       {
         "id": "d",
         "text": "Set sy-subrc to zero after a failed search",
-        "explanation": "A return code does not recover a row skipped by an invalid search assumption."
+        "explanation": "Changing sy-subrc cannot find a row that the invalid search skipped."
       }
     ],
     "correctOption": "c"
@@ -63,22 +63,22 @@
       {
         "id": "a",
         "text": "That alone does not create the required check-table relationship",
-        "explanation": "A domain value table is a proposal context; the field foreign-key/check-table definition and consumer behavior matter."
+        "explanation": "The value table can suggest a check table, but you still need the appropriate field relationship and a consumer that uses it."
       },
       {
         "id": "b",
         "text": "Every database insert is rejected when the value is absent",
-        "explanation": "DDIC metadata does not establish that universal database enforcement."
+        "explanation": "Naming a domain value table does not make the database reject every invalid insert."
       },
       {
         "id": "c",
         "text": "The value table is identical to a search help",
-        "explanation": "Value suggestions and validation relationships have different responsibilities."
+        "explanation": "A search help suggests values to the user. That is different from defining and enforcing a validation relationship."
       },
       {
         "id": "d",
         "text": "The domain now has a database foreign-key constraint",
-        "explanation": "Do not infer a physical database constraint from the ABAP DDIC definition."
+        "explanation": "An ABAP Dictionary definition alone does not prove that a physical database foreign-key constraint exists."
       }
     ],
     "correctOption": "a"
@@ -91,22 +91,22 @@
       {
         "id": "a",
         "text": "Every remote workflow and asynchronous consumer has completed",
-        "explanation": "AND WAIT is not a global distributed completion barrier."
+        "explanation": "Remote workflows and other asynchronous work may still be running after this statement finishes."
       },
       {
         "id": "b",
         "text": "A later rollback can undo the previous commit",
-        "explanation": "Committed work is beyond that later local rollback."
+        "explanation": "A later local rollback cannot undo work that was already committed."
       },
       {
         "id": "c",
         "text": "Every update failure becomes a class-based exception",
-        "explanation": "Update outcomes and return-code handling follow the documented contract."
+        "explanation": "Update failures follow the documented return and error handling; they do not all turn into class-based exceptions."
       },
       {
         "id": "d",
         "text": "It waits for the relevant synchronous update completion, not all downstream work",
-        "explanation": "Inspect the documented update outcome; remote effects require their own completion evidence."
+        "explanation": "It waits for the relevant high-priority update completion. Check that result separately from later remote or asynchronous processing."
       }
     ],
     "correctOption": "d"
@@ -119,22 +119,22 @@
       {
         "id": "a",
         "text": "It makes any remote call share the local database transaction",
-        "explanation": "A business lock does not merge independent transaction owners."
+        "explanation": "Locking a local business object does not combine its transaction with a remote system's transaction."
       },
       {
         "id": "b",
         "text": "It protects a business object across the relevant application work steps",
-        "explanation": "The logical lock lifetime and scope can differ from a short database transaction."
+        "explanation": "A business lock can protect a logical object across application steps, beyond one short database transaction."
       },
       {
         "id": "c",
         "text": "It permanently prevents all other users from reading the table",
-        "explanation": "Lock compatibility and application enforcement are more specific than that."
+        "explanation": "An SAP business lock is not a permanent ban on all table reads. Its effect depends on the lock mode and participating application checks."
       },
       {
         "id": "d",
         "text": "It replaces all authorization checks on the locked object",
-        "explanation": "Mutual exclusion and permission are separate responsibilities."
+        "explanation": "A lock coordinates competing changes; authorization decides whether the user may change the object at all."
       }
     ],
     "correctOption": "b"
@@ -147,22 +147,22 @@
       {
         "id": "a",
         "text": "Only a generic success flag for the caller",
-        "explanation": "That hides failure rather than translating it."
+        "explanation": "Reporting success hides the failure and lets the caller continue on a false assumption."
       },
       {
         "id": "b",
         "text": "The dependency implementation type in every public signature",
-        "explanation": "A boundary may deliberately decouple its public contract from that type."
+        "explanation": "The public error can describe the business failure without forcing every caller to depend on the internal library's exception type."
       },
       {
         "id": "c",
-        "text": "The useful domain meaning and original exception as previous",
-        "explanation": "The caller receives an appropriate abstraction while diagnostics retain the cause."
+        "text": "A clear business error with the original exception kept as previous",
+        "explanation": "The caller gets an error it understands, while the previous exception keeps the original cause available for diagnosis."
       },
       {
         "id": "d",
         "text": "The original stack by catching and doing nothing",
-        "explanation": "Silently swallowing the failure loses the meaningful outcome."
+        "explanation": "Catching the error and doing nothing hides the failed operation instead of explaining it to the caller."
       }
     ],
     "correctOption": "c"
@@ -175,22 +175,22 @@
       {
         "id": "a",
         "text": "A common interface with the required behavior",
-        "explanation": "The interface expresses a usable contract independently of a shared class hierarchy."
+        "explanation": "Both providers can implement the same required methods without inheriting code from one another."
       },
       {
         "id": "b",
         "text": "A shared public static variable for the current provider",
-        "explanation": "Global mutable selection does not express a safe behavioral contract."
+        "explanation": "A shared variable can choose a provider, but it does not define what methods and behavior that provider must offer."
       },
       {
         "id": "c",
         "text": "A superclass copied separately into both classes",
-        "explanation": "Duplicated code is not a common polymorphic contract."
+        "explanation": "Copying code does not give callers a single shared type through which they can use either provider."
       },
       {
         "id": "d",
         "text": "An inheritance chain in which one provider subclasses the other",
-        "explanation": "One concrete provider is not necessarily a behavioral subtype of the other."
+        "explanation": "One payment provider is not necessarily a special kind of the other. A common interface avoids inventing that relationship."
       }
     ],
     "correctOption": "a"
@@ -203,22 +203,22 @@
       {
         "id": "a",
         "text": "Downcast unconditionally because all references have the same size",
-        "explanation": "Reference representation does not establish runtime type compatibility."
+        "explanation": "A reference can point to the wrong kind of object for the cast. Its storage size does not make that cast valid."
       },
       {
         "id": "b",
         "text": "Change the declared reference name to the subclass name",
-        "explanation": "A name change cannot change the runtime object."
+        "explanation": "Renaming a variable does not change the object it refers to or the methods its declared type exposes."
       },
       {
         "id": "c",
         "text": "Call the subclass method through any base reference",
-        "explanation": "The static contract limits directly available components."
+        "explanation": "The base type only exposes its own accessible methods, even when the actual object has more methods."
       },
       {
         "id": "d",
         "text": "Prefer the needed interface, or check and handle a justified downcast",
-        "explanation": "Expose the capability through a suitable contract and treat invalid casts deliberately."
+        "explanation": "Use an interface that exposes the capability when possible. If a downcast is justified, check its validity or handle a failed cast."
       }
     ],
     "correctOption": "d"
@@ -231,22 +231,22 @@
       {
         "id": "a",
         "text": "CLASS-DATA is necessarily shared globally by every SAP server",
-        "explanation": "Its lifetime and scope are not a universal cross-system singleton."
+        "explanation": "CLASS-DATA is not one shared value across every SAP server. Its actual session and runtime scope still matters."
       },
       {
         "id": "b",
         "text": "Static state can outlive the intended call and couple consumers or tests",
-        "explanation": "Prefer explicit request context and verify the actual session/runtime scope."
+        "explanation": "A later call or test may see a value left by an earlier one. Passing the request context explicitly makes ownership clearer."
       },
       {
         "id": "c",
         "text": "An instance constructor resets every static member automatically",
-        "explanation": "That reset behavior is not guaranteed by creating an object."
+        "explanation": "Creating another instance does not automatically reset all CLASS-DATA values."
       },
       {
         "id": "d",
         "text": "Static methods are never callable in ABAP Objects",
-        "explanation": "They are supported; the concern is state ownership, not syntax existence."
+        "explanation": "ABAP supports static methods. The problem here is who owns the stored user value and how long it remains valid."
       }
     ],
     "correctOption": "b"
@@ -259,22 +259,22 @@
       {
         "id": "a",
         "text": "Deep inheritance so each country overrides unrelated methods",
-        "explanation": "That couples variation to a hierarchy without a justified subtype contract."
+        "explanation": "A deep hierarchy forces unrelated variations into inheritance and can make changes affect classes that should be independent."
       },
       {
         "id": "b",
         "text": "A CASE statement duplicated in every consumer",
-        "explanation": "Duplicating selection and calculation spreads the change across callers."
+        "explanation": "Every caller would need updating when a calculation rule changes, making it easy for their behavior to diverge."
       },
       {
         "id": "c",
-        "text": "Compose the service with a tax-policy interface",
-        "explanation": "The variation has an explicit seam and can be changed or tested independently."
+        "text": "Give the service a tax-calculation object through an interface",
+        "explanation": "The service calls a tax-policy interface, so a different implementation or test double can supply the calculation without changing the service."
       },
       {
         "id": "d",
         "text": "A single global country variable read by all calculations",
-        "explanation": "Implicit state makes behavior and testing less predictable."
+        "explanation": "A hidden global value can make the same call behave differently depending on earlier code or tests."
       }
     ],
     "correctOption": "c"
@@ -287,22 +287,22 @@
       {
         "id": "a",
         "text": "No; the methods bypass the supplied dependency",
-        "explanation": "The behavior must use the injected dependency for the seam to control that collaboration."
+        "explanation": "The methods ignore the object the test supplied and create another one. They must use the supplied dependency for the test to control it."
       },
       {
         "id": "b",
         "text": "Yes; a constructor parameter always proves dependency inversion",
-        "explanation": "The existence of a parameter does not establish actual use or architectural direction."
+        "explanation": "Accepting a constructor parameter helps only if the implementation actually uses it for the required work."
       },
       {
         "id": "c",
         "text": "Yes; concrete dependencies are replaced automatically by ABAP Unit",
-        "explanation": "The test framework does not automatically replace arbitrary object construction."
+        "explanation": "ABAP Unit does not automatically replace every object created inside the production code."
       },
       {
         "id": "d",
         "text": "No; constructor injection is forbidden in ABAP",
-        "explanation": "The issue is bypassing the seam, not the availability of constructor parameters."
+        "explanation": "Constructor injection is supported. The defect is ignoring the injected object, not accepting it in the constructor."
       }
     ],
     "correctOption": "a"
@@ -315,22 +315,22 @@
       {
         "id": "a",
         "text": "The production implementation follows the business rule",
-        "explanation": "The real implementation was never exercised."
+        "explanation": "The test never ran the production code, so it cannot prove that code follows the rule."
       },
       {
         "id": "b",
         "text": "The database persistence and authorization are correct",
-        "explanation": "Those behaviors were not proven by a configured double."
+        "explanation": "A configured fake response does not check actual database writes or permissions."
       },
       {
         "id": "c",
         "text": "The test covers every collaborator interaction",
-        "explanation": "A configured result alone does not establish such coverage."
+        "explanation": "Returning a predefined value does not show that the real class called its dependencies correctly."
       },
       {
         "id": "d",
         "text": "Only that the double returns the configured result",
-        "explanation": "Exercise the real unit and replace selected dependencies instead."
+        "explanation": "The test only confirms the fake's setup. Run the real class and replace selected outside dependencies instead."
       }
     ],
     "correctOption": "d"
@@ -343,22 +343,22 @@
       {
         "id": "a",
         "text": "The database always returns zero rows automatically",
-        "explanation": "That assumption misses the documented empty-driver behavior."
+        "explanation": "An empty driver does not automatically produce an empty result; it can make the selection much broader."
       },
       {
         "id": "b",
         "text": "Guard the empty-driver case according to the business requirement",
-        "explanation": "An empty FOR ALL ENTRIES driver causes the entire explicit WHERE condition to be ignored; normal implicit client handling still applies."
+        "explanation": "An empty driver makes FOR ALL ENTRIES ignore the entire explicit WHERE condition. Normal implicit client handling still applies, so handle the empty case before selecting."
       },
       {
         "id": "c",
         "text": "Add DISTINCT to guarantee an empty result",
-        "explanation": "Duplicate elimination does not create the missing selection restriction."
+        "explanation": "DISTINCT removes duplicates from results; it does not restore the ignored filter or force an empty result."
       },
       {
         "id": "d",
         "text": "The statement cannot compile with an internal-table operand",
-        "explanation": "FOR ALL ENTRIES supports an internal-table driver."
+        "explanation": "An internal table is a supported driver for FOR ALL ENTRIES. Its empty state is the problem to handle."
       }
     ],
     "correctOption": "b"
@@ -371,22 +371,22 @@
       {
         "id": "a",
         "text": "All left joins automatically behave as inner joins on HANA",
-        "explanation": "The database is respecting the predicate placement, not discarding left-join semantics."
+        "explanation": "HANA still follows the left-join rules. The later WHERE condition removes the unmatched rows."
       },
       {
         "id": "b",
         "text": "The SELECT list omitted the right-side key",
-        "explanation": "Projection does not explain rejection by the WHERE predicate."
+        "explanation": "Choosing fewer output fields does not explain why this WHERE condition rejects the row."
       },
       {
         "id": "c",
         "text": "The WHERE condition rejects the null-extended unmatched rows",
-        "explanation": "Place predicates according to the intended preservation semantics and verify with unmatched cases."
+        "explanation": "An unmatched row has null values on the right, so right.status = active does not pass. Put the condition where it preserves the intended unmatched rows and test that case."
       },
       {
         "id": "d",
         "text": "DISTINCT always removes unmatched orders",
-        "explanation": "Duplicate elimination is a separate operation and not the stated cause."
+        "explanation": "DISTINCT removes duplicate results; it is not the cause of this status filter removing unmatched orders."
       }
     ],
     "correctOption": "c"
@@ -399,22 +399,22 @@
       {
         "id": "a",
         "text": "Use a selection with an explicit supported ordering and row limit",
-        "explanation": "Latest needs a deterministic ordering, including a tie-breaker where necessary."
+        "explanation": "Define what latest means, sort by it and request one row. Add a tie-breaker if several records can have the same timestamp."
       },
       {
         "id": "b",
         "text": "Keep SELECT SINGLE because the database returns the newest row first",
-        "explanation": "Without a relevant ordering guarantee, the chosen row is not a latest-record contract."
+        "explanation": "SELECT SINGLE with a non-unique condition does not promise to return the newest matching record."
       },
       {
         "id": "c",
         "text": "Add more fields to the SELECT list",
-        "explanation": "Projection width does not define result order."
+        "explanation": "Adding output fields does not change which matching record is considered latest."
       },
       {
         "id": "d",
         "text": "Run the same query twice and use the second row",
-        "explanation": "Repeated execution does not establish deterministic recency."
+        "explanation": "Running the same unordered query again still gives no reliable rule for selecting the newest record."
       }
     ],
     "correctOption": "a"
@@ -427,22 +427,22 @@
       {
         "id": "a",
         "text": "Yes, SQLScript is always faster for any query",
-        "explanation": "Performance depends on the workload and execution plan, not that blanket rule."
+        "explanation": "SQLScript is not automatically faster. Runtime depends on the actual data, query and execution plan."
       },
       {
         "id": "b",
         "text": "Yes, AMDP removes client and authorization concerns",
-        "explanation": "Those responsibilities still need explicit design."
+        "explanation": "AMDP still needs correct client handling and authorization design; it does not remove those requirements."
       },
       {
         "id": "c",
         "text": "No, AMDP can never execute database procedures",
-        "explanation": "That contradicts the purpose of AMDP."
+        "explanation": "AMDP can implement database procedures. That does not mean it is needed for this simple task."
       },
       {
         "id": "d",
         "text": "Keep the simpler suitable model unless measured needs justify AMDP",
-        "explanation": "Choose by supported semantics, complexity and evidence rather than technology preference."
+        "explanation": "The existing CDS solution already fits the requirement. Use AMDP when a supported capability or measured need justifies the extra complexity."
       }
     ],
     "correctOption": "d"
@@ -455,22 +455,22 @@
       {
         "id": "a",
         "text": "Repeat POST with a new business identity until one response arrives",
-        "explanation": "This can create duplicates when an earlier request succeeded."
+        "explanation": "The first request may already have created the document. Giving each retry a new identity can create more copies."
       },
       {
         "id": "b",
-        "text": "Reconcile by a stable identity or use a supported idempotency contract",
-        "explanation": "The timeout means an uncertain outcome, so recovery must prevent duplicate business effects."
+        "text": "Find the original result or retry using the API's supported idempotency key",
+        "explanation": "Look up the original result, or retry with the API's supported same-request identifier. A timeout does not tell you whether the server saved the change."
       },
       {
         "id": "c",
         "text": "Assume the network timeout rolled back the server transaction",
-        "explanation": "Transport failure does not establish the remote transaction outcome."
+        "explanation": "The response may have been lost after the server committed. A network error does not roll that change back."
       },
       {
         "id": "d",
         "text": "Switch the create operation to GET",
-        "explanation": "GET is not an appropriate workaround for an unsafe create command."
+        "explanation": "GET is for read-oriented requests, not a way to hide a creation behind a different method."
       }
     ],
     "correctOption": "b"
@@ -483,22 +483,22 @@
       {
         "id": "a",
         "text": "Convert every quoted numeric-looking value into an integer",
-        "explanation": "That can destroy identifiers and contract-defined precision."
+        "explanation": "Turning 0004711 into an integer removes its leading zeros and can change the identifier."
       },
       {
         "id": "b",
         "text": "Treat missing, null and empty as identical for every update",
-        "explanation": "Those meanings must be specified by the API contract."
+        "explanation": "An omitted field may mean keep the value, while null may mean clear it. Follow the API's rules for each case."
       },
       {
         "id": "c",
         "text": "Preserve contract-defined types, leading zeros and decimal precision",
-        "explanation": "Represent business values deliberately and distinguish omitted values from explicit clearing."
+        "explanation": "Keep the identifier as the agreed string and preserve the amount's precision. Also distinguish a missing property from an explicit request to clear it."
       },
       {
         "id": "d",
         "text": "Use floating point for every monetary value",
-        "explanation": "Binary floating-point representation can introduce unwanted monetary rounding behavior."
+        "explanation": "Binary floating point can introduce rounding that is unsuitable for an exact monetary amount. Use the representation required by the API."
       }
     ],
     "correctOption": "c"
@@ -511,22 +511,22 @@
       {
         "id": "a",
         "text": "The remote transaction has its own outcome and needs reconciliation",
-        "explanation": "A local rollback does not generally undo an independently committed remote effect."
+        "explanation": "If the receiver already committed, the local rollback does not undo it. Find the remote result and follow the supported recovery procedure."
       },
       {
         "id": "b",
         "text": "All remote effects are automatically rolled back by the caller",
-        "explanation": "That assumes a shared atomic transaction that was not established."
+        "explanation": "The caller and receiver have not been shown to share one all-or-nothing transaction."
       },
       {
         "id": "c",
         "text": "RFC transport makes both systems one database LUW",
-        "explanation": "RFC is a call mechanism, not a universal distributed transaction manager."
+        "explanation": "RFC performs a remote call; it does not automatically make both systems one database transaction."
       },
       {
         "id": "d",
         "text": "A BAPI name guarantees local and remote atomicity",
-        "explanation": "Transaction semantics come from the documented API and execution boundary."
+        "explanation": "A BAPI name alone says nothing about shared rollback. Check that API's documented transaction behavior and the remote context."
       }
     ],
     "correctOption": "a"
@@ -539,22 +539,22 @@
       {
         "id": "a",
         "text": "Delete the status history so the message looks new",
-        "explanation": "That removes evidence and can make duplicate posting more likely."
+        "explanation": "Deleting the history removes evidence of earlier work and can make duplicate posting harder to detect."
       },
       {
         "id": "b",
         "text": "Resubmit immediately with a different correlation key",
-        "explanation": "That can bypass duplicate detection."
+        "explanation": "A new reference may make an old request look new and bypass duplicate detection."
       },
       {
         "id": "c",
         "text": "Treat technical error status as proof that nothing was posted",
-        "explanation": "The business outcome must be checked independently."
+        "explanation": "The business document may already exist even though a later technical step failed. Check the actual result first."
       },
       {
         "id": "d",
-        "text": "Establish the actual posting outcome and the owning retry mechanism",
-        "explanation": "Use correlation and business keys, correct the cause, and prevent a second business effect."
+        "text": "Check what was posted and which supported restart process to use",
+        "explanation": "Find the target document using the original reference, fix the cause and use the supported restart path. This avoids repeating an already completed posting."
       }
     ],
     "correctOption": "d"

@@ -29,7 +29,7 @@ from visual_delivery_hana import build_delivery_hana_visuals
 from study_catalog import ordered_modules, is_cloud, catalog
 
 ROOT = Path(__file__).resolve().parents[1]
-DATE = '11 October 2026'
+DATE = '12 October 2026'
 INK = colors.HexColor('#122b3e')
 MUTED = colors.HexColor('#536b7c')
 TEAL = colors.HexColor('#126554')
@@ -66,7 +66,7 @@ def related_visuals(q):
     return [v for v in visual_items if q['id'] in v['questions']]
 
 def md_question(q):
-    result=f"## {q['id']} {q['question']}\n\n**Level:** {q['level']}\n\n**Short answer:** {q['answer']}\n\n**Example and follow-up:** {q['detail']}\n\n**Avoid this mistake:** {q['pitfall']}\n\n"
+    result=f"## {q['id']} {q['question']}\n\n**Level:** {q['level']}\n\n**Short answer:** {q['answer']}\n\n**Reasoning and example:** {q['detail']}\n\n**Avoid this mistake:** {q['pitfall']}\n\n"
     if q['level']=='Senior':
         result+='**Interviewer follow-ups:**\n\n'+''.join('- '+x+'\n' for x in q['followups'])+'\n'
         result+='**Strong answer criteria:**\n\n'+''.join('- '+x+'\n' for x in q['signals'])+'\n'
@@ -87,6 +87,9 @@ for m in modules:
 def reference_back(q):
     return '<br><br><b>Read and verify</b><ul>'+''.join('<li><a href="'+html.escape(ref['url'],quote=True)+'">'+html.escape(ref['title'])+'</a><br>'+html.escape(ref.get('note',''))+'</li>' for ref in q.get('references',[]))+'</ul>' if q.get('references') else ''
 
+def anki_paragraphs(text):
+    return '<br><br>'.join(html.escape(part.strip()) for part in re.split(r'\n\s*\n',text) if part.strip())
+
 def senior_back(q):
     if q['level']!='Senior':return ''
     return '<br><br><b>Interviewer follow-ups</b><ul>'+''.join('<li>'+html.escape(x)+'</li>' for x in q['followups'])+'</ul><b>Strong answer criteria</b><ul>'+''.join('<li>'+html.escape(x)+'</li>' for x in q['signals'])+'</ul><b>Verification evidence</b><br>'+html.escape(q['evidence'])
@@ -95,7 +98,7 @@ with (ROOT/'flashcards'/'ABAP_Interview_Anki.tsv').open('w',encoding='utf-8',new
     writer=csv.writer(f,delimiter='\t',lineterminator='\n')
     for q in questions:
         front=html.escape(q['id']+' | '+q['question'])
-        back='<b>Short answer</b><br>'+html.escape(q['answer'])+'<br><br><b>Example and follow-up</b><br>'+html.escape(q['detail'])+'<br><br><b>Avoid this mistake</b><br>'+html.escape(q['pitfall'])
+        back='<b>Short answer</b><br>'+anki_paragraphs(q['answer'])+'<br><br><b>Reasoning and example</b><br>'+anki_paragraphs(q['detail'])+'<br><br><b>Avoid this mistake</b><br>'+html.escape(q['pitfall'])
         writer.writerow([front,back+senior_back(q)+reference_back(q),'ABAP_Interview '+q['module'].replace('-','_')+' '+q['level']])
 
 with (ROOT/'flashcards'/'ABAP_Interview_Anki.tsv').open(encoding='utf-8',newline='') as source, (ROOT/'flashcards'/'ABAP_Cloud_Senior_Anki.tsv').open('w',encoding='utf-8',newline='') as target:
@@ -146,7 +149,7 @@ def build_pdf(name,story):
 def heading(text,bookmark):
     obj=p(text,'SectionTitle');obj.bookmark=bookmark;return obj
 def cover(title,subtitle):
-    return [Spacer(1,65),p('ABAP INTERVIEW PREPARATION','LabelStudy'),p(title,'CoverTitle'),p(subtitle,'SubTitle'),Spacer(1,18),p(f'{len(questions)} questions across {len(modules)} study segments. Reviewed {DATE}.'),p('Use the short answers for oral rehearsal. The examples and pitfalls prepare you for follow-up questions. Choose the target SAP edition and release before applying an implementation detail.'),Spacer(1,20),p('Read online in GitHub through README.md, or download the repository and open START_HERE.html for offline recall cards. The PDF is a portable reading and printing edition.','SmallStudy'),PageBreak()]
+    return [Spacer(1,65),p('ABAP INTERVIEW PREPARATION','LabelStudy'),p(title,'CoverTitle'),p(subtitle,'SubTitle'),Spacer(1,18),p(f'{len(questions)} questions across {len(modules)} study segments. Reviewed {DATE}.'),p('Use the short answers for oral rehearsal. The examples and pitfalls prepare you for follow-up questions. Choose the target SAP edition and release before applying an implementation detail.'),Spacer(1,20),p('Open abap-interview-studio.pages.dev online, or download the repository and open START_HERE.html for offline study. The PDF is a portable reading and printing edition.','SmallStudy'),PageBreak()]
 
 def text(d,x,y,s,size=12,color=INK,bold=False):
     d.add(String(x,y,clean(s),fontName='Helvetica-Bold' if bold else 'Helvetica',fontSize=size,fillColor=color))
@@ -243,7 +246,7 @@ with (ROOT/'flashcards'/'ABAP_Interview_Illustrated_Anki.tsv').open('w',encoding
     writer=csv.writer(f,delimiter='\t',lineterminator='\n')
     for q in questions:
         front=html.escape(q['id']+' | '+q['question'])
-        back='<b>Short answer</b><br>'+html.escape(q['answer'])+'<br><br><b>Example</b><br>'+html.escape(q['detail'])+'<br><br><b>Avoid</b><br>'+html.escape(q['pitfall'])
+        back='<b>Short answer</b><br>'+anki_paragraphs(q['answer'])+'<br><br><b>Reasoning and example</b><br>'+anki_paragraphs(q['detail'])+'<br><br><b>Avoid</b><br>'+html.escape(q['pitfall'])
         for v in related_visuals(q):
             back+='<hr><b>'+html.escape(v['title'])+'</b><br><img src="'+v['id']+'.png"><br>'+html.escape(v['caption'])+'<br><b>Explain it:</b> '+html.escape(v['recall'])+'<br><b>Limit:</b> '+html.escape(v['limit'])
         writer.writerow([front,back+senior_back(q)+reference_back(q),'ABAP_Interview '+q['module'].replace('-','_')+' '+q['level']])
@@ -258,7 +261,9 @@ for m in modules:
     chosen=next((v for v in visual_items if v['id']==featured.get(m['id'][:2])),None)
     if chosen:story.extend([visual_flow(chosen),p(chosen['caption'],'SmallStudy'),p('See the visual atlas for the recall prompt, limits and related questions.','SmallStudy'),Spacer(1,12)])
     for number,q in enumerate(m['questions']):
-        group=[p(q['id']+'  '+q['question'],'Question'),p(q['answer']),rich('<b>Example and follow-up</b> '+escape(clean(q['detail']))),rich('<b>Avoid this mistake</b> '+escape(clean(q['pitfall'])),'Trap')]
+        group=[p(q['id']+'  '+q['question'],'Question'),p(q['answer']),p('Reasoning and example','LabelStudy')]
+        group.extend(p(part.strip()) for part in re.split(r'\n\s*\n',q['detail']) if part.strip())
+        group.append(rich('<b>Avoid this mistake</b> '+escape(clean(q['pitfall'])),'Trap'))
         if q['level']=='Senior':
             group.extend([rich('<b>Interviewer probes</b> '+escape(clean(' / '.join(q['followups']))),'SmallStudy'),rich('<b>Strong answer criteria</b> '+escape(clean('; '.join(q['signals']))),'SmallStudy'),rich('<b>Verification evidence</b> '+escape(clean(q['evidence'])),'SmallStudy')])
         if q.get('references'):

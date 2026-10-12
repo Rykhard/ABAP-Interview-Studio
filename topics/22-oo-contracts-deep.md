@@ -8,9 +8,11 @@ Work through these decisions after the OO fundamentals. The emphasis is on obser
 
 **Level:** Senior
 
-**Short answer:** I define accepted inputs, the observable success result, allowed state changes, and failure behavior. The caller needs to know whether the reservation is merely buffered or durable, whether repetition is safe, and who owns transaction completion. Those promises belong in the contract and its tests. A matching signature alone cannot tell another developer whether combining two operations is safe.
+**Short answer:** I explain what inputs are accepted, what success means and what can change before a failure. The caller also needs to know whether the reservation is already saved, whether repeating the call is safe and who commits. Parameter types cannot answer those questions. I document these rules and test them so another implementation cannot quietly change the caller's expectations.
 
-**Example and follow-up:** One implementation returns an ID before save; another commits immediately. Both compile against the same interface but are not interchangeable for a caller that reserves two items atomically. Document the intended boundary in ABAP Doc and test failure of the second item against the first one's state.
+**Reasoning and example:** A caller needs to reserve two items together. The first implementation returns an ID but leaves saving to the caller. A replacement implementation returns an ID and commits immediately. Both can have the same ABAP signature, yet the second leaves the first reservation saved if reserving the second item fails.
+
+I therefore state whether reserve only prepares the change or makes it permanent. I also define repeated calls, invalid inputs and error results in ABAP Doc or the relevant API documentation. Tests include failure on the second item and inspect the first item afterward. Returning an ID is useful, but it is not proof that a save has happened or that rollback remains possible.
 
 **Avoid this mistake:** RETURNING an identifier does not itself promise committed persistence, and a method name cannot replace a transaction contract.
 
@@ -21,9 +23,9 @@ Work through these decisions after the OO fundamentals. The emphasis is on obser
 
 **Strong answer criteria:**
 
-- Defines success and failure state
-- States transaction ownership
-- Defines repeat-call semantics
+- Defines the state after success and failure
+- States who commits
+- Defines what repeated calls do
 
 **Verification evidence:** Contract tests plus documentation covering buffered success, persistence boundary, and repeated requests.
 
@@ -48,9 +50,11 @@ A valid quantity-one call exposes a behavioral violation invisible in matching p
 
 **Level:** Senior
 
-**Short answer:** No, if the published contract accepts every positive quantity, the new provider strengthens the precondition and breaks callers that validly request one unit. I either preserve the shared contract, expose the narrower capability separately, or change the contract through a managed migration. I compare outputs, errors, and side effects as well as input types when assessing substitutability.
+**Short answer:** No, because callers are allowed to request any positive quantity. Refusing quantities below ten adds a new restriction and breaks valid callers. The replacement must keep the original promise, or expose its narrower capability separately. I compare errors and side effects as well as successful results. Implementing the same ABAP interface proves compatible types, not compatible behavior.
 
-**Example and follow-up:** A checkout calls the provider through an interface with quantity one and expects a quote. A subclass or implementation that raises an unsupported-quantity error for that valid input violates the agreed behavior even though activation succeeds. Run the same contract scenarios against each implementation.
+**Reasoning and example:** A checkout calls the price-provider interface for one unit. The existing provider returns a quote, as documented. A new bulk provider rejects that request because its own minimum is ten. The program activates, but the checkout now fails for an input it was always allowed to send.
+
+I can keep the shared behavior, choose the provider only through an explicit bulk-specific capability, or change the shared API through a planned migration. I do not hide the new restriction behind the old interface. A common test suite should run the same accepted-input, result and failure cases against each implementation. That checks the promises a caller relies on, rather than merely whether both classes compile.
 
 **Avoid this mistake:** Implementing an interface or passing a cast check proves type compatibility, not behavioral substitutability.
 
@@ -61,9 +65,9 @@ A valid quantity-one call exposes a behavioral violation invisible in matching p
 
 **Strong answer criteria:**
 
-- Identifies strengthened precondition
-- Checks postconditions and side effects
-- Uses shared behavioral tests
+- Identifies the new restriction on valid inputs
+- Checks results, errors and other changes
+- Runs the same behavior tests for each provider
 
 **Verification evidence:** A contract suite exercises minimum positive quantity, currency, failures, and repeat calls for both providers.
 
@@ -88,9 +92,11 @@ A valid quantity-one call exposes a behavioral violation invisible in matching p
 
 **Level:** Senior
 
-**Short answer:** I separate the public capability from implementation reuse. An interface can express the capability without imposing a class hierarchy. Shared validation can be a collaborator. An abstract base class is justified when there is a stable specialization relationship and a useful shared lifecycle or template, not simply similar code. I also consider that a class has only one superclass.
+**Short answer:** I would use an interface for the shared capability and a helper object for shared validation. That lets unrelated services reuse what they need without pretending they belong to one class family. An abstract superclass is useful when there is a real shared process and deliberate specialization. Similar code alone is not enough reason, especially because an ABAP class has only one superclass.
 
-**Example and follow-up:** A document exporter and a notification sender may both support cancellation but have unrelated lifecycles. A narrow cancellation interface lets a coordinator address either, while shared policy is composed where needed. For a genuine family of parsers with enforced shared steps, an abstract template may be appropriate.
+**Reasoning and example:** A document exporter and a notification sender both support cancellation, but their work is otherwise unrelated. A small cancellation interface lets a coordinator call either one. If both need the same cancellation policy, they can each use a policy object without inheriting all of one another's shared setup.
+
+By contrast, a family of parsers may genuinely share a fixed sequence with a few defined steps implemented by subclasses. An abstract base class could fit that situation. I ask what the caller needs and what implementation is actually reusable before choosing. Putting shared code into a base class is convenient initially, but a forced hierarchy can make later independent changes much harder.
 
 **Avoid this mistake:** An abstract superclass is not automatically a better contract because it can carry reusable implementation.
 
@@ -101,9 +107,9 @@ A valid quantity-one call exposes a behavioral violation invisible in matching p
 
 **Strong answer criteria:**
 
-- Separates contract from reuse
-- Tests the is-a relationship
-- Accounts for independent variation
+- Separates what callers need from shared implementation code
+- Checks whether a subclass really is a valid kind of its base
+- Allows unrelated behaviors to change separately
 
 **Verification evidence:** A responsibility sketch shows the caller's minimal interface and the owner of shared validation.
 
@@ -128,9 +134,11 @@ A valid quantity-one call exposes a behavioral violation invisible in matching p
 
 **Level:** Advanced
 
-**Short answer:** No. Redefinition replaces an eligible inherited instance method's implementation while preserving its interface. ABAP does not use same-name, different-signature method overloading to solve this. If the additional input changes the operation's contract, I introduce a distinct operation or a deliberate compatible contract evolution. The existing inherited operation must still satisfy callers using the base type.
+**Short answer:** No. REDEFINITION changes an eligible inherited instance method implementation while keeping its interface. It cannot add a new mandatory parameter. ABAP does not solve this with same-name methods having different signatures. If the new input changes what the operation means, I design a separate operation or a deliberate API change. Existing base-type callers must still work as promised.
 
-**Example and follow-up:** A base method formats a document. A specialized format requires an extra profile: provide a separately named operation, or configure a validated collaborator before use if that fits the existing contract. Requiring callers to downcast merely to make the inherited method usable exposes a broken abstraction.
+**Reasoning and example:** A base method formats a document using its declared inputs. A specialized formatter now needs an extra profile. I cannot simply add that profile to the redefined method signature. A separately named operation may be clearer, or a required profile can be supplied during valid object setup if that still fits the original method rules.
+
+The important test is a caller holding only the base reference. It must not suddenly need a downcast and a hidden setup call to use an operation that previously worked. I check successful results, errors and initialization together. Even adding an optional parameter elsewhere does not automatically make a changed behavior compatible; the caller's expectations still need review.
 
 **Avoid this mistake:** Redefinition is not method overloading, and optional parameters do not automatically make every behavioral change compatible.
 
@@ -156,9 +164,11 @@ A valid quantity-one call exposes a behavioral violation invisible in matching p
 
 **Level:** Advanced
 
-**Short answer:** Friendship grants access to the granting class's protected and private components. It is unilateral, so the reverse access is not automatic. A friend of a superclass is not automatically a friend of its subclasses; subclasses of a friend can also gain access. I keep the grant narrow and first ask whether the test can assert the public behavior instead.
+**Short answer:** Friendship allows access to the granting class's private and protected components. It goes one way; the granting class does not automatically gain the same access back. A superclass friend is not automatically a friend of its subclasses, while subclasses of a friend can gain access. I keep the grant narrow and prefer testing public behavior when that is enough.
 
-**Example and follow-up:** A focused final local test class may need a legacy injection seam. Making every production attribute public is broader than necessary. Granting friendship to a widely implemented interface is also much broader than naming one final class, because implementations participate in the friendship relationship.
+**Reasoning and example:** A local test class needs a legacy seam that cannot yet be reached through the public API. Granting friendship to that focused final test class can be narrower than making production attributes public. The test can then access the granting class's internals without opening them to every ordinary caller.
+
+I still inspect who receives the permission. Granting friendship to a broadly implemented interface can give access to its implementing classes, which is much wider than one test class. The inheritance directions matter too: a friend class and a subclass of the class granting friendship are different situations. I do not reduce the rule to friendship is inherited or is never inherited; I check the actual classes involved.
 
 **Avoid this mistake:** Do not summarize friendship as simply inherited or not inherited; the direction and which class is subclassed matter.
 
@@ -183,9 +193,11 @@ Invalid dependencies are rejected before use. In the successful test, the input 
 
 **Level:** Senior
 
-**Short answer:** Clearing one reference changes that variable to the null reference; another reference can still keep the object reachable. Memory reclamation by the garbage collector is distinct from business resource management. If a connection, registration, or lock needs timely release, I define an explicit ownership and release protocol and execute it on the relevant completion and failure paths.
+**Short answer:** Clearing one reference only clears that variable. If another reference still points to the object, the object remains reachable. Memory cleanup is also different from closing a connection or releasing a business lock. For resources that must be released promptly, I define an explicit owner and close or release operation. I run it on the required success and error paths.
 
-**Example and follow-up:** A coordinator and cache both hold a reference to the same session object. Clearing the coordinator's reference leaves the cache entry usable. An explicit close can be appropriate for the owner, but then other holders need defined behavior after closure, and a borrowed resource must not be closed accidentally.
+**Reasoning and example:** A coordinator and a cache both refer to one session object. Clearing the coordinator reference leaves the cache reference usable, so it cannot guarantee that the session resource was closed. Even when an object later becomes unreachable, relying on garbage collection is not a precise business-resource release plan.
+
+If the coordinator owns the resource, an explicit close operation may be appropriate. Other holders then need a defined response if they try to use it after closure. If the coordinator merely borrowed it, closing it may break the real owner. I test both ownership and failure paths instead of assuming CLEAR on a reference provides object destruction or lock release.
 
 **Avoid this mistake:** Reference clearing is not an object-level close operation and must not be used as a lock-release guarantee.
 
@@ -196,9 +208,9 @@ Invalid dependencies are rejected before use. In the successful test, the input 
 
 **Strong answer criteria:**
 
-- Separates reachability and resource lifetime
-- Identifies owner versus borrower
-- Defines closed-state behavior
+- Separates object reachability from timely resource release
+- Identifies who owns or borrows the resource
+- Defines behavior after close
 
 **Verification evidence:** Tests cover multiple aliases, explicit close, repeated close, and use after closure.
 
@@ -223,9 +235,11 @@ Two structure values own independent string values but lead to the same pricing 
 
 **Level:** Senior
 
-**Short answer:** I make mandatory construction requirements explicit and establish a valid state before the object is usable. Constructor injection can require the repository, with a meaningful failure if the supplied reference is invalid. Complex or fallible setup can be coordinated by a factory. I avoid publishing a half-initialized object or making unrelated business operations depend on a hidden setup call.
+**Short answer:** I would require the repository when creating the service and reject an invalid reference immediately. That avoids an object that looks usable but fails later because setup was forgotten. Constructor injection makes required helpers visible. A factory can coordinate more complex creation. I still check the reference explicitly; declaring a constructor parameter does not guarantee the caller passed a bound object.
 
-**Example and follow-up:** An approval service requires a repository and a policy. A public zero-argument constructor followed by set_repository creates an invalid intermediate state. Validate the mandatory dependencies at creation; if opening an external session is a separate lifecycle step, expose and test that lifecycle explicitly rather than surprising every constructor caller.
+**Reasoning and example:** An approval service currently has a public empty constructor and a later set_repository call. One caller forgets that setter, and approve fails far away from the mistake. Requiring the repository and policy during creation makes the missing setup visible at the point where the object is built.
+
+I validate the required references and return a meaningful construction failure where appropriate. I do not need to perform every remote call in the constructor. If opening an external session is a separate step, I define that lifecycle clearly and test calls before and after opening. The goal is a predictable usable state, not heavy hidden initialization that surprises callers.
 
 **Avoid this mistake:** Constructor injection does not validate an initial reference automatically, and heavy I/O is not required for good initialization.
 
@@ -236,9 +250,9 @@ Two structure values own independent string values but lead to the same pricing 
 
 **Strong answer criteria:**
 
-- Defines construction invariants
-- Rejects missing dependencies early
-- Separates setup from business work
+- Defines what a usable new object requires
+- Rejects missing dependencies at creation
+- Separates setup from later business operations
 
 **Verification evidence:** Creation tests prove invalid dependencies fail immediately and valid instances need no undocumented setup call.
 
@@ -263,9 +277,11 @@ Invalid dependencies are rejected before use. In the successful test, the input 
 
 **Level:** Senior
 
-**Short answer:** Creating another instance initializes that instance's state; it does not reset class-level mutable state. Static attributes persist within the relevant internal session and may be shared by every instance of that class there. I identify and remove unnecessary global state or provide an explicit, controlled test reset. Cache keys and invalidation must also reflect the real context.
+**Short answer:** NEW creates a new instance, but it does not reset CLASS-DATA. That class-level state can be shared by instances in the same internal session and can remain after a test finishes. I remove unnecessary shared mutable state or provide a controlled reset. If a cache is required, I define its keys and refresh rules. It is not automatically synchronized across servers.
 
-**Example and follow-up:** One test loads a policy cache, then another expects changed customizing. Recreating the service leaves the static cache populated. An injected policy provider with test-owned lifetime can avoid this coupling; if caching is a genuine requirement, test refresh, invalidation, and relevant user or tenant context separately.
+**Reasoning and example:** The first test loads a policy into a static cache. The second prepares different policy data and creates a new service, but the service still reads the old class-level cache. The second test fails only when run after the first, which is a sign that test state is leaking.
+
+An injected provider created for each test can remove that unwanted sharing. If production genuinely needs caching, I test cache invalidation and all relevant context in the key, such as the intended user or organizational scope. A reset can help isolate legacy tests, but it does not fix an incorrect production cache lifetime. Changing test order only hides the problem.
 
 **Avoid this mistake:** CLASS-DATA is not per instance, but it is also not a globally synchronized cache across application servers.
 
@@ -276,9 +292,9 @@ Invalid dependencies are rejected before use. In the successful test, the input 
 
 **Strong answer criteria:**
 
-- Identifies static lifetime
-- Separates test isolation from construction
-- Defines cache scope and invalidation
+- Explains how long class-level data remains
+- Does not assume NEW resets shared test state
+- Defines cache keys, lifetime and refresh rules
 
 **Verification evidence:** The suite passes individually, together, and with varied order without stale shared state.
 
@@ -303,9 +319,11 @@ Empty row slots and the initial allocation are deliberately drawn separately. A 
 
 **Level:** Senior
 
-**Short answer:** Usually not: an empty result can turn technical failure into a false business fact. I catch failures at a boundary that can recover or translate them into the service's declared meaning. When wrapping an exception, I preserve the original through previous so diagnosis remains possible. Expected absence, business rejection, and technical failure need distinguishable outcomes.
+**Short answer:** Usually no. Returning an empty result can make a technical failure look like a valid not-found result. I catch the failure where I can recover or turn it into a meaningful service error. If I wrap the exception, I keep PREVIOUS so the original cause remains available. Missing data, a rejected business request and an unavailable dependency should remain distinguishable.
 
-**Example and follow-up:** A pricing repository connection failure must not look like 'no price exists' and trigger a free item. Translate the unavailable dependency into a meaningful service error while retaining its cause. Test not-found separately from unavailable, and ensure failure does not leave a misleading success result.
+**Reasoning and example:** A pricing repository cannot be reached. If the service catches CX_ROOT and returns an empty price, the caller might assume no price exists and apply a default such as zero. A network problem has now become an apparently valid business result, which is more dangerous than a clear error.
+
+I define separate handling for a confirmed missing price and a failed attempt to read the price. The service can expose a useful unavailable message while preserving the low-level cause for diagnosis. Tests simulate both cases and verify that neither accidentally produces a successful free item. A broad catch can be appropriate at a final error-handling point, but not as permission to invent success data.
 
 **Avoid this mistake:** Broad catch-and-default handling is not resilience when it changes an unknown outcome into valid-looking data.
 
@@ -316,9 +334,9 @@ Empty row slots and the initial allocation are deliberately drawn separately. A 
 
 **Strong answer criteria:**
 
-- Keeps absence distinct from failure
-- Translates at an abstraction boundary
-- Preserves causal exception
+- Keeps missing data different from a failed read
+- Converts errors into useful service-level meaning
+- Retains the original exception cause
 
 **Verification evidence:** Tests assert distinct not-found and technical-failure paths, including the previous exception chain.
 
@@ -343,9 +361,11 @@ The table names three exit paths that require separate reasoning. The exception 
 
 **Level:** Senior
 
-**Short answer:** Private storage alone is insufficient if the getter hands out a reference that lets callers mutate the same data or object. I define whether the return value is a snapshot, a read capability, or intentionally shared mutable state. For an invariant-bearing aggregate, I prefer operations that validate changes and expose appropriate values rather than unrestricted aliases to internals.
+**Short answer:** No. Private storage is not protected if a getter returns a reference that lets callers change the same data directly. I decide whether the getter returns an independent value, read access or intentionally shared state. Business changes should normally go through methods that check the rules. Returning a table value removes that table alias, but object references inside its rows can still be shared.
 
-**Example and follow-up:** A cart validates positive item quantities in add_item, but get_items returns a writable data reference to its actual table. A caller can then insert a negative quantity without calling add_item. Returning a table value removes that table alias; reference components inside its rows still require separate ownership decisions.
+**Reasoning and example:** A cart add_item method rejects negative quantities. Its get_items method returns a writable reference to the real internal item table. A caller uses that reference to insert a negative quantity, bypassing add_item completely. The attribute is private, but the cart can still enter a state its own rules forbid.
+
+Returning a suitable value copy can prevent direct changes to that table. I still inspect row components: a copied object reference points to the same object, so it may expose another way to change internal state. Alternatively, I offer the specific read operations callers need. Tests should try the exposed access paths, not only check that the attribute declaration says PRIVATE.
 
 **Avoid this mistake:** A copied reference is not a copied referent; changing the static view alone does not create immutable state.
 
@@ -356,9 +376,9 @@ The table names three exit paths that require separate reasoning. The exception 
 
 **Strong answer criteria:**
 
-- Finds alias-based invariant bypass
-- Chooses explicit ownership semantics
-- Considers nested references
+- Finds how a reference can bypass validation
+- Defines who may change the data
+- Checks object references inside copied rows
 
 **Verification evidence:** Attempted external mutation cannot bypass the owner's quantity rule or alter a promised snapshot.
 
@@ -383,9 +403,11 @@ Two structure values own independent string values but lead to the same pricing 
 
 **Level:** Senior
 
-**Short answer:** I assess both callers and implementers before extending the contract. A separate capability interface may let interested clients request the new operation without requiring every existing provider to pretend it supports it. If the main interface must evolve, I define semantics, compatibility, and rollout deliberately. A no-op implementation is valid only when doing nothing genuinely satisfies the documented contract.
+**Short answer:** I would consider a separate interface for the optional capability. Providers that really support it can implement it, while existing callers keep using the original interface. Adding a method affects implementers even if old callers never use it. If the main interface must change, I plan the meaning and rollout. Returning fake success is not a valid way to pretend support.
 
-**Example and follow-up:** A price provider gains simulation support, but one external provider cannot simulate. Adding simulate everywhere and returning an empty success hides a capability gap. A simulation interface and explicit capability selection can keep pricing callers unchanged; tests verify unsupported capability handling at the composition boundary.
+**Reasoning and example:** A price-provider interface is widely used, and a new caller needs simulation. One external provider cannot simulate. Adding simulate to every provider and having that one return an empty successful result hides the limitation and can mislead the caller.
+
+A separate simulation capability lets setup code choose a suitable provider or report that the capability is unavailable. Ordinary pricing callers need not change. I test supported and unsupported selection as well as the simulation itself. A no-op implementation is acceptable only if doing nothing truly meets the documented rule. Interface evolution requires checking both sides: existing callers and every class that must implement the new operation.
 
 **Avoid this mistake:** Adding a method is not automatically harmless merely because existing callers do not invoke it.
 
@@ -396,9 +418,9 @@ Two structure values own independent string values but lead to the same pricing 
 
 **Strong answer criteria:**
 
-- Assesses caller and implementer impact
-- Avoids fake successful behavior
-- Defines migration and unsupported capability
+- Checks effects on callers and implementing classes
+- Does not return fake success for unsupported work
+- Plans rollout and explicit unsupported-capability handling
 
 **Verification evidence:** An implementation inventory and compatibility tests cover old clients and providers without simulation.
 
@@ -423,9 +445,11 @@ A valid quantity-one call exposes a behavioral violation invisible in matching p
 
 **Level:** Senior
 
-**Short answer:** It has mainly proved the test configuration, not the calculation. I keep the behavior named as the code under test real and replace dependencies that make its inputs unpredictable, such as a price source or clock. Then I assert independently expected results and important failure behavior. A separate orchestration test may mock a calculator only when orchestration, rather than arithmetic, is its subject.
+**Short answer:** It mainly proves that the mock returns the value configured by the test. It does not prove the real total calculation. To test calculation, I keep calculate_total real and replace outside inputs such as a price source. A different test may mock the calculator when it is testing checkout coordination. The important question is which real behavior the test claims to verify.
 
-**Example and follow-up:** To test a discount calculation, provide controlled prices and exercise the real calculation at the threshold and around it. To test whether checkout requests a calculation before posting, the calculator can be a collaborator double. Naming the test's responsibility makes that difference explicit.
+**Reasoning and example:** For a discount rule, the test supplies known prices and calls the real calculation with quantities below, at and above the threshold. It asserts totals derived from the business rule. If the calculation method itself is mocked to return 90 and the test checks 90, a broken implementation could still pass unchanged.
+
+A checkout test has another purpose: it may verify that a total is requested before posting or that a calculation error prevents posting. There, a calculator double can be appropriate. I name the subject and expected behavior clearly so reviewers can tell these cases apart. High coverage or many mocks alone cannot establish useful test evidence.
 
 **Avoid this mistake:** The same component can be a real subject in one test and a doubled dependency in another; coverage alone does not settle test quality.
 
@@ -436,9 +460,9 @@ A valid quantity-one call exposes a behavioral violation invisible in matching p
 
 **Strong answer criteria:**
 
-- Names the actual tested responsibility
-- Doubles only dependencies
-- Uses independent assertions
+- Names the real behavior being tested
+- Replaces dependencies rather than the tested rule
+- Derives expected results independently from the implementation
 
 **Verification evidence:** A deliberately changed business rule makes its calculation test fail, while orchestration tests remain separately meaningful.
 

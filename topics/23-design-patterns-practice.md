@@ -8,9 +8,11 @@ Use patterns to explain a concrete design decision, not to recite a catalog. The
 
 **Level:** Senior
 
-**Short answer:** Prefer an injected Strategy when approval calculation is the variation and the caller should select or replace it without changing its own class hierarchy. Template Method fits a deliberately stable algorithm skeleton with controlled subclass extension steps. Here, I would keep workflow coordination separate from country rules and pass explicit context to the selected rule. Inheritance becomes justified only if its protected extension contract and lifecycle are genuinely stable requirements.
+**Short answer:** I would use Strategy for country-specific approval rules. The coordinator keeps the workflow, and the selected strategy returns the rule decision. Template Method fits a shared sequence where subclasses intentionally fill in a few fixed steps. Here the rule can vary without changing the coordinator class. I would only choose inheritance if the shared sequence and permitted overrides are clear requirements.
 
-**Example and follow-up:** A country rule should return a decision rather than commit, send email or modify hidden global state. Test the same coordinator with several rule implementations. If countries also vary the process sequence, revisit the workflow model instead of adding increasingly powerful hooks that subclasses can use to violate invariants.
+**Reasoning and example:** The application receives an order and selects the country rule. Each rule receives the required order data and returns a decision, such as the required approver. It should not secretly commit, send email or change global data. The coordinator stays responsible for applying the decision and continuing the workflow.
+
+I test that coordinator with several rules and verify the same success and failure expectations. If countries later need different process sequences, I review the workflow itself instead of adding increasingly powerful subclass hooks. Strategy works best when the changing part is a replaceable rule. Template Method works when a stable base algorithm deliberately controls which steps subclasses may customize.
 
 **Avoid this mistake:** Choosing inheritance solely to share code, or allowing a rule implementation to take over transaction ownership.
 
@@ -21,9 +23,9 @@ Use patterns to explain a concrete design decision, not to recite a catalog. The
 
 **Strong answer criteria:**
 
-- Separates algorithm variation from coordination
-- Defends composition versus inheritance contextually
-- Keeps rules substitutable and independently testable
+- Separates country rules from workflow coordination
+- Explains why composition or inheritance fits this case
+- Keeps rules replaceable and separately testable
 
 **Verification evidence:** Run identical coordinator contract tests with two country rules and a test double; assert decision and side-effect boundaries.
 
@@ -49,9 +51,11 @@ The same 700 EUR request receives different policy decisions through the same St
 
 **Level:** Senior
 
-**Short answer:** A simple factory can centralize selection for a small fixed set of implementations. Abstract Factory becomes useful when callers must obtain a compatible family, such as a provider-specific serializer and sender, without mixing families. Factory Method instead delegates creation through a subclass-overridable creation operation. I would choose the smallest construction design that protects the actual compatibility rule, rather than calling every method returning an object the Factory Method pattern.
+**Short answer:** A simple factory may be enough for a small fixed set of providers. Abstract Factory helps when several objects must belong to a compatible family, such as a serializer and sender for one provider. Factory Method means a creation operation that subclasses can override. I choose the smallest design that prevents incompatible combinations. Returning an object from a static method does not automatically make it Factory Method.
 
-**Example and follow-up:** For two stable providers, an explicit factory returning a validated pair may suffice. If multiple related products evolve independently, a provider-factory interface can make their compatibility visible. Fail clearly for unknown configuration and test family consistency; silently selecting a default provider can post to the wrong destination.
+**Reasoning and example:** Provider A expects one message format and endpoint behavior; provider B expects another. If the caller independently chooses a serializer and sender, it could combine A format with B sender. A factory that returns a validated pair can prevent that mistake without a large hierarchy when only a few combinations exist.
+
+If each provider supplies several related products that evolve together, a provider-factory interface may make the family clearer. I test that every configured provider returns compatible objects and that unknown configuration fails explicitly. Silently choosing a default can send a business document to the wrong destination. The purpose is safe construction, not using the largest possible pattern.
 
 **Avoid this mistake:** Confusing a static creation helper with inheritance-based Factory Method or introducing an Abstract Factory for one trivial object.
 
@@ -62,9 +66,9 @@ The same 700 EUR request receives different policy decisions through the same St
 
 **Strong answer criteria:**
 
-- Distinguishes three creation approaches
-- Names a real product-family invariant
-- Includes invalid configuration and evolution costs
+- Distinguishes simple factory, Factory Method and Abstract Factory
+- Names which related objects must be compatible
+- Checks unknown configuration and future changes
 
 **Verification evidence:** Test each supported provider family and an unknown provider; verify no serializer/sender cross-pairing can be constructed.
 
@@ -90,9 +94,11 @@ The family boundary prevents an A serializer from being combined accidentally wi
 
 **Level:** Senior
 
-**Short answer:** Use an Adapter to translate the application's posting contract into the legacy API's types, identities and error representation. A Facade can expose a coherent business operation over the three underlying steps. They may coexist, but their boundaries must preserve authorization, failure information and transaction ownership. Neither pattern makes an unreleased API eligible for ABAP Cloud use or removes a nested commit. I would reject a superficially clean wrapper that hides those constraints.
+**Short answer:** An Adapter can translate the application request and errors into the legacy API format. A Facade can offer one posting operation over prepare, check and post. Both may be useful, but they must preserve failures, authorization and commit rules. I inspect the actual underlying calls. Neither wrapper makes an unreleased API available to ABAP Cloud or removes an internal commit.
 
-**Example and follow-up:** Separate mapping tests from orchestration tests. For example, verify that a zero amount remains explicit, API warnings do not become unconditional success, and a failed check prevents posting. Expose an uncertain remote outcome distinctly from a definitive rejection so callers can reconcile instead of duplicating work.
+**Reasoning and example:** The application sends a simple posting request. An adapter maps it into the required function-module structures and converts responses into meaningful results. A facade coordinates prepare, check and post, and stops before posting when the check fails. I test mapping separately from that sequence so errors are easy to locate.
+
+Important cases include an explicit zero amount, a warning that must be handled according to the API rules and a remote timeout with an unknown outcome. A timeout is not always proof that nothing was posted. The caller needs enough information to reconcile rather than repeat the operation blindly. The wrapper must expose those facts instead of making the API look safer than it is.
 
 **Avoid this mistake:** Treating any wrapper as both a supported API and a transaction adapter without inspecting its dependencies.
 
@@ -103,9 +109,9 @@ The family boundary prevents an A serializer from being combined accidentally wi
 
 **Strong answer criteria:**
 
-- Separates contract translation from subsystem orchestration
-- Preserves transactional and release constraints
-- Tests meaningful error and value mapping
+- Separates field/error translation from coordinating several calls
+- Preserves commit rules and API release restrictions
+- Tests important values and error mapping
 
 **Verification evidence:** Trace all three steps with injected failures and inspect dependency release state; assert no hidden commit or swallowed business rejection.
 
@@ -131,9 +137,11 @@ Mapping, orchestration and added behavior are different responsibilities. The lo
 
 **Level:** Senior
 
-**Short answer:** Decorators can add behavior around the same service interface without creating subclasses for every combination. I would make order explicit and preserve the wrapped contract, especially exceptions, authorization context and return values. Retrying is not a harmless decoration: it requires operation-specific idempotency and classification of uncertain outcomes. I would enable retries only where the service contract supports them, and decide whether timing and logging describe each attempt or the overall logical operation.
+**Short answer:** Decorators can add logging or timing around the same service interface. Their order matters. Retrying needs extra care because repeating a request can repeat a business effect. I only retry when the operation rules make that safe, and I distinguish a rejection from an unknown remote outcome. I also decide whether logs and timing describe each attempt or the complete operation.
 
-**Example and follow-up:** A logging decorator outside a retry decorator records one logical call; inside it, it can observe individual attempts. Both can be useful if correlated clearly. Redact sensitive payloads and ensure diagnostic failure does not silently change a successful business result unless the required audit contract explicitly demands that behavior.
+**Reasoning and example:** Put logging outside retry and it can record one logical call with several attempts inside it. Put logging inside retry and it can record every attempt. Either can be useful, but the records should share an identifier so support can understand what happened instead of counting attempts as separate business requests.
+
+I test exceptions and return values through the full decorator chain. Logs must avoid sensitive payloads. A diagnostic logging failure should not silently turn a successful business call into failure unless a required audit rule deliberately demands that. Automatic retries on every POST are unsafe: after a timeout, the remote system may already have applied the first request.
 
 **Avoid this mistake:** Adding automatic retries to every POST or assuming decorator order cannot change observable behavior.
 
@@ -144,9 +152,9 @@ Mapping, orchestration and added behavior are different responsibilities. The lo
 
 **Strong answer criteria:**
 
-- Preserves the component interface contract
-- Reasons about wrapper ordering
-- Separates retries from idempotency guarantees
+- Preserves the service results and errors
+- Explains how wrapper order changes observation
+- Does not assume retry automatically prevents duplicate effects
 
 **Verification evidence:** Test wrapper orders, a transient read failure, uncertain write completion and logging failure; inspect returned outcome and number of remote effects.
 
@@ -172,9 +180,11 @@ Mapping, orchestration and added behavior are different responsibilities. The lo
 
 **Level:** Senior
 
-**Short answer:** Model the decision contract explicitly: handled, not applicable and failed are different outcomes. An ordered Chain of Responsibility fits first-match routing when each handler can accept the request or pass it onward. Validate configuration order and define the no-match outcome. If the business instead needs every validation result, use an explicit validation pipeline or collection rather than stopping at the first successful handler and assuming the rest of the checks ran.
+**Short answer:** I would use an ordered Chain of Responsibility when the first matching handler should choose the route. Each handler must distinguish handled, not applicable and failed. I define what happens when no rule matches and test the configured order. A technical failure must not quietly fall through to another approver. If all validations must run, I use a different execute-all process.
 
-**Example and follow-up:** Put the most specific route ahead of a general fallback only when that precedence is intended. Avoid hidden database writes in a routing handler; return a decision that the transaction coordinator applies. Log the rule identity so support can explain why the request reached a particular approver.
+**Reasoning and example:** A high-value rule, a regional rule and a fallback can all potentially apply to one request. If the high-value rule must win, it appears before the general fallback. The selected handler returns an approver decision, while the transaction coordinator applies it. The rule should not secretly save data during selection.
+
+Tests include overlapping matches, no match and a failure while a rule reads required information. I record which rule selected the approver so support can explain the route. Treating a failed lookup as not applicable can accidentally send the request to a less restrictive fallback. First-match routing is useful, but it does not mean every validation in the chain has run.
 
 **Avoid this mistake:** Treating an exception as 'not applicable', or confusing first-match routing with execute-all validation.
 
@@ -185,9 +195,9 @@ Mapping, orchestration and added behavior are different responsibilities. The lo
 
 **Strong answer criteria:**
 
-- Defines routing outcomes and precedence
-- Distinguishes chain from validation pipeline
-- Keeps decisions explainable and side effects controlled
+- Defines rule order and each routing outcome
+- Separates first-match routing from running all validations
+- Explains the selected route and controls data changes
 
 **Verification evidence:** Test overlapping rules, no match, handler failure and reordered configuration; assert exactly which handlers execute and which route is chosen.
 
@@ -212,9 +222,11 @@ The 700 EUR fixture passes the team-lead rule and stops at the manager rule. The
 
 **Level:** Senior
 
-**Short answer:** The local Observer arrangement is suitable for notifying listeners in the current execution context. Starting a durable external workflow introduces commit, delivery, retry and recovery requirements that an ordinary ABAP Objects event does not supply. I would keep local display notification separate from a committed business transition and use an appropriate transactional publication mechanism for the integration. Multiple listeners also require an explicit policy for exceptions and lifecycle registration.
+**Short answer:** The requirement changed from a local notification to reliable work in another system. An ABAP OO event can notify registered listeners in the current execution context. It does not save a message or guarantee delivery after commit. An external workflow needs a supported publication mechanism plus retry and recovery rules. I separate display updates from the saved business transition that should start the workflow.
 
-**Example and follow-up:** Registering multiple listener instances, failing to deregister obsolete listeners, or retaining state across tests can produce surprising local notifications. For the workflow, duplicate delivery and delayed events require durable consumer correlation and state checks. Do not infer asynchronous durability merely because the publisher does not directly name the receiving class.
+**Reasoning and example:** An ALV listener reacts to a local event and refreshes the screen. It can also be accidentally registered twice or left registered when obsolete, so I manage its lifetime and test error handling. None of that registration creates a durable subscription that survives the runtime context.
+
+For an external workflow, I need to know that the document change was saved and that publication can recover after an outage. The receiving side must identify repeated or delayed messages and avoid creating duplicate workflows. A local handler that directly calls the external system can run before a later save failure or lose delivery on an error. Observer alone does not solve those business guarantees.
 
 **Avoid this mistake:** Assuming SET HANDLER creates a durable subscription or that Observer guarantees exactly-once business effects.
 
@@ -225,9 +237,9 @@ The 700 EUR fixture passes the team-lead rule and stops at the manager rule. The
 
 **Strong answer criteria:**
 
-- Distinguishes in-process notification from durable messaging
-- Coordinates external effects with committed state
-- Defines listener and consumer failure handling
+- Separates local notification from messages that survive failures
+- Connects external work to saved business changes
+- Defines handling for listener and delivery failures
 
 **Verification evidence:** Test local listener registration separately from rejected save, duplicate event and delayed workflow delivery cases.
 
@@ -253,9 +265,11 @@ A registered local handler can update an ALV, while an external process needs tr
 
 **Level:** Senior
 
-**Short answer:** No. Command packages an operation and its inputs; durability, authorization, idempotency and compensation are additional contracts. I would assign a stable business operation identity, decide how it is stored with the state transition, and define responses to repeated execution or conflicting payload reuse. An undo method is only meaningful where a valid inverse exists. A posted document may require a compensating business operation rather than deletion or an in-memory rollback.
+**Short answer:** No. Command packages an action and its inputs; it does not automatically make repeats safe or provide undo. I define a stable operation ID, storage, authorization and repeated-execution rules separately. An undo operation only works when the business has a valid reverse action. A posted document may require a compensating document rather than deletion or a simple rollback.
 
-**Example and follow-up:** A command held only in memory is not a reliable job queue. When persistence is required, store a versioned data contract and reconstruct an eligible executor; do not treat an arbitrary object reference as a durable payload. Recheck the relevant authorization and business state at execution time.
+**Reasoning and example:** A Submit command stored only as an object in memory disappears when its runtime context ends. For a reliable queue, I store a suitable versioned data record and use it to reconstruct an allowed executor. A saved object reference is not a durable message format. At execution time, I check the required business state and authorization.
+
+I also test a repeated operation ID with the same payload and with a conflicting payload. The first may return the existing result; the second may need rejection, according to the defined rules. If submission already posted a document, local rollback cannot erase that completed effect. Recovery may need a separate, audited reversal operation.
 
 **Avoid this mistake:** Assuming execute can safely run twice or that every business command has an exact inverse.
 
@@ -266,9 +280,9 @@ A registered local handler can update an ALV, while an external process needs tr
 
 **Strong answer criteria:**
 
-- Separates encapsulation from execution guarantees
-- Defines durable identity and replay behavior
-- Uses compensation where reversal is not exact
+- Separates packaging an action from safe execution
+- Defines a saved operation ID and repeat-call behavior
+- Uses a business reversal where simple undo is impossible
 
 **Verification evidence:** Simulate duplicate execution, conflicting payload reuse, lost response and executor upgrade; assert one effective transition and traceable recovery.
 
@@ -294,9 +308,11 @@ The 700 EUR fixture passes the team-lead rule and stops at the manager rule. The
 
 **Level:** Senior
 
-**Short answer:** The seam may be useful while the implementation is transactionally incorrect. A direct table read can miss creates, updates and deletes still in the RAP buffer. Define whether the repository contract means persisted state or the current transactional view; for transaction-sensitive BO logic, use the appropriate EML behavior access. Do not add a generic repository that writes managed tables and bypasses RAP checks. Test doubles must reproduce the relevant contract, not merely return convenient rows.
+**Short answer:** A testable interface can still hide an incorrect implementation. Direct table reads can miss changes waiting in the RAP transaction buffer. I first define whether the repository should read saved data or the current transaction state. For BO logic that needs current changes, I use suitable EML access. I do not write managed tables directly and bypass the RAP behavior checks.
 
-**Example and follow-up:** A reporting query and a validation inside a modify flow can legitimately need different read semantics. Give those contracts distinct names or responsibilities. Test an update followed by a read before save, plus create and delete cases; an isolated unit test alone will not reveal a wrong persistence shortcut.
+**Reasoning and example:** A validation changes an item and then reads it through a repository before save. If the repository selects the database table, it can return the old value even though the current RAP transaction already contains the new one. Newly created or deleted instances make the difference even more obvious.
+
+A reporting read of persisted data may legitimately use a different approach. I give those needs distinct names or responsibilities so callers understand which state they receive. Tests should cover update-then-read, create-then-read and delete-then-read before save using the real BO path. A convenient fake returning expected rows will not reveal a production implementation that reads the wrong state, and a second home-made buffer adds more consistency problems.
 
 **Avoid this mistake:** Equating a mockable interface with correct behavior or recreating RAP's transactional buffer in a second general-purpose cache.
 
@@ -307,9 +323,9 @@ The 700 EUR fixture passes the team-lead rule and stops at the manager rule. The
 
 **Strong answer criteria:**
 
-- Defines explicit read semantics
-- Respects RAP ownership and buffer visibility
-- Combines seam tests with real integration evidence
+- States whether a read returns saved or current buffered data
+- Respects RAP save ownership and pending changes
+- Tests the interface and the real BO integration
 
 **Verification evidence:** Compare unsaved create/update/delete reads through the adapter with the BO contract, then run rollback and save paths on the target system.
 
@@ -335,9 +351,11 @@ A direct persistence read returns 100 while the transaction already sees 120. Th
 
 **Level:** Senior
 
-**Short answer:** I would remove request-specific mutable state from the singleton and make dependencies explicit. A conventional ABAP singleton is scoped to its internal session, not to all users or the whole landscape, and its lifetime can exceed one test or business operation. Prefer a freshly constructed, context-aware service or a cache with explicit key, scope and invalidation. If a shared instance is justified, specify immutability or cleanup rules and provide deterministic substitution in tests.
+**Short answer:** I would remove the current approver from long-lived shared mutable state. I would pass the relevant context explicitly and use an operation-scoped service, or a cache with clear keys and refresh rules. An ABAP singleton normally belongs to an internal session, not the whole system. Its lifetime can still span several operations or tests. Forcing test order does not fix that design.
 
-**Example and follow-up:** Caching the 'current user' implicitly is particularly dangerous for reusable jobs or delegated processing. Passing business context into the operation makes the dependency visible. A reset method can stabilize legacy tests temporarily, but it does not repair a production lifetime that is inconsistent with the data being cached.
+**Reasoning and example:** One test asks for an approver for company A and populates the singleton. A later test for company B reuses the cached value and gets the wrong approver. Similar trouble can occur when a job processes several contexts. The cache stored current approver without saying current for which request or policy.
+
+I make that context explicit in the operation and, if caching is needed, include every relevant distinction in its key and invalidation rules. Tests get controlled service instances. A reset method may temporarily isolate legacy tests, but production must still have the correct lifetime. Clearing a cache between tests cannot repair an application that mixes request-specific decisions during normal use.
 
 **Avoid this mistake:** Claiming singleton means one system-wide instance or solving hidden state solely by forcing test order.
 
@@ -348,9 +366,9 @@ A direct persistence read returns 100 while the transaction already sees 120. Th
 
 **Strong answer criteria:**
 
-- Scopes singleton state accurately
-- Removes hidden request context
-- Distinguishes test cleanup from production correctness
+- States the actual singleton lifetime
+- Passes request-specific context explicitly
+- Separates isolated tests from a correct production cache
 
 **Verification evidence:** Run tests in multiple orders and reuse one session across different users or contexts; assert no stale decisions and deterministic dependency replacement.
 
@@ -376,9 +394,11 @@ A registered local handler can update an ALV, while an external process needs tr
 
 **Level:** Senior
 
-**Short answer:** At a composition root near the application boundary, construct the service with its required interface-typed dependencies. Keep wiring separate from business decisions so tests can provide controlled collaborators and new dependencies are visible. A factory can help build a complicated dependency graph, but repeated global lookup inside domain methods hides that graph. Start with straightforward constructor injection for required services; do not introduce a container when explicit construction remains readable.
+**Short answer:** I would build the service near the application entry point and pass its required interface-typed helpers through the constructor. Business methods then use those supplied helpers instead of finding them globally. A small factory can assemble them if setup is complex. This makes tests predictable without requiring a dependency-injection framework. Framework-created classes may need a supported seam or a delegated service instead.
 
-**Example and follow-up:** Framework-owned classes may constrain construction, so create a small delegated application service or use a supported seam instead of inventing framework constructor parameters. Ensure test setup cannot accidentally fall back to a live posting client. Use integration tests to verify production wiring separately from pure decision tests.
+**Reasoning and example:** An approval method currently calls a global factory to obtain a repository and posting client every time. A unit test cannot easily control what it receives and may accidentally reach a live dependency. I move that construction into application setup and give the service the two objects explicitly.
+
+The test supplies a known repository and a client that cannot post externally, then exercises the real approval decision. A separate integration check verifies production wiring. If RAP or another framework controls construction, I do not invent unsupported constructor parameters; I use a suitable delegated application service or supported test seam. Replacing the factory with another global lookup would still hide the same dependencies.
 
 **Avoid this mistake:** Replacing one hidden global singleton with a service locator and calling the result fully decoupled.
 
@@ -389,9 +409,9 @@ A registered local handler can update an ALV, while an external process needs tr
 
 **Strong answer criteria:**
 
-- Separates composition from domain logic
-- Uses explicit dependencies with framework awareness
-- Verifies production wiring and safe test substitution
+- Separates constructing dependencies from business decisions
+- Supplies dependencies explicitly within framework rules
+- Checks production setup and safe replacements in tests
 
 **Verification evidence:** Instantiate the application service with doubles, assert no live dependency access, and test the production factory's intended object graph independently.
 
@@ -430,9 +450,11 @@ A direct persistence read returns 100 while the transaction already sees 120. Th
 
 **Level:** Senior
 
-**Short answer:** I would ask which real variation, dependency boundary or testing obstacle each abstraction resolves. A small named method with explicit inputs can be the better current design. Add a seam where an external dependency obstructs meaningful tests, and introduce polymorphism when distinct behaviors actually need independent evolution. Pattern count is not a quality metric. I would preserve readability and leave a concrete refactoring trigger instead of building speculative extension layers.
+**Short answer:** I would ask what concrete problem each pattern solves. One stable calculation may need only a clearly named method and good tests. An external service may deserve an interface because it can fail or needs replacement in tests. I add Strategy or factories when real variations make them useful. The aim is understandable change, not a high count of classes.
 
-**Example and follow-up:** For example, a pure tax-base calculation with one supported rule can remain a function-like method with boundary tests. A remote rate source may deserve an interface now because it fails independently. If a second rule later appears, extract a Strategy without pretending the initial absence of one was a design defect.
+**Reasoning and example:** A small report calculates a tax base with one supported rule. A method with explicit inputs, an explicit result and boundary tests can be easy to read and maintain. Adding Strategy, Abstract Factory and Repository around that pure calculation may introduce many files without removing any actual difficulty.
+
+If the rate comes from a remote service, that dependency is a real reason for a seam: tests need controlled values and failures. If a second tax rule arrives later, extracting a Strategy can then make sense. I leave a clear reason for that future change. I neither reject patterns automatically nor apply them as decoration; each added layer should make a named responsibility easier to understand or test.
 
 **Avoid this mistake:** Equating more classes with greater maintainability or rejecting all patterns because the current implementation is short.
 
@@ -443,9 +465,9 @@ A direct persistence read returns 100 while the transaction already sees 120. Th
 
 **Strong answer criteria:**
 
-- Connects abstraction to a concrete force
-- Balances simplicity with testable external boundaries
-- Defines an observable refactoring trigger
+- Connects each extra layer to a real problem
+- Keeps the design simple while making outside calls testable
+- Names a concrete future change that would justify another layer
 
 **Verification evidence:** Compare change scope and tests for the current design and proposed abstraction; retain only boundaries with a demonstrated maintenance or testing benefit.
 
@@ -484,9 +506,11 @@ A direct persistence read returns 100 while the transaction already sees 120. Th
 
 **Level:** Senior
 
-**Short answer:** Use a small explicit mapping from supported configuration values to eligible Strategy implementations, then inject the selected strategy into the coordinator. Validate missing and unsupported configuration instead of silently defaulting to a permissive rule. Keep strategy selection separate from its business decision and preserve a common result contract. If dynamic construction is used, it still needs controlled class selection and release-compatible dependencies; it is not a way around ABAP Cloud API restrictions.
+**Short answer:** I map supported configuration values to known approval strategies and pass the selected strategy to the coordinator. Missing or unknown configuration should fail clearly, not default to approval. Each rule returns the same kind of result. I test selection separately from calculation. Dynamic class creation still needs approved class choices and allowed dependencies; it cannot bypass ABAP Cloud restrictions.
 
-**Example and follow-up:** Record which policy version produced the decision when business audit requires it. Test selection independently from each rule and run a common contract suite across strategies. Configuration changes must not make an in-flight approval unpredictably switch policy; decide whether it uses current policy or a recorded policy version.
+**Reasoning and example:** Configuration selects a country rule and, when needed, a policy version. A factory validates that choice and creates the corresponding strategy. Tests check every supported mapping and an unknown value. Separate tests verify each rule, while common cases check that all strategies keep the same result and failure promises.
+
+For a long-running approval, I decide whether it keeps the policy version from submission or deliberately uses the current policy. Otherwise a configuration change could alter the rule halfway through without an explanation. When audit requires it, I record which policy produced the decision. Arbitrary class names from untrusted input and a fallback that approves after configuration failure are both unsafe shortcuts.
 
 **Avoid this mistake:** Allowing arbitrary class names from untrusted input or implementing a 'default approve' path when configuration lookup fails.
 
@@ -497,9 +521,9 @@ A direct persistence read returns 100 while the transaction already sees 120. Th
 
 **Strong answer criteria:**
 
-- Separates selection and execution
-- Fails safely on configuration errors
-- Defines versioned policy and common contracts
+- Separates choosing the strategy from running it
+- Rejects unsupported configuration safely
+- Defines policy versions and shared behavior rules
 
 **Verification evidence:** Test supported and unknown countries, policy changes during pending approvals and identical contract assertions against every Strategy.
 

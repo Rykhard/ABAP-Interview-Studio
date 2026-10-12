@@ -8,9 +8,11 @@ Use these structures with your real experience. Keep the first answer to about o
 
 **Level:** Core
 
-**Short answer:** Connect your actual ABAP experience to the role's needs: core language and data handling, the SAP landscape you worked in, representative delivery responsibilities and the modern topics you can discuss confidently. Give one concrete example and distinguish production experience from learning exercises.
+**Short answer:** I would give a short, truthful summary of my ABAP work and connect it to this role. I would name my main responsibilities, two relevant strengths and one real example. I would clearly separate production work from courses or personal projects. The aim is to give the interviewer useful starting points, rather than list every technology I have heard of.
 
-**Example and follow-up:** Use this sequence: current focus, two relevant strengths, one real project result, and why this role fits. Replace every general statement with a truthful detail before rehearsing.
+**Reasoning and example:** Use this outline with your own facts: My current focus is [real area]. I mainly work on [actual responsibilities]. My strongest relevant skills are [skill one] and [skill two]. In [real project or clearly labeled lab], I handled [your contribution], and the result was [supported outcome]. This role interests me because [honest reason].
+
+Keep the first version short enough to say naturally. Prepare a deeper explanation for each claim, including the system context and what you personally did. If RAP experience comes from a lab, say so and explain what you built and tested there. Do not fill missing experience with invented clients, years or metrics.
 
 **Avoid this mistake:** Do not invent years, clients, performance metrics or RAP production experience.
 
@@ -31,9 +33,11 @@ Practice a 60-second version first, then expand the mechanism and evidence when 
 
 **Level:** Core
 
-**Short answer:** Start with the business problem and users, then state your responsibility, constraints and design choice. Describe one important trade-off, how you tested it and the outcome. Finish with what you would improve now. Keep background short enough that the interviewer can ask technical follow-ups.
+**Short answer:** I start with the problem and who needed it solved. Then I explain my own responsibility, the important constraint and the design I chose. I describe how I tested the work and what actually happened after delivery. Finally, I mention one thing I would improve. I keep the background short so there is time for technical follow-up questions.
 
-**Example and follow-up:** Prepare one classic ABAP example and one modern service example if you have them. If the modern example is a lab, identify it as a lab and explain its limits.
+**Reasoning and example:** Prepare a real example using these prompts: [users] needed [business outcome]. I owned [specific part], while [other team] owned [their part]. The main constraint was [actual constraint]. I chose [design] because [reason], and checked it with [tests actually run]. The observed result was [truthful outcome].
+
+Be ready to draw the request and save flow, explain one rejected option and discuss a failure case. If you have a classic ABAP example and a modern service example, prepare both. A learning project is still useful when labeled accurately. Listing transaction codes alone does not explain ownership; your decisions and evidence show what you contributed.
 
 **Avoid this mistake:** Listing transactions and technologies without explaining the result does not show ownership.
 
@@ -54,9 +58,11 @@ Practice a 60-second version first, then expand the mechanism and evidence when 
 
 **Level:** Advanced
 
-**Short answer:** State the concept that is stable, identify the release-sensitive point and ask for the target edition or version. Explain how you would verify availability in official documentation and the target repository. Offer a supported alternative rather than pretending one syntax works everywhere.
+**Short answer:** I explain the part of the answer that is generally true, then identify what depends on the SAP edition or release. I ask for that missing context and say how I would verify support. I can also describe a supported alternative if the feature is unavailable. This is more useful than guessing syntax or just saying it depends.
 
-**Example and follow-up:** For a RAP feature, separate business intent from exact BDL syntax. For an API, check release state and the operation needed instead of guessing from its name.
+**Reasoning and example:** For a RAP question, I can first explain the business need: for example, reject an invalid change before saving. Then I identify the exact feature or BDL syntax whose availability needs checking in the target release. For an API, I check whether the required operation is released for the intended use, not just whether an object with that name exists.
+
+A spoken answer can use placeholders honestly: On [known environment] I used [actual feature]. For your release, I would check [specific documentation or repository release information] before choosing it. If unavailable, I would evaluate [real alternative]. This shows a verification method without pretending all SAP systems support the same implementation.
 
 **Avoid this mistake:** Saying it depends without explaining what it depends on is not a useful answer.
 
@@ -77,9 +83,11 @@ Practice a 60-second version first, then expand the mechanism and evidence when 
 
 **Level:** Core
 
-**Short answer:** Describe the initial symptom, representative workload and measurements. Explain the bottleneck found, the change made and the measured result with correctness checks. Mention relevant data volume and constraints so the result is meaningful. Use only numbers you can support from your own work.
+**Short answer:** I explain what was slow, how I measured it and what data volume the measurement used. Then I describe the bottleneck, the change and the measured result. I also explain how I checked that the result stayed correct. I use only figures from my actual work. If no reliable numbers were recorded, I say that instead of inventing a speedup.
 
-**Example and follow-up:** Prepare a story involving SQL round trips, selective access or internal-table keys, and be ready to explain why a different approach was rejected.
+**Reasoning and example:** Prepare a real sequence: [operation] was slow with [representative workload]. I used [tool actually used] and found [observed cause]. I changed [specific access or processing step]. Under [comparable test conditions], the result changed from [measured baseline] to [measured outcome]. I checked correctness using [actual comparison or tests].
+
+Be ready to explain why the change helped. Fewer database round trips, fewer transferred rows or an appropriate internal-table key are clearer than saying the code was optimized. Include a limitation, such as a workload not yet measured, if it is real. If your example is a lab benchmark, identify it as one and do not present its results as production evidence.
 
 **Avoid this mistake:** Do not claim a speedup from code appearance alone or memorize an invented percentage.
 
@@ -100,9 +108,11 @@ Practice a 60-second version first, then expand the mechanism and evidence when 
 
 **Level:** Advanced
 
-**Short answer:** Compare options against requirements such as transaction consistency, API availability, consumer compatibility, latency and operational ownership. State the selected option, its cost and the conditions that would change your decision. Show how the design will be validated.
+**Short answer:** I compare options using the actual requirement: what must save together, which APIs exist, who uses the result and how failures are handled. I state my choice and its main cost. I also explain what would make me choose differently. A good answer shows why the decision fits this situation, not loyalty to a particular SAP product.
 
-**Example and follow-up:** For on-stack versus side-by-side, discuss the local LUW requirement and remote failure handling before product preferences.
+**Reasoning and example:** For a real extension decision, describe [business need] and the change that must happen reliably. If validation must reject a local save, explain which supported extension point can run at the right time. If a separate portal is involved, explain its remote calls, login needs and recovery when one system is unavailable.
+
+Then state the evidence you would check: API availability in [target product], transaction behavior and a realistic failure test. Use your actual experience or label the example as a proposed design. Saying always use BTP or always use RAP skips the reason for the choice. A convincing answer includes the downside of the selected option and when it stops being suitable.
 
 **Avoid this mistake:** Always use RAP or always use BTP is not an architecture argument.
 
@@ -123,9 +133,11 @@ Practice a 60-second version first, then expand the mechanism and evidence when 
 
 **Level:** Core
 
-**Short answer:** Ask which SAP editions and releases the team supports, how work is split between classic ABAP and RAP, what Clean Core policy they enforce, and how they test and deploy. Discuss the expected ownership of CDS, UI, integration and production support.
+**Short answer:** I would ask about the SAP systems, the work I would own and how the team delivers changes. I want to know the mix of classic ABAP and RAP, the Clean Core rules, and the testing and release process. I would also ask who handles UI, integration and production incidents. Three focused questions are usually better than a long technology checklist.
 
-**Example and follow-up:** Choose three questions that affect your daily work and learning priorities. Ask for an example of a recent technical trade-off rather than only a technology list.
+**Reasoning and example:** Choose questions that affect your daily work: Which editions and releases do you support? What would I build or maintain in the first few months? How does a change move from development to production? These invite concrete answers about the role, rather than only a list of products.
+
+Then follow one answer with a practical example: Can you describe a recent Clean Core decision or a difficult production issue and how the team handled it? Listen for ownership, review and testing responsibilities. The title ABAP Developer can cover maintenance, new services or migration work. Use the discussion to understand the actual job and compare it with your real experience and learning goals.
 
 **Avoid this mistake:** Do not assume the role title tells you whether the work is maintenance, migration or new development.
 

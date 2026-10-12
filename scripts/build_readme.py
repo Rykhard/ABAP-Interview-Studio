@@ -20,7 +20,7 @@ For offline use, download this repository, keep its folders together and open `S
 
 ## Learn and practice
 
-- Browse subjects and subtopics with all difficulty levels together. Read short answers, examples, mistakes, references and compact diagrams with an enlarged viewer.
+- Browse subjects and subtopics with all difficulty levels together. Read plain-English answers followed by a concrete example in two short paragraphs, common mistakes, references and compact diagrams with an enlarged viewer.
 - Show all answers / Questions only has an explicit selected state and remembers your preference.
 - Search the whole library with Ctrl+K / Cmd+K. The separate text filter narrows the current view.
 - Interview practice covers every question: answer aloud, reveal the model and self-rate 0-3.
@@ -55,7 +55,7 @@ Choose one full Anki edition; the senior deck is a subset rather than extra uniq
     text += """
 ## Evidence
 
-Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
+Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [plain-language revision](review/Plain_Language_Review.md), [content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
 
 ## Build and deploy
 

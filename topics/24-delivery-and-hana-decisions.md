@@ -8,29 +8,31 @@ Three focused senior code-review decisions complement the main ABAP Cloud track:
 
 **Level:** Senior
 
-**Short answer:** No. For the documented CDS table-function contract, the AMDP database function is read-only, uses SQLScript on HANA and must satisfy the applicable client-safety rules. I would remove the write and review every source, join and client boundary rather than trust an outer annotation. Client isolation and business authorization are separate concerns: establish protection at the supported consumption path and do not assume SQLScript reproduces ABAP SQL or CDS access-control behavior automatically. Confirm target-release and language-version eligibility first.
+**Short answer:** No. A CDS table function's AMDP database function must be read-only under its documented rules. I remove the write and check every source and join for correct client handling. Business authorization is a separate check: an outer CDS rule does not automatically protect every internal SQLScript read. I also verify target support and allowed dependencies.
 
-**Example and follow-up:** Use two clients containing the same business key and two users with different purchasing scopes. Verify that results, aggregates and error behavior cannot expose foreign data. Check the declared return types and result grain as well as the USING dependencies. Prefer a supported CDS or ABAP SQL expression if it already meets the requirement; a table function adds a database-specific contract.
+**Reasoning and example:** Two clients contain purchase order 4711. If a SQLScript join matches only the order number, it can combine records from both clients and produce the wrong total or expose data. Filtering the final rows may not undo a total already contaminated by that join. I check client handling in the actual sources and joins, then test overlapping keys.
 
-**Avoid this mistake:** Treating every AMDP method as read-only, or treating this read-only table-function constraint as permission to read any SAP table. General AMDP capabilities and eligible dependencies are separate.
+I separately test users with different purchasing permissions through the real supported read path. SQLScript does not automatically reproduce ABAP SQL or CDS access checks. I also review return types, intended rows and USING dependencies. If supported CDS or ABAP SQL already solves the task, it may be simpler. General AMDP capabilities are broader than this read-only table-function case.
+
+**Avoid this mistake:** The read-only rule here applies to the CDS table function, not every AMDP method. It also does not grant permission to read any SAP table.
 
 **Interviewer follow-ups:**
 
-- How would a cross-client join contaminate an aggregate even if the final rows are later filtered?
-- What evidence shows that both client isolation and the consumer's business authorization are enforced?
+- How can joining data from two clients produce a wrong total even if final rows are filtered?
+- Which tests prove both client separation and the user's purchasing permissions?
 
 **Strong answer criteria:**
 
-- Distinguishes table-function restrictions from general AMDP capabilities
-- Reviews client safety and authorization as separate boundaries
-- Verifies target support, dependencies and result contract
+- Distinguishes CDS table-function rules from general AMDP capabilities
+- Checks client separation and user permissions independently
+- Verifies target support, sources and returned results
 
-**Verification evidence:** Activate against the intended release, inspect dependencies and trace the real consumption path; test overlapping keys across clients and allowed/denied purchasing scopes.
+**Verification evidence:** Activate on the target release and inspect the real read path. Test overlapping keys across clients and users with allowed and denied purchasing access.
 
 **Read and verify this answer:**
 
-- [SAP CDS table functions: SQLScript, read-only and client safety](https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html) - Primary reference reviewed in the 2025 FPS01 documentation; verify the corresponding contract on the actual target.
-- [SAP ABAP data models and access-control concepts](https://help.sap.com/docs/abap-cloud/abap-data-models/learn) - Separates CDS data-model and authorization concepts; the client/authorization test fixture is original analysis.
+- [SAP CDS table functions: SQLScript, read-only and client safety](https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html) - This source was reviewed for 2025 FPS01. Verify the same feature and rules in your actual target release.
+- [SAP ABAP data models and access-control concepts](https://help.sap.com/docs/abap-cloud/abap-data-models/learn) - Explains CDS models and authorization separately. The example tests across clients and user permissions are original study guidance.
 
 <details>
 <summary>Visual: HANA pushdown: result grain and table-function review</summary>
@@ -49,29 +51,31 @@ A two-language text join duplicates both item amounts. Repair the relationship b
 
 **Level:** Senior
 
-**Short answer:** First establish the required result grain and repair the text relationship; a faster wrong aggregate is unacceptable. Then compare a supported ABAP SQL or CDS aggregation with AMDP only if its extra database capabilities are actually needed. Push selective filters and suitable aggregation toward the database to reduce transferred data, while preserving authorization, currencies, null handling and multiplicity. Measure database work, transferred rows and end-to-end time under representative volume rather than claiming SQLScript is inherently faster.
+**Short answer:** I fix the wrong total before comparing speed. Then I try a supported ABAP SQL or CDS aggregation and use AMDP only if its extra capabilities are needed. The database should filter and total suitable data before sending it to ABAP. I preserve currencies, permissions and correct joins, and measure the full request rather than assume SQLScript is faster.
 
-**Example and follow-up:** For order 4711, two items worth 40 and 60 EUR should total 100 EUR. Joining each item to two language texts produces four rows and a wrong 200 EUR total. Restrict the relationship or aggregate at the correct boundary as required by the semantics. Verify equivalent results before comparing traces; fewer returned rows alone does not prove less database work.
+**Reasoning and example:** Order 4711 has two items: 40 EUR and 60 EUR. Its total should be 100 EUR. If each item joins to two language texts, the joined result has four rows and totals 200 EUR. I fix the relationship or aggregation order according to the required result. DISTINCT or dividing by two merely hides the current symptom.
 
-**Avoid this mistake:** Using DISTINCT or dividing by a current duplication factor without fixing the grain, or selecting AMDP simply because HANA is present.
+Only after proving the totals do I compare alternatives using realistic data. I test missing texts, duplicate texts, different currencies and null values. Traces should show database work, transferred rows and end-to-end time. Returning fewer rows can reduce transfer, but it does not by itself prove that the database did less work.
+
+**Avoid this mistake:** Do not hide a wrong join with DISTINCT or a fixed division factor. HANA being available is not a reason by itself to choose AMDP.
 
 **Interviewer follow-ups:**
 
-- Which trace observations separate excessive transfer from an expensive database plan?
-- How would you test multiple currencies, missing texts and duplicate text records?
+- Which measurements distinguish too much data transfer from expensive database work?
+- How would you test several currencies, missing texts and duplicate texts?
 
 **Strong answer criteria:**
 
-- Proves result equivalence before accepting optimization
-- Selects the simplest supported pushdown mechanism
-- Measures transfer, execution and full-response cost
+- Proves the totals are correct before accepting faster code
+- Uses the simplest supported database calculation that fits
+- Measures database work, transferred rows and total time
 
-**Verification evidence:** Use known-total fixtures and representative datasets; compare result sets, row multiplicity, SQL trace duration/records and end-to-end timings for the alternatives.
+**Verification evidence:** Use data with known totals and realistic larger datasets. Compare results, duplicated rows, SQL trace records and full request timings.
 
 **Read and verify this answer:**
 
-- [SAP Learning: code pushdown with ABAP SQL and CDS](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/implementing-sql-expressions-in-cds-views_a9962c08-c5df-46a6-ba30-a74acf5c86b2) - Supports database-side expressions through SQL/CDS; the implementation choice and numeric fixture are original reasoning.
-- [SAP SQL trace analysis](https://help.sap.com/docs/ABAP_PLATFORM_NEW/6d9d967c861d4f78b5b90a4fe9b7d2e7/fcee1d4c512b48c281593c862858e983.html) - Documents execution duration, accessed records and access-plan inspection; interpret measurements in the selected environment.
+- [SAP Learning: code pushdown with ABAP SQL and CDS](https://learning.sap.com/courses/building-data-models-with-the-abap-dictionary-and-abap-core-data-services/implementing-sql-expressions-in-cds-views_a9962c08-c5df-46a6-ba30-a74acf5c86b2) - Explains SQL/CDS expressions run in the database. The implementation comparison and numeric example are original study guidance.
+- [SAP SQL trace analysis](https://help.sap.com/docs/ABAP_PLATFORM_NEW/6d9d967c861d4f78b5b90a4fe9b7d2e7/fcee1d4c512b48c281593c862858e983.html) - Explains how to inspect runtime, accessed records and the database plan. Interpret measurements for the system you actually tested.
 
 <details>
 <summary>Visual: HANA pushdown: result grain and table-function review</summary>
@@ -90,29 +94,31 @@ A two-language text join duplicates both item amounts. Repair the relationship b
 
 **Level:** Senior
 
-**Short answer:** Git records source history; abapGit transfers supported development objects. Neither statement proves target activation or productive delivery. Establish the product-specific lifecycle route, software component and dependency order; BTP ABAP environment can use supported transport/gCTS or add-on delivery scenarios, while other ABAP Cloud environments have their own routes. Tie the source revision to target syntax/activation, ATC, meaningful ABAP Unit and integration results, then verify the imported revision, service access and configuration in the intended system.
+**Short answer:** Git stores source history, and abapGit transfers supported development objects. Neither proves that the feature is deployed and usable. I choose the delivery route supported by the actual ABAP product, then verify the target version, activation, tests and configuration. A real service check must show that the intended user can work and a denied user cannot.
 
-**Example and follow-up:** A CI result must name what actually ran and where: local lint is not SAP activation, and mocked tests do not prove runtime authorization. Include dependency versions, transport or delivery identifiers, import evidence, communication setup and recovery ownership. Keep technical identities and secrets out of Git. A source export can support review without representing a complete deployable application.
+**Reasoning and example:** A pull request passes local lint, but the target system may still reject an object during activation or lack a required dependency. I link the source revision to the component versions, delivery identifiers and target import evidence. For BTP ABAP environment, supported transport/gCTS or add-on scenarios may apply; other ABAP Cloud products have their own delivery routes.
 
-**Avoid this mistake:** Equating an abapGit push with a transport release, treating gCTS and abapGit as interchangeable names, or applying one BTP delivery route to every ABAP Cloud product.
+The target checks include syntax, activation, ATC, meaningful ABAP Unit tests and relevant integration tests. I also verify service access, communication setup and recovery ownership. Local lint is not SAP activation, and mocks do not prove real permissions. Technical identities and secrets stay out of Git. A source export alone is not a complete application deployment.
+
+**Avoid this mistake:** An abapGit push is not a transport release, and gCTS is not another name for abapGit. Delivery routes differ across ABAP Cloud products.
 
 **Interviewer follow-ups:**
 
-- How would you prove the tested source revision is the one imported into the target?
-- Which prerequisites can make an active service fail after an otherwise successful import?
+- How do you prove the target received the same source revision that was tested?
+- Which missing configuration can break an active service after a successful import?
 
 **Strong answer criteria:**
 
-- Separates source control, source transfer and runtime delivery
-- Chooses a lifecycle route for the actual product
-- Requires traceable target checks and operational readiness
+- Separates Git history, source transfer and deployment
+- Chooses the delivery route for the actual product
+- Requires target-system results and working configuration
 
-**Verification evidence:** Record commit, component/dependency versions and delivery IDs; retain target activation/ATC/test/import logs and a service smoke test with an authorized and a denied identity.
+**Verification evidence:** Record the commit, component and dependency versions, and delivery IDs. Keep target activation, ATC, test and import logs plus real allowed-user and denied-user service checks.
 
 **Read and verify this answer:**
 
-- [SAP: working with abapGit](https://help.sap.com/docs/btp/sap-business-technology-platform/working-with-abapgit?ai=true) - Describes source transfer, supported-object restrictions and activation after import; source transfer is distinct from deployment evidence.
-- [SAP BTP ABAP environment: delivery via add-on or gCTS](https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/delivery-via-add-on-or-gcts?locale=en-US) - Documents these BTP ABAP environment delivery options and their checks; do not generalize the scenario to every ABAP Cloud edition.
+- [SAP: working with abapGit](https://help.sap.com/docs/btp/sap-business-technology-platform/working-with-abapgit?ai=true) - Explains source transfer, supported object types and activation after import. Transferring source alone does not prove deployment.
+- [SAP BTP ABAP environment: delivery via add-on or gCTS](https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/delivery-via-add-on-or-gcts?locale=en-US) - Explains these BTP ABAP environment delivery options and checks. Other ABAP Cloud products may use different routes.
 
 <details>
 <summary>Visual: Source transfer, delivery and verified runtime evidence</summary>

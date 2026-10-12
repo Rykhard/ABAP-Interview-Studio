@@ -7,22 +7,22 @@
       {
         "id": "a",
         "text": "The return type must be different for each implementation.",
-        "explanation": "A different return type is not the essential issue; persistence behavior violates caller expectations."
+        "explanation": "The problem is when saving happens, not the ID type. An immediate commit can leave the first item saved if the second fails."
       },
       {
         "id": "b",
         "text": "The implementations disagree about transaction behavior in the contract.",
-        "explanation": "The caller cannot safely compose them while commit ownership differs."
+        "explanation": "The caller needs both reservations to succeed or fail together. An implementation that commits its own item breaks that expectation."
       },
       {
         "id": "c",
         "text": "An interface call always buffers data, so the second implementation cannot commit.",
-        "explanation": "ABAP interface dispatch does not itself impose that transaction behavior."
+        "explanation": "Calling through an ABAP interface does not itself control commits. Each implementation must follow the agreed save rules."
       },
       {
         "id": "d",
         "text": "The problem is resolved by returning a reservation ID earlier.",
-        "explanation": "An identifier does not establish the required persistence boundary."
+        "explanation": "Returning the ID sooner does not undo an early commit. The implementation must preserve the required save behavior."
       }
     ],
     "correctOption": "b"
@@ -35,22 +35,22 @@
       {
         "id": "a",
         "text": "Compatible, because both methods have identical parameter types.",
-        "explanation": "Type compatibility does not prove the accepted-input contract is preserved."
+        "explanation": "The types match, but valid inputs have changed. Existing callers are still entitled to ask for one unit."
       },
       {
         "id": "b",
         "text": "Compatible, because callers can inspect the concrete class first.",
-        "explanation": "Requiring such checks defeats the shared substitutable contract."
+        "explanation": "Callers should not have to inspect concrete classes to use the promised interface. This would move the broken promise into every caller."
       },
       {
         "id": "c",
         "text": "Incompatible with the stated contract because it narrows valid inputs.",
-        "explanation": "The implementation imposes a stronger precondition than existing callers owe."
+        "explanation": "The new provider rejects quantities that the shared rules explicitly allow. It cannot safely replace the existing provider for those callers."
       },
       {
         "id": "d",
         "text": "Incompatible only if the implementation uses inheritance.",
-        "explanation": "The same behavioral obligation applies when implementing an interface directly."
+        "explanation": "The same obligation applies to a class implementing the interface directly. Inheritance is not required for this compatibility problem."
       }
     ],
     "correctOption": "c"
@@ -63,22 +63,22 @@
       {
         "id": "a",
         "text": "A narrow cancellation interface with shared policy composed as needed.",
-        "explanation": "It shares the client capability without imposing an unrelated class hierarchy."
+        "explanation": "A small cancellation interface describes the shared operation. Each service can use a validation helper without joining an unrelated class hierarchy."
       },
       {
         "id": "b",
         "text": "A common abstract superclass primarily to reuse a validation helper.",
-        "explanation": "The scenario lacks the shared lifecycle or is-a relationship that would justify this coupling."
+        "explanation": "The services do not share a suitable base process here. A common superclass also conflicts with the existing framework superclass."
       },
       {
         "id": "c",
         "text": "A concrete-class switch in each caller invoking unrelated methods.",
-        "explanation": "This spreads implementation knowledge and misses the common capability contract."
+        "explanation": "Every caller would need to know the concrete classes. A common cancellation interface keeps that implementation knowledge out of callers."
       },
       {
         "id": "d",
         "text": "A single static class that stores both objects' mutable state.",
-        "explanation": "Combining unrelated state does not solve the capability or lifetime boundaries."
+        "explanation": "Combining unrelated mutable data creates new lifetime and state problems. It does not give callers a clear shared cancellation operation."
       }
     ],
     "correctOption": "a"
@@ -91,22 +91,22 @@
       {
         "id": "a",
         "text": "Add the parameter in REDEFINITION; base callers receive an initial value.",
-        "explanation": "Redefinition must preserve the inherited interface."
+        "explanation": "REDEFINITION must keep the inherited method interface. It cannot add this mandatory parameter."
       },
       {
         "id": "b",
         "text": "Declare another format method with the same name and a different signature.",
-        "explanation": "ABAP does not offer ordinary same-name signature overloading for this."
+        "explanation": "ABAP does not provide this ordinary same-name method overloading. A different signature needs a different supported design."
       },
       {
         "id": "c",
         "text": "Change the inherited method to static only in the subclass.",
-        "explanation": "Static methods cannot be substituted for an inherited instance method this way."
+        "explanation": "A static method cannot replace the inherited instance method in this way. That does not solve the extra-input requirement."
       },
       {
         "id": "d",
         "text": "Keep the inherited contract and add a distinct operation if needed.",
-        "explanation": "A different contract needs an explicit operation or managed compatible evolution."
+        "explanation": "The original operation remains usable by base-type callers. A separately named operation can explicitly require the new input."
       }
     ],
     "correctOption": "d"
@@ -119,22 +119,22 @@
       {
         "id": "a",
         "text": "A can access B's private components.",
-        "explanation": "Friendship is unilateral; B must grant the reverse access separately."
+        "explanation": "The grant goes from A to B only. B would have to grant A access separately for the reverse direction."
       },
       {
         "id": "b",
         "text": "B can access A's private components, but not A_CHILD's newly private components.",
-        "explanation": "The grant covers A; being a friend of A does not make B a friend of its subclass."
+        "explanation": "B receives access to A's private components. That does not automatically grant access to new private components declared by A_CHILD."
       },
       {
         "id": "c",
         "text": "Every ordinary caller of B can access A's private components.",
-        "explanation": "Calling a friend does not transfer friendship to the caller."
+        "explanation": "Calling B does not make the caller a friend of A. Friendship is not passed to ordinary callers."
       },
       {
         "id": "d",
         "text": "A_CHILD must grant B the same friendship to preserve inheritance.",
-        "explanation": "The granting class's friendship is not automatically a requirement on its subclass."
+        "explanation": "A_CHILD does not have to make B its friend. The grant made by A does not impose that new grant on its subclass."
       }
     ],
     "correctOption": "b"
@@ -147,22 +147,22 @@
       {
         "id": "a",
         "text": "The object is destroyed, so second becomes a dangling reference.",
-        "explanation": "The remaining reference keeps the object reachable."
+        "explanation": "The second reference still reaches the object. Clearing first does not destroy an object that remains reachable this way."
       },
       {
         "id": "b",
         "text": "The object's close method must execute automatically.",
-        "explanation": "Clearing a reference does not invoke an application-defined close protocol."
+        "explanation": "CLEAR does not call an application close method. Timely resource release needs an explicit owner and release path."
       },
       {
         "id": "c",
         "text": "Only first is reset; the object is still accessible through second.",
-        "explanation": "Reference variables and the shared referent have distinct lifetimes."
+        "explanation": "Only the first reference variable becomes initial. The second still points to the same object and can use it."
       },
       {
         "id": "d",
         "text": "All instance attributes are reinitialized because one reference was cleared.",
-        "explanation": "Resetting a reference variable does not reset the object's state."
+        "explanation": "Clearing a reference variable does not reset the object's attributes. The second reference still sees the existing object state."
       }
     ],
     "correctOption": "c"
@@ -175,22 +175,22 @@
       {
         "id": "a",
         "text": "Require and validate the repository during controlled construction.",
-        "explanation": "The object can reject invalid setup before normal business use."
+        "explanation": "Creation can reject a missing or invalid repository immediately. A successfully created service is then ready for its documented operations."
       },
       {
         "id": "b",
         "text": "Keep an initial repository and check only after the first posting.",
-        "explanation": "This allows the invalid state to persist too long and can expose side effects first."
+        "explanation": "This postpones detection until business work has already begun. Required setup should be checked before posting can happen."
       },
       {
         "id": "c",
         "text": "Move the repository to public CLASS-DATA for callers to assign later.",
-        "explanation": "This hides ordering requirements and introduces shared mutable state."
+        "explanation": "Public class-level data lets callers change shared setup at any time. It makes valid construction and test isolation harder to guarantee."
       },
       {
         "id": "d",
         "text": "Catch any later dereference failure and return approval success.",
-        "explanation": "A construction defect must not be transformed into a false business success."
+        "explanation": "A missing repository is not successful approval. Catching the resulting error and reporting success hides the defect."
       }
     ],
     "correctOption": "a"
@@ -203,22 +203,22 @@
       {
         "id": "a",
         "text": "An instance constructor cannot be called during ABAP Unit.",
-        "explanation": "Ordinary construction in tests is allowed; static state remains the concern."
+        "explanation": "Tests may create ordinary objects. The issue is that class-level cache data survives the previous test."
       },
       {
         "id": "b",
         "text": "Each NEW necessarily creates a second internal session.",
-        "explanation": "Object construction does not provide that isolation."
+        "explanation": "NEW creates an object, not a fresh internal session. It does not isolate the existing class cache."
       },
       {
         "id": "c",
         "text": "The class cache must be shared globally with all application servers.",
-        "explanation": "CLASS-DATA does not establish globally synchronized state."
+        "explanation": "CLASS-DATA is not automatically synchronized across application servers. Shared state within the relevant session is enough to cause this failure."
       },
       {
         "id": "d",
         "text": "The new instance still sees class-level state left by the earlier test.",
-        "explanation": "Creating an instance does not reset its class's static attributes."
+        "explanation": "The new object still uses the same class-level attributes in that session. NEW does not reset the cache left by test A."
       }
     ],
     "correctOption": "d"
@@ -231,22 +231,22 @@
       {
         "id": "a",
         "text": "Use CX_ROOT handling everywhere and retain the same empty result.",
-        "explanation": "Broad handling does not repair the loss of meaning."
+        "explanation": "Catching more exceptions still leaves callers unable to tell missing data from a failed read. The outcomes need different meanings."
       },
       {
         "id": "b",
         "text": "Distinguish absence from failure and preserve the technical cause when translating.",
-        "explanation": "The caller can act appropriately without mistaking unavailable data for a valid business fact."
+        "explanation": "The caller can handle no price differently from could not read the price. Keeping the original exception also supports diagnosis."
       },
       {
         "id": "c",
         "text": "Return price zero for connection failure to keep processing predictable.",
-        "explanation": "Zero may be interpreted as a valid free price and is misleading."
+        "explanation": "Zero can be a valid price. Returning it for a connection failure can accidentally make an item free."
       },
       {
         "id": "d",
         "text": "Expose the raw technical exception as the only contract for every client.",
-        "explanation": "A meaningful abstraction can translate errors while retaining the original cause."
+        "explanation": "The service can provide a meaningful service-level error and keep the original cause. Every client does not have to depend on raw database exceptions."
       }
     ],
     "correctOption": "b"
@@ -259,22 +259,22 @@
       {
         "id": "a",
         "text": "Keep the reference private but return it through a getter.",
-        "explanation": "The getter still exposes the same mutable table to callers."
+        "explanation": "The getter still hands out writable access to the real table. Private attribute visibility does not prevent changes through that reference."
       },
       {
         "id": "b",
         "text": "Rename the getter read_items and document callers as trusted.",
-        "explanation": "A name does not remove the mutation capability or enforce the invariant."
+        "explanation": "Renaming the method does not remove the ability to insert a negative quantity. The rule can still be bypassed."
       },
       {
         "id": "c",
         "text": "Return suitable value data and route mutations through validated cart operations.",
-        "explanation": "This removes the direct table alias while preserving an explicit mutation boundary."
+        "explanation": "A suitable value return avoids direct access to the internal table. Changes go through cart methods that check quantities; nested references still need care."
       },
       {
         "id": "d",
         "text": "Copy only the reference into a new local variable before returning it.",
-        "explanation": "Copying the reference still targets the same table."
+        "explanation": "The copied reference still points to the same table. A new reference variable does not create an independent table."
       }
     ],
     "correctOption": "c"
@@ -287,22 +287,22 @@
       {
         "id": "a",
         "text": "Model simulation as an explicit optional capability with defined unsupported handling.",
-        "explanation": "Interested clients can require that capability without forcing fake behavior on all providers."
+        "explanation": "Clients that need simulation can request a provider that supports it. Unsupported providers can be reported clearly instead of pretending success."
       },
       {
         "id": "b",
         "text": "Return an empty successful simulation from providers that cannot support it.",
-        "explanation": "Empty success falsely claims the new contract was fulfilled."
+        "explanation": "An empty success claims that simulation worked when it did not. The caller cannot make a reliable decision from that result."
       },
       {
         "id": "c",
         "text": "Add simulate without checking any existing implementation.",
-        "explanation": "Implementer compatibility and activation consequences must be assessed."
+        "explanation": "Existing implementers are affected by the new method. Their implementation and activation must be checked before rollout."
       },
       {
         "id": "d",
         "text": "Make callers catch every exception and interpret it as simulation success.",
-        "explanation": "This erases the distinction between unsupported, failed, and successful simulation."
+        "explanation": "An exception may mean unsupported operation or a real failure. Treating either as success hides the result the caller needs."
       }
     ],
     "correctOption": "a"
@@ -315,22 +315,22 @@
       {
         "id": "a",
         "text": "Add more assertions against the configured result.",
-        "explanation": "Those assertions still do not exercise the discount rule."
+        "explanation": "More checks of the same configured value still do not execute the real discount rule. A broken threshold could continue to pass."
       },
       {
         "id": "b",
         "text": "Run the same mocked test in a different order.",
-        "explanation": "Order variation does not restore the replaced calculation behavior."
+        "explanation": "Changing test order cannot restore the calculation that was replaced. The actual rule must run in its own test."
       },
       {
         "id": "c",
         "text": "Mock the caller too so both sides agree on the expected value.",
-        "explanation": "Replacing more behavior weakens evidence about the actual discount rule."
+        "explanation": "Replacing the caller too removes even more real behavior. Agreement between mocks does not prove the discount calculation."
       },
       {
         "id": "d",
         "text": "Keep calculate_discount real and control its external dependencies.",
-        "explanation": "The test can then detect a broken threshold through independent expected results."
+        "explanation": "The real calculation receives controlled inputs and produces the result. The test can then fail when the threshold rule is wrong."
       }
     ],
     "correctOption": "d"

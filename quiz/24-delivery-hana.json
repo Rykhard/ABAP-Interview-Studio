@@ -7,22 +7,22 @@
       {
         "id": "a",
         "text": "Approve it because an outer #CHECK annotation protects every SQLScript statement.",
-        "explanation": "An annotation does not establish client-safe native processing or automatically authorize all internal reads."
+        "explanation": "An outer annotation does not prove that every SQLScript read keeps clients separate or enforces the user's business permissions."
       },
       {
         "id": "b",
         "text": "Remove the write and verify client safety, authorization and target support separately.",
-        "explanation": "The table-function contract is read-only, and client isolation does not replace business authorization."
+        "explanation": "This CDS table-function implementation must be read-only. Keeping clients separate is necessary, but users still need the correct business authorization."
       },
       {
         "id": "c",
         "text": "Keep the write if the helper table is hidden from the CDS result.",
-        "explanation": "Hiding a table from the return shape does not remove the read-only implementation restriction."
+        "explanation": "The write is still a write even if the helper table is absent from the returned data. It violates this table-function restriction."
       },
       {
         "id": "d",
         "text": "Reject every AMDP implementation because database pushdown is forbidden in ABAP.",
-        "explanation": "AMDP can be supported; the specific function contract, environment and dependencies determine eligibility."
+        "explanation": "AMDP is supported in suitable environments. Check the specific function rules, release and allowed dependencies instead of rejecting the whole technology."
       }
     ],
     "correctOption": "b"
@@ -35,22 +35,22 @@
       {
         "id": "a",
         "text": "Accept the AMDP because lower runtime outweighs a duplicated result.",
-        "explanation": "Performance cannot justify incorrect business totals."
+        "explanation": "Returning a wrong business total faster does not make the implementation acceptable."
       },
       {
         "id": "b",
         "text": "Divide every aggregate by two before comparing the implementations.",
-        "explanation": "The current duplicate factor is incidental and may vary with data and predicates."
+        "explanation": "Another order may have one text or three texts. Dividing by today's duplicate count would produce wrong totals for those records."
       },
       {
         "id": "c",
-        "text": "Restore the intended grain and result equivalence before measuring alternatives.",
-        "explanation": "Correct multiplicity and semantics are prerequisites; then compare suitable SQL/CDS and AMDP options."
+        "text": "Fix the join and prove the totals are correct before comparing speed.",
+        "explanation": "Fix the join so each amount is counted as intended, then prove the alternatives return the right totals before comparing speed."
       },
       {
         "id": "d",
         "text": "Move the duplicate aggregate into ABAP so HANA no longer controls it.",
-        "explanation": "Changing execution location does not itself correct a flawed join or aggregation contract."
+        "explanation": "The same wrong join can produce the same wrong total in ABAP. Moving the calculation does not repair its logic."
       }
     ],
     "correctOption": "c"
@@ -63,22 +63,22 @@
       {
         "id": "a",
         "text": "A green Git push with the same repository name as production.",
-        "explanation": "Source history does not demonstrate import, activation, configuration or runtime behavior."
+        "explanation": "A successful push only shows that source reached Git. It does not show that the target imported, activated or ran it."
       },
       {
         "id": "b",
         "text": "An abapGit export proves that all target object types are supported.",
-        "explanation": "Import support and activation depend on the target environment and release."
+        "explanation": "Exporting an object does not prove the target release can import and activate that object type."
       },
       {
         "id": "c",
         "text": "A local mock test proves that target authorization and service access work.",
-        "explanation": "Mocks cannot establish the actual target's authorization or communication configuration."
+        "explanation": "A mock does not use the real target's users, roles or communication settings, so it cannot prove those work."
       },
       {
         "id": "d",
-        "text": "Traceable delivery/import IDs, target checks and a real service verification.",
-        "explanation": "These connect the tested source to the intended runtime and its configured consumer behavior."
+        "text": "Delivery and import records, target checks and a real service test.",
+        "explanation": "Import identifiers and target results link the source revision to the deployed system. A real service check then verifies that the configured consumer can use it."
       }
     ],
     "correctOption": "d"

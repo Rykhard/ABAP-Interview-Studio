@@ -8,16 +8,18 @@ Explain the protocol, architectural style and payload independently. Practice co
 
 **Level:** Core
 
-**Short answer:** HTTP supplies request/response semantics. REST is an architectural style with constraints such as stateless interactions and a uniform interface. OData specifies conventions for data services. JSON and XML represent data; neither makes an endpoint RESTful.
+**Short answer:** HTTP defines how requests and responses work. REST is a set of design rules for an API. OData adds rules for data services, such as querying related records. JSON and XML are formats for the data you send. Using JSON over HTTP does not, by itself, make an API RESTful.
 
-**Example and follow-up:** Explain four separate choices for an order API: transport semantics, architectural constraints, service conventions, and representation. In REST, stateless means each request carries the context needed to understand it, not that business data cannot persist.
+**Reasoning and example:** An order app sends an HTTP GET request and receives a response with a status code. The response body might use JSON to describe order 4711. If the service uses OData, the client can use its supported query rules to request selected fields or related items. These choices describe different parts of the same call.
+
+REST adds architectural rules, including stateless requests. Here, stateless means the request carries the context the server needs to understand it. It does not mean the server cannot store orders in a database. Keeping these ideas separate makes it easier to explain why a payload problem differs from a protocol or API-design problem.
 
 **Avoid this mistake:** Do not use REST, HTTP and JSON as interchangeable names.
 
 **Read and verify this answer:**
 
-- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
-- [REST constraints: Fielding dissertation](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
+- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [REST constraints: Fielding dissertation](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 
 <details>
 <summary>Visual: HTTP request and response anatomy</summary>
@@ -36,15 +38,17 @@ Read the method, target, status and headers before interpreting the body. The sa
 
 **Level:** Core
 
-**Short answer:** A request identifies a method and target, carries headers, and may contain a body. A response carries a status, headers and optional content. HTTPS adds transport protection; the business contract still determines what the operation means.
+**Short answer:** An HTTP request contains a method, a target address, headers and sometimes a body. The response contains a status, headers and sometimes content. Headers carry information such as authentication or content type. HTTPS protects the connection, but the response still needs checking: a secure connection does not mean the business operation succeeded.
 
-**Example and follow-up:** For an order update, inspect the target resource, method, credentials, Content-Type, conditional headers, body and resulting status. The familiar HTTP/1.1 text layout is a teaching model; HTTP/2 and HTTP/3 frame messages differently.
+**Reasoning and example:** For an order update, I inspect the target order URL, the method and the fields in the body. I also check credentials, Content-Type and any If-Match version token. In the response, I examine both the status code and the returned data or error message. This shows whether the server accepted the requested business change.
+
+For example, TLS can connect successfully while the server returns 403 because the user cannot change that order. I would then investigate permissions rather than the certificate. HTTP/1.1 is often shown as readable text for teaching; HTTP/2 and HTTP/3 carry the same broad message concepts using different framing.
 
 **Avoid this mistake:** A successful TCP/TLS connection does not prove that the business request succeeded.
 
 **Read and verify this answer:**
 
-- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
+- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 
 <details>
 <summary>Visual: HTTP request and response anatomy</summary>
@@ -63,16 +67,18 @@ Read the method, target, status and headers before interpreting the body. The sa
 
 **Level:** Core
 
-**Short answer:** GET retrieves a representation. POST submits content for resource-specific processing. PUT creates or replaces the state of the identified target under its contract. PATCH applies a described modification. DELETE requests removal of the target resource association.
+**Short answer:** GET reads data. POST asks the target to process submitted content. PUT creates or replaces the identified resource's state, while PATCH applies a described change. DELETE asks to remove the target resource association. I follow the endpoint's documented meaning; these methods are not interchangeable labels for the same operation.
 
-**Example and follow-up:** For a partial update, inspect the accepted patch document or service-specific update contract. An omitted field, an explicit null and an empty string can mean different things. PATCH is not inherently idempotent; a particular patch can be designed to be.
+**Reasoning and example:** To change only an order's delivery note, I check whether the service supports PATCH and which patch format it accepts. Leaving a field out may mean keep its value, while sending null or an empty string may mean something different. The API contract decides those details. PUT should not be assumed to mean an arbitrary partial update.
 
-**Avoid this mistake:** Do not treat PUT as an arbitrary partial update or assume that every POST creates exactly one row.
+POST might create an order or invoke a business action; it does not always insert one row. DELETE also does not promise physical erasure of every database record. Repeating PATCH is not inherently safe: setting a value can be repeatable, while an instruction to increment a value may change it again.
+
+**Avoid this mistake:** PUT is not an arbitrary partial update, and POST does not always mean creating exactly one row.
 
 **Read and verify this answer:**
 
-- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
-- [PATCH method: IETF RFC 5789](https://www.rfc-editor.org/rfc/rfc5789.html) - Defines PATCH, including its relationship to PUT and the conditions under which a patch can be idempotent.
+- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [PATCH method: IETF RFC 5789](https://www.rfc-editor.org/rfc/rfc5789.html) - Explains PATCH, how it differs from PUT and when repeating a particular patch can have the same intended effect.
 
 <details>
 <summary>Visual: JSON and XML: values and mapping</summary>
@@ -91,30 +97,34 @@ These are two explicitly designed representations of the same sample values, not
 
 **Level:** Advanced
 
-**Short answer:** Safe methods have read-oriented requested semantics. Idempotency concerns the intended effect of repeated identical requests, not identical response codes. PUT and DELETE are idempotent by their HTTP semantics; POST and PATCH need specific application guarantees for safe repetition.
+**Short answer:** Safe means the requested operation is read-oriented. Idempotent means repeating the same request has the same intended effect as doing it once. PUT and DELETE are idempotent by HTTP semantics, although their responses may differ. POST and PATCH need a specific guarantee before I repeat a business change after a timeout.
 
-**Example and follow-up:** After a timeout on CreateOrder, the client may not know whether the server committed. Use a documented idempotency mechanism or query a stable business correlation before retrying. Repeated DELETE can return different statuses while the final resource state remains absent.
+**Reasoning and example:** A client sends CreateOrder and times out before receiving a response. The server may already have saved the order. Sending a new request without checking could create a duplicate. I use a documented idempotency key, which identifies repeated attempts at the same request, or query the result using a stable business reference.
+
+For DELETE, the first request might report success and the second might report that the resource is absent. That does not contradict idempotency: the intended final state is still that the resource is removed. Safe methods can also cause incidental logging; the key point is that the client did not request a business change.
 
 **Avoid this mistake:** Do not blindly retry a potentially committed business creation because the response was lost.
 
 **Read and verify this answer:**
 
-- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
-- [PATCH method: IETF RFC 5789](https://www.rfc-editor.org/rfc/rfc5789.html) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
+- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [PATCH method: IETF RFC 5789](https://www.rfc-editor.org/rfc/rfc5789.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 
 ## HTTP-05 Which HTTP statuses should an ABAP API developer explain?
 
 **Level:** Core
 
-**Short answer:** Distinguish 200 success, 201 creation, 202 accepted but not completed, and 204 success without response content. Typical failures include 400 invalid request, 401 missing or invalid authentication, 403 refusal, 404 unavailable resource, 409 conflict, 412 failed precondition and 415 unsupported media type.
+**Short answer:** I distinguish successful completion from acceptance for later processing: 200 is success, 201 creation, 202 accepted and 204 success without content. Common errors are 400 invalid request, 401 missing or invalid authentication, 403 refusal and 404 not found. I also know 409 conflict, 412 failed precondition and 415 unsupported content type.
 
-**Example and follow-up:** A 429 or 503 can justify a bounded delayed retry under the service contract, sometimes using Retry-After. A 500 needs diagnosis. Record a correlation identifier and inspect the business error payload without exposing credentials. For asynchronous 202, explain how the caller learns the eventual outcome.
+**Reasoning and example:** A payment API returns 202. I cannot tell the user that payment has finished; I need the documented status check or callback to learn the final result. If an update returns 412, I investigate the stale version condition instead of treating it as a server outage. The error body often explains more than the status alone.
+
+For 429 or 503, the contract may allow a delayed, bounded retry, sometimes using Retry-After. I still consider whether the original operation might have succeeded. A 500 needs diagnosis too. I keep a correlation ID for support without logging credentials, and inspect inner results when a batch envelope returns HTTP 200.
 
 **Avoid this mistake:** HTTP 200 on a batch envelope does not prove every contained operation succeeded.
 
 **Read and verify this answer:**
 
-- [HTTP status reference: MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
+- [HTTP status reference: MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 
 <details>
 <summary>Visual: HTTP request and response anatomy</summary>
@@ -133,15 +143,17 @@ Read the method, target, status and headers before interpreting the body. The sa
 
 **Level:** Core
 
-**Short answer:** Content-Type describes the representation actually carried in a message. Accept states which response media types the client can handle. They are separate from authentication and from the URL of the resource.
+**Short answer:** Content-Type says what format a message actually contains. Accept says which response formats the client can understand. A client can send JSON and ask for JSON back, but those are two separate settings. I check the actual response type before parsing it, especially when the call fails.
 
-**Example and follow-up:** A client can send application/json and request an application/json response. A server can reject unsupported request content with 415 or an unacceptable response representation with 406. Always inspect the actual response type before deserializing an error page as business JSON.
+**Reasoning and example:** An app sends a JSON order with Content-Type: application/json and Accept: application/json. If the endpoint only accepts a different request format, it can return 415. If it cannot provide an acceptable response format, it can return 406. These are format problems, not automatically password or authorization problems.
+
+An intermediary might return an HTML error page instead of the expected JSON. Trying to parse that page as an order produces a confusing second error. I therefore inspect the status and response Content-Type first. Merely changing the header from XML to JSON does not convert the body; the serialized data must actually match the declared format.
 
 **Avoid this mistake:** Changing Content-Type does not convert an XML body into JSON.
 
 **Read and verify this answer:**
 
-- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
+- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 
 <details>
 <summary>Visual: HTTP request and response anatomy</summary>
@@ -160,16 +172,18 @@ Read the method, target, status and headers before interpreting the body. The sa
 
 **Level:** Core
 
-**Short answer:** JSON supports objects, arrays, strings, numbers, booleans and null. Preserve the API contract for property names, missing versus null values, number precision and ordered array entries. Do not depend on object member ordering or duplicate member names.
+**Short answer:** I preserve field names, data types and the meaning of missing values. JSON distinguishes an absent property, null and an empty string; an ABAP update may need to distinguish them too. Arrays keep their order, but object-property order is not a reliable contract. I also protect number precision and identifiers with leading zeros.
 
-**Example and follow-up:** Model an identifier such as "0004711" as a string. Decide deliberately whether a monetary value is represented as a decimal number or a string under the contract; retain currency and precision. Standard JSON has no native date type, comments, NaN or Infinity.
+**Reasoning and example:** An external customer ID is "0004711". If I read it as a number, the leading zeros disappear, so the contract should treat it as a string. For an amount, I preserve the agreed decimal precision and currency. Whether that amount is sent as a JSON number or string depends on the API.
 
-**Avoid this mistake:** Do not coerce every missing or null property into the same initial ABAP value without considering update semantics.
+A PATCH request with no Phone property might leave the phone unchanged, while Phone set to null might clear it. Mapping both to the same initial ABAP value can destroy that distinction. JSON itself has no native date type, comments, NaN or Infinity. I also avoid relying on duplicate object-property names because parsers may handle them differently.
+
+**Avoid this mistake:** Treating missing and null fields as the same initial ABAP value can accidentally change or clear data.
 
 **Read and verify this answer:**
 
-- [JSON format: IETF RFC 8259](https://www.rfc-editor.org/rfc/rfc8259) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
-- [SAP JSON transformations](https://help.sap.com/docs/abap-cloud/abap-keyword/json-transformations-abencall_trafo_json_abexa) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
+- [JSON format: IETF RFC 8259](https://www.rfc-editor.org/rfc/rfc8259) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [SAP JSON transformations](https://help.sap.com/docs/abap-cloud/abap-keyword/json-transformations-abencall_trafo_json_abexa) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 
 <details>
 <summary>Visual: JSON and XML: values and mapping</summary>
@@ -201,17 +215,19 @@ The first two requests carry the same initial ABAP value but differ in update in
 
 **Level:** Core
 
-**Short answer:** XML is a structured representation with elements, attributes and nested content. Well-formedness checks syntax; schema validation checks additional declared constraints. A namespace is identified by its namespace URI. An element or attribute's expanded name combines its namespace name, if any, with its local name; the chosen prefix spelling is only an alias.
+**Short answer:** XML represents data with elements, attributes and nested content. Well-formed XML follows syntax rules; schema validation checks further rules about its structure and values. Namespace prefixes are aliases, so I identify names using the namespace URI and local name. I use a real XML parser rather than splitting the text by hand.
 
-**Example and follow-up:** Two partners can use different prefixes for the same namespace, so parse by expanded name. A default namespace applies to unprefixed element names, not unprefixed attribute names. An empty element, an absent element and an explicit schema-defined nil value may differ. Escaping, encoding and parser security settings belong to the implementation contract.
+**Reasoning and example:** One partner sends a:Order and another sends b:Order. If both prefixes refer to the same namespace URI, they can identify the same element name. A parser that only looks for the literal text a:Order would wrongly reject the second message. The namespace URI plus the local name Order identifies what the element means.
 
-**Avoid this mistake:** Do not process arbitrary XML with string splitting or assume that well-formed XML is business-valid.
+A default namespace applies to unprefixed elements, not unprefixed attributes. I also check how the contract distinguishes a missing element, an empty element and an explicit schema-defined nil value. Encoding, escaping and secure parser settings matter. Valid XML syntax alone does not prove that the order contains a valid customer or amount.
+
+**Avoid this mistake:** String splitting is not an XML parser. Correct XML syntax also does not prove valid business data.
 
 **Read and verify this answer:**
 
-- [XML specification: W3C](https://www.w3.org/TR/xml/) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
-- [SAP sXML parsing](https://help.sap.com/docs/abap-cloud/abap-keyword/sxml-parsing) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
-- [W3C Namespaces in XML](https://www.w3.org/TR/xml-names/) - Sections 2.1 and 6.2 distinguish namespace identity, expanded names and default namespace behavior for elements and attributes.
+- [XML specification: W3C](https://www.w3.org/TR/xml/) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [SAP sXML parsing](https://help.sap.com/docs/abap-cloud/abap-keyword/sxml-parsing) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [W3C Namespaces in XML](https://www.w3.org/TR/xml-names/) - Sections 2.1 and 6.2 explain namespace URIs, full element names and how default namespaces apply differently to elements and attributes.
 
 <details>
 <summary>Visual: JSON and XML: values and mapping</summary>
@@ -230,16 +246,18 @@ These are two explicitly designed representations of the same sample values, not
 
 **Level:** Advanced
 
-**Short answer:** Choose a serializer/parser or transformation supported and released in the target environment. CALL TRANSFORMATION, the sXML interfaces and applicable JSON libraries solve different mapping and streaming needs. Verify naming rules, types and error handling with representative payloads.
+**Short answer:** I choose a parser, serializer or transformation allowed in the target ABAP environment. The tool must produce the partner's actual format and handle bad input clearly. CALL TRANSFORMATION, sXML and JSON libraries serve different needs. I test real sample payloads and check release status; a familiar classic helper may not be allowed in ABAP Cloud.
 
-**Example and follow-up:** The identity transformation uses canonical ABAP representations such as asXML/asJSON; that is not automatically the same shape as an arbitrary partner API. For a large XML stream, compare a serial parser with a full DOM approach. Avoid manual concatenation of unescaped values.
+**Reasoning and example:** A partner expects a small JSON object with its own property names. The identity transformation can produce canonical ABAP formats such as asJSON or asXML, but that is not automatically the partner's format. I check the output and choose a supported mapping approach that matches the contract, including numbers, missing values and errors.
+
+For a very large XML file, a streaming parser can process sections without loading the whole document into a DOM tree. I compare that with the navigation needs of the task. I never build XML or JSON by simply joining unescaped user values into strings, because quotes and special characters can corrupt the message.
 
 **Avoid this mistake:** Do not promise that a familiar on-premise helper class is released for ABAP Cloud.
 
 **Read and verify this answer:**
 
-- [SAP JSON transformations](https://help.sap.com/docs/abap-cloud/abap-keyword/json-transformations-abencall_trafo_json_abexa) - SAP transformation/parsing background. Verify API release eligibility in ADT for the target ABAP language version; documentation presence alone is not a release guarantee.
-- [SAP sXML parsing](https://help.sap.com/docs/abap-cloud/abap-keyword/sxml-parsing) - SAP transformation/parsing background. Verify API release eligibility in ADT for the target ABAP language version; documentation presence alone is not a release guarantee.
+- [SAP JSON transformations](https://help.sap.com/docs/abap-cloud/abap-keyword/json-transformations-abencall_trafo_json_abexa) - Explains SAP transformations and parsing. Check API release status in ADT for the target language version; a documentation page alone does not prove the API is allowed.
+- [SAP sXML parsing](https://help.sap.com/docs/abap-cloud/abap-keyword/sxml-parsing) - Explains SAP transformations and parsing. Check API release status in ADT for the target language version; a documentation page alone does not prove the API is allowed.
 
 <details>
 <summary>Visual: JSON and XML: values and mapping</summary>
@@ -271,15 +289,17 @@ The first two requests carry the same initial ABAP value but differ in update in
 
 **Level:** Advanced
 
-**Short answer:** Use the permitted destination and HTTP client APIs, configure credentials outside source, send the contractually correct request, handle transport exceptions and HTTP failures separately, then deserialize and validate the response. Apply timeouts and an explicit retry policy.
+**Short answer:** I use an allowed destination and HTTP client, with credentials stored in configuration. I send the documented request, set a timeout and handle connection failures separately from HTTP error responses. Then I parse and validate the response. Retries need an explicit rule, because the remote system may have saved a change before the connection failed.
 
-**Example and follow-up:** In a suitable ABAP Cloud environment, released HTTP destination/client APIs and communication configuration establish the boundary; classic landscapes may use other client APIs. Diagnose DNS, TLS trust, destination, authentication, headers, payload and application logs in order. Redact secrets and sensitive business data.
+**Reasoning and example:** An outbound supplier call fails. I first locate the failing step: name resolution, TLS trust, destination configuration, authentication or the application request. If I receive HTTP 400 with a useful error body, repeatedly changing the certificate is unlikely to help. I compare the headers and payload with the API contract instead.
+
+In ABAP Cloud, I use the released client and destination APIs and the communication setup supported by that environment. Classic systems may use different APIs. Logs should help find the request without exposing passwords, tokens or sensitive business data. I also verify the retry policy: rolling back the local transaction does not undo a remote commit.
 
 **Avoid this mistake:** Do not hard-code a password, suppress all exceptions, or assume a remote call shares the local rollback.
 
 **Read and verify this answer:**
 
-- [SAP ABAP integration and connectivity](https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
+- [SAP ABAP integration and connectivity](https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 
 <details>
 <summary>Visual: HTTP request and response anatomy</summary>
@@ -298,29 +318,33 @@ Read the method, target, status and headers before interpreting the body. The sa
 
 **Level:** Core
 
-**Short answer:** Authentication establishes identity and authorization governs permitted actions. CORS is a browser-enforced cross-origin access mechanism. CSRF defenses address forged requests in relevant credential-bearing browser flows. These mechanisms solve different problems.
+**Short answer:** Authentication answers who is calling; authorization answers what they may do. CORS controls which cross-origin responses browser scripts can access. CSRF defenses help stop forged requests that misuse browser credentials in relevant flows. These protections solve different problems. Allowing an origin does not give its users permission to approve an order.
 
-**Example and follow-up:** An HTTP call working in an ABAP backend but failing in a browser can involve CORS or preflight handling. Conversely, allowing an origin does not authorize its users to approve orders. Never fix a CORS issue by removing business authorization checks.
+**Reasoning and example:** The same API call works from an ABAP backend but fails from a browser app hosted on another origin. I inspect the browser's CORS error and any preflight request. The backend call is not subject to the browser's CORS enforcement in the same way, so its success does not prove that the browser configuration is correct.
+
+After fixing CORS, a user may still receive an authorization error when approving an order. That check must remain. In a session-based browser flow, the endpoint may also require CSRF protection for writes. CORS is neither a general server-to-server firewall nor a replacement for authentication, authorization or the applicable CSRF defenses.
 
 **Avoid this mistake:** CORS is not a general server-to-server firewall or a replacement for authentication.
 
 **Read and verify this answer:**
 
-- [CORS: MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
+- [CORS: MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 
 ## HTTP-12 How would you test an HTTP integration contract?
 
 **Level:** Advanced
 
-**Short answer:** Test both structure and behavior: valid payload, malformed input, missing/null fields, precision, time zones, unexpected content type, business errors, expired credentials, timeouts, duplicate requests and concurrency. Include the real destination and authorization setup in integration tests.
+**Short answer:** I test what the integration does, not just whether it can send JSON. Cases include bad input, missing values, business errors, expired credentials and timeouts. I also test repeated requests and conflicting updates. Controlled doubles help reproduce failures, but a real integration test must check the actual destination, identity and partner behavior.
 
-**Example and follow-up:** Use a controlled double for deterministic error cases, then a target-system check for actual TLS, identity, serialization and service behavior. A creation timeout test should verify that retry does not create a second business document. Preserve a redacted request, correlation and outcome as evidence.
+**Reasoning and example:** For an order creation API, I test a normal order, an invalid customer and a price that needs exact decimal handling. I also simulate a lost response after creation. Recovery should find or safely reuse the first result rather than create a second order. A wrong Content-Type or malformed body should produce a clear error.
+
+I use a test double to make these failures repeatable, then run authorized tests against the real endpoint for TLS, authentication, serialization and permissions. The evidence includes a redacted request, correlation ID and final business outcome. Serializing an object and reading it back locally does not prove the partner accepts that representation.
 
 **Avoid this mistake:** A serializer round-trip test alone does not prove that the partner accepts your representation.
 
 **Read and verify this answer:**
 
-- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Use the protocol or format contract to verify semantics independently of the ABAP implementation.
+- [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 
 <details>
 <summary>Visual: JSON and XML: values and mapping</summary>

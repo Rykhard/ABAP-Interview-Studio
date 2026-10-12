@@ -6,23 +6,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Supply Comment with its initial value and mark only intended fields.",
-        "explanation": "Field presence/control distinguishes clearing a value from leaving it untouched."
+        "text": "Send an empty Comment and mark it for update; leave Amount unmarked.",
+        "explanation": "Mark Comment as a field to change and pass an empty value. Leave Amount unmarked so its existing value stays the same."
       },
       {
         "id": "b",
         "text": "Supply initial values and mark every field as changed.",
-        "explanation": "That can overwrite Amount and other omitted fields with unintended initial values."
+        "explanation": "Marking Amount as changed tells RAP to use the value you supplied for it. An empty value could therefore erase the saved amount."
       },
       {
         "id": "c",
         "text": "Leave Comment unmarked because its initial value implies deletion.",
-        "explanation": "Initial content alone does not convey update intent when the field is unmarked."
+        "explanation": "An empty value and a request to update are separate things. If Comment is not marked for update, RAP is not being asked to clear it."
       },
       {
         "id": "d",
         "text": "Clear Comment directly in persistence before calling EML.",
-        "explanation": "Direct managed-table changes bypass the BO contract and do not fix request semantics."
+        "explanation": "Changing the managed table directly skips the business object's checks and buffer. Express the intended change through EML instead."
       }
     ],
     "correctOption": "a"
@@ -35,22 +35,22 @@
       {
         "id": "a",
         "text": "Any REPORTED entry proves the entire SAP LUW was rolled back.",
-        "explanation": "REPORTED can contain informational and warning messages without rejecting the transaction."
+        "explanation": "REPORTED carries messages, including warnings and information. A message does not by itself mean the request was rejected or rolled back."
       },
       {
         "id": "b",
-        "text": "The message alone does not establish rejection or final persistence.",
-        "explanation": "Response roles differ, and interaction completion is separate from save completion."
+        "text": "The warning alone proves neither rejection nor a completed save.",
+        "explanation": "Read FAILED to identify rejected operations and REPORTED for their messages. Even when the update succeeds in the buffer, saving is a later step."
       },
       {
         "id": "c",
         "text": "No FAILED entry proves the database commit already completed.",
-        "explanation": "MODIFY ENTITIES processes interaction changes; persistence still needs the transaction's save boundary."
+        "explanation": "MODIFY ENTITIES changes the transaction's working data. A successful response does not prove those changes have reached the database."
       },
       {
         "id": "d",
         "text": "MAPPED must contain one successful row for every update.",
-        "explanation": "MAPPED is used for relevant creation/key correlation, not a universal update success list."
+        "explanation": "MAPPED links new instances to their identifiers when required. It is not a list of every successful update."
       }
     ],
     "correctOption": "b"
@@ -63,22 +63,22 @@
       {
         "id": "a",
         "text": "Use the parent's position in the create input table.",
-        "explanation": "Row position is not the identity contract and can break correlation after reordering."
+        "explanation": "A table position is not a reliable parent identifier. If rows are reordered, an item could be linked to the wrong order."
       },
       {
         "id": "b",
         "text": "Allocate a guessed parent key with SELECT MAX plus one.",
-        "explanation": "This introduces concurrency risk and bypasses the BO's numbering contract."
+        "explanation": "Two users can both calculate the same next number. Use the business object's supported numbering and linking rules instead of guessing a key."
       },
       {
         "id": "c",
-        "text": "Use supported %cid_ref correlation to the parent's unique content ID.",
-        "explanation": "Content-ID correlation links dependent creates before final business keys are available."
+        "text": "Link each child to its new parent's unique %cid using supported %cid_ref handling.",
+        "explanation": "Give each new parent its own %cid. The child's supported %cid_ref points to that ID, so RAP can link them before final keys exist."
       },
       {
         "id": "d",
         "text": "Use the same %cid for every parent because they share a request.",
-        "explanation": "Content IDs must distinguish the relevant creates rather than collapse their identities."
+        "explanation": "The two parents need different content IDs. Reusing one ID makes it unclear which parent a child belongs to."
       }
     ],
     "correctOption": "c"
@@ -91,22 +91,22 @@
       {
         "id": "a",
         "text": "Replace %tky with %cid for all existing instances.",
-        "explanation": "Content IDs correlate request creates; they are not a universal existing-instance key."
+        "explanation": "%cid helps link new instances within a request. It does not replace the identifier of every existing active or draft instance."
       },
       {
         "id": "b",
         "text": "Treat %tky as a temporary numeric key to be regenerated.",
-        "explanation": "Its meaning is transactional identity, not an arbitrary temporary number."
+        "explanation": "%tky identifies an instance within the RAP transaction. It is not a temporary number that application code should invent again."
       },
       {
         "id": "c",
         "text": "Read active persistence whenever draft identity is missing.",
-        "explanation": "That may address a different instance and conceal the original identity defect."
+        "explanation": "The active order and its draft are different versions. Reading the active table does not repair a request that lost its draft identity."
       },
       {
         "id": "d",
-        "text": "Preserve the supported transactional identity, including %tky context.",
-        "explanation": "Transactional identification may include draft and preliminary-key components beyond business fields."
+        "text": "Keep the complete RAP identifier, including the context carried in %tky.",
+        "explanation": "Pass along the complete RAP identifier. Its %tky can carry draft or preliminary-key information that ordinary business-key fields alone do not preserve."
       }
     ],
     "correctOption": "d"
@@ -118,23 +118,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Preliminary-to-final identity correlation in the supported mapping contract.",
-        "explanation": "Consumers and associations need to connect the earlier instance identity to its final key."
+        "text": "Return the supported mapping from each earlier identifier to its final key.",
+        "explanation": "The framework must know which new document received which final key. Return the required mapping from its earlier identifier to that final key."
       },
       {
         "id": "b",
         "text": "The original input row order as the only mapping information.",
-        "explanation": "Ordering cannot replace the explicit key-correlation contract."
+        "explanation": "The caller needs an explicit link between the old and new identifiers. Assuming rows remain in the same order is not enough."
       },
       {
         "id": "c",
         "text": "A promise of gap-free numbers solely because numbering is late.",
-        "explanation": "Number-range and posting semantics determine gaps; late timing alone is insufficient."
+        "explanation": "Assigning a number later can help meet some requirements, but does not guarantee no gaps. The number range and posting process still matter."
       },
       {
         "id": "d",
         "text": "A normal error response from every ADJUST_NUMBERS implementation.",
-        "explanation": "Late failure handling requires the specific supported saver scenario, not a universal assumption."
+        "explanation": "Do not assume every numbering method can reject a save normally. Late failure reporting is available only in specific supported saver scenarios."
       }
     ],
     "correctOption": "a"
@@ -147,22 +147,22 @@
       {
         "id": "a",
         "text": "The presence of any FAILED row always rolls back the entire batch.",
-        "explanation": "That overgeneralizes per-instance failure to unrelated batch transaction boundaries."
+        "explanation": "FAILED tells you an operation failed. It does not automatically make unrelated requests elsewhere in the batch part of the same rollback."
       },
       {
         "id": "b",
-        "text": "The actual atomicity boundary and the defined transaction policy.",
-        "explanation": "A whole batch, an atomic group and an interaction response are distinct scopes."
+        "text": "The operations grouped to succeed or fail together, and their transaction rules.",
+        "explanation": "Check which operations must succeed or fail together, such as a changeset or atomicity group. Then apply the RAP transaction rules for that group."
       },
       {
         "id": "c",
         "text": "The number of successful items decides whether the framework commits.",
-        "explanation": "A majority-success rule is not the RAP or OData transaction contract."
+        "explanation": "The framework does not use a vote among successful items. The defined all-or-nothing group determines what can be saved together."
       },
       {
         "id": "d",
         "text": "The first HTTP response settles persistence for every later operation.",
-        "explanation": "Operation responses do not replace the enclosing save and atomicity semantics."
+        "explanation": "An individual response is not proof that every operation was saved. You must also check the enclosing transaction and its final outcome."
       }
     ],
     "correctOption": "b"
@@ -175,22 +175,22 @@
       {
         "id": "a",
         "text": "The buffer must be flushed with COMMIT WORK inside the action.",
-        "explanation": "Independent commit violates RAP transaction ownership."
+        "explanation": "A behavior action must not issue its own commit. That would break the framework's control over saving the whole transaction."
       },
       {
         "id": "b",
         "text": "The database has necessarily lost the latest committed value.",
-        "explanation": "The change may simply be uncommitted and correctly absent from persistence."
+        "explanation": "The new amount may exist only in the buffer. Seeing the old database value before save is therefore not proof of lost data."
       },
       {
         "id": "c",
-        "text": "The SELECT observes persistence rather than the unsaved transactional state.",
-        "explanation": "Transaction-sensitive reads must use the BO's correct buffered view."
+        "text": "SELECT reads the saved database value, not the new value in the RAP buffer.",
+        "explanation": "SELECT reads saved database rows, not your unsaved RAP buffer. Use the business object's read path that includes the current buffered changes."
       },
       {
         "id": "d",
         "text": "The service should replace all reads with a session-wide singleton cache.",
-        "explanation": "A second cache does not establish correct transaction scope or cleanup."
+        "explanation": "Adding another cache can introduce more stale data. The read must use the correct transaction buffer and its cleanup rules."
       }
     ],
     "correctOption": "c"
@@ -203,22 +203,22 @@
       {
         "id": "a",
         "text": "Whether every message was converted into a transition message.",
-        "explanation": "Persistent validation state can be appropriate; changing all message types avoids the actual lifecycle defect."
+        "explanation": "Some validation errors should remain attached to a draft until corrected. Turning them all into one-time messages avoids checking why the old error remains."
       },
       {
         "id": "b",
         "text": "Whether all application messages can be cleared unconditionally.",
-        "explanation": "That may erase unrelated errors owned by other validations."
+        "explanation": "Clearing every message could remove a different error that is still valid. Clear only the state area owned by the check you are rerunning."
       },
       {
         "id": "c",
         "text": "Whether the UI can force a commit after clearing its display.",
-        "explanation": "A display workaround neither corrects backend state messaging nor owns the transaction."
+        "explanation": "A screen refresh or forced commit does not fix the old message stored for the draft. The backend must update its validation messages correctly."
       },
       {
         "id": "d",
-        "text": "State-area invalidation, trigger execution and instance/message correlation.",
-        "explanation": "These determine whether the previous state message is removed and the current state reported."
+        "text": "Check that validation reruns for the right instance and clears its old state-area message.",
+        "explanation": "Check that validation ran again for the right instance and invalidated its previous state area. It should then report only errors that still apply."
       }
     ],
     "correctOption": "d"
@@ -230,23 +230,23 @@
     "options": [
       {
         "id": "a",
-        "text": "The existing active order remains; the draft changes are abandoned.",
-        "explanation": "An edit draft is a temporary editing version, distinct from its active counterpart."
+        "text": "Keep the saved active order and discard only the draft edits.",
+        "explanation": "Discard removes the unsaved edit draft. The previously saved active order remains as it was before those draft changes."
       },
       {
         "id": "b",
         "text": "The active order is deleted because draft and active share identity.",
-        "explanation": "Discarding draft work is not a request to delete the active business object."
+        "explanation": "Discard means abandon the edits, not delete the saved order. Deleting the active order is a different operation."
       },
       {
         "id": "c",
         "text": "The draft is activated automatically to prevent data loss.",
-        "explanation": "Discard explicitly abandons draft changes rather than saving them as active data."
+        "explanation": "Activate saves draft changes as active data. Discard asks for the opposite: abandon those draft changes."
       },
       {
         "id": "d",
         "text": "The order must advance to Submitted before discard is allowed.",
-        "explanation": "Submission is separate business behavior, not a universal draft-discard prerequisite."
+        "explanation": "Submitting an order is a separate business step. RAP does not generally require submission before the user can discard a draft."
       }
     ],
     "correctOption": "a"
@@ -259,22 +259,22 @@
       {
         "id": "a",
         "text": "Only the root's unchanged business fields need comparison.",
-        "explanation": "A child-only change can still invalidate the draft's view of the business object."
+        "explanation": "An item can change while the header fields stay the same. Comparing only those unchanged header fields would miss that change."
       },
       {
         "id": "b",
-        "text": "Correct total-ETag maintenance for relevant changes across the BO.",
-        "explanation": "Draft resume needs the aggregate active-state version to reflect child changes."
+        "text": "A correctly maintained total ETag that includes relevant child changes.",
+        "explanation": "The total ETag must change for relevant active changes, including child changes. On resume, RAP can then detect that the draft is based on older data."
       },
       {
         "id": "c",
         "text": "The expired lock continues preventing all active changes.",
-        "explanation": "Expiry means exclusive protection no longer guarantees the active state stayed unchanged."
+        "explanation": "An expired lock no longer gives that protection. Another process may have changed the active order after the lock expired."
       },
       {
         "id": "d",
         "text": "A client timestamp unrelated to persisted active state is sufficient.",
-        "explanation": "Conflict detection requires the defined version contract, not an arbitrary client time."
+        "explanation": "The version must represent the actual active data. An unrelated time supplied by the browser cannot reliably detect changes to that data."
       }
     ],
     "correctOption": "b"
@@ -287,22 +287,22 @@
       {
         "id": "a",
         "text": "Automatic merging of every changed field by the ETag mechanism.",
-        "explanation": "ETags detect conflicts; they do not implement arbitrary business merge rules."
+        "explanation": "An ETag detects that the data changed. It does not decide how to combine two users' edits; the app needs its own conflict-resolution behavior."
       },
       {
         "id": "b",
         "text": "Guaranteed success because the second client holds an old copy.",
-        "explanation": "An old representation is exactly why a version check is needed."
+        "explanation": "The second user read an older version. Accepting that stale version without a check could overwrite the first user's changes."
       },
       {
         "id": "c",
-        "text": "A version conflict under the configured entity ETag contract.",
-        "explanation": "Optimistic concurrency detects that the submitted version is no longer current."
+        "text": "A version conflict because If-Match refers to an older entity version.",
+        "explanation": "The second request sends an outdated version in If-Match. Under the configured ETag checks, it should receive a conflict rather than overwrite newer data."
       },
       {
         "id": "d",
         "text": "A permanent reservation created when the entity was first read.",
-        "explanation": "An ETag is not a pessimistic lock acquired by a read."
+        "explanation": "Reading an ETag does not reserve the object. Other users can still change it, and the version check detects that later."
       }
     ],
     "correctOption": "c"
@@ -315,22 +315,22 @@
       {
         "id": "a",
         "text": "Move one determination earlier in the source file.",
-        "explanation": "Declaration order is not a supported guarantee for determination execution order."
+        "explanation": "Moving a declaration in the source does not give it a guaranteed execution order. The calculation must not depend on that assumption."
       },
       {
         "id": "b",
         "text": "Set a static flag after the first call to prevent repeated execution.",
-        "explanation": "A session flag can skip legitimate recalculation and leaks lifecycle assumptions."
+        "explanation": "A static flag may stop a later valid recalculation. It also lasts for a session, which may not match the business transaction."
       },
       {
         "id": "c",
         "text": "Send Total to the UI and let it apply Discount afterwards.",
-        "explanation": "That moves the invariant out of the backend and leaves non-UI consumers inconsistent."
+        "explanation": "Other callers may never use that UI. Keep the total calculation correct in the backend so every supported caller gets the same rules."
       },
       {
         "id": "d",
-        "text": "Make derivation idempotent and independent of unspecified execution order.",
-        "explanation": "Derive from authoritative inputs with complete triggers rather than accumulating prior results."
+        "text": "Recalculate from current inputs so repeat calls and unspecified order do not change the result.",
+        "explanation": "Calculate from the current business inputs, so running the logic twice gives the same result. Cover every relevant change with suitable triggers."
       }
     ],
     "correctOption": "d"
@@ -342,23 +342,23 @@
     "options": [
       {
         "id": "a",
-        "text": "A supported precheck alongside the complete operation authorization model.",
-        "explanation": "It can inspect proposed change values before buffer application without replacing authorization design."
+        "text": "A supported precheck of the new value, together with the full authorization checks.",
+        "explanation": "A supported precheck can inspect the proposed company code before RAP applies it to the buffer. Keep the full authorization checks as well."
       },
       {
         "id": "b",
         "text": "Only a read DCL on the original company's persisted row.",
-        "explanation": "Read filtering alone does not decide whether the new target context is allowed."
+        "explanation": "DCL controls which rows a read may return. Access to the old company's row does not prove permission to move it to another company."
       },
       {
         "id": "c",
         "text": "Only feature control that hides CompanyCode on the screen.",
-        "explanation": "UI availability does not establish the backend authorization boundary."
+        "explanation": "A caller can send a request without using that screen. Hiding a field cannot replace a backend check on the proposed change."
       },
       {
         "id": "d",
         "text": "Only additional save after the data is already ready to persist.",
-        "explanation": "Predictable rejection should be handled at an appropriate earlier boundary."
+        "explanation": "Reject this known permission problem before the save reaches its late stage. Additional save is not the normal place for predictable business rejection."
       }
     ],
     "correctOption": "a"
@@ -371,22 +371,22 @@
       {
         "id": "a",
         "text": "The draft validation text should be changed to an error message.",
-        "explanation": "Message wording cannot cover a write path where the check does not run."
+        "explanation": "A clearer message cannot help a path that never runs the check. The active write path itself must enforce the rule."
       },
       {
         "id": "b",
-        "text": "The supported consistency checks for its active handler/save path.",
-        "explanation": "Draft validation support does not automatically prove active unmanaged persistence is protected."
+        "text": "Check that the unmanaged active handler/save path also enforces the rule.",
+        "explanation": "Follow an active write through its unmanaged handler and save logic. Make sure a supported check rejects the invalid data before it is persisted."
       },
       {
         "id": "c",
         "text": "The direct API should be trusted because it is not a UI.",
-        "explanation": "Business invariants still apply to supported non-UI consumers."
+        "explanation": "An API caller can submit invalid data too. The same business rule must protect all supported write paths, including non-UI calls."
       },
       {
         "id": "d",
         "text": "The frontend should read the active object more frequently.",
-        "explanation": "Additional reads cannot enforce a missing backend write invariant."
+        "explanation": "Reading more often does not stop an invalid save. The backend needs a check that rejects the bad write."
       }
     ],
     "correctOption": "b"
@@ -399,22 +399,22 @@
       {
         "id": "a",
         "text": "Fully unmanaged behavior is mandatory whenever any API is reused.",
-        "explanation": "The interaction and persistence responsibilities must be assessed separately."
+        "explanation": "Reusing an API does not always require replacing RAP's whole interaction layer. Decide separately who manages buffered edits and who saves them."
       },
       {
         "id": "b",
         "text": "Additional save should replace every managed persistence operation.",
-        "explanation": "Additional save augments managed persistence rather than inherently replacing it."
+        "explanation": "Additional save adds work to managed saving. It is not a general switch for replacing the managed table write with an API call."
       },
       {
         "id": "c",
-        "text": "Managed behavior with unmanaged save, after contract verification.",
-        "explanation": "It can retain managed interaction while replacing persistence with supported custom save logic."
+        "text": "Consider managed behavior with unmanaged save, if the API fits its rules.",
+        "explanation": "This variant can let RAP manage buffered edits while custom save code calls the API. First confirm the API fits the allowed save and transaction rules."
       },
       {
         "id": "d",
         "text": "A managed determination should write the API's tables directly.",
-        "explanation": "That bypasses persistence ownership and may violate save-phase and API constraints."
+        "explanation": "Writing the API's tables yourself bypasses its supported checks. A determination must not take over persistence in this way."
       }
     ],
     "correctOption": "c"
@@ -427,22 +427,22 @@
       {
         "id": "a",
         "text": "Write the audit in an on-modify determination and commit immediately.",
-        "explanation": "The order can still be rejected and behavior code must not commit independently."
+        "explanation": "A determination must not issue COMMIT WORK; it violates RAP runtime rules. Its calculations also happen before final save, so it is not the place to record a completed order change."
       },
       {
         "id": "b",
         "text": "Switch the entire BO to unmanaged solely to record one audit row.",
-        "explanation": "That adds responsibilities without establishing why managed interaction or persistence is unsuitable."
+        "explanation": "Recording an audit row alone does not explain why all managed behavior should be replaced. Additional save may cover that need with less custom code."
       },
       {
         "id": "c",
         "text": "Send an HTTP audit call and assume local rollback reverses it.",
-        "explanation": "An external effect is not automatically part of the local database transaction."
+        "explanation": "A remote HTTP call is a separate effect. Rolling back the local database does not automatically remove the audit record in the other system."
       },
       {
         "id": "d",
-        "text": "Use supported additional save while preserving framework commit ownership.",
-        "explanation": "It can add transactional persistence work alongside managed order persistence."
+        "text": "Use supported additional save and let RAP control the commit.",
+        "explanation": "Supported additional save can write the extra audit data alongside the managed save. The framework still owns the final commit."
       }
     ],
     "correctOption": "d"
@@ -454,23 +454,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Move expected rejection before the point of no return.",
-        "explanation": "Late save normally persists consistent state; special BAPI failure support requires explicit qualification."
+        "text": "Check predictable business errors before the normal point of no return.",
+        "explanation": "Check predictable business problems while RAP can still reject the transaction normally. Keep special, documented BAPI late-failure cases separate from that default."
       },
       {
         "id": "b",
         "text": "Return an error message from any late saver and assume rollback.",
-        "explanation": "Message reporting alone is not a universal recoverable late-failure mechanism."
+        "explanation": "Adding an error message is not a general way to recover from every late-save failure. Use only the failure handling supported by that saver variant."
       },
       {
         "id": "c",
         "text": "Assume no SAP-supported late-failure mechanism exists in any scenario.",
-        "explanation": "Documented failure-capable BAPI integration is a scoped exception to that absolute."
+        "explanation": "SAP does document certain failure-capable BAPI integration scenarios. Their existence does not make ordinary late-save validation a good default."
       },
       {
         "id": "d",
         "text": "Commit first so the validation can examine final database values.",
-        "explanation": "That defeats validation's ability to prevent an invalid business transaction."
+        "explanation": "Once the data is committed, validation is too late to prevent that save. Check the rule before committing."
       }
     ],
     "correctOption": "a"
@@ -483,22 +483,22 @@
       {
         "id": "a",
         "text": "Move the unchanged committing call from the action into SAVE.",
-        "explanation": "The hidden commit still conflicts with framework transaction ownership."
+        "explanation": "Moving the call does not remove its forbidden internal commit. Calling it locally still violates RAP runtime rules and may cause a runtime error."
       },
       {
         "id": "b",
-        "text": "Use a compatible API or explicitly redesign the transaction boundary.",
-        "explanation": "A wrapper or phase move cannot remove the dependency's internal commit semantics."
+        "text": "Choose a compatible API or design separate transactions explicitly.",
+        "explanation": "Choose an API that fits RAP's commit rules, or design separate transactions explicitly. A wrapper alone cannot undo the called function's internal commit."
       },
       {
         "id": "c",
         "text": "Wrap the call in TRY CATCH and report any later exception.",
-        "explanation": "Catching an exception does not undo already committed effects."
+        "explanation": "TRY CATCH does not make a forbidden local commit valid. If work is deliberately moved to a separate transaction, catching a later error cannot undo the result it already committed."
       },
       {
         "id": "d",
         "text": "Call the function through RFC while still promising local atomicity.",
-        "explanation": "RFC introduces a separate boundary instead of restoring one local atomic transaction."
+        "explanation": "RFC adds a separate transaction boundary. It does not make the remote work part of one local all-or-nothing save."
       }
     ],
     "correctOption": "b"
@@ -511,22 +511,22 @@
       {
         "id": "a",
         "text": "ROLLBACK ENTITIES automatically reverses the remote payment.",
-        "explanation": "Its local transaction scope does not encompass arbitrary external systems."
+        "explanation": "ROLLBACK ENTITIES rolls back local RAP work within its scope. It does not send a refund or undo an ordinary payment in another system."
       },
       {
         "id": "b",
         "text": "The remote success proves the local save must have committed.",
-        "explanation": "The systems have separate outcomes unless an actual coordinated protocol establishes otherwise."
+        "explanation": "The payment system and the local RAP transaction can finish differently. Success in one does not prove success in the other."
       },
       {
         "id": "c",
-        "text": "The remote effect needs explicit reconciliation or compensation.",
-        "explanation": "Local rollback cannot undo an ordinary remote HTTP operation."
+        "text": "Check the remote outcome and apply the agreed recovery or refund process.",
+        "explanation": "Check the payment's recorded outcome and take a defined recovery action, such as a refund. Local rollback alone cannot reverse the remote payment."
       },
       {
         "id": "d",
         "text": "Retry both steps with new identities until both return success.",
-        "explanation": "Fresh identities can duplicate remote payment instead of recovering the uncertain workflow."
+        "explanation": "A new payment identity can create another charge. Retry using the agreed duplicate-prevention rules and first check the outcome of the original payment."
       }
     ],
     "correctOption": "c"
@@ -539,22 +539,22 @@
       {
         "id": "a",
         "text": "Assume duplicates are impossible and start the workflow each time.",
-        "explanation": "The event mechanism does not justify universal exactly-once business processing assumptions."
+        "explanation": "A delivery mechanism can deliver the same event again. Starting work for every delivery may create duplicate workflows."
       },
       {
         "id": "b",
         "text": "Roll back the producer's already committed Submit transaction.",
-        "explanation": "A consumer cannot simply undo a completed remote producer transaction."
+        "explanation": "The producer has already committed. The consumer cannot simply roll that completed transaction back from a later event handler."
       },
       {
         "id": "c",
         "text": "Use the current ABAP session's static flag as permanent deduplication.",
-        "explanation": "Session state is neither durable nor appropriately scoped for external delivery recovery."
+        "explanation": "A static flag disappears with its session and is not shared by all consumers. Store duplicate detection in a durable place instead."
       },
       {
         "id": "d",
-        "text": "Recognize the same transition and avoid a second effective action.",
-        "explanation": "Durable correlation and idempotent handling protect against duplicate delivery."
+        "text": "Detect that the same transition was already handled and avoid repeating its business effect.",
+        "explanation": "Recognize that this business transition has already been handled. A durable event or business identifier lets the second delivery avoid starting the work again."
       }
     ],
     "correctOption": "d"
@@ -566,23 +566,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Protect the consumed entity with an appropriate DCL design.",
-        "explanation": "Read access control is not automatically inherited through every CDS projection."
+        "text": "Apply the appropriate DCL rules to the entity the caller actually reads.",
+        "explanation": "Protect the entity the caller actually reads. Define or explicitly inherit the appropriate DCL rules for that consumption path."
       },
       {
         "id": "b",
         "text": "Adding #CHECK creates the missing authorization rule by itself.",
-        "explanation": "The annotation does not define the business authorization condition."
+        "explanation": "#CHECK does not write an authorization condition for you. The relevant DCL rule still needs to exist and apply to the read."
       },
       {
         "id": "c",
         "text": "The base DCL must automatically cover every higher view.",
-        "explanation": "That assumption is the authorization gap the scenario exposes."
+        "explanation": "A higher CDS view does not automatically reuse every lower view's DCL. Verify the rule on the actual entity being consumed."
       },
       {
         "id": "d",
         "text": "Removing sensitive columns replaces row-level authorization.",
-        "explanation": "A smaller projection can still reveal unauthorized business records."
+        "explanation": "Removing columns can still leave unauthorized order rows visible. Column selection does not replace rules about which records a user may see."
       }
     ],
     "correctOption": "a"
@@ -595,22 +595,22 @@
       {
         "id": "a",
         "text": "No additional risk exists if the old order was authorized.",
-        "explanation": "That ignores a privilege-changing update to the object's authorization context."
+        "explanation": "Permission for company A says nothing about permission for company B. The change could move data into a scope the user may not manage."
       },
       {
         "id": "b",
-        "text": "The proposed target context may require a separate authorization decision.",
-        "explanation": "Authority over the original state does not imply authority over every allowed new value."
+        "text": "Permission for company A may not allow the proposed move to company B.",
+        "explanation": "Check the proposed destination as well as the existing order where required. A user allowed to edit company A must not gain access to company B by changing a field."
       },
       {
         "id": "c",
         "text": "The change is safe whenever the value help lists company B.",
-        "explanation": "Value-help visibility is not proof of permission to execute this transition."
+        "explanation": "A value help offers possible input values. Seeing company B there does not prove the user may move this order to it."
       },
       {
         "id": "d",
         "text": "An entity ETag proves the user is authorized for company B.",
-        "explanation": "ETags address concurrency, not the user's business authorization scope."
+        "explanation": "An ETag checks whether the data changed since it was read. It does not check which companies this user may manage."
       }
     ],
     "correctOption": "b"
@@ -623,22 +623,22 @@
       {
         "id": "a",
         "text": "Feature control for both rules because the UI consumes it.",
-        "explanation": "UI-facing availability does not replace the authorization boundary."
+        "explanation": "Feature control describes whether an operation is currently available. It is not a substitute for checking which person may perform it."
       },
       {
         "id": "b",
         "text": "Authorization for both rules with all feature handlers disabled.",
-        "explanation": "Authorization can deny users, but it does not replace deliberate operation-availability modeling."
+        "explanation": "Permission checks remain necessary, but do not by themselves describe the intended state-dependent availability of each operation. Model both responsibilities clearly."
       },
       {
         "id": "c",
-        "text": "Feature control for state availability; authorization for permitted actors.",
-        "explanation": "Business availability and permission are separate responsibilities."
+        "text": "Use feature control for state-dependent availability and authorization for who may act.",
+        "explanation": "Use feature control to express which actions fit the current state. Use authorization to check whether this particular user may perform the action."
       },
       {
         "id": "d",
         "text": "Hide Approve and trust the service's authenticated session.",
-        "explanation": "Authentication and button visibility do not establish instance-specific approval permission."
+        "explanation": "Signing in only establishes who the user is. The backend must still check whether that user may approve this specific request."
       }
     ],
     "correctOption": "c"
@@ -651,22 +651,22 @@
       {
         "id": "a",
         "text": "That every consumer can now perform the operation successfully.",
-        "explanation": "Universal success may indicate weakened security rather than a correct helper."
+        "explanation": "Making a forbidden operation succeed can mean a security check was bypassed. Passing the request is not proof that the helper is correct."
       },
       {
         "id": "b",
         "text": "That local mode only changes SQL performance.",
-        "explanation": "Its effect includes control checks, not merely execution optimization."
+        "explanation": "IN LOCAL MODE changes more than performance: in its supported context it can bypass checks. Review those effects before using it."
       },
       {
         "id": "c",
         "text": "That authentication alone makes instance authorization redundant.",
-        "explanation": "An authenticated user may still lack permission for the particular business operation."
+        "explanation": "A signed-in user may still lack permission for this order or action. Authentication does not replace the business authorization check."
       },
       {
         "id": "d",
-        "text": "That the call is in a permitted internal context with deliberate bypasses.",
-        "explanation": "Local mode has a specific scope and bypass effects; it is not a general authorization repair."
+        "text": "Check that local mode is allowed here and that its bypassed checks are intentional.",
+        "explanation": "Confirm the call is allowed in that internal RAP context and identify which checks it bypasses. Local mode is not a general fix for missing permissions."
       }
     ],
     "correctOption": "d"
@@ -678,23 +678,23 @@
     "options": [
       {
         "id": "a",
-        "text": "The count can leak unauthorized scope and violates query consistency.",
-        "explanation": "Count and data must reflect the same relevant filtering and authorization."
+        "text": "The count can reveal hidden records and does not describe the same allowed dataset.",
+        "explanation": "The total can reveal records the user is not allowed to see. Count the same authorized, filtered dataset used for the returned rows, before paging."
       },
       {
         "id": "b",
         "text": "No defect exists because no hidden row is returned.",
-        "explanation": "Aggregated metadata can still reveal protected information."
+        "explanation": "A user can learn that hidden records exist from a count alone. Protecting only the visible rows is not enough."
       },
       {
         "id": "c",
         "text": "The count should always be replaced by the current page length.",
-        "explanation": "That avoids neither the required total-count semantics nor correct authorization design."
+        "explanation": "A page length is not the requested total. For example, ten rows on the first page may belong to fifty authorized matches."
       },
       {
         "id": "d",
         "text": "Counts are inherently public metadata in every OData service.",
-        "explanation": "No universal rule exempts business counts from authorization concerns."
+        "explanation": "Business counts can contain sensitive information. There is no general rule that makes every OData count public."
       }
     ],
     "correctOption": "a"
@@ -707,22 +707,22 @@
       {
         "id": "a",
         "text": "Ignore the filter and return the whole dataset as a fallback.",
-        "explanation": "This broadens the request unexpectedly and can expose unintended rows."
+        "explanation": "Ignoring the filter can return records the caller did not request. It may also remove a restriction needed to protect data."
       },
       {
         "id": "b",
-        "text": "Preserve its semantics through supported handling or reject it explicitly.",
-        "explanation": "Silently discarding restrictions changes both correctness and potentially security."
+        "text": "Handle the full filter correctly, or clearly reject it as unsupported.",
+        "explanation": "Handle the complete filter with a supported method, or return a clear unsupported-request error. Do not silently change what the filter means."
       },
       {
         "id": "c",
         "text": "Apply only the first convertible part of the expression.",
-        "explanation": "Partial filtering can return a different result from the requested logical expression."
+        "explanation": "One part of an OR expression is not equivalent to the whole expression. Partial handling can return the wrong records."
       },
       {
         "id": "d",
         "text": "Catch the conversion error and report zero matching records.",
-        "explanation": "Invented empty results conceal unsupported processing and mislead the consumer."
+        "explanation": "Zero matches means the search ran and found nothing. It is misleading when the provider could not process the filter at all."
       }
     ],
     "correctOption": "b"
@@ -735,22 +735,22 @@
       {
         "id": "a",
         "text": "Assume the database preserves the same order for equal descriptions.",
-        "explanation": "Without a complete ordering guarantee, tied rows can appear unpredictably."
+        "explanation": "Rows with the same description have no guaranteed order unless you specify one. They may move between pages or appear twice."
       },
       {
         "id": "b",
         "text": "Return all records and let every consumer invent paging rules.",
-        "explanation": "That may be costly and abandons the provider's paging contract."
+        "explanation": "Returning everything may be expensive and ignores the requested paging behavior. The provider should handle paging according to its supported rules."
       },
       {
         "id": "c",
-        "text": "Add a suitable deterministic tie-breaker and define change consistency.",
-        "explanation": "Stable order reduces ambiguity, while concurrent changes still require an explicit source contract."
+        "text": "Add a stable tie-breaker to the sort and define how changes between pages are handled.",
+        "explanation": "Add a unique tie-breaker, such as a suitable key, after the requested sort. Also decide how changes between page requests will be handled."
       },
       {
         "id": "d",
         "text": "Guarantee a frozen snapshot merely by adding ORDER BY.",
-        "explanation": "Ordering alone does not freeze the dataset across separate requests."
+        "explanation": "ORDER BY sorts each query result. It does not freeze the data while the client sends later page requests."
       }
     ],
     "correctOption": "c"
@@ -763,22 +763,22 @@
       {
         "id": "a",
         "text": "Add DISTINCT to every aggregate query as a general fix.",
-        "explanation": "It may hide symptoms or change semantics without repairing the relationship."
+        "explanation": "DISTINCT can hide some duplicate rows without fixing the bad join. It can also remove rows that the report actually needs."
       },
       {
         "id": "b",
         "text": "Declare the relationship to-one even if multiple texts still match.",
-        "explanation": "A cardinality declaration does not make contradictory data or predicates unique."
+        "explanation": "Declaring one match does not prevent two text rows from matching. The data and join condition must really satisfy that relationship."
       },
       {
         "id": "c",
         "text": "Divide the total by two because two texts currently exist.",
-        "explanation": "That hard-codes an accidental duplication factor and fails when data changes."
+        "explanation": "There may be three matching texts tomorrow instead of two. Fix the join instead of dividing by today's accidental duplication factor."
       },
       {
         "id": "d",
-        "text": "The association condition, language restriction and actual multiplicity.",
-        "explanation": "The join may multiply fact rows; truthful cardinality and predicates address the cause."
+        "text": "Check the join condition, language filter and how many text rows really match.",
+        "explanation": "Check whether one order row matches several text rows, for example in different languages. Fix the language condition and model the real number of matches."
       }
     ],
     "correctOption": "d"
@@ -790,23 +790,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Currency-aware grouping or explicit conversion under a defined policy.",
-        "explanation": "Amounts in different currencies are not meaningfully additive without compatible semantics."
+        "text": "Group amounts by currency or convert them under an explicit rate policy before summing.",
+        "explanation": "Keep amounts grouped by currency, or convert them using an explicit rate and date policy before adding them. EUR and USD are different units."
       },
       {
         "id": "b",
         "text": "A longer decimal type so the mixed total is more precise.",
-        "explanation": "Numeric precision does not resolve incompatible currencies."
+        "explanation": "More decimal places improve numeric precision, not meaning. They cannot make euros and dollars the same unit."
       },
       {
         "id": "c",
         "text": "A currency annotation that automatically chooses any exchange rate.",
-        "explanation": "Semantic annotation alone does not specify and execute every required conversion policy."
+        "explanation": "A currency annotation identifies what the amount means. It does not by itself choose and apply every exchange-rate rule the report needs."
       },
       {
         "id": "d",
         "text": "A formatted text suffix listing both currencies after the total.",
-        "explanation": "Labeling an invalid aggregation does not make its numeric result meaningful."
+        "explanation": "Writing both currency names beside 200 does not make that total valid. Convert the amounts or keep separate currency totals."
       }
     ],
     "correctOption": "a"
@@ -819,22 +819,22 @@
       {
         "id": "a",
         "text": "Add COMMIT WORK to the determination so the UI can see it.",
-        "explanation": "A commit violates transaction ownership and is not the proper refresh mechanism."
+        "explanation": "A determination must not commit the RAP transaction itself. Saving early is not the right way to ask the UI to refresh a calculated field."
       },
       {
         "id": "b",
-        "text": "Inspect side effects, metadata and actual refresh requests.",
-        "explanation": "Backend calculation and client refresh are separate contracts that need separate evidence."
+        "text": "Check the side-effect metadata and whether the UI sent the expected refresh request.",
+        "explanation": "Check whether metadata tells the UI that quantity affects total, and whether a refresh request was sent. Correct backend data can still be displayed from an old UI value."
       },
       {
         "id": "c",
         "text": "Move the total calculation entirely into browser code.",
-        "explanation": "That weakens backend correctness for other consumers and does not diagnose the refresh gap."
+        "explanation": "Other callers still need a correct backend total. Moving the calculation to the browser does not explain why the existing refresh failed."
       },
       {
         "id": "d",
         "text": "Treat the old display as proof that the database update failed.",
-        "explanation": "The backend value may be correct while the client retains an older representation."
+        "explanation": "The question already says the backend value is correct. The UI may simply still hold the value from its previous read."
       }
     ],
     "correctOption": "b"
@@ -847,22 +847,22 @@
       {
         "id": "a",
         "text": "Level A because any callable SAP object is an API.",
-        "explanation": "Technical accessibility does not establish a released consumption contract."
+        "explanation": "Being callable does not mean SAP released the object for your use. Check its actual API status and allowed use."
       },
       {
         "id": "b",
         "text": "Level B because the object has existed for several releases.",
-        "explanation": "Longevity is not SAP designation as a classic API."
+        "explanation": "An object does not become a SAP-designated classic API just because it is old. Verify SAP's classification."
       },
       {
         "id": "c",
-        "text": "Level C dependency, subject to the actual classification and context.",
-        "explanation": "Internal dependencies carry upgrade risk; explicit non-recommended classification is a distinct category."
+        "text": "Level C for this internal dependency, after checking its actual classification and use.",
+        "explanation": "An internal SAP dependency is the Level C case here, subject to the actual classification. Level D is the separate non-recommended category."
       },
       {
         "id": "d",
         "text": "Level D solely because every unreleased object is prohibited.",
-        "explanation": "A-D distinguishes internal objects from explicitly non-recommended dependencies."
+        "explanation": "The model distinguishes internal objects from objects or techniques explicitly marked non-recommended. Do not label every unreleased object D automatically."
       }
     ],
     "correctOption": "c"
@@ -875,22 +875,22 @@
       {
         "id": "a",
         "text": "Priority 1 error because every classic dependency is Level D.",
-        "explanation": "Classic classification is not automatically non-recommended usage."
+        "explanation": "A designated classic dependency is Level B in this model. It is not automatically Level D just because it is classic."
       },
       {
         "id": "b",
         "text": "No finding because Level B is identical to a released Level A API.",
-        "explanation": "The classification and corresponding usage finding differ."
+        "explanation": "Level B and Level A are different categories. The configured Clean Core usage check reports an informational finding for B."
       },
       {
         "id": "c",
         "text": "Priority 2 warning because all ATC warnings mean Level B.",
-        "explanation": "The model maps C to priority 2, and unrelated ATC checks have separate meanings."
+        "explanation": "In this specific model, priority 2 corresponds to Level C. Other ATC checks can report warnings for entirely different reasons."
       },
       {
         "id": "d",
-        "text": "Priority 3 informational finding for the nominated classic dependency.",
-        "explanation": "The stated mapping is specific to the Clean Core usage checks."
+        "text": "Priority 3 information for this Level B Clean Core usage finding.",
+        "explanation": "For the configured Clean Core usage checks, Level B maps to priority 3 information. This mapping does not classify every ATC message."
       }
     ],
     "correctOption": "d"
@@ -902,23 +902,23 @@
     "options": [
       {
         "id": "a",
-        "text": "The released wrapper boundary and the underlying dependency risk.",
-        "explanation": "Releasing the consumer-facing contract does not erase internal implementation dependencies."
+        "text": "Record the released wrapper interface and the internal dependency risk underneath it.",
+        "explanation": "The wrapper gives callers a released interface, but still depends on an internal object underneath. Record both the supported interface and the upgrade risk inside it."
       },
       {
         "id": "b",
         "text": "An entirely Level A implementation because the wrapper is released.",
-        "explanation": "That confuses a controlled consumer contract with the full dependency chain."
+        "explanation": "Releasing a wrapper does not release the SAP objects it calls. Inspect its implementation dependencies before judging the whole solution."
       },
       {
         "id": "c",
         "text": "No need for upgrade tests because callers never see the object.",
-        "explanation": "Hidden implementation dependencies can still break after an upgrade."
+        "explanation": "A hidden dependency can still change in an upgrade and break the wrapper. Test that behavior even though callers do not see the internal object."
       },
       {
         "id": "d",
         "text": "Permission to use the wrapper in every product and language version.",
-        "explanation": "Eligibility depends on target platform, contract and actual allowed implementation."
+        "explanation": "The wrapper must be allowed in the target product and language version. Its release status is not universal permission to use it everywhere."
       }
     ],
     "correctOption": "a"
@@ -931,22 +931,22 @@
       {
         "id": "a",
         "text": "C1 also permits extending the released object's implementation.",
-        "explanation": "C1 permits the specified consumption; extensibility needs its own supported extension contract."
+        "explanation": "C1 permits the released consumption use. It does not automatically permit changing or extending the object's implementation."
       },
       {
         "id": "b",
-        "text": "C1 is a release contract; A-D describes a different classification.",
-        "explanation": "Similar characters do not make API release contracts and Clean Core levels equivalent."
+        "text": "C1 is an API release contract; Clean Core A-D levels are a different classification.",
+        "explanation": "C1 names an API release contract. A-D names Clean Core dependency levels. The letter C appearing in both does not link the two meanings."
       },
       {
         "id": "c",
         "text": "C1 automatically authorizes every remote exposure of the object.",
-        "explanation": "Local consumption release is not blanket permission for every exposure contract."
+        "explanation": "Permission to consume an API locally does not automatically permit every remote exposure. Check the separate supported service contract."
       },
       {
         "id": "d",
         "text": "Level C objects always have a formal C1 release contract.",
-        "explanation": "Internal-dependency classification is not defined by such a release contract."
+        "explanation": "Level C describes an internal SAP dependency in the Clean Core model. It is not a statement that the object has a C1 release."
       }
     ],
     "correctOption": "b"
@@ -959,22 +959,22 @@
       {
         "id": "a",
         "text": "Only whether the same function name exists in documentation.",
-        "explanation": "A name alone does not prove released, permitted consumption on the target."
+        "explanation": "Finding the same name is not enough. The API must also be available and allowed for the intended use in the target edition."
       },
       {
         "id": "b",
         "text": "Nothing, because Level B guarantees identical edition support.",
-        "explanation": "Classification and environment restrictions remain distinct concerns."
+        "explanation": "A Level B classification does not make Private and Public Edition rules identical. Check what the target environment actually permits."
       },
       {
         "id": "c",
-        "text": "The target edition's allowed APIs, language and extension contracts.",
-        "explanation": "A prior classification or approval does not establish availability in another environment."
+        "text": "Check the APIs, language restrictions and extension rules of Public Edition.",
+        "explanation": "Check the Public Edition API availability, language restrictions and supported extension approach. A valid Private Edition design may rely on options unavailable there."
       },
       {
         "id": "d",
         "text": "Only whether the application uses a RAP UI binding.",
-        "explanation": "The service technology does not legalize an unsupported backend dependency."
+        "explanation": "Choosing a RAP UI binding does not change which backend dependencies are allowed. Check those dependencies separately."
       }
     ],
     "correctOption": "c"
@@ -987,22 +987,22 @@
       {
         "id": "a",
         "text": "A permanent suppression applied to every similar ATC finding.",
-        "explanation": "That obscures scope and removes pressure to reassess changing alternatives."
+        "explanation": "A blanket permanent suppression hides future cases too. An exception should cover a specific need and be reviewed again later."
       },
       {
         "id": "b",
         "text": "An assertion that the object is unlikely to change.",
-        "explanation": "Confidence without ownership and evidence is not a manageable exception."
+        "explanation": "Someone must own the risk and show how it is tested. A belief that the object probably will not change is not enough."
       },
       {
         "id": "c",
         "text": "A new wrapper name with no dependency inventory.",
-        "explanation": "Renaming hides neither the upgrade risk nor the need for lifecycle management."
+        "explanation": "A wrapper's new name does not remove the dependency. Record the underlying object, its risk and the plan to replace it."
       },
       {
         "id": "d",
-        "text": "A scoped rationale, named owner, regression evidence and replacement trigger.",
-        "explanation": "The exception needs accountable risk management and a path to reassessment."
+        "text": "A specific reason, an owner, upgrade tests and a date or condition for review/replacement.",
+        "explanation": "State why the exception is needed, who owns it, how upgrades are tested and when it will be reviewed or removed. That makes the decision traceable."
       }
     ],
     "correctOption": "d"
@@ -1014,23 +1014,23 @@
     "options": [
       {
         "id": "a",
-        "text": "Required semantics, transactional fit, latency and supported contracts.",
-        "explanation": "Placement alone does not decide; compare the actual APIs and consistency requirements."
+        "text": "What each API supports, how its transactions work, its latency and release status.",
+        "explanation": "Compare what each API does and where its transaction begins and ends. Then consider delays, failures and whether it is released for your use."
       },
       {
         "id": "b",
         "text": "Remote is always cleaner because HTTP separates the code.",
-        "explanation": "Network separation can add failure boundaries without improving the needed local contract."
+        "explanation": "HTTP adds a network call and a separate failure point. That separation alone does not make it the best extension design."
       },
       {
         "id": "c",
         "text": "Local is always correct because network calls are slower.",
-        "explanation": "Local access still needs the right released semantics and appropriate coupling."
+        "explanation": "A faster local call is useful only if it provides the required operation and supported behavior. Speed does not decide everything."
       },
       {
         "id": "d",
         "text": "Use the remote endpoint because it must expose the same transaction and authorization semantics as the local API.",
-        "explanation": "Local and remote APIs can expose different operations, identities and transaction boundaries, even for the same business capability."
+        "explanation": "The two APIs may perform different operations or use different user and transaction rules. Check their documentation instead of assuming they behave alike."
       }
     ],
     "correctOption": "a"
@@ -1043,22 +1043,22 @@
       {
         "id": "a",
         "text": "Call the base BO directly because its source is visible.",
-        "explanation": "Visibility does not establish supported cross-component consumption."
+        "explanation": "Visible source code is not permission to call it across components. Use the operations SAP actually released through the supported interface."
       },
       {
         "id": "b",
-        "text": "Find another supported API, request the capability or redesign the flow.",
-        "explanation": "Consumption should stay within the released interface rather than bypass its boundary."
+        "text": "Use another supported API, request the capability, or change the design.",
+        "explanation": "Look for another supported API, request the missing capability, or change the flow. Do not bypass the released interface simply because a lower object is visible."
       },
       {
         "id": "c",
         "text": "Update its persistence table to reproduce the missing operation.",
-        "explanation": "That bypasses behavior invariants, authorization and supported persistence ownership."
+        "explanation": "A direct table write skips the object's rules and permissions. It cannot safely stand in for a missing released operation."
       },
       {
         "id": "d",
         "text": "Use dynamic invocation to avoid static release checks.",
-        "explanation": "Avoiding a check does not make the underlying dependency eligible or stable."
+        "explanation": "A dynamic call may hide the problem from a static check. It does not make an unreleased dependency supported or stable."
       }
     ],
     "correctOption": "b"
@@ -1071,22 +1071,22 @@
       {
         "id": "a",
         "text": "Copy the latest SAP example without checking its stated environment.",
-        "explanation": "Examples may intentionally use newer syntax than the supported target provides."
+        "explanation": "An example written for a newer release may use features your target lacks. Match the example to the systems you must support."
       },
       {
         "id": "b",
         "text": "Assume ABAP Cloud has one identical feature set everywhere.",
-        "explanation": "Products and releases can differ despite sharing the development model."
+        "explanation": "ABAP Cloud is a development model used in different products and releases. It does not mean every system has identical features."
       },
       {
         "id": "c",
-        "text": "Maintain a target-release compatibility baseline and validate against it.",
-        "explanation": "Current documentation and a newer development system do not prove oldest-target support."
+        "text": "Define the releases you support and check the feature against those targets.",
+        "explanation": "List the supported target releases and check against the oldest relevant one. A feature working on a newer development system is not enough."
       },
       {
         "id": "d",
         "text": "Treat successful frontend rendering as proof of backend compatibility.",
-        "explanation": "The UI result does not establish syntax or API availability on another backend."
+        "explanation": "A screen that works on one system does not prove another backend can activate its CDS or call its APIs. Validate the target backend too."
       }
     ],
     "correctOption": "c"
@@ -1099,22 +1099,22 @@
       {
         "id": "a",
         "text": "Create another submission because the client did not see success.",
-        "explanation": "Response loss does not imply the first operation failed."
+        "explanation": "The server may have committed before its reply was lost. Repeating the business action blindly can create a second submission."
       },
       {
         "id": "b",
         "text": "Use a new request-local %cid as proof the retry is distinct.",
-        "explanation": "Content correlation is not a durable business idempotency contract."
+        "explanation": "%cid links instances within a request. A fresh request-local ID does not tell the server whether this business submission was already completed."
       },
       {
         "id": "c",
         "text": "Rely on disabling the Submit button after a browser refresh.",
-        "explanation": "UI state cannot prevent retries from other clients or concurrent requests."
+        "explanation": "Another client or a retry can still send Submit. The backend needs duplicate protection, even if the button is disabled on one screen."
       },
       {
         "id": "d",
-        "text": "Recognize the completed transition and return a defined replay outcome.",
-        "explanation": "Stable identity and state handling prevent another effective submission or duplicate follow-up."
+        "text": "Detect the completed submission and return an agreed retry result without repeating it.",
+        "explanation": "Use a stable business/request identity and check the saved state. A retry can then return the agreed previous outcome without submitting or starting follow-up work twice."
       }
     ],
     "correctOption": "d"

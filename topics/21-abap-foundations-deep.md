@@ -8,9 +8,11 @@ Use these worked scenarios after the basic language questions. They test the con
 
 **Level:** Senior
 
-**Short answer:** By reference, the formal parameter aliases the caller's data, so allowed writes affect it immediately. With VALUE, a local value is changed and copied back on normal completion. An exception leaving the method prevents that normal copy-back. This difference affects error guarantees, but it does not undo database writes or changes made through referenced objects.
+**Short answer:** By reference, the method works on the caller's data directly. With VALUE on a CHANGING parameter, it works on a local value and copies it back when the method finishes normally. If an exception leaves the method, that normal copy-back does not happen. This can protect the caller's value, but it does not roll back database writes or changes to shared objects.
 
-**Example and follow-up:** Suppose a method changes a plain integer from 10 to 20 and then raises a class-based exception. A reference CHANGING parameter can leave 20 visible to the caller; a value-result parameter retains the caller's 10. Test both failure and success paths before changing an established signature.
+**Reasoning and example:** Start with a plain integer containing 10. A method changes its CHANGING parameter to 20 and then raises an exception that leaves the method. With reference passing, the caller can already see 20. With value passing, the caller retains 10 because the local result was not copied back. On normal completion, both forms can return the changed value.
+
+That difference is important when changing an existing method signature. Tests must cover both successful completion and escaping exceptions. If the value contains an object reference, changing the referenced object is a separate effect: the copy still points to that object. VALUE is not a general undo mechanism for everything the method does.
 
 **Avoid this mistake:** Pass-by-value is not a transaction rollback and does not clone objects behind reference parameters.
 
@@ -21,9 +23,9 @@ Use these worked scenarios after the basic language questions. They test the con
 
 **Strong answer criteria:**
 
-- Separates parameter direction from transfer mode
-- Explains exceptional copy-back behavior
-- Identifies external side effects
+- Separates input/output direction from value/reference passing
+- Explains when a local value is copied back
+- Identifies effects on the database and shared objects
 
 **Verification evidence:** A small method-call test showing caller values after normal return and exception.
 
@@ -48,9 +50,11 @@ Compare the same assignment under two transfer modes. The final caller value is 
 
 **Level:** Senior
 
-**Short answer:** The string and nested table are value components: changing their copied contents does not intentionally mutate the source value. The reference component is different: copying it preserves a reference to the same object. Mutating that object's state through either structure is observable through the other. A true snapshot therefore needs an explicit policy for references and mutable reachable objects.
+**Short answer:** Not completely. The copied string and nested internal table behave as independent values when changed. A copied object reference still points to the same object. Changing that object through either structure can therefore affect what the other sees. For a true snapshot, I decide how to handle every mutable referenced object instead of assuming ordinary assignment clones it.
 
-**Example and follow-up:** For an approval snapshot, copying ls_request preserves the item values but does not freeze an attached mutable pricing object. Store the calculated price as a value, use an immutable collaborator, or implement deliberate cloning with defined identity and cycle handling. Internal sharing optimizations do not change these language-level semantics.
+**Reasoning and example:** Suppose ls_request contains a note, an item table and a reference to a pricing object. I copy it to keep a before-change version. Editing the copied note or item values does not change the original value components. But calling a setter on the copied pricing reference changes the same pricing object used by the original structure.
+
+If the snapshot must preserve the old price, I store the calculated price as a value, use an immutable object or implement a deliberate copy of the required object state. A full clone needs rules for shared identities and cycles. Runtime memory-sharing optimizations do not change these value-versus-reference rules; a deep ABAP type is not automatically a deep object clone.
 
 **Avoid this mistake:** A deep ABAP type is not a promise that ordinary assignment recursively clones the entire object graph.
 
@@ -61,9 +65,9 @@ Compare the same assignment under two transfer modes. The final caller value is 
 
 **Strong answer criteria:**
 
-- Distinguishes value components from references
-- Preserves object identity semantics
-- Defines snapshot ownership
+- Separates copied values from copied references
+- Explains why both references still point to one object
+- Defines what a snapshot must preserve
 
 **Verification evidence:** Mutation tests for a copied string, nested row, and referenced object's attribute.
 
@@ -88,9 +92,11 @@ Two structure values own independent string values but lead to the same pricing 
 
 **Level:** Advanced
 
-**Short answer:** For a headerless internal table, both remove its rows. CLEAR keeps the initial memory requirement available, while FREE also releases that initial allocation. I use CLEAR when the same table will soon be populated again and FREE when retaining its allocation has no useful purpose. Neither deletes the declared variable or guarantees an immediate reduction in operating-system memory.
+**Short answer:** For an internal table without a header line, CLEAR and FREE both remove the rows. CLEAR keeps the initial memory allocation available; FREE releases that allocation too. I use CLEAR when I expect to refill the table soon, and FREE when it is finished for now. Neither removes the variable declaration or guarantees that the operating system immediately shows lower process memory.
 
-**Example and follow-up:** In a package loop, repeatedly freeing and rebuilding a modest buffer may add allocation work. After a one-off large reconciliation, releasing the unused table can reduce retained application memory. Measure used and allocated memory in the relevant session before drawing conclusions from process memory alone.
+**Reasoning and example:** A package loop fills a small work table, processes it and starts the next package. CLEAR is often a sensible reset because the table will be used again. Repeatedly freeing and allocating it may add unnecessary work. After a one-off large reconciliation, FREE may be appropriate when the table will no longer be needed.
+
+I distinguish memory used by current rows from memory retained for future use, and measure in the relevant ABAP session. CLEAR does not promise to retain every byte the table ever needed. FREE also does not destroy an object that another reference still reaches. A single process-memory number cannot explain all of those separate lifetimes.
 
 **Avoid this mistake:** Do not claim CLEAR retains every byte ever allocated, or that FREE destroys referenced objects still reachable elsewhere.
 
@@ -115,9 +121,11 @@ Empty row slots and the initial allocation are deliberately drawn separately. A 
 
 **Level:** Advanced
 
-**Short answer:** A failed dynamic assignment can leave the field symbol pointing at its previous target. IS ASSIGNED then says only that some assignment exists, not that the latest lookup succeeded. I check the statement's result immediately and avoid using the alias after failure. On a supporting release, ELSE UNASSIGN makes the failure state explicit; otherwise I unassign before attempting the lookup.
+**Short answer:** The field symbol may still point to the previous successful target after a failed dynamic ASSIGN. IS ASSIGNED only says it points somewhere; it does not prove the latest lookup worked. I check the ASSIGN result immediately. Where supported, ELSE UNASSIGN makes failure clear. Otherwise I unassign before the lookup and handle failure before writing through the field symbol.
 
-**Example and follow-up:** A mapper assigns component PRICE successfully, then requests nonexistent component PRCIE. If it tests only IS ASSIGNED, a subsequent write may overwrite PRICE. A regression test must include a successful lookup followed by an invalid one using the same field symbol.
+**Reasoning and example:** A generic mapper first assigns component PRICE and writes an amount. It then tries the misspelled component PRCIE using the same field symbol. If that lookup fails but the old assignment remains, checking only IS ASSIGNED can allow the next write to change PRICE again. The program has updated a real field, but the wrong one.
+
+I test the sequence of one successful lookup followed by one failed lookup. An isolated failure test can miss the stale assignment. The mapper should reject the unknown component or follow a clearly defined skip rule, and it must not write through the old alias. I verify release support before using ELSE UNASSIGN syntax.
 
 **Avoid this mistake:** An assigned field symbol is not evidence that the most recent dynamic ASSIGN succeeded.
 
@@ -142,9 +150,11 @@ The first sequence can write to the previous target. The second takes a success 
 
 **Level:** Advanced
 
-**Short answer:** I inspect every intervening statement that can set sy-subrc. It is a shared runtime field, not a result permanently attached to READ TABLE. I branch immediately or preserve the result in a named local variable before further work. For modern expressions, I use their documented exception or predicate behavior instead of assuming they set sy-subrc like classic statements.
+**Short answer:** sy-subrc holds the result of the most recent statement that set it. It is not permanently attached to READ TABLE. Another statement between the read and the IF may have replaced the value. I check it immediately or save it in a named variable. Table expressions have their own exception or predicate behavior, so I do not assume they work like READ TABLE.
 
-**Example and follow-up:** A failed lookup is followed by a successful FIND used to prepare logging text. Testing sy-subrc afterward now tests FIND. Include a missing-record case with successful logging preparation; merely testing an immediate lookup in isolation would miss the actual sequence.
+**Reasoning and example:** A READ TABLE does not find an order. Before checking the result, the program uses FIND to prepare a log message, and FIND succeeds. The later IF sy-subrc = 0 now checks the FIND result, so it enters the success branch even though the order lookup failed.
+
+I move the decision directly after the read or preserve the read result before doing other work. The regression case includes a missing order and successful log preparation, because that is the sequence that caused the bug. Not every statement changes sy-subrc, so I inspect the actual intervening statements rather than guess. A modern table expression must be handled according to its documented missing-row behavior.
 
 **Avoid this mistake:** Not every statement resets sy-subrc, and a table expression is not a drop-in sy-subrc-producing READ TABLE.
 
@@ -169,9 +179,11 @@ The first sequence can write to the previous target. The second takes a success 
 
 **Level:** Advanced
 
-**Short answer:** EXACT requests a lossless assignment or calculation and raises an appropriate exception when the requested result cannot be represented without loss. CONV applies ordinary conversion rules and is not equivalent validation. I place the check at a typed boundary, translate conversion failures into useful input feedback, and still validate domain rules such as permitted signs, identifiers, and currency.
+**Short answer:** EXACT checks that an assignment or calculation can produce its target value without losing information. It raises an appropriate exception when that is impossible. CONV uses normal conversion rules and is not the same check. I catch conversion failures at the input boundary and explain them to the caller. I still validate business rules, because an exact value can still be forbidden.
 
-**Example and follow-up:** Converting a runtime text longer than a fixed character target can otherwise discard characters. For a two-decimal packed result, EXACT can reject a calculation such as one divided by three. That is useful when rounding is forbidden; when rounding is required, make the business rounding step explicit instead.
+**Reasoning and example:** An import receives a text value longer than the fixed-length target field. A normal conversion may discard characters, while a lossless conversion can reject that input. For a packed result with two decimals, a calculation such as one divided by three cannot be represented exactly, so EXACT is useful if rounding is prohibited.
+
+If the business actually requires rounding, I apply the agreed rounding rule explicitly instead of treating every inexact result as invalid. I also check rules such as a positive amount, a known currency or an allowed identifier. EXACT can detect loss of technical information; it cannot decide whether a perfectly representable negative amount is acceptable for this document.
 
 **Avoid this mistake:** EXACT does not prove that a technically representable value is an allowed business value.
 
@@ -196,9 +208,11 @@ A lost character, a one-cent difference, and a false maximum reveal three unrela
 
 **Level:** Senior
 
-**Short answer:** I compare the sequence of calculations, intermediate precision, and the prescribed rounding point and mode. Rounding every line and then summing can differ from summing precise values and rounding once. Currency metadata does not automatically make an arbitrary calculation compliant. I retain currency context, use appropriate decimal types, and encode the agreed rule explicitly with boundary tests.
+**Short answer:** I check where rounding happens, which rounding mode is required and the precision of intermediate values. Rounding each line and then adding can differ from adding first and rounding the total. Decimal types do not decide that business rule for me. I keep the currency context and write tests for values near the rounding boundary.
 
-**Example and follow-up:** Under an agreed half-up, two-decimal rule, two positive line results of 0.005 become 0.01 each if rounded separately, totaling 0.02. Their unrounded sum is 0.010 and rounds to 0.01. The correct amount depends on the specified line-versus-document rule.
+**Reasoning and example:** Assume the agreed rule is half-up rounding to two decimals. Two positive line results are each 0.005. If each line is rounded first, each becomes 0.01 and the total is 0.02. If I add the precise values first, the sum is 0.010 and rounds to 0.01. Both calculations follow their chosen order, but only the specified order is correct for the document.
+
+I compare the implementation with that rule, including intermediate assignments that may already round a value. I test multiple small lines, negative amounts where allowed and currency-specific requirements. Changing the display to two decimals or choosing decfloat34 does not by itself settle when or how the business wants rounding.
 
 **Avoid this mistake:** Choosing decfloat34 or formatting two decimals does not settle the business rounding policy.
 
@@ -209,9 +223,9 @@ A lost character, a one-cent difference, and a false maximum reveal three unrela
 
 **Strong answer criteria:**
 
-- Traces intermediate precision
-- Names rounding stage and mode
-- Keeps currency semantics
+- Checks precision at each calculation step
+- States when and how rounding occurs
+- Keeps the correct currency and conversion rules
 
 **Verification evidence:** Worked positive/negative boundary examples with independently calculated expected totals.
 
@@ -236,9 +250,11 @@ A lost character, a one-cent difference, and a false maximum reveal three unrela
 
 **Level:** Advanced
 
-**Short answer:** An ordinary CORRESPONDING constructor creates a new result, so target components absent from the source become initial. MOVE-CORRESPONDING between structures leaves unmatched target components unchanged. BASE can supply starting values for a constructor result before matching components overwrite them. I specify the desired merge contract rather than assuming all name-based assignments preserve existing state.
+**Short answer:** Plain CORRESPONDING builds a new result. Fields missing from the source therefore become initial in that result. MOVE-CORRESPONDING between structures keeps unmatched fields already in the target. A CORRESPONDING expression with BASE can start from existing values, but matching source fields still overwrite them, even with initial values. I choose the form based on the intended update behavior.
 
-**Example and follow-up:** ls_existing contains status Approved and a note. The source contains only a new note: plain CORRESPONDING clears the unmatched status; BASE preserves it. But if the source type contains status with an initial value, that matching component still overwrites the base. Field presence requires a separate update contract.
+**Reasoning and example:** The existing request has status Approved and a note. The incoming structure contains only a new note. MOVE-CORRESPONDING updates the note and leaves the status. Assigning a plain CORRESPONDING result replaces the whole target with a new value, so the unmatched status becomes initial. Supplying the existing structure as BASE preserves that unmatched status.
+
+Now consider a source type that also contains status, but with a blank value. Status matches by name, so it can overwrite the BASE value with blank. BASE is not an automatic ignore-empty or PATCH rule. If an API must distinguish an omitted field from an explicitly cleared field, I define and test field-presence handling separately.
 
 **Avoid this mistake:** BASE preserves unmatched components; it does not mean ignore every initial source value or implement PATCH automatically.
 
@@ -263,9 +279,11 @@ The matching initial status overwrites BASE just as a populated status does. A s
 
 **Level:** Advanced
 
-**Short answer:** LOOP AT with GROUP BY first forms groups and then executes the group loop. Equal group keys are collected even if rows are not adjacent, unlike traditional control-level processing that relies on ordering. I choose explicit group-key binding when it improves clarity and use LOOP AT GROUP for members. Group order and member order still need a deliberate contract.
+**Short answer:** LOOP AT with GROUP BY collects rows with equal group keys even when they are not adjacent. The outer loop then runs once per group. LOOP AT GROUP can process that group's members. This avoids relying on the input being sorted for traditional control-level processing. I still define the required group and member order rather than assume grouping provides the business sort order.
 
-**Example and follow-up:** Input customers A, B, A creates two groups, with both A orders together. The group body executes twice, not once per order. WITHOUT MEMBERS is suitable when only group keys are needed, but then a later member loop is not available.
+**Reasoning and example:** The input customer sequence is A, B, A. Grouping by customer creates two groups, and both A orders belong together despite being separated in the input. The group loop runs twice. Inside the A group, a member loop can calculate its total or process each of its orders.
+
+I use an explicit group key when it makes the code easier to follow. If I request WITHOUT MEMBERS because only distinct customers are needed, I cannot later loop over the missing group members. This processing happens on an internal table in ABAP memory, not as database aggregation. If the output must be customer-sorted, I express and test that ordering instead of relying on encounter order.
 
 **Avoid this mistake:** Grouping an internal table is not database aggregation, and its default group order is not automatically business sort order.
 
@@ -290,9 +308,11 @@ Arrows bring nonadjacent A rows into one group. The grouping total is computed f
 
 **Level:** Advanced
 
-**Short answer:** For the basic FILTER form, access must use a suitable sorted or hashed key. A standard table can work when it has an appropriate secondary key selected with USING KEY; an empty primary key alone is insufficient. I also check that the predicate meets the selected key's rules. A FOR expression or a clear loop may fit an arbitrary predicate better.
+**Short answer:** An empty primary key alone is not enough for the basic FILTER form. It needs a suitable sorted or hashed key. A standard table can work if it has a suitable secondary key selected with USING KEY. The condition must also follow the chosen key rules. For an arbitrary condition, a FOR expression or a normal loop may be clearer.
 
-**Example and follow-up:** A standard table retains arrival order but has a sorted secondary key by customer. FILTER USING KEY can select that customer. A complex OR predicate over unrelated columns should not be forced into a key-based FILTER shape or justified by an unmeasured speed claim.
+**Reasoning and example:** A standard table keeps orders in arrival order but also has a sorted secondary key starting with customer. A key-based FILTER can use that secondary key to select a customer according to the supported predicate rules. The table does not need to lose its arrival-order use just to gain another access path.
+
+A condition combining unrelated fields with a complex OR is a different problem. I do not force it into FILTER just because the syntax looks shorter. A straightforward loop or suitable FOR expression can express the intended rule more clearly. I check the actual key definition and target-release syntax, then measure if performance matters; the keyword alone does not prove a faster implementation.
 
 **Avoid this mistake:** FILTER is not a general-purpose synonym for every WHERE expression supported by LOOP or FOR.
 
@@ -317,9 +337,11 @@ Arrows bring nonadjacent A rows into one group. The grouping total is computed f
 
 **Level:** Advanced
 
-**Short answer:** The accumulator's initial value is part of the algorithm. Starting a maximum at zero invents a candidate that may not exist in an all-negative input set. I define empty-input semantics and initialize from a valid first member or represent the absence of a result explicitly. I also choose accumulator types deliberately so intermediate overflow or rounding cannot hide behind concise syntax.
+**Short answer:** The initial accumulator value is wrong for this input. Starting a maximum at zero makes zero a candidate, even if every real value is negative. I start from a valid member or represent no result explicitly. I also define what empty input means. REDUCE makes the loop concise, but it does not choose the correct starting value or numeric type for me.
 
-**Example and follow-up:** For values -8 and -3, a zero-initialized maximum remains zero although the correct maximum is -3. Empty input may require no result or a domain exception, not the same number. The expression should remain readable enough that reviewers can identify initialization, iteration, and state update.
+**Reasoning and example:** For values -8 and -3, the maximum is -3. An accumulator initialized to zero stays at zero because neither input is larger. The result looks like a valid number but does not occur in the input and is not its maximum. Initializing from a valid first member avoids that invented candidate.
+
+An empty table needs a separate decision: perhaps return an optional result, or raise a meaningful exception if at least one value is required. I test empty, all-negative, mixed and single-value inputs. I also check intermediate type limits and rounding. A reviewer should be able to see initialization, comparison and update clearly; if the expression hides them, I use a named step or loop.
 
 **Avoid this mistake:** REDUCE does not supply mathematically correct initial values or empty-set semantics on the developer's behalf.
 
@@ -344,9 +366,11 @@ A lost character, a one-cent difference, and a false maximum reveal three unrela
 
 **Level:** Senior
 
-**Short answer:** No. Data values and SQL identifiers are different inputs. I bind values through host variables in static ABAP SQL where possible. For configurable identifiers or dynamic clauses, I restrict them to a server-controlled allowlist and validate the supported syntax. Escaping a string value cannot authorize a table name, column name, operator, or an entire user-supplied WHERE fragment.
+**Short answer:** No. A filter value and a column name are different kinds of input. I pass values through host variables in static ABAP SQL where possible. For a configurable column or dynamic clause, I map approved choices to known SQL elements and reject anything else. Escaping quotes in a value does not make arbitrary SQL text safe or authorized.
 
-**Example and follow-up:** A search value containing an apostrophe should remain a value. A sort request is mapped from an accepted business option to a known column; arbitrary SQL text is rejected. Authorization predicates are built independently and cannot be removed by user filter or ordering choices.
+**Reasoning and example:** A customer name containing an apostrophe should be treated as a value, not assembled into executable SQL text. A requested sort option is different: I map an accepted choice such as newest to a known timestamp column and direction. I do not accept any string and insert it as ORDER BY syntax.
+
+Mandatory authorization restrictions are built separately from optional user filters. The user must not be able to remove them by changing a filter or sort parameter. I test unknown columns, invalid directions and inputs containing SQL-like text, as well as ordinary names. Safe quoting protects one kind of value; it does not approve table names, operators, whole conditions or access to restricted data.
 
 **Avoid this mistake:** Input that is safely quoted as a literal is not therefore safe as SQL syntax or an authorized data access.
 
@@ -357,9 +381,9 @@ A lost character, a one-cent difference, and a false maximum reveal three unrela
 
 **Strong answer criteria:**
 
-- Separates values and identifiers
-- Uses explicit allowed SQL shapes
-- Preserves authorization predicates
+- Separates data values from SQL names and syntax
+- Maps choices to explicitly allowed SQL elements
+- Keeps mandatory authorization conditions in place
 
 **Verification evidence:** Negative tests for quoted values, forbidden columns, injected operators, and unauthorized records.
 
@@ -384,9 +408,11 @@ The apostrophe is intentionally harmless data on the left. The sort request on t
 
 **Level:** Senior
 
-**Short answer:** ABAP CLEANUP is part of exception unwinding, not a finally block that runs after every TRY. It runs for the relevant protected context when an exception propagates to an outer handler; it is not the normal-success path. I arrange explicit release on successful completion and on relevant exceptional exits, while respecting the actual owner's lock or resource lifetime.
+**Short answer:** CLEANUP is not a finally block that runs after every TRY. It is used during the relevant exception propagation to an outer handler. It does not run just because normal processing reaches ENDTRY. I arrange release on success and on the required error paths. I also check who owns the resource so I do not release framework-owned locks too early.
 
-**Example and follow-up:** An application-owned temporary handle is opened, processing succeeds, and ENDTRY is reached: CLEANUP alone does not close it. Test success, an exception caught locally, and one propagated outward. Cleanup failures also need handling so they do not obscure the original failure or escape a CLEANUP block.
+**Reasoning and example:** A method opens an application-owned temporary handle and processes data successfully. If release exists only in CLEANUP, reaching ENDTRY normally leaves that handle open. An exception caught inside the same TRY also does not make CLEANUP a universal after-CATCH step. I therefore make the successful release and exceptional release paths explicit.
+
+I test normal completion, a locally handled exception and an exception that leaves for an outer handler. Release can fail too, so I handle that without hiding the original error or letting an exception escape CLEANUP. The same reasoning applies to lock ownership: cleanup must respect the intended lifetime, not remove a framework lock while the business transaction still needs it.
 
 **Avoid this mistake:** Do not assume CLEANUP automatically runs after a CATCH in the same TRY, or release framework-owned locks prematurely.
 
@@ -397,9 +423,9 @@ The apostrophe is intentionally harmless data on the left. The sort request on t
 
 **Strong answer criteria:**
 
-- Distinguishes CLEANUP from finally
-- Covers normal and exceptional paths
-- Respects ownership
+- Explains why CLEANUP is not a general finally block
+- Tests successful and failed execution
+- Releases only resources owned by this code
 
 **Verification evidence:** Instrumented resource tests show one correct release on every intended exit.
 
@@ -424,9 +450,11 @@ The table names three exit paths that require separate reasoning. The exception 
 
 **Level:** Advanced
 
-**Short answer:** IS SUPPLIED tests whether an actual parameter was provided, independently of its value. IS INITIAL tests the value and cannot distinguish an omitted zero-defaulted argument from an explicit zero. I use presence only when the API deliberately assigns different meaning to omission. If a wrapper always forwards a parameter, it must preserve the intended presence contract explicitly.
+**Short answer:** IS SUPPLIED checks whether the caller passed the parameter. IS INITIAL checks its value. Those are different: an omitted parameter and an explicit zero can both contain zero. I use presence only when omission has a defined meaning in the API. A wrapper must preserve that meaning, because forwarding its own initial variable makes the downstream parameter supplied.
 
-**Example and follow-up:** For a pagination helper, omission may mean use the configured limit, while zero may mean return no rows. A wrapper that forwards its own initial variable makes the downstream parameter supplied. Test the direct calls and the wrapper path, rather than silently changing zero into the default.
+**Reasoning and example:** A helper treats an omitted limit as use the configured default, while a supplied zero means return no rows. Checking IS INITIAL cannot distinguish these calls. IS SUPPLIED can, so the helper first decides which meaning the caller requested and then applies the value rule.
+
+A wrapper introduces another risk. If it always forwards its own optional parameter variable, the next method sees a supplied argument even when the original caller omitted it. I test the direct calls and the wrapper path, and forward conditionally or pass explicit presence information where appropriate. OPTIONAL permits omission; it does not automatically carry that omission through every later method call.
 
 **Avoid this mistake:** OPTIONAL does not automatically preserve absent-versus-present semantics across another method boundary.
 
@@ -451,9 +479,11 @@ The matching initial status overwrites BASE just as a populated status does. A s
 
 **Level:** Advanced
 
-**Short answer:** No. For this internal-table insertion case, the new line is not inserted and sy-subrc indicates the duplicate. The existing row is not an implicit update target. I decide whether the operation means reject, merge, or replace, then implement that policy explicitly. I do not generalize this return-code behavior to every constructor, secondary-key conflict, or database insertion form.
+**Short answer:** No. In this single-row internal-table INSERT case, a duplicate unique primary key prevents insertion and is reported through sy-subrc. The existing row is not updated. I decide whether duplicates should be rejected, merged or replaced and implement that decision explicitly. Other insertion forms and secondary-key conflicts can behave differently, so I do not generalize this return-code rule.
 
-**Example and follow-up:** An import contains order 7 twice with different amounts. A unique hashed table prevents duplicate keys, but silently ignoring the second line can conceal inconsistent source data. Compare payloads if duplicates are allowed only when identical; otherwise report both the key and conflicting input position.
+**Reasoning and example:** An import contains order 7 twice, first with amount 100 and then with amount 200. Inserting both into a hashed table with a unique order key does not replace 100 with 200 automatically. If the program ignores the failed insertion, it may silently keep the first row and hide conflicting input.
+
+I define the import rule before coding. Identical duplicates might be acceptable, in which case I compare the relevant values. Conflicting duplicates should produce a useful error with the order and input position, unless a deliberate replacement rule exists. I check sy-subrc immediately for this operation and test both cases. Uniqueness prevents duplicate keys; it does not explain which business value should win.
 
 **Avoid this mistake:** Uniqueness enforcement is not a complete deduplication policy, and INSERT is not an automatic upsert.
 
@@ -478,9 +508,11 @@ A duplicate unique key preserves the original row for the specified insertion fo
 
 **Level:** Senior
 
-**Short answer:** An initial selection range represents no restriction for IN, so it must not be used to encode 'the user may see nothing.' I define empty authorization results separately and return no rows or reject the operation before querying. Nonempty ranges combine inclusion and exclusion rules; their semantics differ from a plain list whose empty membership set would match nothing.
+**Short answer:** An empty ABAP selection range means no restriction for IN. It does not mean the user is allowed no values. If an authorization lookup returns no allowed plants, I return no data or reject the request before querying. I keep mandatory access restrictions separate from optional user filters. Nonempty ranges also have inclusion and exclusion rules, not just list membership.
 
-**Example and follow-up:** If a user has no permitted plants, the application must not execute an otherwise unrestricted read with an empty plant range. Keep optional user filters separate from mandatory authorization constraints. Test no permissions as well as one permitted plant and exclusions.
+**Reasoning and example:** A user has no permission for any plant. The helper returns an empty range, and a query uses WHERE plant IN that range as its only access check. The initial range does not narrow the selection, so the query can expose records the user should never see. The program must handle the no-permission result explicitly first.
+
+I test a user with no allowed plants, one allowed plant and relevant exclusions. I also test that adding or omitting a user search filter cannot remove the mandatory restriction. An empty optional filter may correctly mean show all permitted data; an empty authorization result means no permitted data. They must not share an ambiguous representation without an explicit check.
 
 **Avoid this mistake:** An empty ABAP selection range is not the same as an SQL list containing zero allowed values.
 
@@ -491,9 +523,9 @@ A duplicate unique key preserves the original row for the specified insertion fo
 
 **Strong answer criteria:**
 
-- Recognizes initial-range semantics
-- Fails closed for no permissions
-- Separates user filtering from security
+- Explains why an empty range does not restrict IN
+- Returns no data when there are no permissions
+- Separates optional search filters from required access checks
 
 **Verification evidence:** A denied-user test proves zero data and zero aggregate leakage with an empty authorization result.
 

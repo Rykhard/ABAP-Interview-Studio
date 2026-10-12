@@ -7,22 +7,22 @@
       {
         "id": "a",
         "text": "20, because CHANGING always aliases the caller.",
-        "explanation": "VALUE changes this to value-result passing; normal copy-back did not occur."
+        "explanation": "VALUE gives the method a local copy. Because the exception leaves the method, its changed value is not copied back to the caller."
       },
       {
         "id": "b",
         "text": "10, because exceptional exit prevents normal copy-back.",
-        "explanation": "The local value changed, but it was not transferred back on normal completion."
+        "explanation": "The method changed only its local integer to 20. It did not finish normally, so the caller keeps 10."
       },
       {
         "id": "c",
         "text": "0, because exceptional exit initializes the actual parameter.",
-        "explanation": "Exceptional exit does not reset the caller's original variable."
+        "explanation": "The exception does not clear the caller's variable. Without normal copy-back, its original value stays 10."
       },
       {
         "id": "d",
         "text": "Undefined, because catching an exception discards caller data.",
-        "explanation": "The caller's plain integer remains valid and retains its original value."
+        "explanation": "Catching the exception does not discard the caller's data. The integer remains valid and still contains 10."
       }
     ],
     "correctOption": "b"
@@ -35,22 +35,22 @@
       {
         "id": "a",
         "text": "Replacing the copied string with a different string.",
-        "explanation": "The string component has value semantics; the source string does not change."
+        "explanation": "Changing the copied string does not change the original string. A string component is copied as a value."
       },
       {
         "id": "b",
         "text": "Clearing only the copied reference variable.",
-        "explanation": "This removes that reference; the source reference still points to the object."
+        "explanation": "Clearing the copied reference changes only that reference variable. The original reference still points to the same object."
       },
       {
         "id": "c",
         "text": "Calling a state-changing method through the copied reference.",
-        "explanation": "Both reference values identify the same object, so its state change is shared."
+        "explanation": "Both references point to one object. A method that changes that object changes what both references can observe."
       },
       {
         "id": "d",
         "text": "Assigning a new object to the copied reference variable.",
-        "explanation": "Rebinding one reference does not rebind the reference component in the original."
+        "explanation": "Assigning a new object changes only the copied reference. The original reference still points to the old object."
       }
     ],
     "correctOption": "c"
@@ -63,22 +63,22 @@
       {
         "id": "a",
         "text": "It also releases the table's initial memory allocation.",
-        "explanation": "Both clear rows; FREE additionally releases the initial memory requirement."
+        "explanation": "Both statements remove the rows. FREE also releases the initial table allocation that CLEAR keeps available."
       },
       {
         "id": "b",
         "text": "It guarantees the operating system immediately shrinks the process.",
-        "explanation": "ABAP memory release does not guarantee this operating-system effect."
+        "explanation": "ABAP can release table memory without the operating system immediately showing a smaller process. That effect is not guaranteed."
       },
       {
         "id": "c",
         "text": "It deletes the declared variable from its scope.",
-        "explanation": "The declared data object remains and can be populated again."
+        "explanation": "FREE does not remove the variable declaration. The program can fill the same table again afterward."
       },
       {
         "id": "d",
         "text": "It destroys every object referenced by former table rows.",
-        "explanation": "Other references may keep those objects reachable; resource lifetime is separate."
+        "explanation": "Other references may still point to those objects. Removing table rows does not guarantee object destruction or resource release."
       }
     ],
     "correctOption": "a"
@@ -91,22 +91,22 @@
       {
         "id": "a",
         "text": "IS ASSIGNED must now be false.",
-        "explanation": "A failed assignment can preserve the old assignment."
+        "explanation": "A failed dynamic assignment can leave the previous target in place. IS ASSIGNED can therefore still be true."
       },
       {
         "id": "b",
         "text": "Writing through it necessarily raises an unassigned-symbol error.",
-        "explanation": "If the old assignment remains valid, the write may succeed on the wrong field."
+        "explanation": "The field symbol may still point to PRICE. The write can succeed but change the wrong field."
       },
       {
         "id": "c",
         "text": "An inline declaration would prove the new component exists.",
-        "explanation": "Declaration syntax does not prove the latest dynamic lookup succeeded."
+        "explanation": "An inline declaration does not verify that PRCIE exists. The program still has to check the lookup result."
       },
       {
         "id": "d",
         "text": "Check the latest ASSIGN result before using the symbol.",
-        "explanation": "Its assigned state alone may describe the previous target, not the attempted one."
+        "explanation": "The latest ASSIGN result tells whether this lookup worked. IS ASSIGNED alone may only confirm the old PRICE assignment."
       }
     ],
     "correctOption": "d"
@@ -119,22 +119,22 @@
       {
         "id": "a",
         "text": "Whether READ TABLE found its row.",
-        "explanation": "FIND has replaced the shared system field since the read."
+        "explanation": "FIND has overwritten sy-subrc after the failed read. The later IF no longer checks the READ TABLE result."
       },
       {
         "id": "b",
         "text": "The result of the intervening FIND.",
-        "explanation": "The last relevant statement wrote zero, so the branch describes FIND."
+        "explanation": "FIND succeeded and set sy-subrc to zero. The IF therefore takes its success branch even though READ TABLE failed."
       },
       {
         "id": "c",
         "text": "Whether both READ TABLE and FIND succeeded.",
-        "explanation": "sy-subrc does not accumulate results across statements."
+        "explanation": "sy-subrc holds one statement result, not a combined history. FIND success does not turn the earlier read into success."
       },
       {
         "id": "d",
         "text": "Whether either statement raised an exception.",
-        "explanation": "The field is a statement return code, not a generic exception flag."
+        "explanation": "sy-subrc is not a general exception flag. Here it contains the return code set by FIND."
       }
     ],
     "correctOption": "b"
@@ -147,22 +147,22 @@
       {
         "id": "a",
         "text": "Use EXACT for the target type and handle conversion failure.",
-        "explanation": "Lossless conversion rejects a value that would need truncation."
+        "explanation": "EXACT rejects a conversion that would lose the fourth character. The caller can then receive a clear input error."
       },
       {
         "id": "b",
         "text": "Use CONV for the target type and accept the result.",
-        "explanation": "Ordinary conversion can truncate according to the target conversion rules."
+        "explanation": "CONV follows ordinary conversion rules. A three-character target can receive ABC while losing D, which violates this requirement."
       },
       {
         "id": "c",
         "text": "Assign normally and check that the result is not initial.",
-        "explanation": "ABC is noninitial, so this test does not detect lost characters."
+        "explanation": "ABC is not initial, so this check passes even though D was lost. A nonempty result does not prove a lossless conversion."
       },
       {
         "id": "d",
         "text": "Convert to string first, then assign normally to the target.",
-        "explanation": "The final narrow assignment can still lose the fourth character."
+        "explanation": "Converting to string first does not fix the final narrow assignment. Moving it normally into three characters can still discard D."
       }
     ],
     "correctOption": "a"
@@ -175,22 +175,22 @@
       {
         "id": "a",
         "text": "0.01; 0.02",
-        "explanation": "This reverses the two calculations."
+        "explanation": "The pair is reversed. Rounded lines total 0.02; the rounded precise sum is 0.01."
       },
       {
         "id": "b",
         "text": "0.01; 0.01",
-        "explanation": "Each separately rounded positive half-cent becomes 0.01."
+        "explanation": "Each 0.005 line rounds to 0.01 under the stated rule. Adding those rounded lines therefore gives 0.02."
       },
       {
         "id": "c",
         "text": "0.02; 0.01",
-        "explanation": "The two rounded lines total 0.02, while the precise sum 0.010 rounds to 0.01."
+        "explanation": "Rounding each line gives 0.01 + 0.01 = 0.02. Adding first gives 0.010, which rounds to 0.01."
       },
       {
         "id": "d",
         "text": "0.02; 0.02",
-        "explanation": "Rounding the already exact sum 0.010 to two decimals yields 0.01."
+        "explanation": "The precise sum is 0.010. Rounding that value once to two decimals gives 0.01, not 0.02."
       }
     ],
     "correctOption": "c"
@@ -203,22 +203,22 @@
       {
         "id": "a",
         "text": "Status stays Approved because matching is by name.",
-        "explanation": "The constructor creates a new result; unmatched fields start initial."
+        "explanation": "Plain CORRESPONDING builds a new value. The source has no status, so status is initial in that new result."
       },
       {
         "id": "b",
         "text": "The assignment fails because the structures differ.",
-        "explanation": "CORRESPONDING is specifically intended for component-based mapping."
+        "explanation": "CORRESPONDING is designed to map matching components between different structures. Different component lists do not by themselves cause failure."
       },
       {
         "id": "c",
         "text": "Status changes only if ls_source-note is initial.",
-        "explanation": "Whether the unmatched status initializes does not depend on the note's value."
+        "explanation": "Status is unmatched regardless of the note value. It becomes initial because the constructor creates a new result without BASE."
       },
       {
         "id": "d",
         "text": "Status becomes initial; BASE would preserve the unmatched status.",
-        "explanation": "BASE supplies the initial target state before matching components overwrite it."
+        "explanation": "BASE can start the result with the existing target values. Since the source has no status component, that existing status is then preserved."
       }
     ],
     "correctOption": "d"
@@ -231,22 +231,22 @@
       {
         "id": "a",
         "text": "Two groups, with both A rows available in A's member loop.",
-        "explanation": "Grouping collects equal keys even when their rows are not adjacent."
+        "explanation": "GROUP BY puts equal customer keys together even when separated in the input. Both A rows remain members of the A group."
       },
       {
         "id": "b",
         "text": "Three groups because the source was not sorted.",
-        "explanation": "GROUP BY does not require equal keys to be adjacent."
+        "explanation": "The two A rows do not have to be next to each other. GROUP BY still creates only groups A and B."
       },
       {
         "id": "c",
         "text": "Two groups, but only the first A row remains accessible.",
-        "explanation": "The representative is not the entire group; its members remain available."
+        "explanation": "One row may represent the group, but it does not replace all the members. Both A rows are available to the member loop."
       },
       {
         "id": "d",
         "text": "One group because no sorted table key was declared.",
-        "explanation": "The grouping expression determines groups independently of that table category."
+        "explanation": "The grouping expression chooses the groups. A sorted table key is not required to form the two customer groups here."
       }
     ],
     "correctOption": "a"
@@ -259,22 +259,22 @@
       {
         "id": "a",
         "text": "Convert it to a hashed table because FILTER rejects standard tables.",
-        "explanation": "A standard table with a suitable sorted secondary key is supported."
+        "explanation": "A standard table can use FILTER with an appropriate secondary key. Converting it to a hashed table is unnecessary here."
       },
       {
         "id": "b",
         "text": "Rely on the empty primary key to scan every row.",
-        "explanation": "The basic FILTER form requires a suitable sorted or hash key."
+        "explanation": "The empty primary key does not satisfy the basic FILTER key requirement. Use the suitable sorted secondary key."
       },
       {
         "id": "c",
         "text": "Select the suitable secondary key with USING KEY.",
-        "explanation": "This provides the required key access for the customer condition."
+        "explanation": "USING KEY selects the sorted customer key. That supplies the key access required for this supported customer condition."
       },
       {
         "id": "d",
         "text": "Add ORDER BY to FILTER before its WHERE clause.",
-        "explanation": "ORDER BY is not the mechanism for selecting an internal-table FILTER key."
+        "explanation": "ORDER BY does not select a FILTER key. USING KEY is the relevant choice for this internal-table expression."
       }
     ],
     "correctOption": "c"
@@ -287,22 +287,22 @@
       {
         "id": "a",
         "text": "The input must be sorted for a maximum calculation.",
-        "explanation": "An ordinary maximum reduction does not need sorted input."
+        "explanation": "A maximum calculation does not require sorted input. The wrong starting value causes this result."
       },
       {
         "id": "b",
         "text": "Initialization adds zero as a candidate absent from the data.",
-        "explanation": "Zero remains larger than every actual member, producing the wrong maximum."
+        "explanation": "Zero is greater than both -8 and -3, so it remains the accumulator. The true maximum is -3; zero was never an input."
       },
       {
         "id": "c",
         "text": "REDUCE cannot return negative numeric values.",
-        "explanation": "Negative results are supported; the accumulator logic is the issue."
+        "explanation": "REDUCE can produce a negative number. The zero starting value prevents this particular calculation from finding the correct one."
       },
       {
         "id": "d",
         "text": "The two values cancel because REDUCE always aggregates by sum.",
-        "explanation": "The specified state update controls the operation; REDUCE is not inherently SUM."
+        "explanation": "REDUCE performs the state update written by the developer. It does not automatically sum values or cancel these inputs."
       }
     ],
     "correctOption": "b"
@@ -315,22 +315,22 @@
       {
         "id": "a",
         "text": "Quote both inputs and concatenate them into WHERE and ORDER BY.",
-        "explanation": "A safely quoted value is not validation of identifier or clause syntax."
+        "explanation": "Quoting a value does not approve a column name or SQL clause. Treat data values and SQL syntax differently."
       },
       {
         "id": "b",
         "text": "Bind the sort column as a value and concatenate the customer text.",
-        "explanation": "A host value is not a dynamic identifier, and concatenating customer text is avoidable."
+        "explanation": "A host value is data, not a replacement column name. Concatenating the customer text also creates an avoidable SQL risk."
       },
       {
         "id": "c",
         "text": "Allow any column if the customer value uses a host variable.",
-        "explanation": "Value binding does not authorize arbitrary column access or sorting expressions."
+        "explanation": "Binding the customer value protects that value only. The requested column still needs to be mapped to an allowed choice."
       },
       {
         "id": "d",
         "text": "Bind the customer value and map allowed sort options to known columns.",
-        "explanation": "Values remain data and server-controlled mapping constrains the dynamic SQL shape."
+        "explanation": "The customer text stays a data value. A controlled mapping limits sorting to known approved columns and directions."
       }
     ],
     "correctOption": "d"
@@ -343,22 +343,22 @@
       {
         "id": "a",
         "text": "The release does not run merely because ENDTRY is reached.",
-        "explanation": "CLEANUP handles relevant exception unwinding, not every successful exit."
+        "explanation": "CLEANUP is used for the relevant exception propagation. Normal arrival at ENDTRY does not execute the release inside it."
       },
       {
         "id": "b",
         "text": "The release runs exactly once after ENDTRY.",
-        "explanation": "ABAP CLEANUP is not a general finally block."
+        "explanation": "CLEANUP is not a general finally block. A separate normal-success path must perform the required release."
       },
       {
         "id": "c",
         "text": "The release runs before the final successful statement in TRY.",
-        "explanation": "No normal-path execution of CLEANUP is implied."
+        "explanation": "Normal successful execution does not enter CLEANUP before the last statement or afterward. The release needs another path."
       },
       {
         "id": "d",
         "text": "The runtime raises an exception because CLEANUP was skipped.",
-        "explanation": "A successful TRY can validly leave its CLEANUP block unexecuted."
+        "explanation": "Skipping CLEANUP on success is normal behavior. The runtime does not raise an exception just because that block did not run."
       }
     ],
     "correctOption": "a"
@@ -371,22 +371,22 @@
       {
         "id": "a",
         "text": "IS INITIAL is false only in B.",
-        "explanation": "The value is zero in both, so both are initial."
+        "explanation": "Both parameter values are zero, so both are initial. IS INITIAL cannot tell whether zero was passed explicitly."
       },
       {
         "id": "b",
         "text": "The formal parameter type differs in B.",
-        "explanation": "Passing zero does not change the declared formal type."
+        "explanation": "The declared parameter type is the same in both calls. Passing zero changes neither the type nor its declaration."
       },
       {
         "id": "c",
         "text": "IS SUPPLIED is false in A and true in B.",
-        "explanation": "Presence of an actual argument is independent of its value."
+        "explanation": "IS SUPPLIED checks whether an argument was passed. It is false for omission and true for an explicit zero."
       },
       {
         "id": "d",
         "text": "sy-subrc is nonzero only in A.",
-        "explanation": "Argument omission is not reported through such a sy-subrc convention."
+        "explanation": "Omitting an optional argument is not reported by this sy-subrc rule. Use IS SUPPLIED to inspect argument presence."
       }
     ],
     "correctOption": "c"
@@ -399,22 +399,22 @@
       {
         "id": "a",
         "text": "The existing row is replaced with amount 20.",
-        "explanation": "This insertion form does not update the existing row."
+        "explanation": "INSERT does not replace the existing row in this case. The old amount remains 10."
       },
       {
         "id": "b",
         "text": "The row remains amount 10 and sy-subrc indicates the duplicate.",
-        "explanation": "The unique primary key prevents insertion; the duplicate result requires explicit handling."
+        "explanation": "The duplicate unique primary key prevents insertion. The table keeps amount 10, and the program must handle the return code."
       },
       {
         "id": "c",
         "text": "Both rows remain because their amounts differ.",
-        "explanation": "Uniqueness applies to the defined key, not the whole payload."
+        "explanation": "The key is 7 in both rows. A different amount does not make that defined key unique."
       },
       {
         "id": "d",
         "text": "The table is cleared to restore key uniqueness.",
-        "explanation": "The failed single-line insertion does not erase the existing table."
+        "explanation": "The failed insertion does not clear the table. The existing row stays unchanged."
       }
     ],
     "correctOption": "b"
@@ -427,22 +427,22 @@
       {
         "id": "a",
         "text": "Run the query because an empty range means no plants.",
-        "explanation": "An initial selection range means no restriction for IN."
+        "explanation": "An initial selection range does not restrict IN. Running this query can expose data instead of returning no plants."
       },
       {
         "id": "b",
         "text": "Remove the condition to make the no-permission case explicit.",
-        "explanation": "Removing it would broaden access instead of denying it."
+        "explanation": "Removing the plant condition broadens the read. It does not represent a denial of access."
       },
       {
         "id": "c",
         "text": "Insert a dummy initial plant and assume it can never exist.",
-        "explanation": "A fabricated value is an unreliable authorization contract."
+        "explanation": "A made-up plant value is not a dependable security rule. Handle the no-permission result directly rather than assume that value cannot match."
       },
       {
         "id": "d",
         "text": "Handle no permission explicitly and return no rows or reject.",
-        "explanation": "The empty authorization case must fail closed independently of range semantics."
+        "explanation": "The caller must stop or return no data when no plants are allowed. An empty range cannot safely express that denial in IN."
       }
     ],
     "correctOption": "d"

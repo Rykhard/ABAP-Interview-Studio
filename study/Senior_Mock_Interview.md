@@ -40,9 +40,9 @@ Explain the BO boundary, deployment placement and dependency decision. Identify 
 
 ### Model answer
 
-Keep request and items together where their lifecycle, locking and invariants belong together. Treat the standard purchase order as another business object accessed through an appropriate API. Portal identity and external session concerns are separate. Prefer managed behavior for suitable new custom persistence, while choosing on-stack versus side-by-side placement according to required consistency, API availability, latency and independent lifecycle.
+Keep the request and its items in one BO when they need to be edited, locked and saved together. The standard purchase order is another business object, so access it through an appropriate API. Portal sign-in sessions do not belong inside the purchase request. For new custom tables, managed RAP is usually a useful starting point.
 
-Clean Core classification follows actual dependencies and extension mechanisms, not the RAP label. Inspect the posting API's release/classification and the target edition. Seek a released operation or supported extension first. A custom wrapper does not erase an underlying dependency's risk. If a constrained classic path is considered in a suitable edition, record its owner, upgrade evidence, expiry and replacement plan; do not present it as generally available in ABAP Cloud.
+Choose where the extension runs by asking what must save together, which APIs exist and whether the portal needs its own release schedule. RAP alone does not make a solution Clean Core Level A. Check the APIs and extension techniques it actually uses. Prefer a released posting operation. A wrapper does not remove the risk of an internal dependency. A classic exception may be possible in a suitable edition, but needs an owner, upgrade tests, an expiry and a replacement plan; it is not general ABAP Cloud permission.
 
 ### Probes
 
@@ -79,9 +79,9 @@ APPEND ls_reported TO reported-Request.
 
 ### Model answer
 
-An initial field value and an omitted update are different. The first fragment marks Comment as not supplied. Use the intended field list or correct control flag; do not mark all fields indiscriminately, because omitted values could then overwrite unrelated data. Inspect adapters and defaulting determinations as additional places where an explicit clear can be lost.
+An empty Comment value means 'clear it' only when the update also marks Comment as supplied. The first fragment uses mk-off, so the caller is not asking RAP to change that field. Mark only the intended fields. Marking every field could overwrite an omitted Amount with zero. Check adapters and defaulting code too if they might turn an explicit clear back into old text.
 
-In the validation, report the failing instance through the permitted FAILED contract and associate its message with the correct transactional identity, field and path. REPORTED alone is not a universal rejection mechanism. Determinations have a different signature and do not offer FAILED. For bulk processing, handle every input and preserve correlation; the surrounding transaction owner and protocol boundary determine the intended atomicity policy.
+In the validation, add the rejected instance to FAILED and its message to REPORTED. Include the right RAP identifier, field and path where required. A determination cannot fill FAILED because it has a different response signature. For a bulk request, process every item and link each error to its item. Then check which operations the caller and protocol group to succeed or fail together; one FAILED row does not automatically roll back an entire OData batch.
 
 ### Probes
 
@@ -116,9 +116,9 @@ define view entity ZC_Request
 
 ### Model answer
 
-Check access control on the actual consumed entity. The annotation requests access-control checking; it does not create a rule or automatically inherit the base rule. Define the projection's protection using a suitable supported DCL design or explicit inheritance with correct mappings. Test service reads, navigation and value helps, not merely the base entity.
+Start with the entity the service actually reads. #CHECK asks for access-control checks, but does not create DCL or automatically copy the base entity's rules. Define the projection's rules or use supported explicit inheritance with the right field mappings. Test reads, navigation and value helps through the real service.
 
-RAP operation authorization must protect Approve independently of button visibility. Feature control expresses business availability, such as preventing approval of cancelled requests. A company-code change also needs a decision about the proposed target context; checking only the original instance can leave a privilege gap. Use the appropriate incoming-change and authorization mechanisms while preserving supported phase and partial-update semantics.
+Approve needs its own backend authorization check. Hiding its button is only a UI aid. Feature control separately describes whether the request's current state allows approval. When CompanyCode changes from A to B, check whether the user may make that proposed change; permission for the original A record is not enough. Inspect the supplied new values through supported mechanisms, and keep the distinction between an omitted field and a field explicitly changed to an empty value.
 
 ### Probes
 
@@ -150,9 +150,9 @@ return page, count
 
 ### Model answer
 
-Never broaden a query silently when filter conversion fails. Preserve the complete supported filter semantics through an appropriate representation, or reject an unsupported request explicitly. Apply authorization to both returned data and count. Count represents the filtered authorized result before paging, not current page length; calculate it only when requested.
+Do not return all records when a filter cannot be converted. Either process the complete filter correctly with a supported method or return a clear error saying it is unsupported. Apply the same filtering and permissions to both data and count. If fifty allowed rows match and the page contains ten, the total is fifty. Only calculate a count when the caller requests it.
 
-Use a deterministic order with a suitable tie-breaker and push supported filtering, sorting and paging to the remote provider. Stable ordering alone does not guarantee a frozen result while data changes between pages; explain the source's consistency and continuation-token contract. Avoid fetching all records merely to discard most locally, and do not promise an exact cross-page snapshot that the remote API cannot provide.
+Sort with a reliable tie-breaker, such as a suitable unique key, before taking a page. Ask the remote provider to filter, sort and page when it supports those operations. Sorting alone does not freeze data between requests: new rows can still arrive. Check the remote API's continuation or snapshot rules before promising stable pages. Fetching every record just to discard most locally can be slow and expensive.
 
 ### Probes
 
@@ -182,9 +182,9 @@ COMMIT WORK.
 
 ### Model answer
 
-The forbidden local commit is rejected by the RAP runtime contract; do not assume it succeeds and validation then continues normally. A separately committed remote effect is a different failure mode: local rollback cannot undo it. A wrapper or different caller phase does not remove the internal commit. Identify the actual transaction owner and audit the call chain for explicit and implicit boundaries. Prefer an eligible API whose transaction contract fits the scenario. If local atomic integration cannot be supported, model a durable posting request and explicit asynchronous processing with reconciliation rather than claiming one LUW.
+The local nested COMMIT WORK violates RAP's rules. Do not describe it as a normal commit followed by continued validation. Moving that same call into SAVE, or wrapping it, does not remove its internal commit. Find an API that fits RAP's save rules and check the whole call chain.
 
-Do not generalize ordinary business-error handling into the late save phase. Perform predictable checks earlier. Equally, avoid an absolute claim that supported late failure handling never exists: SAP documents a failure-capable saver for specific BAPI integrations, including late numbering when the create call returns the final key. Verify that precise release, saver, API and authorization contract; it does not authorize arbitrary committing legacy code.
+A remote call has a different problem: it can commit in the other system before the local request fails. Local rollback cannot undo it. If one local all-or-nothing save is not supported, store a posting request and process it separately, with a way to check uncertain outcomes and prevent duplicates. Check predictable business errors early. Some releases support special failure-capable savers for specific BAPI cases, including late numbering. Verify that exact scenario; it does not permit arbitrary self-committing legacy code.
 
 ### Probes
 
@@ -208,9 +208,9 @@ Separate the failures. Propose the smallest coherent corrections and a release g
 
 ### Model answer
 
-First verify the total ETag and lock model across the composition. Child-only active changes must participate in the required version protection so a stale draft is detected when resumed. Ordinary entity ETags and draft total ETags address related but distinct concurrency checks.
+Check the draft's total ETag first. It must reflect relevant active changes, including changes to an item, so resuming an outdated draft can be rejected after its lock expires. The entity ETag used for an ordinary update and the total ETag used for draft resume are related but different checks.
 
-Make Submit a protected state transition with a defined outcome for already submitted requests. Coordinate durable follow-up intent with the transition and make external consumers idempotent using a stable business/event identity. A timeout can mean an unknown outcome, not a failed transition. Finally, diagnose the displayed total separately: verify backend transactional values, then inspect side effects, action results and actual refresh requests. A UI refresh fix must not introduce another commit.
+Make two concurrent Submit calls produce only one effective submission. Define what the second caller receives if the request is already submitted, and durably record the follow-up work. The event consumer must also recognize duplicate delivery using a stable identifier. A lost reply can leave the outcome unknown, so check saved state before repeating work. Diagnose the stale total separately: verify the backend value, then inspect side-effect metadata and UI refresh requests. Refreshing the screen must not introduce another commit.
 
 ### Probes
 
