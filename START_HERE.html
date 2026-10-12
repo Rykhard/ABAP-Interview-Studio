@@ -1090,14 +1090,20 @@ main>#progress{display:none}
 .diagram-link svg{width:24px;height:24px;flex:none;color:var(--green)}
 .diagram-link>span{display:grid;gap:6px}.diagram-link strong{font-size:14px;line-height:1.5;font-weight:550}.diagram-link span span{font-size:12px;line-height:1.7;color:var(--muted)}.diagram-link small{font-size:12px;color:var(--link)}
 .diagram-link:hover{background:var(--soft)}
-.diagram-preview{margin:0;max-width:520px;padding:16px;border-radius:12px;background:var(--paper)}
-.diagram-preview-open{display:block;width:100%;padding:0;overflow:hidden;text-align:right;border:1px solid var(--line);background:var(--surface)}
-.diagram-preview-open img{display:block;width:100%;height:200px;object-fit:contain;padding:8px;box-sizing:border-box}
-.diagram-preview-open>span{display:block;padding:8px 12px;font-size:12px;color:var(--link)}
-.diagram-preview figcaption{padding-top:12px;font-size:14px;line-height:1.5}
-.diagram-preview figcaption p{margin:6px 0 0;font-size:13px;line-height:1.7}
-.diagram-picker{display:grid;gap:6px;margin-bottom:12px;font-size:12px;color:var(--muted)}
-.diagram-picker select{width:100%;max-width:100%;min-width:0;font-size:12px;min-height:44px}
+.reading-layout.reading-flow{display:block}
+.reading-flow>.answer-summary{max-width:78ch;margin-bottom:24px}
+.answer-example{display:grid;gap:24px;min-width:0}
+.answer-example>*{min-width:0}
+.reading-flow .answer-example>.visual-panel{grid-row:auto;margin:0;align-self:start}
+.answer-example>.answer-reasoning{grid-row:auto}
+.reading-flow>.trap,.reading-flow>.answer-details{max-width:78ch}
+.diagram-preview{margin:0;max-width:620px;padding:0;background:transparent}
+.diagram-title{font-size:16px;line-height:1.5;margin:0 0 12px}
+.diagram-preview-open{position:relative;display:block;width:100%;padding:0;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.diagram-preview-open img{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;padding:8px;box-sizing:border-box}
+.diagram-zoom-icon{position:absolute;right:8px;bottom:8px;display:grid;place-items:center;width:28px;height:28px;border-radius:6px;background:var(--surface);color:var(--link);border:1px solid var(--line);font-size:20px}
+.diagram-preview figcaption{padding-top:10px;font-size:13px;line-height:1.7;color:var(--muted)}
+.diagram-picker{display:block;width:100%;max-width:100%;min-width:0;margin:0 0 12px;font-size:14px;min-height:44px;color:var(--ink)}
 .default-format{padding:0;margin:0;border:0;min-width:0}
 .default-format legend{font-size:14px;margin-bottom:10px}
 .default-format [role=group]{display:flex;gap:8px}
@@ -1129,17 +1135,16 @@ main>#progress{display:none}
 #practiceSetup .practice-start .small{font-size:12px}
 .topic-card{min-height:170px;padding:20px}.topic-card .topic-icon{width:28px;height:28px;padding:7px;margin-bottom:4px}.topic-card strong{font-size:18px}.topic-card p{font-size:13px;line-height:1.65}
 @media(min-width:1180px){
- .study-experience[data-study-view=calm] .reading-layout.has-visual{grid-template-columns:minmax(0,1.45fr) minmax(260px,.65fr)}
- .study-experience[data-study-view=calm] .reading-layout>.diagram-panel{grid-row:1 / span 2;align-self:start;margin:0}
- .study-experience[data-study-view=calm] .answer-summary{grid-column:1;max-width:78ch}
- .study-experience[data-study-view=developer] .reading-layout.has-visual{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+ .answer-example.has-example-panel{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start}
+ .answer-example.has-example-panel>.visual-panel{grid-column:2;grid-row:1}
+ .answer-example.has-example-panel>.answer-reasoning{grid-column:1;grid-row:1}
+ .study-experience[data-study-view=developer] .answer-example.has-example-panel{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
 }
 @media(max-width:900px){
  aside{padding:14px 16px;overflow:visible}aside h1{font-size:18px;padding-right:96px;line-height:1.45}
  #menuToggle{top:12px;right:12px;font-size:11px;padding:8px;min-height:36px}
  main{padding:16px}.app-bar{margin-bottom:16px}
  .question-group .focused-card{padding:20px}.focused-card>h3{font-size:25px}
- .reading-layout>.diagram-panel{max-width:none;margin-top:18px}
 }
 @media(max-width:700px){
  .app-bar{display:flex;align-items:center;gap:6px;padding:8px 0;margin-top:0;flex-wrap:wrap}
@@ -1431,7 +1436,7 @@ function questionReferences(q){
 function seniorRubric(q){return q.level==='Senior'?`<div class="rubric"><div class="label">Дополнительные вопросы на интервью</div><ul>${q.followups.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="label">Что важно раскрыть в сильном ответе</div><ul>${q.signals.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="label">Как это проверить</div><p>${esc(q.evidence)}</p></div>`:'';}
 function diagramPanel(q,related){
  const visual=related.find(v=>v.id===visualChoices.get(q.id))||related[0];
- return `<figure class="diagram-preview"><div class="label">Наглядное объяснение</div>${related.length>1?`<label class="diagram-picker">Выберите схему<select data-diagram-select data-question="${q.id}">${related.map(v=>`<option value="${v.id}" ${v.id===visual.id?'selected':''}>${esc(v.title)}</option>`).join('')}</select></label>`:''}<button class="diagram-preview-open" data-open-visual="${visual.id}" aria-haspopup="dialog" aria-label="Открыть схему: ${esc(visual.title)}"><img loading="lazy" data-visual-image="${visual.id}" src="${esc(visualImageSource(visual))}" alt="${esc(visual.title)}"><span>Открыть схему &nearr;</span></button><figcaption><strong>${esc(visual.title)}</strong><p>${esc(visual.caption)}</p></figcaption></figure>`;
+ return `<figure class="diagram-preview">${related.length>1?`<select class="diagram-picker" data-diagram-select data-question="${q.id}" aria-label="Выберите схему">${related.map(v=>`<option value="${v.id}" ${v.id===visual.id?'selected':''}>${esc(v.title)}</option>`).join('')}</select>`:`<h4 class="diagram-title">${esc(visual.title)}</h4>`}<button class="diagram-preview-open" data-open-visual="${visual.id}" aria-haspopup="dialog" aria-label="Открыть схему: ${esc(visual.title)}"><img loading="lazy" data-visual-image="${visual.id}" src="${esc(visualImageSource(visual))}" alt="${esc(visual.title)}"><span class="diagram-zoom-icon" aria-hidden="true">&#x2922;</span></button><figcaption>${esc(visual.caption)}</figcaption></figure>`;
 }
 function visualPanel(q,preferCode=false){
  const related=visuals.filter(v=>v.questions.includes(q.id)),examples=codeExamples.filter(example=>example.questions.includes(q.id));
@@ -1460,7 +1465,7 @@ function readingAnswer(q,view='calm'){
  const short=plain.length>1&&plain.join(' ').length>700?1:plain.length;
  const more=plain.slice(short).join('\n\n');
  const detail=more||steps.length||q.level==='Senior'?`<details class="answer-details"><summary>Подробности и вопросы на интервью</summary>${readingParagraphs(more)}${steps.length?readingParagraphs(steps.map(x=>x[0]).join('\n\n')):''}${seniorRubric(q)}</details>`:'';
- return `<div class="answer reading-layout ${panel?'has-visual':''}"><div class="answer-summary"><div class="label">Короткий ответ</div>${readingParagraphs(q.answer)}</div><div class="answer-reasoning"><div class="label">Понятный пример</div>${readingParagraphs(plain.slice(0,short).join('\n\n'))}<div class="trap"><strong>Важно помнить</strong><p>${esc(q.pitfall)}</p></div>${detail}</div>${panel}</div>`;
+ return `<div class="answer reading-layout reading-flow ${panel?'has-visual':''}"><div class="answer-summary"><div class="label">Короткий ответ</div>${readingParagraphs(q.answer)}</div><section class="answer-example ${panel?'has-example-panel':''}">${panel}<div class="answer-reasoning"><div class="label">Понятный пример</div>${readingParagraphs(plain.slice(0,short).join('\n\n'))}</div></section><div class="trap"><strong>Важно помнить</strong><p>${esc(q.pitfall)}</p></div>${detail}</div>`;
 }
 function answer(q){
  const view=selectedStudyView(q);
@@ -2068,7 +2073,7 @@ function questionReferences(q){
 function seniorRubric(q){return q.level==='Senior'?`<div class="rubric"><div class="label">Interview follow-up questions</div><ul>${q.followups.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="label">What a strong answer covers</div><ul>${q.signals.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="label">How to verify it</div><p>${esc(q.evidence)}</p></div>`:'';}
 function diagramPanel(q,related){
  const visual=related.find(v=>v.id===visualChoices.get(q.id))||related[0];
- return `<figure class="diagram-preview"><div class="label">Visual explanation</div>${related.length>1?`<label class="diagram-picker">Choose a diagram<select data-diagram-select data-question="${q.id}">${related.map(v=>`<option value="${v.id}" ${v.id===visual.id?'selected':''}>${esc(v.title)}</option>`).join('')}</select></label>`:''}<button class="diagram-preview-open" data-open-visual="${visual.id}" aria-haspopup="dialog" aria-label="Open readable diagram: ${esc(visual.title)}"><img loading="lazy" data-visual-image="${visual.id}" src="${esc(visualImageSource(visual))}" alt="${esc(visual.title)}"><span>Open readable diagram &nearr;</span></button><figcaption><strong>${esc(visual.title)}</strong><p>${esc(visual.caption)}</p></figcaption></figure>`;
+ return `<figure class="diagram-preview">${related.length>1?`<select class="diagram-picker" data-diagram-select data-question="${q.id}" aria-label="Choose a diagram">${related.map(v=>`<option value="${v.id}" ${v.id===visual.id?'selected':''}>${esc(v.title)}</option>`).join('')}</select>`:`<h4 class="diagram-title">${esc(visual.title)}</h4>`}<button class="diagram-preview-open" data-open-visual="${visual.id}" aria-haspopup="dialog" aria-label="Open readable diagram: ${esc(visual.title)}"><img loading="lazy" data-visual-image="${visual.id}" src="${esc(visualImageSource(visual))}" alt="${esc(visual.title)}"><span class="diagram-zoom-icon" aria-hidden="true">&#x2922;</span></button><figcaption>${esc(visual.caption)}</figcaption></figure>`;
 }
 function visualPanel(q,preferCode=false){
  const related=visuals.filter(v=>v.questions.includes(q.id)),examples=codeExamples.filter(example=>example.questions.includes(q.id));
@@ -2097,7 +2102,7 @@ function readingAnswer(q,view='calm'){
  const short=plain.length>1&&plain.join(' ').length>700?1:plain.length;
  const more=plain.slice(short).join('\n\n');
  const detail=more||steps.length||q.level==='Senior'?`<details class="answer-details"><summary>More detail &amp; interview follow-ups</summary>${readingParagraphs(more)}${steps.length?readingParagraphs(steps.map(x=>x[0]).join('\n\n')):''}${seniorRubric(q)}</details>`:'';
- return `<div class="answer reading-layout ${panel?'has-visual':''}"><div class="answer-summary"><div class="label">The short answer</div>${readingParagraphs(q.answer)}</div><div class="answer-reasoning"><div class="label">A concrete example</div>${readingParagraphs(plain.slice(0,short).join('\n\n'))}<div class="trap"><strong>Keep in mind</strong><p>${esc(q.pitfall)}</p></div>${detail}</div>${panel}</div>`;
+ return `<div class="answer reading-layout reading-flow ${panel?'has-visual':''}"><div class="answer-summary"><div class="label">The short answer</div>${readingParagraphs(q.answer)}</div><section class="answer-example ${panel?'has-example-panel':''}">${panel}<div class="answer-reasoning"><div class="label">A concrete example</div>${readingParagraphs(plain.slice(0,short).join('\n\n'))}</div></section><div class="trap"><strong>Keep in mind</strong><p>${esc(q.pitfall)}</p></div>${detail}</div>`;
 }
 function answer(q){
  const view=selectedStudyView(q);

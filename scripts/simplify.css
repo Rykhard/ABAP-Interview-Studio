@@ -47,14 +47,20 @@ main>#progress{display:none}
 .diagram-link svg{width:24px;height:24px;flex:none;color:var(--green)}
 .diagram-link>span{display:grid;gap:6px}.diagram-link strong{font-size:14px;line-height:1.5;font-weight:550}.diagram-link span span{font-size:12px;line-height:1.7;color:var(--muted)}.diagram-link small{font-size:12px;color:var(--link)}
 .diagram-link:hover{background:var(--soft)}
-.diagram-preview{margin:0;max-width:520px;padding:16px;border-radius:12px;background:var(--paper)}
-.diagram-preview-open{display:block;width:100%;padding:0;overflow:hidden;text-align:right;border:1px solid var(--line);background:var(--surface)}
-.diagram-preview-open img{display:block;width:100%;height:200px;object-fit:contain;padding:8px;box-sizing:border-box}
-.diagram-preview-open>span{display:block;padding:8px 12px;font-size:12px;color:var(--link)}
-.diagram-preview figcaption{padding-top:12px;font-size:14px;line-height:1.5}
-.diagram-preview figcaption p{margin:6px 0 0;font-size:13px;line-height:1.7}
-.diagram-picker{display:grid;gap:6px;margin-bottom:12px;font-size:12px;color:var(--muted)}
-.diagram-picker select{width:100%;max-width:100%;min-width:0;font-size:12px;min-height:44px}
+.reading-layout.reading-flow{display:block}
+.reading-flow>.answer-summary{max-width:78ch;margin-bottom:24px}
+.answer-example{display:grid;gap:24px;min-width:0}
+.answer-example>*{min-width:0}
+.reading-flow .answer-example>.visual-panel{grid-row:auto;margin:0;align-self:start}
+.answer-example>.answer-reasoning{grid-row:auto}
+.reading-flow>.trap,.reading-flow>.answer-details{max-width:78ch}
+.diagram-preview{margin:0;max-width:620px;padding:0;background:transparent}
+.diagram-title{font-size:16px;line-height:1.5;margin:0 0 12px}
+.diagram-preview-open{position:relative;display:block;width:100%;padding:0;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.diagram-preview-open img{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;padding:8px;box-sizing:border-box}
+.diagram-zoom-icon{position:absolute;right:8px;bottom:8px;display:grid;place-items:center;width:28px;height:28px;border-radius:6px;background:var(--surface);color:var(--link);border:1px solid var(--line);font-size:20px}
+.diagram-preview figcaption{padding-top:10px;font-size:13px;line-height:1.7;color:var(--muted)}
+.diagram-picker{display:block;width:100%;max-width:100%;min-width:0;margin:0 0 12px;font-size:14px;min-height:44px;color:var(--ink)}
 .default-format{padding:0;margin:0;border:0;min-width:0}
 .default-format legend{font-size:14px;margin-bottom:10px}
 .default-format [role=group]{display:flex;gap:8px}
@@ -86,17 +92,16 @@ main>#progress{display:none}
 #practiceSetup .practice-start .small{font-size:12px}
 .topic-card{min-height:170px;padding:20px}.topic-card .topic-icon{width:28px;height:28px;padding:7px;margin-bottom:4px}.topic-card strong{font-size:18px}.topic-card p{font-size:13px;line-height:1.65}
 @media(min-width:1180px){
- .study-experience[data-study-view=calm] .reading-layout.has-visual{grid-template-columns:minmax(0,1.45fr) minmax(260px,.65fr)}
- .study-experience[data-study-view=calm] .reading-layout>.diagram-panel{grid-row:1 / span 2;align-self:start;margin:0}
- .study-experience[data-study-view=calm] .answer-summary{grid-column:1;max-width:78ch}
- .study-experience[data-study-view=developer] .reading-layout.has-visual{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+ .answer-example.has-example-panel{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start}
+ .answer-example.has-example-panel>.visual-panel{grid-column:2;grid-row:1}
+ .answer-example.has-example-panel>.answer-reasoning{grid-column:1;grid-row:1}
+ .study-experience[data-study-view=developer] .answer-example.has-example-panel{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
 }
 @media(max-width:900px){
  aside{padding:14px 16px;overflow:visible}aside h1{font-size:18px;padding-right:96px;line-height:1.45}
  #menuToggle{top:12px;right:12px;font-size:11px;padding:8px;min-height:36px}
  main{padding:16px}.app-bar{margin-bottom:16px}
  .question-group .focused-card{padding:20px}.focused-card>h3{font-size:25px}
- .reading-layout>.diagram-panel{max-width:none;margin-top:18px}
 }
 @media(max-width:700px){
  .app-bar{display:flex;align-items:center;gap:6px;padding:8px 0;margin-top:0;flex-wrap:wrap}
