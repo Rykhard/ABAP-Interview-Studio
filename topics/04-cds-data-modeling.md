@@ -42,9 +42,9 @@ Check release support and the requirements of tools that consume the view before
 
 **Short answer:** A join combines sources in the current query. An association defines a relationship that a consumer can follow, often producing a join when used. Cardinality describes how many related rows can really match the ON condition. It must match the data. Declaring a relationship to-one when several rows can match can lead to incorrect results.
 
-**Reasoning and example:** A flight can point to its carrier by the carrier key. If that condition matches at most one carrier row, a to-one target cardinality may be correct. Test both a missing carrier and unexpected duplicates. The association declaration does not create a foreign-key constraint that fixes bad data for you.
+**Reasoning and example:** Order 4710 has amount 100 EUR and a status with English and German texts. Joining only on Status finds both texts, so the order appears twice and a sum can incorrectly show 200 EUR. Match Status and the requested Language. If the text source is truly unique for that pair, a to-one target cardinality may be correct. Test missing texts and unexpected duplicates too.
 
-The flight's own key is a separate issue. It may need carrier, connection, and flight date to identify one flight. Adding the date to that key does not prove the carrier association is to-one; the ON condition and target data do. Also measure performance where needed. An association is useful for modeling relationships, but is not automatically faster than writing a join.
+The order's own key is a separate issue. Declaring OrderUUID as a key does not remove rows duplicated by an incomplete join. Likewise, writing a to-one cardinality does not enforce uniqueness in the text source; the ON condition and actual target data must support it. Also measure performance where needed. An association is useful for modeling relationships, but is not automatically faster than writing a join.
 
 **Avoid this mistake:** Associations are not automatically faster than joins and do not enforce referential integrity.
 
@@ -145,7 +145,7 @@ For a supplier search backed by a remote service, a custom entity can describe t
 
 **Short answer:** No. Access control on a lower CDS view does not automatically protect every view built on it. Design the read rules for the entity that callers actually access. Supported DCL inheritance can reuse conditions with the required mappings. The #CHECK annotation alone creates no rule. RAP permissions for changing objects are a separate check.
 
-**Reasoning and example:** Assume the base model has a company-code restriction, and a service exposes a higher projection. Test the projection through the actual read path with a user allowed to see only company code 1000. If rows from 2000 appear, the protected base view has not proved the service is protected.
+**Reasoning and example:** Assume the base order model restricts Lea to sales organization A, and a service exposes a higher consumption view. Test that exposed view through its actual read path. If order B1 from organization B appears alongside A1, the protected base view has not proved the service is protected. Check the customer value help separately so it does not reveal B-Customer either.
 
 Inspect the effective DCL on the accessed entity and any inherited conditions and field mappings. Include users with different permissions and realistic filters in the test. Then test update or approval permission separately in RAP. A correct read filter limits visible rows; it does not automatically decide whether the user may execute every action on those rows.
 

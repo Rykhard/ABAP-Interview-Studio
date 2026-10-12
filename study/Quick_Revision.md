@@ -1515,9 +1515,9 @@ Inspect database work, ABAP computation, transferred volume, and repeated calls 
 
 **Short answer:** A join combines sources in the current query. An association defines a relationship that a consumer can follow, often producing a join when used. Cardinality describes how many related rows can really match the ON condition. It must match the data. Declaring a relationship to-one when several rows can match can lead to incorrect results.
 
-**Reasoning and example:** A flight can point to its carrier by the carrier key. If that condition matches at most one carrier row, a to-one target cardinality may be correct. Test both a missing carrier and unexpected duplicates. The association declaration does not create a foreign-key constraint that fixes bad data for you.
+**Reasoning and example:** Order 4710 has amount 100 EUR and a status with English and German texts. Joining only on Status finds both texts, so the order appears twice and a sum can incorrectly show 200 EUR. Match Status and the requested Language. If the text source is truly unique for that pair, a to-one target cardinality may be correct. Test missing texts and unexpected duplicates too.
 
-The flight's own key is a separate issue. It may need carrier, connection, and flight date to identify one flight. Adding the date to that key does not prove the carrier association is to-one; the ON condition and target data do. Also measure performance where needed. An association is useful for modeling relationships, but is not automatically faster than writing a join.
+The order's own key is a separate issue. Declaring OrderUUID as a key does not remove rows duplicated by an incomplete join. Likewise, writing a to-one cardinality does not enforce uniqueness in the text source; the ON condition and actual target data must support it. Also measure performance where needed. An association is useful for modeling relationships, but is not automatically faster than writing a join.
 
 **Avoid this mistake:** Associations are not automatically faster than joins and do not enforce referential integrity.
 
@@ -1544,7 +1544,7 @@ Items belong to the order BO; a partner reference crosses to an independently ma
 
 **Short answer:** No. Access control on a lower CDS view does not automatically protect every view built on it. Design the read rules for the entity that callers actually access. Supported DCL inheritance can reuse conditions with the required mappings. The #CHECK annotation alone creates no rule. RAP permissions for changing objects are a separate check.
 
-**Reasoning and example:** Assume the base model has a company-code restriction, and a service exposes a higher projection. Test the projection through the actual read path with a user allowed to see only company code 1000. If rows from 2000 appear, the protected base view has not proved the service is protected.
+**Reasoning and example:** Assume the base order model restricts Lea to sales organization A, and a service exposes a higher consumption view. Test that exposed view through its actual read path. If order B1 from organization B appears alongside A1, the protected base view has not proved the service is protected. Check the customer value help separately so it does not reveal B-Customer either.
 
 Inspect the effective DCL on the accessed entity and any inherited conditions and field mappings. Include users with different permissions and realistic filters in the test. Then test update or approval permission separately in RAP. A correct read filter limits visible rows; it does not automatically decide whether the user may execute every action on those rows.
 
@@ -1716,7 +1716,7 @@ Follow the same child through an error and correction instead of treating a mess
 
 **Short answer:** These fields identify objects at different stages of a RAP request. %cid labels a new instance, and %cid_ref refers to that creation, for example when adding its items. %tky is the transactional key, including relevant context such as draft state. %pid is a preliminary identifier for late numbering. None of these names means they are interchangeable.
 
-**Reasoning and example:** Create a header and two items in one request. The header may not yet have its final document number. Give its creation a content ID, then refer to that ID when creating the items by association. RAP can connect them without requiring the caller to guess a final key.
+**Reasoning and example:** Create a header and one item in one request. The header may not yet have its final document number. Give its creation a content ID, then refer to that ID when creating the item by association. RAP can connect them without requiring the caller to guess a final key.
 
 Inside handlers, use the supplied transactional identity when returning results or messages. Rebuilding a key from only the document number can lose draft context. For late numbering, ADJUST_NUMBERS maps the preliminary identification in %pre to the final %key. A content ID belongs to request correlation; it is not a business number to store and show forever.
 
@@ -1801,7 +1801,7 @@ Compare when the identity becomes final and when persistence is confirmed.
 
 **Short answer:** Draft saves unfinished editing work separately from active business data. It lets a user continue across HTTP requests or return after an interruption. RAP provides operations such as Edit, Resume, Activate, and Discard; Prepare can run selected checks and calculations. Activation moves valid draft changes into active processing. The request still needs its save sequence to finish.
 
-**Reasoning and example:** A user starts a travel request, enters a destination, and closes the browser before adding dates. A draft-enabled app can keep that incomplete version so the user can resume later. Other business processing should continue to distinguish this unfinished draft from an active request.
+**Reasoning and example:** Maya edits order 4703 from 80 EUR to 120 EUR and closes the browser. The draft keeps her unfinished 120 EUR edit, while active business data stays at 80 EUR. When she returns, activation rejects 120 EUR because this example permits at most 100 EUR. She corrects the draft to 90 EUR; only successful activation and save make 90 EUR the active value.
 
 When the user activates it, required checks can reject missing or invalid data. Successful activation is part of the processing that produces active data; it does not authorize a custom handler to commit on its own. Keep draft and active identities clear in reads, messages, and actions. A custom Submit action may represent a separate business step and is not automatically the same as draft activation.
 
@@ -1843,7 +1843,7 @@ The desk represents the current transactional buffer; the draft cabinet represen
 
 **Short answer:** A lock stops conflicting processing while it is held. An ETag lets a write request check whether the data has changed since the client read it. They solve different problems and are often needed together. RAP declares the relevant lock and version handling in behavior. Draft scenarios also need total-ETag handling for relevant changes to active data.
 
-**Reasoning and example:** Anna and Ben open the same request. Anna saves a new amount. Ben's screen still shows the old amount, so his update must not silently replace Anna's work. An If-Match check against the current ETag can detect that his version is outdated and make him refresh. The ETag did not reserve the request while he was reading it.
+**Reasoning and example:** Ana and Ben read order 4704 at quantity 2 with ETag V1. Ana saves quantity 3, producing ETag V2. Ben tries to save quantity 4 with his older V1. The If-Match check rejects that stale update, leaving quantity 3 intact. Ben must refresh and decide whether quantity 4 is still the change he wants. The ETag did not reserve the order while he was reading it.
 
 A pessimistic lock addresses conflicting processing during the period it is held. Draft editing and changes to active data require the matching draft lock and total-ETag design. Test stale updates and draft resume behavior separately. A lock is temporary coordination; an ETag is a version check, and neither is an audit log.
 
@@ -2132,9 +2132,9 @@ Read each level as a classification of the actual SAP dependency or extension te
 
 **Short answer:** No. A released custom wrapper can give its callers a controlled interface where the platform allows that design. The wrapper still calls the underlying SAP object, with that object's classification and upgrade risk. Review the full call chain. Releasing your own interface does not make an internal or non-recommended SAP dependency become Level A.
 
-**Reasoning and example:** An ABAP Cloud class calls a released custom wrapper, and the wrapper calls a nominated classic API. The consumer now has a clear custom contract, but the wrapper implementation still has the B dependency. If the classic API changes, someone must still maintain that wrapper and test its callers.
+**Reasoning and example:** An ABAP Cloud class calls a released custom wrapper, and inspection finds an internal SAP function behind it. The consumer has a clear custom contract, but the internal dependency and its upgrade risk remain. Check the actual release and classification evidence; the wrapper alone cannot support a Level A claim.
 
-The same reasoning applies to an internal C dependency or a D technique: hiding it behind one method does not remove it. Record the dependency, owner, and replacement condition. If a suitable released SAP API becomes available, assess moving to it and retiring the wrapper. The wrapper's useful job is to control and isolate access, not to change the facts about the code underneath.
+The same reasoning applies to a nominated classic B dependency, an internal C dependency or a D technique: hiding it behind one method does not remove it. Record the dependency, owner, and replacement condition. If a suitable released SAP API becomes available, assess moving to it and retiring the wrapper. The wrapper's useful job is to control and isolate access, not to change the facts about the code underneath.
 
 **Avoid this mistake:** A wrapper is not a mechanism for laundering an internal or prohibited dependency into an entirely Level A solution.
 
@@ -3040,7 +3040,7 @@ The table names three exit paths that require separate reasoning. The exception 
 
 **Short answer:** I would use Strategy for country-specific approval rules. The coordinator keeps the workflow, and the selected strategy returns the rule decision. Template Method fits a shared sequence where subclasses intentionally fill in a few fixed steps. Here the rule can vary without changing the coordinator class. I would only choose inheritance if the shared sequence and permitted overrides are clear requirements.
 
-**Reasoning and example:** The application receives an order and selects the country rule. Each rule receives the required order data and returns a decision, such as the required approver. It should not secretly commit, send email or change global data. The coordinator stays responsible for applying the decision and continuing the workflow.
+**Reasoning and example:** The application receives an order for 8,000 EUR and supplies the appropriate country rule. In this example, the DE rule requires a manager above 5,000 EUR, while the FR rule uses 10,000 EUR. The same amount therefore requires a manager for DE but not for FR. Each rule receives the required order data and returns a decision, such as the required approver. It should not secretly commit, send email or change global data. The coordinator stays responsible for applying the decision and continuing the workflow.
 
 I test that coordinator with several rules and verify the same success and failure expectations. If countries later need different process sequences, I review the workflow itself instead of adding increasingly powerful subclass hooks. Strategy works best when the changing part is a replaceable rule. Template Method works when a stable base algorithm deliberately controls which steps subclasses may customize.
 

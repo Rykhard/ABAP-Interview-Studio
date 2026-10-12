@@ -6,23 +6,19 @@ for(const lesson of lessons)for(const id of lesson.questions){if(!lessonsByQuest
 const lessonPositions=new Map(),lessonChoices=new Map(),studyViewChoices=new Map();
 try{const stored=JSON.parse(localStorage.getItem('abap-studio-study-views-v1')||'{}');if(stored&&typeof stored==='object'&&!Array.isArray(stored))for(const [id,value] of Object.entries(stored))if(byId.has(id)&&['calm','developer','guided'].includes(value))studyViewChoices.set(id,value);}catch{/* Optional view preferences must not block learning. */}
 function availableStudyViews(q){
- const views=[['calm','Calm Study']];
- if(codeExamples.some(x=>x.questions.includes(q.id))||visuals.some(x=>x.questions.includes(q.id)))views.push(['developer','Developer Workspace']);
- if(lessonsByQuestion.has(q.id))views.push(['guided','Guided Lesson']);
+ const views=[['calm','Explanation']];
+ if(codeExamples.some(x=>x.questions.includes(q.id)))views.push(['developer','Code']);
+ if(lessonsByQuestion.has(q.id))views.push(['guided','Step by step']);
  return views;
 }
 function selectedStudyView(q){
- const requested=studyViewChoices.get(q.id)||(readingPreference.layout==='workspace'?'developer':'calm');
+ const requested=studyViewChoices.get(q.id)||'calm';
  return availableStudyViews(q).some(([key])=>key===requested)?requested:'calm';
 }
 function studyViewToolbar(q,selected){
  const available=availableStudyViews(q);
  if(available.length===1)return '';
- return `<div class="study-view-toolbar"><span class="study-view-label">Study view</span><div class="study-view-picker" role="group" aria-label="Study view for ${q.id}">${available.map(([key,label])=>`<button data-study-view="${key}" aria-pressed="${key===selected}">${label}</button>`).join('')}</div></div>`;
-}
-function lessonPreview(q){
- const related=lessonsByQuestion.get(q.id);if(!related)return '';
- return `<div class="lesson-invitation"><div><span class="lesson-kicker">Learn by following an example</span><strong>${esc(related[0].title)}</strong><span>${related[0].steps.length} steps${related.length>1?' · '+related.length+' examples':''}</span></div><button data-study-view="guided">Start guided lesson &rarr;</button></div>`;
+ return `<div class="study-view-toolbar"><div class="study-view-picker" role="group" aria-label="Answer format for ${q.id}">${available.map(([key,label])=>`<button data-study-view="${key}" aria-pressed="${key===selected}">${label}</button>`).join('')}</div></div>`;
 }
 function guidedLesson(q){
  const related=lessonsByQuestion.get(q.id),lesson=related.find(x=>x.id===lessonChoices.get(q.id))||related[0];
@@ -31,20 +27,19 @@ function guidedLesson(q){
  const changed=state=>!previous||previous.states.find(s=>s.label===state.label)?.value!==state.value;
  return `<section class="lesson-player" data-lesson="${lesson.id}" data-lesson-question="${q.id}" aria-label="${esc(lesson.title)}">
  ${related.length>1?`<label class="lesson-choice-label">Worked example<select data-lesson-choice>${related.map(x=>`<option value="${x.id}" ${x.id===lesson.id?'selected':''}>${esc(x.title)}</option>`).join('')}</select></label>`:''}
- <header class="lesson-intro"><div><span class="lesson-kicker">Guided Lesson · ${lesson.steps.length} steps</span><h4>${esc(lesson.title)}</h4><p>${esc(lesson.scenario)}</p></div></header>
- <p class="lesson-goal"><strong>You will understand:</strong> ${esc(lesson.goal)}</p>
- <div class="lesson-body"><nav class="lesson-step-list" aria-label="Lesson steps">${lesson.steps.map((item,i)=>`<button data-lesson-step="${i}" ${i===index?'aria-current="step"':''} aria-label="Step ${i+1}: ${esc(item.title)}"><span class="lesson-step-number">${i+1}</span><span>${esc(item.title)}</span></button>`).join('')}</nav>
+ <header class="lesson-intro"><div><h4>${esc(lesson.title)}</h4><p>${esc(lesson.scenario)}</p></div></header>
+
+ <div class="lesson-body"><nav class="lesson-step-list" aria-label="Lesson steps">${lesson.steps.map((item,i)=>`<button data-lesson-step="${i}" ${i===index?'aria-current="step"':''} aria-label="Step ${i+1}: ${esc(item.title)}" title="${esc(item.title)}"><span class="lesson-step-number">${i+1}</span><span class="lesson-step-name">${esc(item.title)}</span></button>`).join('')}</nav>
  <div class="lesson-stage" aria-live="polite" aria-atomic="true"><div class="lesson-step-heading"><span class="lesson-kicker">Step ${index+1} of ${lesson.steps.length}</span><h5>${esc(step.title)}</h5></div><p class="lesson-explanation">${esc(step.explanation)}</p>
- <div class="lesson-state-board"><div class="lesson-state-heading"><strong>What changes in this example</strong><span>Illustrative state</span></div><ol class="lesson-flow" aria-label="Process stages">${lesson.nodes.map(node=>`<li class="${step.active.includes(node.id)?'is-current':''}" ${step.active.includes(node.id)?'aria-current="step"':''}><span class="flow-dot" aria-hidden="true"></span><span>${esc(node.label)}</span>${step.active.includes(node.id)?'<small>Now</small>':''}</li>`).join('')}</ol>
- <dl class="lesson-state-values">${step.states.map(state=>`<div class="${changed(state)?'state-changed':''}"><dt>${esc(state.label)}${index&&changed(state)?'<span class="state-update">Changed</span>':''}</dt><dd>${esc(state.value)}</dd></div>`).join('')}</dl></div>
+ <div class="lesson-state-board"><div class="lesson-state-heading"><strong>Example state</strong><span>${step.active.map(id=>esc(lesson.nodes.find(n=>n.id===id).label)).join(' · ')}</span></div><dl class="lesson-state-values">${step.states.map(state=>`<div class="${changed(state)?'state-changed':''}"><dt>${esc(state.label)}${index&&changed(state)?'<span class="state-update">Changed</span>':''}</dt><dd>${index&&changed(state)?`<span class="state-before">${esc(previous.states.find(s=>s.label===state.label)?.value||'Not set')} <span aria-label="changes to">&rarr;</span></span>`:''}<span>${esc(state.value)}</span></dd></div>`).join('')}</dl></div>
  <div class="lesson-outcome"><span aria-hidden="true">&rarr;</span><p>${esc(step.outcome)}</p></div></div></div>
  <div class="lesson-navigation"><button data-lesson-step="${index-1}" ${index===0?'disabled':''}>&larr; Previous step</button><span>${index+1} / ${lesson.steps.length}</span>${index===lesson.steps.length-1?'<button data-lesson-step="0">Restart example</button>':`<button class="primary" data-lesson-step="${index+1}">Next step &rarr;</button>`}</div>
  ${index===lesson.steps.length-1?`<div class="lesson-takeaway"><strong>Remember</strong><p>${esc(lesson.takeaway)}</p><button data-practice-question="${q.id}">Practice this concept &rarr;</button></div>`:''}
- <details class="lesson-sources"><summary>Scope &amp; sources</summary><p>${esc(lesson.limitation)}</p><ul>${lesson.references.map(ref=>`<li><a href="${esc(ref.url)}" target="_blank" rel="noopener">${esc(ref.title)} &#8599;</a></li>`).join('')}</ul></details></section>`;
+ <details class="lesson-sources"><summary>Scope &amp; sources</summary><p>${esc(lesson.goal)}</p><p>${esc(lesson.limitation)}</p><ul>${lesson.references.map(ref=>`<li><a href="${esc(ref.url)}" target="_blank" rel="noopener">${esc(ref.title)} &#8599;</a></li>`).join('')}</ul></details></section>`;
 }
 function replaceStudyExperience(region,q,view){
  studyViewChoices.set(q.id,view);saveOptional('abap-studio-study-views-v1',JSON.stringify(Object.fromEntries(studyViewChoices)));
- if(view==='developer'&&codeExamples.some(example=>example.questions.includes(q.id)))explanationModes.set(q.id,'code');
+
  const holder=document.createElement('div');holder.innerHTML=answer(q);const replacement=holder.firstElementChild;region.replaceWith(replacement);
  replacement.querySelector(`[data-study-view="${view}"]`)?.focus({preventScroll:true});
 }

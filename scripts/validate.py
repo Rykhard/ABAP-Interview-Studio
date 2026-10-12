@@ -82,7 +82,7 @@ if any(token in html for token in ['__TOPICS__','id="visualsTab"','id="resources
 filters=re.search(r'<div id="filters".*?</div>',html,re.S)
 setup=re.search(r'<section id="practiceSetup".*?</section>',html,re.S)
 if not filters or 'id="scope"' in filters.group(0) or 'id="selection"' in filters.group(0):errors.append('Learning toolbar must not include difficulty/progress filters')
-if not setup or any(token not in setup.group(0) for token in ['id="selection"','value="new"','value="retry"','id="advancedSettings"','id="scope"','id="sessionLength"','id="startPractice"','id="recallCoverage"','id="quizCoverage"']):errors.append('Practice selection or optional difficulty settings missing')
+if not setup or any(token not in setup.group(0) for token in ['id="selection"','value="new"','value="retry"','id="advancedSettings"','id="scope"','id="sessionLength"','id="startPractice"','id="coverageText"','id="practiceSummary"']):errors.append('Practice selection, availability, or optional difficulty settings missing')
 quiz_match=re.search(r'<script id="quiz-data" type="application/json">(.*?)</script>',html,re.S)
 if not quiz_match or json.loads(quiz_match.group(1))!=quiz_items:errors.append('Quiz payload mismatch')
 if any(token in html for token in ['__QUIZ__','__APP__','__QUIZ_APP__','__READING_APP__','__PRACTICE_CSS__','__SEARCH_APP__','__USABILITY_CSS__']):errors.append('Unresolved app placeholder')

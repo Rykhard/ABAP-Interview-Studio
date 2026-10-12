@@ -2273,11 +2273,11 @@ ENDIF.
 
 **Read it step by step:**
 
-1. **Count the full authorized result** (lines 1, 2): If 125 rows match, return 125 even when the client requests only 20 rows.
+1. **Count the full authorized result** (lines 1, 2): Lea can read matching orders 101, 104, 108 and 110. Return count 4 even when she requests only two rows.
 2. **Apply skip and top** (lines 10, 11, 13, 14, 15): Skip the requested offset, then stop at the page size. Size zero returns no data; the unlimited constant does not impose a size limit.
-3. **Send just this page** (lines 19): For skip 20 and top 20, the data response holds rows 21 through 40 from the same filtered and consistently ordered result.
+3. **Send just this page** (lines 19): With skip 1 and top 2, return orders 104 and 108 from that same authorized and consistently ordered result.
 
-**What happens:** A 20-row page can correctly report a total of 125 matching records.
+**What happens:** The page contains orders 104 and 108; the total count remains 4.
 
 **Scope:** This teaches response shaping, not a complete query provider. Apply filters, authorization, requested sorting, search and supported aggregation before paging; push work to the data source for large result sets.
 
@@ -2405,7 +2405,7 @@ define view entity ZI_OrderText
 1. **Match both parts of the text key** (lines 4, 5): Matching only Status could find English, German and French rows. The language condition selects the current language.
 2. **Cardinality must match real data** (lines 3, 7, 9): With at most one text row per status and language, selecting StatusText preserves one row per order. Writing [0..1] or key does not remove duplicate data.
 
-**What happens:** An order with translations in three languages still appears once when its text is selected.
+**What happens:** An order with status texts in EN and DE still appears once when its text is selected for one language.
 
 **Scope:** Missing text can remain empty; fallback-language logic is separate. Verify all key dimensions and the actual source uniqueness rather than using DISTINCT to hide an incomplete join.
 

@@ -6,7 +6,7 @@
    "RAP-05",
    "SRAP-03"
   ],
-  "scenario": "Order request P1 contains two items at 40 EUR each and a 5 EUR delivery charge. Its permitted total is 100 EUR.",
+  "scenario": "Order request P1 contains two items costing 40 EUR and 60 EUR. Its delivery date is valid. Follow this successful save; an invalid date would stop it at the check step.",
   "goal": "Place derivation, validation, numbering, persistence and cleanup on the correct side of the save boundary.",
   "nodes": [
    {
@@ -37,14 +37,14 @@
   "steps": [
    {
     "title": "Finish the calculations",
-    "explanation": "FINALIZE derives 85 EUR from the pending items and delivery charge. This is the final phase for ordinary changes to the transactional data.",
+    "explanation": "FINALIZE calculates 100 EUR from the two pending item amounts, 40 EUR and 60 EUR. This is the final phase for ordinary changes to the transactional data.",
     "active": [
      "finalize"
     ],
     "states": [
      {
       "label": "Total",
-      "value": "80 -> 85 EUR"
+      "value": "100 EUR"
      },
      {
       "label": "Business check",
@@ -63,18 +63,18 @@
    },
    {
     "title": "Check the finished values",
-    "explanation": "CHECK_BEFORE_SAVE tests 85 EUR against the 100 EUR limit. This example passes; an ordinary validation failure would stop the early save and return correlated failure information.",
+    "explanation": "CHECK_BEFORE_SAVE validates the delivery date. It is valid in this run. An invalid date would stop the early save before a final document number or database write, returning a message so the user can correct it.",
     "active": [
      "check"
     ],
     "states": [
      {
       "label": "Total",
-      "value": "85 EUR"
+      "value": "100 EUR"
      },
      {
       "label": "Business check",
-      "value": "Passed: 85 <= 100"
+      "value": "Passed: delivery date valid"
      },
      {
       "label": "Order number",
@@ -96,7 +96,7 @@
     "states": [
      {
       "label": "Total",
-      "value": "85 EUR"
+      "value": "100 EUR"
      },
      {
       "label": "Business check",
@@ -115,14 +115,14 @@
    },
    {
     "title": "Assign the final number",
-    "explanation": "The late-numbered order receives number 4701 in ADJUST_NUMBERS. The mapping connects preliminary identity P1 to 4701; this is numbering, not another opportunity to change the amount.",
+    "explanation": "The late-numbered order receives number 4711 in ADJUST_NUMBERS. The mapping connects preliminary identity P1 to 4711; this is numbering, not another opportunity to change the amount.",
     "active": [
      "number"
     ],
     "states": [
      {
       "label": "Total",
-      "value": "85 EUR"
+      "value": "100 EUR"
      },
      {
       "label": "Business check",
@@ -130,7 +130,7 @@
      },
      {
       "label": "Order number",
-      "value": "P1 -> 4701"
+      "value": "4711"
      },
      {
       "label": "Database",
@@ -141,14 +141,14 @@
    },
    {
     "title": "Write and commit the order",
-    "explanation": "SAVE writes order 4701 and its items. The runtime or external transaction owner completes the commit; a handler must not issue its own commit.",
+    "explanation": "SAVE writes order 4711 and its items. The runtime or external transaction owner completes the commit; a handler must not issue its own commit.",
     "active": [
      "save"
     ],
     "states": [
      {
       "label": "Total",
-      "value": "85 EUR"
+      "value": "100 EUR"
      },
      {
       "label": "Business check",
@@ -156,11 +156,11 @@
      },
      {
       "label": "Order number",
-      "value": "4701"
+      "value": "4711"
      },
      {
       "label": "Database",
-      "value": "4701 committed at 85 EUR"
+      "value": "4711 committed at 100 EUR"
      }
     ],
     "outcome": "Persistence and commit remain under transaction control."
@@ -174,7 +174,7 @@
     "states": [
      {
       "label": "Total",
-      "value": "Persisted: 85 EUR"
+      "value": "Persisted: 100 EUR"
      },
      {
       "label": "Buffer",
@@ -182,11 +182,11 @@
      },
      {
       "label": "Order number",
-      "value": "4701"
+      "value": "4711"
      },
      {
       "label": "Database",
-      "value": "4701 committed at 85 EUR"
+      "value": "4711 committed at 100 EUR"
      }
     ],
     "outcome": "Do not carry pending state into the next transaction."
@@ -1306,7 +1306,7 @@
    "MODEL-06",
    "MODEL-10"
   ],
-  "scenario": "Order 4710 has amount 100 EUR. Its product has an English and a German text, and a report joins both texts using only the product key.",
+  "scenario": "Order 4710 has amount 100 EUR. Its status has an English and a German text, and a report joins both texts using only the status key.",
   "goal": "Repair the relationship's real uniqueness instead of hiding duplicated business rows.",
   "nodes": [
    {
@@ -1355,7 +1355,7 @@
    },
    {
     "title": "Observe the row multiplication",
-    "explanation": "Joining on the product alone matches two texts. The result now contains 4710 twice, once per language; summing its amount yields 200 EUR.",
+    "explanation": "Joining on the status alone matches two texts. The result now contains 4710 twice, once per language; summing its amount yields 200 EUR.",
     "active": [
      "join"
     ],
@@ -1407,7 +1407,7 @@
    },
    {
     "title": "Make the match fit the grain",
-    "explanation": "The corrected relationship includes the requested English language, and the text key is unique for product plus language. The report returns one order row and its amount returns to 100 EUR.",
+    "explanation": "The corrected relationship includes the requested English language, and the text key is unique for status plus language. The report returns one order row and its amount returns to 100 EUR.",
     "active": [
      "repair"
     ],

@@ -25,6 +25,7 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     values={'__MOTION_CSS__':(root/'scripts/motion.css').read_text(encoding='utf-8'),'__CODE_CSS__':(root/'scripts/code-examples.css').read_text(encoding='utf-8'),'__CODE_DATA__':payload(examples),'__USABILITY_CSS__':(root/'scripts/usability.css').read_text(encoding='utf-8'),'__PRACTICE_CSS__':(root/'scripts/practice.css').read_text(encoding='utf-8'),'__APP__':app,'__DATA__':payload(modules),'__VISUALS__':payload(visual_metadata),'__QUIZ__':payload(quiz_items),'__TRACKS__':payload(catalog(modules)),'__TOPICS__':payload(topic_catalog(modules))}
     values['__CALM_CSS__']=(root/'scripts/calm.css').read_text(encoding='utf-8')
     values['__LESSON_DATA__']=payload(lessons)
+    values['__SIMPLIFY_CSS__']=(root/'scripts/simplify.css').read_text(encoding='utf-8')
     values['__LESSON_CSS__']=(root/'scripts/lessons.css').read_text(encoding='utf-8')
     for token,value in values.items():template=template.replace(token,value)
     (root/'START_HERE.html').write_text(template,encoding='utf-8')

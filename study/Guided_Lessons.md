@@ -585,7 +585,7 @@ An approval service handles an order for 8,000 EUR. In this example, country DE 
 
 **Learn:** Keep the varying decision inside a supplied Strategy and the process inside the coordinator.
 
-Questions: [OO-07](https://abap-interview-studio.pages.dev/#q-OO-07), [OO-09](https://abap-interview-studio.pages.dev/#q-OO-09), [PAT-01](https://abap-interview-studio.pages.dev/#q-PAT-01)
+Questions: [PAT-01](https://abap-interview-studio.pages.dev/#q-PAT-01), [OO-09](https://abap-interview-studio.pages.dev/#q-OO-09), [OO-07](https://abap-interview-studio.pages.dev/#q-OO-07)
 
 ### 1. Supply the country rule
 
@@ -728,7 +728,7 @@ A service may retry an idempotent remote lookup once after a temporary timeout. 
 
 **Learn:** Arrange controlled dependencies, run the real policy, and assert its observable behavior.
 
-Questions: [TEST-01](https://abap-interview-studio.pages.dev/#q-TEST-01), [TEST-02](https://abap-interview-studio.pages.dev/#q-TEST-02), [OO-14](https://abap-interview-studio.pages.dev/#q-OO-14)
+Questions: [TEST-02](https://abap-interview-studio.pages.dev/#q-TEST-02), [TEST-01](https://abap-interview-studio.pages.dev/#q-TEST-01), [OO-14](https://abap-interview-studio.pages.dev/#q-OO-14)
 
 ### 1. Arrange a timeout followed by success
 
@@ -807,7 +807,7 @@ Keep prepared tests, actual runs, and integration evidence distinct.
 
 ## Follow one order through the save sequence
 
-Order request P1 contains two items at 40 EUR each and a 5 EUR delivery charge. Its permitted total is 100 EUR.
+Order request P1 contains two items costing 40 EUR and 60 EUR. Its delivery date is valid. Follow this successful save; an invalid date would stop it at the check step.
 
 **Learn:** Place derivation, validation, numbering, persistence and cleanup on the correct side of the save boundary.
 
@@ -815,9 +815,9 @@ Questions: [RAP-05](https://abap-interview-studio.pages.dev/#q-RAP-05), [SRAP-03
 
 ### 1. Finish the calculations
 
-FINALIZE derives 85 EUR from the pending items and delivery charge. This is the final phase for ordinary changes to the transactional data.
+FINALIZE calculates 100 EUR from the two pending item amounts, 40 EUR and 60 EUR. This is the final phase for ordinary changes to the transactional data.
 
-- **Total:** 80 -> 85 EUR
+- **Total:** 100 EUR
 - **Business check:** Not yet complete
 - **Order number:** Preliminary P1
 - **Database:** No new order
@@ -826,10 +826,10 @@ Calculate before the final consistency check.
 
 ### 2. Check the finished values
 
-CHECK_BEFORE_SAVE tests 85 EUR against the 100 EUR limit. This example passes; an ordinary validation failure would stop the early save and return correlated failure information.
+CHECK_BEFORE_SAVE validates the delivery date. It is valid in this run. An invalid date would stop the early save before a final document number or database write, returning a message so the user can correct it.
 
-- **Total:** 85 EUR
-- **Business check:** Passed: 85 <= 100
+- **Total:** 100 EUR
+- **Business check:** Passed: delivery date valid
 - **Order number:** Preliminary P1
 - **Database:** No new order
 
@@ -839,7 +839,7 @@ Predictable business errors belong before late save.
 
 All business objects in this transaction have passed their early checks. The point of no return is reached; ordinary late saving now assumes consistent input.
 
-- **Total:** 85 EUR
+- **Total:** 100 EUR
 - **Business check:** All participating BOs passed
 - **Order number:** Preliminary P1
 - **Database:** No new order
@@ -848,23 +848,23 @@ One object's passing check alone is insufficient.
 
 ### 4. Assign the final number
 
-The late-numbered order receives number 4701 in ADJUST_NUMBERS. The mapping connects preliminary identity P1 to 4701; this is numbering, not another opportunity to change the amount.
+The late-numbered order receives number 4711 in ADJUST_NUMBERS. The mapping connects preliminary identity P1 to 4711; this is numbering, not another opportunity to change the amount.
 
-- **Total:** 85 EUR
+- **Total:** 100 EUR
 - **Business check:** Passed
-- **Order number:** P1 -> 4701
+- **Order number:** 4711
 - **Database:** No new order
 
 Late numbering follows the point of no return.
 
 ### 5. Write and commit the order
 
-SAVE writes order 4701 and its items. The runtime or external transaction owner completes the commit; a handler must not issue its own commit.
+SAVE writes order 4711 and its items. The runtime or external transaction owner completes the commit; a handler must not issue its own commit.
 
-- **Total:** 85 EUR
+- **Total:** 100 EUR
 - **Business check:** Passed
-- **Order number:** 4701
-- **Database:** 4701 committed at 85 EUR
+- **Order number:** 4711
+- **Database:** 4711 committed at 100 EUR
 
 Persistence and commit remain under transaction control.
 
@@ -872,10 +872,10 @@ Persistence and commit remain under transaction control.
 
 CLEANUP resets the transactional buffer for the completed transaction. Early-save failure has a separate CLEANUP_FINALIZE hook to undo relevant early-save work; it is not the success path shown here.
 
-- **Total:** Persisted: 85 EUR
+- **Total:** Persisted: 100 EUR
 - **Buffer:** Cleared
-- **Order number:** 4701
-- **Database:** 4701 committed at 85 EUR
+- **Order number:** 4711
+- **Database:** 4711 committed at 100 EUR
 
 Do not carry pending state into the next transaction.
 
@@ -1341,7 +1341,7 @@ Neither 12 raw rows nor 2 page rows is the correct count.
 
 ## Find the extra rows behind a doubled total
 
-Order 4710 has amount 100 EUR. Its product has an English and a German text, and a report joins both texts using only the product key.
+Order 4710 has amount 100 EUR. Its status has an English and a German text, and a report joins both texts using only the status key.
 
 **Learn:** Repair the relationship's real uniqueness instead of hiding duplicated business rows.
 
@@ -1360,7 +1360,7 @@ Decide what one result row represents.
 
 ### 2. Observe the row multiplication
 
-Joining on the product alone matches two texts. The result now contains 4710 twice, once per language; summing its amount yields 200 EUR.
+Joining on the status alone matches two texts. The result now contains 4710 twice, once per language; summing its amount yields 200 EUR.
 
 - **Order rows:** 2 after join
 - **Texts:** English and German matched
@@ -1382,7 +1382,7 @@ Cardinality describes the data; it does not enforce uniqueness.
 
 ### 4. Make the match fit the grain
 
-The corrected relationship includes the requested English language, and the text key is unique for product plus language. The report returns one order row and its amount returns to 100 EUR.
+The corrected relationship includes the requested English language, and the text key is unique for status plus language. The report returns one order row and its amount returns to 100 EUR.
 
 - **Order rows:** 1
 - **Texts:** English only

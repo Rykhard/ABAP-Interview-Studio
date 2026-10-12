@@ -17,6 +17,9 @@ def load_examples(root, question_ids):
         assert item['language'] in {'ABAP', 'CDS', 'BDEF', 'HTTP', 'JSON', 'XML', 'SQL'}, ident
         assert item['questions'] and len(item['questions']) == len(set(item['questions'])), ident
         assert set(item['questions']) <= question_ids, 'Unknown question in ' + ident
+        assert set(item.get('startFor', [])) <= set(item['questions']), ident
+        focused = [qid for step in item['highlights'] for qid in step.get('questions', [])]
+        assert len(focused) == len(set(focused)) and set(focused) <= set(item['questions']), ident
         lines = item['code'].split('\n')
         assert 2 <= len(lines) <= 45, 'Unbounded or empty excerpt: ' + ident
         assert '\t' not in item['code'], 'Use spaces for stable line layout: ' + ident

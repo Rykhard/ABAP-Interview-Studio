@@ -35,7 +35,10 @@
           14
         ],
         "label": "Match CDS names to table columns",
-        "explanation": "Comment in the business object is stored in order_comment. Mapping connects the two names."
+        "explanation": "Comment in the business object is stored in order_comment. Mapping connects the two names.",
+        "questions": [
+          "RAP-14"
+        ]
       }
     ],
     "outcome": "Creating an order gives it a UUID; a successful save stores Comment in the mapped database column.",
@@ -68,7 +71,11 @@
           5
         ],
         "label": "Read the buffer",
-        "explanation": "If Comment was changed from Old to New in this transaction, this read can return New before the database is saved."
+        "explanation": "If Comment was changed from Old to New in this transaction, this read can return New before the database is saved.",
+        "questions": [
+          "RAP-03",
+          "MODEL-13"
+        ]
       },
       {
         "lines": [
@@ -84,7 +91,10 @@
           7
         ],
         "label": "Check failed reads",
-        "explanation": "Not every requested key must produce a result row. Use the failure and message responses when continuing the surrounding handler."
+        "explanation": "Not every requested key must produce a result row. Use the failure and message responses when continuing the surrounding handler.",
+        "questions": [
+          "RAP-09"
+        ]
       }
     ],
     "outcome": "The next business rule uses the newly entered comment instead of an older database value.",
@@ -114,7 +124,10 @@
           6
         ],
         "label": "Clear, do not ignore",
-        "explanation": "An empty Comment plus mk-on means replace the old text with an empty value. An initial field without its control flag means it was not supplied."
+        "explanation": "An empty Comment plus mk-on means replace the old text with an empty value. An initial field without its control flag means it was not supplied.",
+        "questions": [
+          "SRAP-06"
+        ]
       },
       {
         "lines": [
@@ -155,7 +168,10 @@
           3
         ],
         "label": "Choose the batch policy",
-        "explanation": "This caller abandons all buffered changes after a failed modify. RAP does not make this the only possible policy for every mass operation."
+        "explanation": "This caller abandons all buffered changes after a failed modify. RAP does not make this the only possible policy for every mass operation.",
+        "questions": [
+          "SRAP-20"
+        ]
       },
       {
         "lines": [
@@ -165,7 +181,10 @@
           8
         ],
         "label": "Save has its own result",
-        "explanation": "A modify can succeed and the save can still fail. Keep the save return code and responses instead of reporting success too early."
+        "explanation": "A modify can succeed and the save can still fail. Keep the save return code and responses instead of reporting success too early.",
+        "questions": [
+          "RAP-05"
+        ]
       },
       {
         "lines": [
@@ -218,7 +237,10 @@
           11
         ],
         "label": "Create through the composition",
-        "explanation": "CREATE BY _Items creates an item under that order. The item gets its own request label I1."
+        "explanation": "CREATE BY _Items creates an item under that order. The item gets its own request label I1.",
+        "questions": [
+          "SRAP-07"
+        ]
       },
       {
         "lines": [
@@ -227,7 +249,10 @@
           14
         ],
         "label": "Map labels to returned keys",
-        "explanation": "MAPPED connects successful creates to their generated identities. FAILED identifies rejected operations and REPORTED carries messages."
+        "explanation": "MAPPED connects successful creates to their generated identities. FAILED identifies rejected operations and REPORTED carries messages.",
+        "questions": [
+          "RAP-07"
+        ]
       }
     ],
     "outcome": "One request creates an order and its quantity-2 item in the RAP buffer with the correct parent-child relationship.",
@@ -268,7 +293,10 @@
           8
         ],
         "label": "Include draft preparation",
-        "explanation": "Prepare includes the validation for draft preparation. The on-save rule still matters for applicable active-data save paths."
+        "explanation": "Prepare includes the validation for draft preparation. The on-save rule still matters for applicable active-data save paths.",
+        "questions": [
+          "SRAP-19"
+        ]
       }
     ],
     "outcome": "An order with EndDate before BeginDate can be rejected by its validation before it is persisted.",
@@ -314,7 +342,10 @@
           7
         ],
         "label": "Reject this instance",
-        "explanation": "When the end date is too early, the transactional key is added to FAILED. An error message alone is not the rejection."
+        "explanation": "When the end date is too early, the transactional key is added to FAILED. An error message alone is not the rejection.",
+        "questions": [
+          "RAP-07"
+        ]
       },
       {
         "lines": [
@@ -325,7 +356,11 @@
           16
         ],
         "label": "Point to the field to fix",
-        "explanation": "The reported error is attached to this order and its EndDate field. After correction, the old state message is cleared and no replacement error is added."
+        "explanation": "The reported error is attached to this order and its EndDate field. After correction, the old state message is cleared and no replacement error is added.",
+        "questions": [
+          "ADV-08",
+          "SRAP-24"
+        ]
       }
     ],
     "outcome": "The invalid order cannot be saved, and the user sees a date error on the correct order; correcting the dates clears it on revalidation.",
@@ -339,6 +374,9 @@
         "title": "SAP: generic message implementation",
         "url": "https://help.sap.com/docs/ABAP_Cloud/abap-rap/generic-message-implementation"
       }
+    ],
+    "startFor": [
+      "RAP-07"
     ]
   },
   {
@@ -370,7 +408,11 @@
           11
         ],
         "label": "Replace the total",
-        "explanation": "Quantity 3 and price 10 produce Total 30 every time. Adding 30 to the old total would incorrectly produce 60 on a second run."
+        "explanation": "Quantity 3 and price 10 produce Total 30 every time. Adding 30 to the old total would incorrectly produce 60 on a second run.",
+        "questions": [
+          "RAP-13",
+          "SRAP-11"
+        ]
       }
     ],
     "outcome": "The buffered Total becomes 30 for quantity 3 and unit price 10, regardless of repeated execution with those inputs.",
@@ -380,6 +422,9 @@
         "title": "SAP: determination and validation modeling",
         "url": "https://help.sap.com/docs/abap-cloud/abap-rap/determination-and-validation-modelling?locale=en-US"
       }
+    ],
+    "startFor": [
+      "RAP-13"
     ]
   },
   {
@@ -410,7 +455,10 @@
           10
         ],
         "label": "Fill the declared result",
-        "explanation": "%tky identifies the action's instance and %param contains its returned order data for the declared $self result."
+        "explanation": "%tky identifies the action's instance and %param contains its returned order data for the declared $self result.",
+        "questions": [
+          "ADV-05"
+        ]
       }
     ],
     "outcome": "A successful Approve result contains the newly approved order data instead of an empty response.",
@@ -451,7 +499,11 @@
           7
         ],
         "label": "Expose selected operations",
-        "explanation": "The consumer gets create, update and Approve from the base behavior. An operation missing from the underlying behavior cannot be invented by writing use here."
+        "explanation": "The consumer gets create, update and Approve from the base behavior. An operation missing from the underlying behavior cannot be invented by writing use here.",
+        "questions": [
+          "CDS-05",
+          "MODEL-16"
+        ]
       }
     ],
     "outcome": "The projected BO offers these selected operations to its consumers.",
@@ -506,6 +558,9 @@
         "title": "SAP: service binding",
         "url": "https://help.sap.com/docs/abap-cloud/abap-rap/service-binding"
       }
+    ],
+    "startFor": [
+      "ADV-09"
     ]
   },
   {
@@ -527,14 +582,21 @@
           2
         ],
         "label": "Check this entity version",
-        "explanation": "LocalLastChangedAt supports the consumer's optimistic update check for the entity."
+        "explanation": "LocalLastChangedAt supports the consumer's optimistic update check for the entity.",
+        "questions": [
+          "ADV-01",
+          "SRAP-09"
+        ]
       },
       {
         "lines": [
           3
         ],
         "label": "Detect relevant active BO changes",
-        "explanation": "LastChangedAt is the total ETag. If the active BO changed while a draft lock was no longer protecting it, a stale draft must not silently replace that newer state."
+        "explanation": "LastChangedAt is the total ETag. If the active BO changed while a draft lock was no longer protecting it, a stale draft must not silently replace that newer state.",
+        "questions": [
+          "SRAP-10"
+        ]
       },
       {
         "lines": [
@@ -544,7 +606,10 @@
           9
         ],
         "label": "Separate draft work from active data",
-        "explanation": "Edit starts draft editing, Activate attempts the active save, Discard drops draft work and Resume continues editing an existing draft."
+        "explanation": "Edit starts draft editing, Activate attempts the active save, Discard drops draft work and Resume continues editing an existing draft.",
+        "questions": [
+          "RAP-12"
+        ]
       }
     ],
     "outcome": "A stale client or stale draft can be rejected instead of overwriting a newer active change.",
@@ -693,7 +758,10 @@
           2
         ],
         "label": "Count the full authorized result",
-        "explanation": "If 125 rows match, return 125 even when the client requests only 20 rows."
+        "explanation": "Lea can read matching orders 101, 104, 108 and 110. Return count 4 even when she requests only two rows.",
+        "questions": [
+          "MODEL-03"
+        ]
       },
       {
         "lines": [
@@ -704,17 +772,20 @@
           15
         ],
         "label": "Apply skip and top",
-        "explanation": "Skip the requested offset, then stop at the page size. Size zero returns no data; the unlimited constant does not impose a size limit."
+        "explanation": "Skip the requested offset, then stop at the page size. Size zero returns no data; the unlimited constant does not impose a size limit.",
+        "questions": [
+          "MODEL-05"
+        ]
       },
       {
         "lines": [
           19
         ],
         "label": "Send just this page",
-        "explanation": "For skip 20 and top 20, the data response holds rows 21 through 40 from the same filtered and consistently ordered result."
+        "explanation": "With skip 1 and top 2, return orders 104 and 108 from that same authorized and consistently ordered result."
       }
     ],
-    "outcome": "A 20-row page can correctly report a total of 125 matching records.",
+    "outcome": "The page contains orders 104 and 108; the total count remains 4.",
     "caveat": "This teaches response shaping, not a complete query provider. Apply filters, authorization, requested sorting, search and supported aggregation before paging; push work to the data source for large result sets.",
     "references": [
       {
@@ -805,6 +876,9 @@
         "title": "SAP: BAPI numbering and save sequence",
         "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US&state=PRODUCTION&version=sap_cross_product_abap"
       }
+    ],
+    "startFor": [
+      "RAP-11"
     ]
   },
   {
@@ -877,7 +951,7 @@
         "explanation": "With at most one text row per status and language, selecting StatusText preserves one row per order. Writing [0..1] or key does not remove duplicate data."
       }
     ],
-    "outcome": "An order with translations in three languages still appears once when its text is selected.",
+    "outcome": "An order with status texts in EN and DE still appears once when its text is selected for one language.",
     "caveat": "Missing text can remain empty; fallback-language logic is separate. Verify all key dimensions and the actual source uniqueness rather than using DISTINCT to hide an incomplete join.",
     "references": [
       {

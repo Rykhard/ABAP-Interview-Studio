@@ -32,15 +32,15 @@ function practiceSetup(){
  const total=filtered(false).length,mcq=practicePool('quiz',false).length,items=practicePool(),pool=practicePool(practiceKind,false),counts={new:0,retry:0,complete:0};
  pool.forEach(q=>counts[questionStatus(q)]++);
  $('practiceContext').textContent=practiceContext();
- $('recallCoverage').textContent=total+' of '+total+' questions';$('quizCoverage').textContent=mcq+' of '+total+' questions';
+
  $('recallKind').setAttribute('aria-pressed',String(practiceKind==='recall'));$('quizKind').setAttribute('aria-pressed',String(practiceKind==='quiz'));
  $('coverageText').textContent=practiceKind==='quiz'?`${mcq} of ${total} study questions have authored answer choices. ${total-mcq} more can be practiced aloud.`:`All ${total} study questions are available here. Reveal the model answer, then rate your own explanation.`;
  $('useAllQuestions').hidden=practiceKind!=='quiz'||mcq===total;$('useAllQuestions').textContent='Use all '+total+' in interview practice';
  for(const option of $('selection').options)option.textContent=option.value==='all'?`All questions (${pool.length})`:option.value==='new'?`New questions (${counts.new})`:`Retry mistakes (${counts.retry})`;
- $('selectionProgress').textContent=`${counts.new} new · ${counts.retry} to retry · ${counts.complete} ${practiceKind==='quiz'?'latest answers correct':'ready to explain'}`;
+
  $('advancedLabel').textContent='More settings'+($('scope').value==='all'?'':' · '+$('scope').value)+($('search').value?' · search active':'');
  const count=plannedCount(items.length);$('startPractice').disabled=!count;$('startPractice').textContent=count?`Start ${count}-question session`:'No questions to start';
- $('practiceSummary').textContent=count?`${items.length} available · ${practiceKind==='quiz'?'checked answers with explanations':'self-rated interview rehearsal'}`:$('selection').value==='retry'?'No mistakes to retry in this selection. Choose All questions or another topic.':$('selection').value==='new'?'No new questions in this selection. Choose All questions to repeat them.':'No matching questions. Change the topic or clear the optional filters.';
+ $('practiceSummary').textContent=count?`${items.length} questions available${practiceKind==='quiz'?' with answer choices':''}`:$('selection').value==='retry'?'No mistakes to retry in this selection. Choose All questions or another topic.':$('selection').value==='new'?'No new questions in this selection. Choose All questions to repeat them.':'No matching questions. Change the topic or clear the optional filters.';
  $('practiceHelpText').textContent=practiceKind==='quiz'?'New means no submitted quiz attempt. Retry uses your latest incorrect answer, even if an earlier attempt was correct. Earn 10 XP once per correctly answered concept. Quiz scores do not change spoken readiness.':'New means no spoken self-rating. Retry means your latest rating was 0 or 1. Reading alone does not count as an attempt. Your microphone is not recorded and spoken answers are not graded automatically.';
 }
 function beginPractice(ids,kind=practiceKind){

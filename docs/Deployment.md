@@ -29,7 +29,7 @@ The build also produces `dist.zip` for dashboard upload. Choose Git integration 
 
 Only the explicit static allowlist from `scripts/build_site.py` enters `dist`: the entry pages, visuals, PDFs, flashcards, study/topic guides, public review notes and deployment guide. The site does not publish original personal documents, previous private Git history, task records, credentials or local progress exports. `deployment-manifest.json` records the published paths and hashes.
 
-This repository and a normal Pages deployment are public. Learner progress is stored in that browser on the site's origin, not sent to a server. To transfer progress from the local HTML version, export it there and import it on the hosted site. Different devices/browsers have separate progress until an account/synchronization feature is implemented.
+This repository and a normal Pages deployment are public. Learner progress is stored in that browser on the site's origin, not sent to a server. The app has no progress import/export interface. Local HTML, different browsers and different devices keep separate progress until an account/synchronization feature is implemented.
 
 ## Verification after deployment
 

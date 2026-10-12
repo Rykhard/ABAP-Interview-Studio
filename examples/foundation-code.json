@@ -30,7 +30,10 @@
           9
         ],
         "label": "Read order 9",
-        "explanation": "The result is the row with amount 200. No manual sorting or numeric row position is needed."
+        "explanation": "The result is the row with amount 200. No manual sorting or numeric row position is needed.",
+        "questions": [
+          "ABAP-02"
+        ]
       }
     ],
     "outcome": "Order 9 is found by its identity. A standard table with an empty key would express a different access choice.",
@@ -115,7 +118,10 @@
           15
         ],
         "label": "Change the actual row",
-        "explanation": "ASSIGNING points to the row. The table amount becomes 300. Each sy-subrc is checked immediately after its read."
+        "explanation": "ASSIGNING points to the row. The table amount becomes 300. Each sy-subrc is checked immediately after its read.",
+        "questions": [
+          "BASE-05"
+        ]
       }
     ],
     "outcome": "The work area ends at 200, while the table row ends at 300. A later statement must not overwrite sy-subrc before its result is checked.",
@@ -171,6 +177,9 @@
         "title": "SAP: Constructor expressions",
         "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md"
       }
+    ],
+    "startFor": [
+      "ABAP-11"
     ]
   },
   {
@@ -441,7 +450,10 @@
           2
         ],
         "label": "Handle no requested IDs",
-        "explanation": "The output is empty and the database statement is skipped when lt_ids is empty."
+        "explanation": "The output is empty and the database statement is skipped when lt_ids is empty.",
+        "questions": [
+          "SQL-03"
+        ]
       },
       {
         "lines": [
@@ -452,7 +464,10 @@
           7
         ],
         "label": "Read the requested orders",
-        "explanation": "For a nonempty driver, the query matches order_id against its values."
+        "explanation": "For a nonempty driver, the query matches order_id against its values.",
+        "questions": [
+          "SQL-02"
+        ]
       }
     ],
     "outcome": "An empty request returns no orders. Without the guard, FOR ALL ENTRIES ignores its WHERE condition for an empty driver and can read all rows in scope.",
@@ -546,7 +561,10 @@
           5
         ],
         "label": "Keep currency groups separate",
-        "explanation": "The database calculates one total per company and currency instead of sending every item."
+        "explanation": "The database calculates one total per company and currency instead of sending every item.",
+        "questions": [
+          "SQLX-02"
+        ]
       },
       {
         "lines": [
@@ -554,7 +572,10 @@
           7
         ],
         "label": "Filter the totals",
-        "explanation": "HAVING keeps only groups whose calculated total is positive."
+        "explanation": "HAVING keeps only groups whose calculated total is positive.",
+        "questions": [
+          "SQL-09"
+        ]
       }
     ],
     "outcome": "The output contains summarized rows with their currencies. There is no text join here that could multiply an item before summing it.",
@@ -737,6 +758,9 @@
         "title": "SAP: ABAP Unit tests",
         "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/14_ABAP_Unit_Tests.md"
       }
+    ],
+    "startFor": [
+      "OO-06"
     ]
   },
   {
@@ -780,6 +804,9 @@
         "title": "SAP: ABAP Objects",
         "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
       }
+    ],
+    "startFor": [
+      "OO-09"
     ]
   },
   {

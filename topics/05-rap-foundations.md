@@ -327,7 +327,7 @@ The public operation still needs its proper permission checks and business rules
 
 **Short answer:** These fields identify objects at different stages of a RAP request. %cid labels a new instance, and %cid_ref refers to that creation, for example when adding its items. %tky is the transactional key, including relevant context such as draft state. %pid is a preliminary identifier for late numbering. None of these names means they are interchangeable.
 
-**Reasoning and example:** Create a header and two items in one request. The header may not yet have its final document number. Give its creation a content ID, then refer to that ID when creating the items by association. RAP can connect them without requiring the caller to guess a final key.
+**Reasoning and example:** Create a header and one item in one request. The header may not yet have its final document number. Give its creation a content ID, then refer to that ID when creating the item by association. RAP can connect them without requiring the caller to guess a final key.
 
 Inside handlers, use the supplied transactional identity when returning results or messages. Rebuilding a key from only the document number can lose draft context. For late numbering, ADJUST_NUMBERS maps the preliminary identification in %pre to the final %key. A content ID belongs to request correlation; it is not a business number to store and show forever.
 
@@ -412,7 +412,7 @@ Compare when the identity becomes final and when persistence is confirmed.
 
 **Short answer:** Draft saves unfinished editing work separately from active business data. It lets a user continue across HTTP requests or return after an interruption. RAP provides operations such as Edit, Resume, Activate, and Discard; Prepare can run selected checks and calculations. Activation moves valid draft changes into active processing. The request still needs its save sequence to finish.
 
-**Reasoning and example:** A user starts a travel request, enters a destination, and closes the browser before adding dates. A draft-enabled app can keep that incomplete version so the user can resume later. Other business processing should continue to distinguish this unfinished draft from an active request.
+**Reasoning and example:** Maya edits order 4703 from 80 EUR to 120 EUR and closes the browser. The draft keeps her unfinished 120 EUR edit, while active business data stays at 80 EUR. When she returns, activation rejects 120 EUR because this example permits at most 100 EUR. She corrects the draft to 90 EUR; only successful activation and save make 90 EUR the active value.
 
 When the user activates it, required checks can reject missing or invalid data. Successful activation is part of the processing that produces active data; it does not authorize a custom handler to commit on its own. Keep draft and active identities clear in reads, messages, and actions. A custom Submit action may represent a separate business step and is not automatically the same as draft activation.
 

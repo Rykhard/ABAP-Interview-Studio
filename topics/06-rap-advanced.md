@@ -10,7 +10,7 @@ Use this segment for deeper follow-up questions. Connect each feature to a concr
 
 **Short answer:** A lock stops conflicting processing while it is held. An ETag lets a write request check whether the data has changed since the client read it. They solve different problems and are often needed together. RAP declares the relevant lock and version handling in behavior. Draft scenarios also need total-ETag handling for relevant changes to active data.
 
-**Reasoning and example:** Anna and Ben open the same request. Anna saves a new amount. Ben's screen still shows the old amount, so his update must not silently replace Anna's work. An If-Match check against the current ETag can detect that his version is outdated and make him refresh. The ETag did not reserve the request while he was reading it.
+**Reasoning and example:** Ana and Ben read order 4704 at quantity 2 with ETag V1. Ana saves quantity 3, producing ETag V2. Ben tries to save quantity 4 with his older V1. The If-Match check rejects that stale update, leaving quantity 3 intact. Ben must refresh and decide whether quantity 4 is still the change he wants. The ETag did not reserve the order while he was reading it.
 
 A pessimistic lock addresses conflicting processing during the period it is held. Draft editing and changes to active data require the matching draft lock and total-ETag design. Test stale updates and draft resume behavior separately. A lock is temporary coordination; an ETag is a version check, and neither is an audit log.
 
@@ -223,7 +223,7 @@ Locate the input transformation and persistence supplement on the same conceptua
 
 **Short answer:** Side-effect metadata tells a supported UI what to read again after a change or action. For example, changing quantity may require refreshing the total and available actions. The backend must still calculate the correct values. Side effects only coordinate refreshes. Support depends on the backend release, service metadata, and SAPUI5 consumer.
 
-**Reasoning and example:** The user changes an item's quantity from 2 to 5. A backend determination calculates the new total correctly, but the screen may still display the previous amount until it reads that value again. Suitable side-effect metadata tells the UI that the quantity change affects the total and, where supported, related messages or permissions.
+**Reasoning and example:** The user changes an item's quantity from 2 to 3 at a unit price of 15 EUR. A backend determination changes the draft total from 30 EUR to 45 EUR, but the screen may still show 30 EUR until it reads that value again. Suitable side-effect metadata tells the UI that the quantity change affects the total and, where supported, related messages or permissions.
 
 Check the actual network requests and displayed result after both field edits and actions, including draft processing. If the backend total is wrong, adding a refresh cannot fix the calculation. If the backend is correct but the UI stays stale, inspect the metadata and client support. A non-UI API caller does not automatically perform these extra reads just because the metadata exists.
 
@@ -323,7 +323,7 @@ Read from the client down to storage, then explain what each artifact contribute
 
 **Short answer:** A custom query provider must answer what the caller actually asked for. That includes supported filters, sorting, paging, selected fields, and count, while enforcing permissions. A count request and a data request can arrive independently. Count the authorized, filtered result before paging. Treat zero rows requested differently from PAGE_SIZE_UNLIMITED, and use a stable sort order.
 
-**Reasoning and example:** A client asks for the second page of approved requests and the total number matching that filter. Return only the requested page, but calculate the count across all authorized matching requests. Add deterministic ordering so rows do not move unpredictably between pages. If a remote source is involved, map errors and account for its paging and consistency limits.
+**Reasoning and example:** Lea asks for open orders in organization A, sorted by CreatedAt, skipping one and taking two. Of 12 source orders, four match both her permission and filter: 101, 104, 108 and 110. Use OrderID to break equal CreatedAt values. The page contains 104 and 108, while the total count remains 4. Keep that ordering stable so rows do not move unpredictably between pages. If a remote source is involved, map errors and account for its paging and consistency limits.
 
 Test a count-only request separately; it must not depend on entering a branch that fetches data. Also test an empty page and a page size of zero. Zero means no rows, not an unrestricted read. Compare it explicitly with IF_RAP_QUERY_PAGING=>PAGE_SIZE_UNLIMITED. Handle unsupported options deliberately instead of silently returning a plausible but incorrect list.
 

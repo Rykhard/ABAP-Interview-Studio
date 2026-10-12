@@ -30,7 +30,11 @@
           14
         ],
         "label": "Read the result",
-        "explanation": "201 says a resource was created. Location points to it, and the response body gives its ID."
+        "explanation": "201 says a resource was created. Location points to it, and the response body gives its ID.",
+        "questions": [
+          "HTTP-05",
+          "HTTP-06"
+        ]
       }
     ],
     "outcome": "The caller receives order 4711. A 202 response instead would mean accepted for processing, so the caller would still need the eventual result.",
@@ -69,7 +73,11 @@
           13
         ],
         "label": "Retry the same request",
-        "explanation": "After either one or two accepted requests, the intended quantity is still 2."
+        "explanation": "After either one or two accepted requests, the intended quantity is still 2.",
+        "questions": [
+          "HTTP-04",
+          "HTTP-12"
+        ]
       }
     ],
     "outcome": "The operation is idempotent even if the first reply is 201 and the second is 200 or 204.",
@@ -340,7 +348,10 @@
           8
         ],
         "label": "Continue using the supplied link",
-        "explanation": "Resolve this relative link against the service URL and follow it. Treat the skip token as opaque."
+        "explanation": "Resolve this relative link against the service URL and follow it. Treat the skip token as opaque.",
+        "questions": [
+          "ODATA-04"
+        ]
       }
     ],
     "outcome": "The client obtains the remaining order without inventing the server paging token.",
@@ -350,6 +361,9 @@
         "title": "OASIS: OData server-driven paging",
         "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
       }
+    ],
+    "startFor": [
+      "ODATA-04"
     ]
   },
   {
@@ -494,7 +508,10 @@
           9
         ],
         "label": "Capture transport failure immediately",
-        "explanation": "Preserve sy-subrc before another statement changes it. The caller cannot treat this branch as a valid order response."
+        "explanation": "Preserve sy-subrc before another statement changes it. The caller cannot treat this branch as a valid order response.",
+        "questions": [
+          "RFC-12"
+        ]
       }
     ],
     "outcome": "A successful transport call still needs the business-result checks defined by Z_GET_ORDER. Being RFC-enabled alone does not make it a released BAPI.",
@@ -538,7 +555,10 @@
           10
         ],
         "label": "Commit and inspect its result",
-        "explanation": "WAIT requests synchronous completion of relevant update processing. The commit result is separate from the earlier BAPI result."
+        "explanation": "WAIT requests synchronous completion of relevant update processing. The commit result is separate from the earlier BAPI result.",
+        "questions": [
+          "RFC-05"
+        ]
       }
     ],
     "outcome": "The caller can distinguish a rejected business request from a failed commit, and report each correctly.",
@@ -580,7 +600,10 @@
           18
         ],
         "label": "Collect the completed task",
-        "explanation": "RECEIVE obtains the result or failure. Mark the callback received even on error, then use result_code to decide whether the work succeeded."
+        "explanation": "RECEIVE obtains the result or failure. Mark the callback received even on error, then use result_code to decide whether the work succeeded.",
+        "questions": [
+          "RFC-07"
+        ]
       }
     ],
     "outcome": "The coordinator tracks start_result separately from result_code and matches each callback task_name to its package.",
@@ -702,7 +725,10 @@
           11
         ],
         "label": "Read the business data",
-        "explanation": "The order segment supplies the external order ID and customer. These values must still pass application checks."
+        "explanation": "The order segment supplies the external order ID and customer. These values must still pass application checks.",
+        "questions": [
+          "INTF-03"
+        ]
       }
     ],
     "outcome": "A wrong receiver or missing partner profile is a routing/configuration problem; an unknown customer is a business-data problem.",
@@ -744,7 +770,11 @@
           11
         ],
         "label": "Find the receiving business failure",
-        "explanation": "The receiver has status 51 and no confirmed application document. Investigate its detailed status messages before retrying."
+        "explanation": "The receiver has status 51 and no confirmed application document. Investigate its detailed status messages before retrying.",
+        "questions": [
+          "INTF-05",
+          "RICEFW-06"
+        ]
       }
     ],
     "outcome": "Support links both technical messages using the business reference and repairs the customer data or mapping before controlled reprocessing.",
@@ -790,7 +820,10 @@
           11
         ],
         "label": "Test the rejection path",
-        "explanation": "A failed mapping must not quietly post to a guessed default company code."
+        "explanation": "A failed mapping must not quietly post to a guessed default company code.",
+        "questions": [
+          "INTF-10"
+        ]
       }
     ],
     "outcome": "The operator can identify the source value that needs a mapping fix, then reprocess according to the interface recovery rules.",

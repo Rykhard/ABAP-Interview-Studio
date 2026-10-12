@@ -57,4 +57,4 @@ $('searchDialog').addEventListener('keydown',e=>{
  const index=buttons.indexOf(e.target);if(index<0)return;e.preventDefault();const next=index+(e.key==='ArrowDown'?1:-1);if(next<0)$('globalSearchInput').focus();else buttons[Math.min(next,buttons.length-1)].focus();
 });
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&!e.altKey){e.preventDefault();openGlobalSearch();}});
-$('resumePractice').onclick=()=>setMode('train');
+$('resumePractice').onclick=()=>setMode('train',true);
