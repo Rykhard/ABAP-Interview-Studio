@@ -100,6 +100,14 @@ lesson_match=re.search(r'<script id="lesson-data" type="application/json">(.*?)<
 if not lesson_match or json.loads(lesson_match.group(1))!=lessons:errors.append('Guided lesson payload mismatch')
 if any(token in html for token in ['__LESSON_APP__','__LESSON_DATA__','__LESSON_CSS__']):errors.append('Unresolved lesson template')
 catalog=json.loads((root/'visuals'/'catalog.json').read_text(encoding='utf-8'))
+from diagram_assets import build_diagram_assets
+diagram_match=re.search(r'<script id="diagram-data" type="application/json">(.*?)</script>',html,re.S)
+expected_diagrams=build_diagram_assets(root,catalog,write_files=False)
+if not diagram_match or json.loads(diagram_match.group(1))!=expected_diagrams:errors.append('Bilingual diagram payload mismatch')
+for locale,items in expected_diagrams.items():
+    for ident,item in items.items():
+        for theme,path in item['downloads'].items():
+            if not (root/path).is_file():errors.append('Missing localized SVG: '+path)
 visual_match=re.search(r'<script id="visual-data" type="application/json">(.*?)</script>',html,re.S)
 embedded_visuals=json.loads(visual_match.group(1)) if visual_match else []
 if [{key:value for key,value in visual.items() if key!='darkImage'} for visual in embedded_visuals]!=catalog:errors.append('HTML visual catalog mismatch')

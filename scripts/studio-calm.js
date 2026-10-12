@@ -14,7 +14,7 @@ function saveBookmarks(){saveOptional('abap-studio-bookmarks-v1',JSON.stringify(
 function visualImageSource(visual){return document.documentElement.dataset.theme==='dark'&&visual.darkImage?visual.darkImage:visual.image;}
 function syncDiagramTheme(){
  document.querySelectorAll('img[data-visual-image]').forEach(img=>{const v=visualById.get(img.dataset.visualImage);if(v)img.src=visualImageSource(v);});
- const current=visualById.get($('visualImage').dataset.visualImage);if(current)$('visualOriginal').href=visualImageSource(current);
+ const current=visualById.get($('visualDialog').dataset.visualId);if(current){$('visualOriginal').href=diagramDownload(current);$('visualDownload').href=diagramDownload(current);}
 }
 let themeTransitionTimer=0;
 function applyTheme(choice,saveChoice=false,animate=false){

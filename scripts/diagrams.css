@@ -1,0 +1,17 @@
+/* Native SVG text remains selectable; opening the viewer is a separate action. */
+.diagram-canvas{position:relative;min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;padding:8px 8px 48px;background:var(--paper)}
+.selectable-diagram{display:block;width:100%;height:auto;user-select:text;-webkit-user-select:text}
+.selectable-diagram text{cursor:text;user-select:text;-webkit-user-select:text}
+.diagram-enlarge{position:absolute;right:6px;bottom:4px;width:44px;height:40px;min-height:44px;padding:0;font-size:24px;line-height:1;background:var(--paper);color:var(--ink)}
+.diagram-text{margin-top:14px;font-size:14px;line-height:1.7;color:var(--ink)}
+.diagram-text>summary{cursor:pointer;min-height:32px;color:var(--muted)}
+.diagram-text p{margin:12px 0}
+#visualCanvas{min-width:0}
+#visualCanvas>.selectable-diagram{max-width:none;max-height:none;margin:0 auto}
+#visualStage.text-story{height:auto;max-height:none;overflow:visible;background:transparent}
+.diagram-story{display:grid;gap:10px;padding:8px}
+.diagram-story section{position:relative;border-left:3px solid var(--accent);padding:12px 12px 12px 40px;background:var(--soft);border-radius:6px}
+.diagram-story h5{font:inherit;font-weight:700;margin:0 0 6px;color:var(--ink)}
+.diagram-story p{font-size:14px;line-height:1.6;margin:0;color:var(--ink)}
+.story-number{position:absolute;top:12px;left:12px;font-weight:700;color:var(--accent)}
+@media(max-width:700px){.diagram-canvas{padding:4px 4px 48px}.diagram-story{padding:4px}.diagram-text{font-size:15px}}

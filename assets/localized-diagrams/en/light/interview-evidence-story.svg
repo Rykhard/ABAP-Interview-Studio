@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="interview-evidence-story-en-title" lang="en" class="selectable-diagram">
+	<title id="interview-evidence-story-en-title">Explain decisions with evidence</title><desc>Practice a 60-second version first, then expand the mechanism and evidence when prompted.</desc><clipPath id="interview-evidence-story-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="interview-evidence-story-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#interview-evidence-story-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">A strong interview answer has a visible chain of evidence</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Build a truthful story that an interviewer can follow</text>
+			<circle cx="58" cy="400" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="53" y="394" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,788) scale(1,-1)" data-label-width="17.0">1</text>
+			<rect x="96" y="376" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="111" y="405" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,810) scale(1,-1)" data-label-width="719.0">Context</text>
+			<text x="239" y="396" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,792) scale(1,-1)" data-label-width="591.0">What business problem and constraints mattered?</text>
+			<circle cx="58" cy="339" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="53" y="333" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,666) scale(1,-1)" data-label-width="17.0">2</text>
+			<rect x="96" y="315" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="111" y="344" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,688) scale(1,-1)" data-label-width="719.0">Decision</text>
+			<text x="239" y="335" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,670) scale(1,-1)" data-label-width="591.0">What did you choose, and which alternative did you reject?</text>
+			<circle cx="58" cy="278" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="53" y="272" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,544) scale(1,-1)" data-label-width="17.0">3</text>
+			<rect x="96" y="254" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="111" y="283" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,566) scale(1,-1)" data-label-width="719.0">Mechanism</text>
+			<text x="239" y="274" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,548) scale(1,-1)" data-label-width="591.0">How did the code or architecture produce the behavior?</text>
+			<circle cx="58" cy="217" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="53" y="211" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,422) scale(1,-1)" data-label-width="17.0">4</text>
+			<rect x="96" y="193" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="111" y="222" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,444) scale(1,-1)" data-label-width="719.0">Evidence</text>
+			<text x="239" y="213" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,426) scale(1,-1)" data-label-width="591.0">What did you measure or test? State actual results.</text>
+			<circle cx="58" cy="156" r="20" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="53" y="150" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,300) scale(1,-1)" data-label-width="17.0">5</text>
+			<rect x="96" y="132" width="742" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="111" y="161" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,322) scale(1,-1)" data-label-width="719.0">Limit</text>
+			<text x="239" y="152" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,304) scale(1,-1)" data-label-width="591.0">What remains uncertain, release-specific or incomplete?</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Use your own experience. If you only prepared a test or proposed a design, say so explicitly.</text>
+		</g>
+	</g>
+</svg>

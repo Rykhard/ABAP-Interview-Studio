@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="classic-ddic-layers-en-title" lang="en" class="selectable-diagram">
+	<title id="classic-ddic-layers-en-title">DDIC technical and semantic layers</title><desc>A ten-character domain acts like a technical mold; data elements give two fields different business meanings, and table columns hold values.</desc><clipPath id="classic-ddic-layers-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="classic-ddic-layers-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#classic-ddic-layers-en-clip)">
+		<g transform="">
+			<rect x="1" y="1" width="878" height="558" style="stroke: rgb(95%,96%,96%); stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<rect x="26" y="512" width="7" height="24" rx="2" ry="2" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="46" y="514" style="font-family:Arial,Helvetica,sans-serif; font-size: 26px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1028) scale(1,-1)" data-label-width="825.0">DDIC: technical shape, business meaning, stored value</text>
+			<text x="28" y="483" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(32%,40%,46%); stroke:none;" transform="translate(0,966) scale(1,-1)" data-label-width="843.0">One domain can support different data elements; a table column chooses its business meaning.</text>
+			<rect x="28" y="251" width="244" height="206" rx="10" ry="10" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(88%,93%,90%); fill-rule: evenodd;" />
+			<text x="47" y="425" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,850) scale(1,-1)" data-label-width="217.0">DOMAIN</text>
+			<text x="47" y="397" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,794) scale(1,-1)" data-label-width="217.0">ZDOC_ID</text>
+			<text x="47" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="217.0">Technical shape: CHAR(10)</text>
+			<rect x="47" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="53.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">0</text>
+			<rect x="67" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="73.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">0</text>
+			<rect x="87" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="93.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">0</text>
+			<rect x="107" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="113.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">0</text>
+			<rect x="127" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="133.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">0</text>
+			<rect x="147" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="153.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">0</text>
+			<rect x="167" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="173.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">1</text>
+			<rect x="187" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="193.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">2</text>
+			<rect x="207" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="213.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">3</text>
+			<rect x="227" y="320" width="20" height="32" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="233.664" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="12.0">4</text>
+			<text x="47" y="284" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,568) scale(1,-1)" data-label-width="217.0">10 character positions</text>
+			<polygon points="341 355, 555 355, 575 394, 555 433, 341 433" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1.5; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<circle cx="555" cy="394" r="5" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(88%,93%,90%); fill-rule: evenodd;" />
+			<text x="356" y="405" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,810) scale(1,-1)" data-label-width="269.0">ZSALES_ORDER_ID</text>
+			<text x="356" y="381" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,762) scale(1,-1)" data-label-width="515.0">Label: Sales order</text>
+			<polygon points="341 249, 555 249, 575 288, 555 327, 341 327" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1.5; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<circle cx="555" cy="288" r="5" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(88%,93%,90%); fill-rule: evenodd;" />
+			<text x="356" y="299" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,598) scale(1,-1)" data-label-width="515.0">ZDELIVERY_ID</text>
+			<text x="356" y="275" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,550) scale(1,-1)" data-label-width="515.0">Label: Delivery</text>
+			<text x="341" y="451" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,902) scale(1,-1)" data-label-width="276.0">DATA ELEMENTS</text>
+			<path d="M 274,382 L 331,394 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="331 394, 322.2633 396.1612, 323.8763 388.4998" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<path d="M 274,329 L 331,288 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="331 288, 326.707 295.9101, 322.1352 289.5542" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="623" y="451" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,902) scale(1,-1)" data-label-width="248.0">TABLE COLUMNS</text>
+			<rect x="621" y="390" width="228" height="35" style="stroke: rgb(7%,16%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="631" y="405" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,810) scale(1,-1)" data-label-width="102.0">ORDER_ID</text>
+			<text x="739" y="405" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,810) scale(1,-1)" data-label-width="102.0">DELIVERY_ID</text>
+			<rect x="621" y="355" width="228" height="35" style="stroke: rgb(73%,80%,77%); stroke-linecap: butt; stroke-width: 0.6; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="631" y="364" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,728) scale(1,-1)" data-label-width="102.0">0000001234</text>
+			<text x="739" y="364" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,728) scale(1,-1)" data-label-width="102.0">0080000456</text>
+			<rect x="621" y="320" width="228" height="35" style="stroke: rgb(73%,80%,77%); stroke-linecap: butt; stroke-width: 0.6; fill: rgb(88%,93%,90%); fill-rule: evenodd;" />
+			<text x="631" y="329" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,658) scale(1,-1)" data-label-width="102.0">0000001235</text>
+			<text x="739" y="329" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,658) scale(1,-1)" data-label-width="102.0">0080000457</text>
+			<rect x="621" y="285" width="228" height="35" style="stroke: rgb(73%,80%,77%); stroke-linecap: butt; stroke-width: 0.6; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="631" y="294" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,588) scale(1,-1)" data-label-width="102.0">0000001236</text>
+			<text x="739" y="294" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,588) scale(1,-1)" data-label-width="102.0">0080000458</text>
+			<path d="M 580,394 L 612,393 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="612 393, 604.0222 397.1659, 603.7777 389.3403" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<polyline points="576 288, 608 288, 608 270, 790 270" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2; fill: None; fill-rule: evenodd;" />
+			<path d="M 790,270 L 790,282 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="790 282, 786.0853 273.896, 793.9147 273.896" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<rect x="28" y="90" width="821" height="119" rx="10" ry="10" style="stroke: rgb(73%,80%,77%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="47" y="179" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,358) scale(1,-1)" data-label-width="794.0">Keep the concepts separate</text>
+			<text x="47" y="150" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,300) scale(1,-1)" data-label-width="794.0">Domain: technical properties.  Data element: semantic type, labels, documentation.</text>
+			<text x="47" y="129" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,258) scale(1,-1)" data-label-width="794.0">Table field: a component of a persistent table.  Structure: no persistence by itself.</text>
+			<text x="47" y="108" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,216) scale(1,-1)" data-label-width="794.0">A value table proposal alone does not create a complete foreign-key check.</text>
+			<path d="M 28,51 L 850,51 Z" style="stroke: rgb(73%,80%,77%); stroke-linecap: butt; stroke-width: 2;" />
+			<text x="28" y="27" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,40%,46%); stroke:none;" transform="translate(0,54) scale(1,-1)" data-label-width="843.0">Illustrative custom names and values; this is not a proposed production data model.</text>
+		</g>
+	</g>
+</svg>

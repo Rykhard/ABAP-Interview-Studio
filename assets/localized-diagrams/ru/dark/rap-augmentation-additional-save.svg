@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-augmentation-additional-save-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-augmentation-additional-save-ru-title">Augmentation и additional save</title><desc>Найдите на схеме преобразование входных данных и дополнительную запись при сохранении.</desc><clipPath id="rap-augmentation-additional-save-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-augmentation-additional-save-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-augmentation-additional-save-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Augmentation меняет запрос; additional save дополняет запись</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Разные точки расширения с разными обязанностями</text>
+			<rect x="35" y="294" width="380" height="143" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="35" y="398" width="380" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="49" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,822) scale(1,-1)" data-label-width="358.0">Запрос к projection</text>
+			<text x="49" y="373" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,746) scale(1,-1)" data-label-width="358.0">Приходит удобный вход. Augmentation</text>
+			<text x="49" y="354" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,708) scale(1,-1)" data-label-width="358.0">дополняет допустимые изменения нижнего уровня.</text>
+			<rect x="463" y="294" width="380" height="143" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="463" y="398" width="380" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="477" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,822) scale(1,-1)" data-label-width="358.0">Managed persistence</text>
+			<text x="477" y="373" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,746) scale(1,-1)" data-label-width="358.0">Framework сохраняет свои данные. Additional save</text>
+			<text x="477" y="354" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,708) scale(1,-1)" data-label-width="358.0">выполняет допустимую дополнительную работу.</text>
+			<path d="M 421,364 L 456,364 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="456 364, 446 359, 446 369" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="35" y="174" width="185.90697674418607" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="45" y="187" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,374) scale(1,-1)" data-label-width="167.91">Вопрос</text>
+			<rect x="222.90697674418607" y="174" width="308.04651162790697" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="232.90697674418607" y="187" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,374) scale(1,-1)" data-label-width="290.05">Augmentation</text>
+			<rect x="532.953488372093" y="174" width="308.04651162790697" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="542.953488372093" y="187" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,374) scale(1,-1)" data-label-width="290.05">Additional save</text>
+			<rect x="35" y="134" width="185.90697674418607" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="147" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,294) scale(1,-1)" data-label-width="167.91">Где?</text>
+			<rect x="222.90697674418607" y="134" width="308.04651162790697" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="232.90697674418607" y="147" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,294) scale(1,-1)" data-label-width="290.05">Interaction в projection</text>
+			<rect x="532.953488372093" y="134" width="308.04651162790697" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="542.953488372093" y="147" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,294) scale(1,-1)" data-label-width="290.05">Save sequence</text>
+			<rect x="35" y="94" width="185.90697674418607" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="107" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,214) scale(1,-1)" data-label-width="167.91">Пример</text>
+			<rect x="222.90697674418607" y="94" width="308.04651162790697" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="232.90697674418607" y="107" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,214) scale(1,-1)" data-label-width="290.05">Дополнить вход нижнего запроса</text>
+			<rect x="532.953488372093" y="94" width="308.04651162790697" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="542.953488372093" y="107" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,214) scale(1,-1)" data-label-width="290.05">Записать допустимые данные аудита</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Ни один hook не разрешает независимый COMMIT. Выбирай по контракту: нельзя считать, что любой hook</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">может менять любые данные.</text>
+		</g>
+	</g>
+</svg>

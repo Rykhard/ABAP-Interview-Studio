@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-parameter-paths-ru-title" lang="ru" class="selectable-diagram">
+	<title id="deep-parameter-paths-ru-title">Значения параметров после выхода с исключением</title><desc>Сравните одинаковое присваивание при двух способах передачи. Значение у вызывающего кода после ошибки показывает различие.</desc><clipPath id="deep-parameter-paths-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-parameter-paths-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-parameter-paths-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Исключение разделяет reference и value-result</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Целый CHANGING начинается с 10; метод записывает 20 и вызывает исключение</text>
+			<text x="39" y="434" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,868) scale(1,-1)" data-label-width="833.0">По ссылке</text>
+			<rect x="40" y="336" width="192" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="53" y="391" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,782) scale(1,-1)" data-label-width="171.0">ДО ВЫЗОВА</text>
+			<text x="53" y="359" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,718) scale(1,-1)" data-label-width="171.0">10</text>
+			<rect x="308" y="336" width="245" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="321" y="391" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,782) scale(1,-1)" data-label-width="224.0">МЕТОД ПИШЕТ</text>
+			<text x="321" y="359" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,718) scale(1,-1)" data-label-width="224.0">20</text>
+			<rect x="644" y="336" width="195" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="657" y="391" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,782) scale(1,-1)" data-label-width="174.0">ПОСЛЕ ВЫЗОВА</text>
+			<text x="657" y="359" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,718) scale(1,-1)" data-label-width="174.0">Снаружи: 20</text>
+			<path d="M 241,378 L 298,378 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="298 378, 288 373, 288 383" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;" />
+			<path d="M 563,378 L 632,378 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2;" />
+			<path d="M 584,368 L 603,388 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3;" />
+			<path d="M 584,388 L 603,368 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3;" />
+			<text x="571.32" y="408" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #efb384; stroke:none;" transform="translate(0,816) scale(1,-1)" data-label-width="300.68">исключение</text>
+			<text x="39" y="286" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,572) scale(1,-1)" data-label-width="833.0">CHANGING VALUE</text>
+			<rect x="40" y="188" width="192" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="53" y="243" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,486) scale(1,-1)" data-label-width="171.0">ДО ВЫЗОВА</text>
+			<text x="53" y="211" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,422) scale(1,-1)" data-label-width="171.0">10</text>
+			<rect x="308" y="188" width="245" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="321" y="243" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,486) scale(1,-1)" data-label-width="224.0">МЕТОД ПИШЕТ</text>
+			<text x="321" y="211" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,422) scale(1,-1)" data-label-width="224.0">20</text>
+			<rect x="644" y="188" width="195" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="657" y="243" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,486) scale(1,-1)" data-label-width="174.0">ПОСЛЕ ВЫЗОВА</text>
+			<text x="657" y="211" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,422) scale(1,-1)" data-label-width="174.0">Снаружи: 10</text>
+			<path d="M 241,230 L 298,230 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="298 230, 288 225, 288 235" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<path d="M 563,230 L 632,230 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<path d="M 584,220 L 603,240 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3;" />
+			<path d="M 584,240 L 603,220 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 3;" />
+			<text x="571.32" y="260" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #efb384; stroke:none;" transform="translate(0,520) scale(1,-1)" data-label-width="300.68">исключение</text>
+			<text x="44" y="136" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,272) scale(1,-1)" data-label-width="828.0">Reference: данные caller уже изменены.</text>
+			<text x="44" y="108" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,216) scale(1,-1)" data-label-width="828.0">Value-result: обратного копирования не было.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Caller перехватывает исключение. Здесь скалярный параметр; запись в БД и изменения через ссылки</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">на объекты — отдельные побочные эффекты.</text>
+		</g>
+	</g>
+</svg>

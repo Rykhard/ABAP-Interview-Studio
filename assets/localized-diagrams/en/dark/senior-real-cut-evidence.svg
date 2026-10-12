@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="senior-real-cut-evidence-en-title" lang="en" class="selectable-diagram">
+	<title id="senior-real-cut-evidence-en-title">Real behavior under test and dependency doubles</title><desc>Two deliberately different inputs exercise the real Submit rule while a separate limit-provider dependency is controlled. Assertions inspect state and response identity, not only execution coverage.</desc><clipPath id="senior-real-cut-evidence-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="senior-real-cut-evidence-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#senior-real-cut-evidence-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Keep Submit real; double only its true dependencies</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">CUT = code under test. A configured mock response cannot prove the behavior it replaces.</text>
+			<rect x="36" y="276" width="252" height="176" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="36" y="413" width="252" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="50" y="426" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,852) scale(1,-1)" data-label-width="230.0">TEST INPUT</text>
+			<text x="51" y="383" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,766) scale(1,-1)" data-label-width="229.0">Request R1: assignment present</text>
+			<text x="51" y="360" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,720) scale(1,-1)" data-label-width="229.0">Request R2: assignment missing</text>
+			<text x="51" y="337" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,674) scale(1,-1)" data-label-width="229.0" />
+			<text x="51" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="229.0">Drive the real operation via EML.</text>
+			<rect x="339" y="276" width="234" height="176" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="358" y="415" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,830) scale(1,-1)" data-label-width="207.0">REAL CUT</text>
+			<text x="358" y="382" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,764) scale(1,-1)" data-label-width="207.0">Submit behavior</text>
+			<text x="358" y="356" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,712) scale(1,-1)" data-label-width="207.0">Account-assignment rule</text>
+			<text x="358" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="207.0">State transition</text>
+			<text x="358" y="304" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;" transform="translate(0,608) scale(1,-1)" data-label-width="207.0">FAILED / REPORTED</text>
+			<path d="M 295,361 L 331,361 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="331 361, 321 356, 321 366" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<rect x="622" y="276" width="223" height="176" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="622" y="413" width="223" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="636" y="426" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,852) scale(1,-1)" data-label-width="201.0">DOUBLED DEPENDENCY</text>
+			<text x="638" y="382" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,764) scale(1,-1)" data-label-width="199.0">External limit provider</text>
+			<text x="638" y="359" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,718) scale(1,-1)" data-label-width="199.0">Controlled return: 500 EUR</text>
+			<text x="638" y="336" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,672) scale(1,-1)" data-label-width="199.0">Or a defined failure</text>
+			<text x="638" y="313" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,626) scale(1,-1)" data-label-width="199.0" />
+			<text x="638" y="290" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,580) scale(1,-1)" data-label-width="199.0">Do not double Submit.</text>
+			<path d="M 580,361 L 614,361 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="614 361, 604 356, 604 366" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="39" y="220" width="229.97777777777776" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="49" y="233" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,466) scale(1,-1)" data-label-width="211.98">Case</text>
+			<rect x="270.97777777777776" y="220" width="569.0222222222224" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="280.97777777777776" y="233" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,466) scale(1,-1)" data-label-width="551.02">Required assertions</text>
+			<rect x="39" y="186" width="229.97777777777776" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="49" y="199" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,398) scale(1,-1)" data-label-width="211.98">R1: valid</text>
+			<rect x="270.97777777777776" y="186" width="569.0222222222224" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="280.97777777777776" y="199" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,398) scale(1,-1)" data-label-width="551.02">Expected state transition and correlated response</text>
+			<rect x="39" y="152" width="229.97777777777776" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="49" y="165" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,330) scale(1,-1)" data-label-width="211.98">R2: invalid</text>
+			<rect x="270.97777777777776" y="152" width="569.0222222222224" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="280.97777777777776" y="165" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,330) scale(1,-1)" data-label-width="551.02">Rejected identity, useful message, no forbidden state</text>
+			<rect x="39" y="118" width="229.97777777777776" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="49" y="131" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,262) scale(1,-1)" data-label-width="211.98">Rule deliberately broken</text>
+			<rect x="270.97777777777776" y="118" width="569.0222222222224" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="280.97777777777776" y="131" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,262) scale(1,-1)" data-label-width="551.02">The negative test must fail</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Persistence using doubles is isolated evidence. Real database, service authorization, locking, and</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">external integration still need targeted tests on the actual runtime.</text>
+		</g>
+	</g>
+</svg>

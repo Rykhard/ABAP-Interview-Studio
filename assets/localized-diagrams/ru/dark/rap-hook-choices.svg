@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-hook-choices-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-hook-choices-ru-title">Задачи обработчиков RAP</title><desc>Каждая карточка — отдельное решение о размещении логики, а не этап общей последовательности.</desc><clipPath id="rap-hook-choices-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-hook-choices-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-hook-choices-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Четыре hook — четыре разных задачи</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Выбирай по задаче и поддерживаемому trigger, а не по мнимому порядку методов</text>
+			<rect x="38" y="282" width="386" height="166" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="38" y="409" width="386" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="52" y="422" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,844) scale(1,-1)" data-label-width="364.0">Precheck: принять запрос?</text>
+			<text x="52" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="364.0">Проверь входящие изменения до записи</text>
+			<text x="52" y="365" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,730) scale(1,-1)" data-label-width="364.0">в транзакционный буфер. Например, отклони</text>
+			<text x="52" y="346" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,692) scale(1,-1)" data-label-width="364.0">недопустимый переход состояния.</text>
+			<rect x="456" y="282" width="386" height="166" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="456" y="409" width="386" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="470" y="422" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,844) scale(1,-1)" data-label-width="364.0">Determination: что рассчитать?</text>
+			<text x="470" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="364.0">Рассчитай значения по нужному trigger:</text>
+			<text x="470" y="365" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,730) scale(1,-1)" data-label-width="364.0">default или зависимое поле. Повторный</text>
+			<text x="470" y="346" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,692) scale(1,-1)" data-label-width="364.0">вызов должен быть безопасным.</text>
+			<rect x="38" y="104" width="386" height="158" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="38" y="223" width="386" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="52" y="236" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,472) scale(1,-1)" data-label-width="364.0">Validation: можно сохранить?</text>
+			<text x="52" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="364.0">Проверь согласованность в допустимой</text>
+			<text x="52" y="179" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,358) scale(1,-1)" data-label-width="364.0">точке. Например, обязательная причина</text>
+			<text x="52" y="160" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,320) scale(1,-1)" data-label-width="364.0">согласования должна быть заполнена.</text>
+			<rect x="456" y="104" width="386" height="158" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="456" y="223" width="386" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="470" y="236" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,472) scale(1,-1)" data-label-width="364.0">Action: какую операцию выполнить?</text>
+			<text x="470" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="364.0">Явная операция, например Submit. Может</text>
+			<text x="470" y="179" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,358) scale(1,-1)" data-label-width="364.0">менять состояние и возвращать результат</text>
+			<text x="470" y="160" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,320) scale(1,-1)" data-label-width="364.0">по объявленному контракту.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">В unmanaged RAP поддержка determinations и validations связана с draft. Проверки active instances</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">реализуй в допустимых handlers/save logic.</text>
+		</g>
+	</g>
+</svg>

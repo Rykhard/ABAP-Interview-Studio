@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="patterns-chain-command-en-title" lang="en" class="selectable-diagram">
+	<title id="patterns-chain-command-en-title">First-match routing and idempotent command execution</title><desc>The 700 EUR fixture passes the team-lead rule and stops at the manager rule. The selected operation then needs its own durable identity to handle duplicate delivery safely.</desc><clipPath id="patterns-chain-command-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="patterns-chain-command-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#patterns-chain-command-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Route once; execute with a replay contract</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Worked request: 700 EUR. The ordered rules choose the first applicable approver.</text>
+			<rect x="35" y="322" width="242" height="122" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="48" y="414" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,828) scale(1,-1)" data-label-width="221.0">Rule 1: team lead</text>
+			<text x="48" y="385" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,770) scale(1,-1)" data-label-width="221.0">&lt;= 500 EUR</text>
+			<text x="48" y="350" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,700) scale(1,-1)" data-label-width="221.0">Not applicable</text>
+			<rect x="319" y="322" width="242" height="122" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="332" y="414" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,828) scale(1,-1)" data-label-width="221.0">Rule 2: manager</text>
+			<text x="332" y="385" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,770) scale(1,-1)" data-label-width="221.0">&lt;= 1,000 EUR</text>
+			<text x="332" y="350" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,700) scale(1,-1)" data-label-width="221.0">Handled: manager</text>
+			<rect x="603" y="322" width="242" height="122" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="616" y="414" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,828) scale(1,-1)" data-label-width="221.0">Rule 3: fallback</text>
+			<text x="616" y="385" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,770) scale(1,-1)" data-label-width="221.0">Other supported cases</text>
+			<text x="616" y="350" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,700) scale(1,-1)" data-label-width="221.0">Not executed</text>
+			<path d="M 284,381 L 311,381 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="311 381, 301 376, 301 386" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<path d="M 569,381 L 596,381 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2; stroke-dasharray: 4, 3;" />
+			<text x="35" y="292" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,584) scale(1,-1)" data-label-width="837.0">A handler failure is not the same as "not applicable".</text>
+			<rect x="36" y="236" width="184.8842105263158" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="46" y="249" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,498) scale(1,-1)" data-label-width="166.88">Command identity</text>
+			<rect x="222.8842105263158" y="236" width="278.3263157894737" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="232.8842105263158" y="249" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,498) scale(1,-1)" data-label-width="260.33">Delivery</text>
+			<rect x="503.2105263157895" y="236" width="337.7894736842105" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="513.2105263157895" y="249" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,498) scale(1,-1)" data-label-width="319.79">Effective result</text>
+			<rect x="36" y="195" width="184.8842105263158" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="46" y="208" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,416) scale(1,-1)" data-label-width="166.88">SUBMIT-42</text>
+			<rect x="222.8842105263158" y="195" width="278.3263157894737" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="232.8842105263158" y="208" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,416) scale(1,-1)" data-label-width="260.33">First execution</text>
+			<rect x="503.2105263157895" y="195" width="337.7894736842105" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="513.2105263157895" y="208" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,416) scale(1,-1)" data-label-width="319.79">One state transition recorded</text>
+			<rect x="36" y="154" width="184.8842105263158" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="46" y="167" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,334) scale(1,-1)" data-label-width="166.88">SUBMIT-42</text>
+			<rect x="222.8842105263158" y="154" width="278.3263157894737" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="232.8842105263158" y="167" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,334) scale(1,-1)" data-label-width="260.33">Retry after lost response</text>
+			<rect x="503.2105263157895" y="154" width="337.7894736842105" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="513.2105263157895" y="167" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,334) scale(1,-1)" data-label-width="319.79">Defined replay result; no second transition</text>
+			<text x="37" y="106" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,212) scale(1,-1)" data-label-width="835.0">Command packages the operation. Durable identity makes safe replay possible.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">First-match routing differs from execute-all validation. The Command pattern alone supplies neither</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">persistent queuing nor idempotency nor an undo operation.</text>
+		</g>
+	</g>
+</svg>

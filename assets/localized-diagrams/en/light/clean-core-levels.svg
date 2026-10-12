@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="460" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 460" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="clean-core-levels-en-title" lang="en" class="selectable-diagram">
+	<title id="clean-core-levels-en-title">Clean Core levels A-D</title><desc>Read each level as a classification of the actual SAP dependency or extension technology.</desc><clipPath id="clean-core-levels-en-clip">
+		<rect x="0" y="0" width="880" height="460" />
+	</clipPath>
+	<g id="clean-core-levels-en-group" transform="scale(1,-1) translate(0,-460)" style="clip-path: url(#clean-core-levels-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="460" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="30" y="421" style="font-family:Arial,Helvetica,sans-serif; font-size: 26px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,842) scale(1,-1)" data-label-width="842.0">Clean Core levels</text>
+			<text x="30" y="395" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,790) scale(1,-1)" data-label-width="842.0">Classify actual SAP dependencies and extension technologies</text>
+			<rect x="30" y="305" width="820" height="58" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="30" y="305" width="58" height="58" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,20%,28%); fill-rule: evenodd;" />
+			<text x="47" y="322" style="font-family:Arial,Helvetica,sans-serif; font-size: 27px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,644) scale(1,-1)" data-label-width="33.0">A</text>
+			<text x="108" y="336" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,672) scale(1,-1)" data-label-width="734.0">Released SAP APIs and extension points</text>
+			<text x="108" y="316" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,632) scale(1,-1)" data-label-width="734.0">No corresponding finding</text>
+			<rect x="30" y="236" width="820" height="58" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="30" y="236" width="58" height="58" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,39%,47%); fill-rule: evenodd;" />
+			<text x="47" y="253" style="font-family:Arial,Helvetica,sans-serif; font-size: 27px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,506) scale(1,-1)" data-label-width="33.0">B</text>
+			<text x="108" y="267" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,534) scale(1,-1)" data-label-width="734.0">SAP-designated classic APIs and options</text>
+			<text x="108" y="247" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,494) scale(1,-1)" data-label-width="734.0">Priority 3 / information</text>
+			<rect x="30" y="167" width="820" height="58" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="30" y="167" width="58" height="58" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(65%,40%,9%); fill-rule: evenodd;" />
+			<text x="47" y="184" style="font-family:Arial,Helvetica,sans-serif; font-size: 27px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,368) scale(1,-1)" data-label-width="33.0">C</text>
+			<text x="108" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,396) scale(1,-1)" data-label-width="734.0">Internal SAP objects with upgrade risk</text>
+			<text x="108" y="178" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,356) scale(1,-1)" data-label-width="734.0">Priority 2 / warning</text>
+			<rect x="30" y="98" width="820" height="58" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="30" y="98" width="58" height="58" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(65%,24%,19%); fill-rule: evenodd;" />
+			<text x="47" y="115" style="font-family:Arial,Helvetica,sans-serif; font-size: 27px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,230) scale(1,-1)" data-label-width="33.0">D</text>
+			<text x="108" y="129" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,258) scale(1,-1)" data-label-width="734.0">Non-recommended objects or techniques</text>
+			<text x="108" y="109" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,218) scale(1,-1)" data-label-width="734.0">Priority 1 / error</text>
+			<text x="30" y="51" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,102) scale(1,-1)" data-label-width="842.0">A-D describes Clean Core usage checks, not every ATC finding.</text>
+			<text x="30" y="30" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,60) scale(1,-1)" data-label-width="842.0">Verify the target edition, release, classification data and configured checks.</text>
+		</g>
+	</g>
+</svg>

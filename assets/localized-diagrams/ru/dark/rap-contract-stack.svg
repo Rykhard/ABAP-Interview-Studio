@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-contract-stack-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-contract-stack-ru-title">Слои контрактов RAP</title><desc>Проследите путь от клиента до хранения данных и объясните роль каждого объекта разработки.</desc><clipPath id="rap-contract-stack-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-contract-stack-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-contract-stack-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Сервис состоит из нескольких контрактов</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Артефакты RAP: у каждого слоя своя задача</text>
+			<rect x="42" y="409" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="55" y="437" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,874) scale(1,-1)" data-label-width="775.0">Fiori UI / API-клиент</text>
+			<text x="55" y="418" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #192730; stroke:none;" transform="translate(0,836) scale(1,-1)" data-label-width="775.0">Использует metadata, данные и операции</text>
+			<path d="M 820,409 L 820,401 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="820 401, 815 411, 825 411" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="42" y="354" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="55" y="382" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,764) scale(1,-1)" data-label-width="775.0">Service binding</text>
+			<text x="55" y="363" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #192730; stroke:none;" transform="translate(0,726) scale(1,-1)" data-label-width="775.0">Задаёт протокол и настройки публикации</text>
+			<path d="M 820,354 L 820,346 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="820 346, 815 356, 825 356" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="42" y="299" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="55" y="327" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,654) scale(1,-1)" data-label-width="775.0">Service definition</text>
+			<text x="55" y="308" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #192730; stroke:none;" transform="translate(0,616) scale(1,-1)" data-label-width="775.0">Выбирает публикуемые entities</text>
+			<path d="M 820,299 L 820,291 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="820 291, 815 301, 825 301" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="42" y="244" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="55" y="272" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,544) scale(1,-1)" data-label-width="775.0">Projection + проекция behavior</text>
+			<text x="55" y="253" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #192730; stroke:none;" transform="translate(0,506) scale(1,-1)" data-label-width="775.0">Определяет контракт для потребителя</text>
+			<path d="M 820,244 L 820,236 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="820 236, 815 246, 825 246" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="42" y="189" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="55" y="217" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,434) scale(1,-1)" data-label-width="775.0">Root / child CDS + behavior definition</text>
+			<text x="55" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #192730; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="775.0">Описывает ключи, composition и допустимые операции</text>
+			<path d="M 820,189 L 820,181 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="820 181, 815 191, 825 191" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="42" y="134" width="796" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="55" y="162" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,324) scale(1,-1)" data-label-width="775.0">Behavior implementation + хранение</text>
+			<text x="55" y="143" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #192730; stroke:none;" transform="translate(0,286) scale(1,-1)" data-label-width="775.0">Выполняет правила и сохраняет по выбранному сценарию</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">CDS entity сама по себе не даёт транзакционный сервис. Binding не реализует behavior.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="http-message-anatomy-en-title" lang="en" class="selectable-diagram">
+	<title id="http-message-anatomy-en-title">HTTP request and response anatomy</title><desc>Read the method, target, status and headers before interpreting the body. The sample domain is deliberately non-production.</desc><clipPath id="http-message-anatomy-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="http-message-anatomy-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#http-message-anatomy-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Read an HTTP exchange as a contract</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Illustrative HTTP/1.1 layout; HTTPS protects the transport</text>
+			<rect x="37" y="156" width="389" height="285" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="37" y="402" width="389" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="51" y="415" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,830) scale(1,-1)" data-label-width="367.0">REQUEST: client to service</text>
+			<rect x="454" y="156" width="389" height="285" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="454" y="402" width="389" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="468" y="415" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,830) scale(1,-1)" data-label-width="367.0">RESPONSE: service to client</text>
+			<text x="53" y="375" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,750) scale(1,-1)" data-label-width="365.0">GET /orders/4711 HTTP/1.1</text>
+			<text x="53" y="349" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,698) scale(1,-1)" data-label-width="365.0">Host: api.example.test</text>
+			<text x="53" y="323" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,646) scale(1,-1)" data-label-width="365.0">Accept: application/json</text>
+			<text x="53" y="297" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,594) scale(1,-1)" data-label-width="365.0" />
+			<text x="53" y="271" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,542) scale(1,-1)" data-label-width="365.0">Method + target identify the request.</text>
+			<text x="53" y="245" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,490) scale(1,-1)" data-label-width="365.0">Accept asks for a representation.</text>
+			<text x="53" y="219" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,438) scale(1,-1)" data-label-width="365.0">Credentials are intentionally omitted.</text>
+			<text x="469" y="375" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,750) scale(1,-1)" data-label-width="366.0">HTTP/1.1 200 OK</text>
+			<text x="469" y="349" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,698) scale(1,-1)" data-label-width="366.0">Content-Type: application/json</text>
+			<text x="469" y="323" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,646) scale(1,-1)" data-label-width="366.0">ETag: "v7"</text>
+			<text x="469" y="297" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,594) scale(1,-1)" data-label-width="366.0" />
+			<text x="469" y="271" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,542) scale(1,-1)" data-label-width="366.0">{"id":"4711","status":"Open"}</text>
+			<text x="469" y="245" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,490) scale(1,-1)" data-label-width="366.0" />
+			<text x="469" y="219" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,438) scale(1,-1)" data-label-width="366.0">ETag is an opaque version validator.</text>
+			<path d="M 360,120 L 525,120 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="525 120, 515 115, 515 125" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<text x="60" y="115" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,230) scale(1,-1)" data-label-width="478.0">Transport / HTTP</text>
+			<text x="544" y="115" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,230) scale(1,-1)" data-label-width="328.0">Representation / JSON</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">REST is an architectural style; JSON and XML are payload formats. OData adds service conventions on top</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">of HTTP.</text>
+		</g>
+	</g>
+</svg>

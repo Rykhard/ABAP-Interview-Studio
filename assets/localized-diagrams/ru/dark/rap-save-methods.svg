@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="510" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 510" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-save-methods-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-save-methods-ru-title">Варианты сохранения: кто записывает данные?</title><desc>Сравните четыре способа записи. Дополнительное и собственное сохранение managed BO используют save_modified; полностью unmanaged BO использует save.</desc><clipPath id="rap-save-methods-ru-clip">
+		<rect x="0" y="0" width="880" height="510" />
+	</clipPath>
+	<g id="rap-save-methods-ru-group" transform="scale(1,-1) translate(0,-510)" style="clip-path: url(#rap-save-methods-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="510" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="473" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,946) scale(1,-1)" data-label-width="844.0">SAVE — этап; реализация бывает разной</text>
+			<text x="28" y="445" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,890) scale(1,-1)" data-label-width="844.0">Не путайте unmanaged BO с managed interaction + unmanaged save.</text>
+			<rect x="28" y="336" width="824" height="72" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="44" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,768) scale(1,-1)" data-label-width="800.0">Managed save</text>
+			<text x="44" y="361" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,722) scale(1,-1)" data-label-width="800.0">RAP сохраняет данные BO.</text>
+			<text x="44" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #aabdc6; stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="800.0">Свой метод записи не нужен.</text>
+			<rect x="28" y="253" width="824" height="72" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="44" y="301" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,602) scale(1,-1)" data-label-width="800.0">Managed + additional save</text>
+			<text x="44" y="278" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,556) scale(1,-1)" data-label-width="800.0">RAP сохраняет BO; ваш код дополняет запись.</text>
+			<text x="44" y="260" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #aabdc6; stroke:none;" transform="translate(0,520) scale(1,-1)" data-label-width="800.0">with additional save -&gt; save_modified</text>
+			<rect x="28" y="170" width="824" height="72" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="44" y="218" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,436) scale(1,-1)" data-label-width="800.0">Managed + unmanaged save</text>
+			<text x="44" y="195" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,390) scale(1,-1)" data-label-width="800.0">RAP ведёт interaction; ваш код пишет данные.</text>
+			<text x="44" y="177" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #aabdc6; stroke:none;" transform="translate(0,354) scale(1,-1)" data-label-width="800.0">with unmanaged save -&gt; save_modified</text>
+			<rect x="28" y="87" width="824" height="72" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="44" y="135" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,270) scale(1,-1)" data-label-width="800.0">Полностью unmanaged BO</text>
+			<text x="44" y="112" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,224) scale(1,-1)" data-label-width="800.0">Ваш код ведёт буфер и запись.</text>
+			<text x="44" y="94" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #aabdc6; stroke:none;" transform="translate(0,188) scale(1,-1)" data-label-width="800.0">Реализуйте save в локальном saver-классе.</text>
+			<text x="28" y="54" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,108) scale(1,-1)" data-label-width="844.0">Пример: additional save добавляет строку аудита, сохраняя managed-запись заказа.</text>
+			<text x="28" y="28" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,56) scale(1,-1)" data-label-width="844.0">Отдельный COMMIT запрещён. Сигнатура saver и доступные функции зависят от релиза.</text>
+		</g>
+	</g>
+</svg>

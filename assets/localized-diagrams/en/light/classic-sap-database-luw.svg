@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="classic-sap-database-luw-en-title" lang="en" class="selectable-diagram">
+	<title id="classic-sap-database-luw-en-title">SAP LUW and database LUW</title><desc>Several database transactions can serve a single classic SAP business transaction. The illustrated early database transactions only read; coordinated persistence happens at the end.</desc><clipPath id="classic-sap-database-luw-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="classic-sap-database-luw-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#classic-sap-database-luw-en-clip)">
+		<g transform="">
+			<rect x="1" y="1" width="878" height="558" style="stroke: rgb(95%,96%,96%); stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<rect x="26" y="512" width="7" height="24" rx="2" ry="2" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="46" y="514" style="font-family:Arial,Helvetica,sans-serif; font-size: 26px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1028) scale(1,-1)" data-label-width="825.0">One business change can span several database LUWs</text>
+			<text x="28" y="483" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(32%,40%,46%); stroke:none;" transform="translate(0,966) scale(1,-1)" data-label-width="843.0">Classic dialog example: intermediate reads, user interaction, then a coordinated final save.</text>
+			<rect x="78" y="390" width="727" height="53" rx="10" ry="10" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="254.75" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 20px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="542.25">SAP LUW: edit one business document</text>
+			<rect x="78" y="258" width="171" height="88" rx="7" ry="7" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="120.003" y="316" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,632) scale(1,-1)" data-label-width="121.0">DB LUW 1</text>
+			<text x="105.91799999999999" y="288" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,576) scale(1,-1)" data-label-width="135.08">Read current state</text>
+			<path d="M 249,247 L 249,356 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3;" />
+			<text x="219.666" y="232" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(74%,32%,12%); stroke:none;" transform="translate(0,464) scale(1,-1)" data-label-width="286.0">DB commit</text>
+			<rect x="358" y="258" width="183" height="88" rx="7" ry="7" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="406.003" y="316" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,632) scale(1,-1)" data-label-width="127.0">DB LUW 2</text>
+			<text x="402.81" y="288" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,576) scale(1,-1)" data-label-width="130.19">Read / validate</text>
+			<path d="M 541,247 L 541,356 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3;" />
+			<text x="511.666" y="232" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(74%,32%,12%); stroke:none;" transform="translate(0,464) scale(1,-1)" data-label-width="258.0">DB commit</text>
+			<rect x="650" y="258" width="155" height="88" rx="7" ry="7" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="684.003" y="316" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,632) scale(1,-1)" data-label-width="113.0">DB LUW 3</text>
+			<text x="692.108" y="288" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,576) scale(1,-1)" data-label-width="104.89">Final writes</text>
+			<path d="M 805,247 L 805,356 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3;" />
+			<text x="775.6659999999999" y="232" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(74%,32%,12%); stroke:none;" transform="translate(0,464) scale(1,-1)" data-label-width="95.33">DB commit</text>
+			<circle cx="303" cy="307" r="22" style="stroke: rgb(32%,40%,46%); stroke-linecap: butt; stroke-width: 2; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<path d="M 303,307 L 303,321 Z" style="stroke: rgb(32%,40%,46%); stroke-linecap: butt; stroke-width: 2;" />
+			<path d="M 303,307 L 313,301 Z" style="stroke: rgb(32%,40%,46%); stroke-linecap: butt; stroke-width: 2;" />
+			<text x="275.658" y="267" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,40%,46%); stroke:none;" transform="translate(0,534) scale(1,-1)" data-label-width="286.0">User input</text>
+			<circle cx="595" cy="307" r="22" style="stroke: rgb(32%,40%,46%); stroke-linecap: butt; stroke-width: 2; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<path d="M 595,307 L 595,321 Z" style="stroke: rgb(32%,40%,46%); stroke-linecap: butt; stroke-width: 2;" />
+			<path d="M 595,307 L 605,301 Z" style="stroke: rgb(32%,40%,46%); stroke-linecap: butt; stroke-width: 2;" />
+			<text x="567.658" y="267" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,40%,46%); stroke:none;" transform="translate(0,534) scale(1,-1)" data-label-width="303.34">User input</text>
+			<path d="M 78,210 L 807,210 Z" style="stroke: rgb(32%,40%,46%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="807 210, 798.896 213.9147, 798.896 206.0853" style="stroke: rgb(32%,40%,46%); stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,40%,46%); fill-rule: evenodd;" />
+			<text x="80" y="189" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,40%,46%); stroke:none;" transform="translate(0,378) scale(1,-1)" data-label-width="791.0">Time</text>
+			<rect x="83" y="141" width="23" height="22" rx="3" ry="3" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(97%,89%,84%); fill-rule: evenodd;" />
+			<polyline points="88 163, 88 174, 101 174, 101 163" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3; fill: None; fill-rule: evenodd;" />
+			<path d="M 122,153 L 803,153 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3;" />
+			<path d="M 122,146 L 122,160 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3;" />
+			<path d="M 803,146 L 803,160 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3;" />
+			<text x="192.77499999999998" y="127" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(74%,32%,12%); stroke:none;font-weight:700;" transform="translate(0,254) scale(1,-1)" data-label-width="678.23">Logical enqueue ownership follows the business transaction protocol</text>
+			<text x="165.03199999999998" y="89" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,178) scale(1,-1)" data-label-width="705.97">Do not commit partial business updates just because a dialog step ends.</text>
+			<path d="M 28,51 L 850,51 Z" style="stroke: rgb(73%,80%,77%); stroke-linecap: butt; stroke-width: 2;" />
+			<text x="28" y="27" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,40%,46%); stroke:none;" transform="translate(0,54) scale(1,-1)" data-label-width="843.0">Simplified classic pattern. Update-task ownership and RAP's framework-controlled save need separate rules.</text>
+		</g>
+	</g>
+</svg>

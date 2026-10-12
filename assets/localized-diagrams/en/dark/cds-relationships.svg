@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="cds-relationships-en-title" lang="en" class="selectable-diagram">
+	<title id="cds-relationships-en-title">CDS links and ownership</title><desc>Items belong to the order BO; a partner reference crosses to an independently managed object.</desc><clipPath id="cds-relationships-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="cds-relationships-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#cds-relationships-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Association is a link; composition is ownership</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">An order example separates navigation from the business object boundary</text>
+			<rect x="40" y="290" width="235" height="140" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="40" y="391" width="235" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="54" y="404" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,808) scale(1,-1)" data-label-width="213.0">Order 4711</text>
+			<text x="54" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,732) scale(1,-1)" data-label-width="213.0">Root of the business</text>
+			<text x="54" y="347" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,694) scale(1,-1)" data-label-width="213.0">object. Owns its item</text>
+			<text x="54" y="328" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,656) scale(1,-1)" data-label-width="213.0">lifecycle.</text>
+			<rect x="40" y="115" width="235" height="115" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="40" y="191" width="235" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="54" y="204" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,408) scale(1,-1)" data-label-width="213.0">Order items</text>
+			<text x="54" y="166" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,332) scale(1,-1)" data-label-width="213.0">10: keyboard / 20: mouse</text>
+			<path d="M 150,288 L 150,237 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="150 237, 145 247, 155 247" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="173" y="255" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,510) scale(1,-1)" data-label-width="699.0">composition</text>
+			<rect x="570" y="290" width="270" height="140" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="570" y="391" width="270" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="584" y="404" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,808) scale(1,-1)" data-label-width="248.0">Business partner 900</text>
+			<text x="584" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,732) scale(1,-1)" data-label-width="248.0">An independently managed entity;</text>
+			<text x="584" y="347" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,694) scale(1,-1)" data-label-width="248.0">not owned by this order.</text>
+			<path d="M 284,360 L 562,360 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="562 360, 552 355, 552 365" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<text x="315" y="376" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,752) scale(1,-1)" data-label-width="557.0">association</text>
+			<rect x="315" y="125" width="520" height="113" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="335" y="207" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,414) scale(1,-1)" data-label-width="492.0">Declaring a cardinality describes the intended relationship.</text>
+			<text x="335" y="188" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,376) scale(1,-1)" data-label-width="492.0">It does not clean duplicate data or create a database</text>
+			<text x="335" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="492.0">uniqueness constraint.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Model [0..1], [1..1] or to-many relationships from actual data and the intended join conditions.</text>
+		</g>
+	</g>
+</svg>

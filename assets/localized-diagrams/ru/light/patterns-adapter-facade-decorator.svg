@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="patterns-adapter-facade-decorator-ru-title" lang="ru" class="selectable-diagram">
+	<title id="patterns-adapter-facade-decorator-ru-title">Adapter, Facade и Decorator: разные задачи</title><desc>Преобразование данных, организация вызовов и дополнительное поведение — разные обязанности. Внизу порядок обёрток определяет, логируется один общий вызов или обе попытки.</desc><clipPath id="patterns-adapter-facade-decorator-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="patterns-adapter-facade-decorator-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#patterns-adapter-facade-decorator-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Разные обёртки решают разные задачи</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Пример проведения: преобразовать данные, упростить шаги, наблюдать вызов</text>
+			<rect x="36" y="283" width="246" height="172" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="36" y="416" width="246" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="50" y="429" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,858) scale(1,-1)" data-label-width="224.0">ADAPTER</text>
+			<text x="51" y="391" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,782) scale(1,-1)" data-label-width="223.0">Входные данные:</text>
+			<text x="51" y="367" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,734) scale(1,-1)" data-label-width="223.0">amount = 0, currency = EUR</text>
+			<text x="51" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="223.0" />
+			<text x="51" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="223.0">Mapping для legacy:</text>
+			<text x="51" y="295" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,590) scale(1,-1)" data-label-width="223.0">значение + признаки изменения</text>
+			<rect x="316" y="283" width="246" height="172" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="316" y="416" width="246" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="330" y="429" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,858) scale(1,-1)" data-label-width="224.0">FACADE</text>
+			<text x="331" y="391" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,782) scale(1,-1)" data-label-width="223.0">Одна бизнес-операция:</text>
+			<text x="331" y="367" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,734) scale(1,-1)" data-label-width="223.0">провести заявку на закупку</text>
+			<text x="331" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="223.0" />
+			<text x="331" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="223.0">Объединяет:</text>
+			<text x="331" y="295" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,590) scale(1,-1)" data-label-width="223.0" textLength="223.0" lengthAdjust="spacingAndGlyphs">подготовка → проверка → проведение</text>
+			<rect x="596" y="283" width="246" height="172" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="596" y="416" width="246" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="610" y="429" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,858) scale(1,-1)" data-label-width="224.0">DECORATOR</text>
+			<text x="611" y="391" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,782) scale(1,-1)" data-label-width="223.0">Тот же интерфейс сервиса:</text>
+			<text x="611" y="367" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,734) scale(1,-1)" data-label-width="223.0">замер времени вызова</text>
+			<text x="611" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="223.0" />
+			<text x="611" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="223.0">Сохраняет:</text>
+			<text x="611" y="295" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,590) scale(1,-1)" data-label-width="223.0">контракт результата и ошибок</text>
+			<rect x="36" y="127" width="806" height="127" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="52" y="224" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,448) scale(1,-1)" data-label-width="782.0">Порядок обёрток: один вызов, две попытки</text>
+			<rect x="56" y="151" width="232" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="328" y="151" width="229" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="601" y="151" width="220" height="47" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="70" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="210.0">Внешний log: 1 операция</text>
+			<text x="342" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="207.0">Retry: 2 попытки</text>
+			<text x="615" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="198.0" textLength="198.0" lengthAdjust="spacingAndGlyphs">Клиент: чтение с допустимым повтором</text>
+			<path d="M 294,174 L 320,174 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="320 174, 310 169, 310 179" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<path d="M 563,174 L 593,174 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="593 174, 583 169, 583 179" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<text x="38" y="103" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,206) scale(1,-1)" data-label-width="834.0">Перенесите logging внутрь Retry -&gt; получите 2 попытки вместо 1 логического вызова.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Повтор безопасен не для каждой записи. Паттерны не убирают вложенные COMMIT, не дают права на операцию</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">и не делают внутреннюю зависимость SAP released.</text>
+		</g>
+	</g>
+</svg>

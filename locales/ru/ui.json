@@ -242,5 +242,7 @@
   "Diagram artwork keeps English labels; the explanation below is in Russian.": "Надписи на схеме — на английском. Пояснение и вопросы для самопроверки — на русском.",
   "Default answer format": "Формат ответа по умолчанию",
   "Choose a diagram": "Выберите схему",
-  "Questions without code open an explanation. Step by step stays specific to each question.": "Если примера кода нет, откроется объяснение. Пошаговый разбор выбирается отдельно для каждого вопроса."
+  "Questions without code open an explanation. Step by step stays specific to each question.": "Если примера кода нет, откроется объяснение. Пошаговый разбор выбирается отдельно для каждого вопроса.",
+  "Read text explanation": "Текстовое объяснение схемы",
+  "Download SVG": "Скачать SVG"
 }

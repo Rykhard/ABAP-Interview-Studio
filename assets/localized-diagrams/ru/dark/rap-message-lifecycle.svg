@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-message-lifecycle-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-message-lifecycle-ru-title">Сообщение RAP: ошибка и исправление</title><desc>Проследите дочернюю запись от ошибки до исправления. Сообщение не должно оставаться навсегда после исчезновения причины.</desc><clipPath id="rap-message-lifecycle-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-message-lifecycle-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-message-lifecycle-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">State messages нужно вовремя убирать</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Пример: неверную дату позиции исправляют в следующем draft-запросе</text>
+			<rect x="34" y="405" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="44" y="418" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,836) scale(1,-1)" data-label-width="193.19">Момент</text>
+			<rect x="247.1904761904762" y="405" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="257.1904761904762" y="418" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,836) scale(1,-1)" data-label-width="251.33">Бизнес-состояние</text>
+			<rect x="518.5238095238095" y="405" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="528.5238095238095" y="418" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,836) scale(1,-1)" data-label-width="309.48">Что делать с сообщением</text>
+			<rect x="34" y="358" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="44" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="193.19">Запрос 1</text>
+			<rect x="247.1904761904762" y="358" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="257.1904761904762" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="251.33">Дата позиции неверна</text>
+			<rect x="518.5238095238095" y="358" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="528.5238095238095" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="309.48">Вернуть state error для позиции</text>
+			<rect x="34" y="311" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="44" y="324" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,648) scale(1,-1)" data-label-width="193.19">Запрос 2</text>
+			<rect x="247.1904761904762" y="311" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="257.1904761904762" y="324" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,648) scale(1,-1)" data-label-width="251.33">Пользователь исправляет дату</text>
+			<rect x="518.5238095238095" y="311" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="528.5238095238095" y="324" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,648) scale(1,-1)" data-label-width="309.48">Убрать прежнее state message</text>
+			<rect x="34" y="264" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="44" y="277" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,554) scale(1,-1)" data-label-width="193.19">Повторная проверка</text>
+			<rect x="247.1904761904762" y="264" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="257.1904761904762" y="277" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,554) scale(1,-1)" data-label-width="251.33">Состояние согласовано</text>
+			<rect x="518.5238095238095" y="264" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="528.5238095238095" y="277" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,554) scale(1,-1)" data-label-width="309.48">Не создавать старую ошибку снова</text>
+			<rect x="34" y="217" width="211.1904761904762" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="44" y="230" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,460) scale(1,-1)" data-label-width="193.19">Transition failure</text>
+			<rect x="247.1904761904762" y="217" width="269.3333333333333" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="257.1904761904762" y="230" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,460) scale(1,-1)" data-label-width="251.33">Сама операция не удалась</text>
+			<rect x="518.5238095238095" y="217" width="327.4761904761905" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="528.5238095238095" y="230" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,460) scale(1,-1)" data-label-width="309.48">Вернуть отзыв об этой операции</text>
+			<text x="45" y="146" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,292) scale(1,-1)" data-label-width="827.0">Проверь ID экземпляра, state area и element/path. Правильный текст у неправильной позиции всё равно</text>
+			<text x="45" y="126" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,252) scale(1,-1)" data-label-width="827.0">означает ошибку поведения.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">REPORTED передаёт сообщения; допустимый FAILED отклоняет экземпляры. Одна severity не служит общим</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">механизмом отказа.</text>
+		</g>
+	</g>
+</svg>

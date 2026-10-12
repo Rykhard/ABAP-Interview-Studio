@@ -1045,14 +1045,14 @@
   },
   {
     "id": "draft-storage-illustration",
-    "title": "Three storage lifetimes: an illustrated analogy",
+    "title": "Transaction buffer, draft, and active data",
     "questions": [
       "RAP-03",
       "RAP-12",
       "SRAP-09",
       "OPS-04"
     ],
-    "caption": "The desk represents the current transactional buffer; the draft cabinet represents persistent work across requests; the shared archive represents saved active data.",
+    "caption": "Temporary changes, a saved draft, and active business data have different lifetimes.",
     "recall": "Which of the three can survive several HTTP requests without becoming active business data?",
     "limit": "An analogy, not literal SAP storage architecture or a mandatory three-stage pipeline. A new draft may have no active instance. Active business records may still be updated.",
     "raster": true,

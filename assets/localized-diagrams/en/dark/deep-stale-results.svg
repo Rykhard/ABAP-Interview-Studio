@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-stale-results-en-title" lang="en" class="selectable-diagram">
+	<title id="deep-stale-results-en-title">Stale aliases and overwritten return codes</title><desc>The first sequence can write to the previous target. The second takes a success branch for a different operation than the programmer intended.</desc><clipPath id="deep-stale-results-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-stale-results-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-stale-results-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">A result belongs to the operation that produced it</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Two sequential defects: stale field-symbol target and overwritten return code</text>
+			<rect x="36" y="407" width="76.09677419354838" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="46" y="420" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,840) scale(1,-1)" data-label-width="58.1">Step</text>
+			<rect x="114.09677419354838" y="407" width="293.0322580645161" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="124.09677419354838" y="420" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,840) scale(1,-1)" data-label-width="275.03">Operation</text>
+			<rect x="409.1290322580645" y="407" width="431.8709677419355" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="419.1290322580645" y="420" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,840) scale(1,-1)" data-label-width="413.87">Result after this step</text>
+			<rect x="36" y="362" width="76.09677419354838" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="46" y="375" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,750) scale(1,-1)" data-label-width="58.1">1</text>
+			<rect x="114.09677419354838" y="362" width="293.0322580645161" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="124.09677419354838" y="375" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,750) scale(1,-1)" data-label-width="275.03">ASSIGN component PRICE</text>
+			<rect x="409.1290322580645" y="362" width="431.8709677419355" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="419.1290322580645" y="375" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,750) scale(1,-1)" data-label-width="413.87">&lt;field&gt; -&gt; PRICE; sy-subrc = 0</text>
+			<rect x="36" y="317" width="76.09677419354838" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="46" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="58.1">2</text>
+			<rect x="114.09677419354838" y="317" width="293.0322580645161" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="124.09677419354838" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="275.03">ASSIGN component PRCIE fails</text>
+			<rect x="409.1290322580645" y="317" width="431.8709677419355" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="419.1290322580645" y="330" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,660) scale(1,-1)" data-label-width="413.87">Old assignment may remain; result = 4</text>
+			<rect x="36" y="272" width="76.09677419354838" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="46" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="58.1">3</text>
+			<rect x="114.09677419354838" y="272" width="293.0322580645161" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="124.09677419354838" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="275.03">Write through old alias</text>
+			<rect x="409.1290322580645" y="272" width="431.8709677419355" height="43" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="419.1290322580645" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="413.87">PRICE can be changed accidentally</text>
+			<text x="46" y="234" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,468) scale(1,-1)" data-label-width="826.0">Separate return-code trap</text>
+			<rect x="40" y="120" width="235" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="53" y="175" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,350) scale(1,-1)" data-label-width="214.0">READ misses</text>
+			<text x="53" y="143" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,286) scale(1,-1)" data-label-width="214.0">sy-subrc = 4</text>
+			<rect x="323" y="120" width="235" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="336" y="175" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,350) scale(1,-1)" data-label-width="214.0">FIND succeeds</text>
+			<text x="336" y="143" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,286) scale(1,-1)" data-label-width="214.0">sy-subrc = 0</text>
+			<rect x="605" y="120" width="235" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="618" y="175" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,350) scale(1,-1)" data-label-width="214.0">Later IF = 0</text>
+			<text x="618" y="143" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,286) scale(1,-1)" data-label-width="214.0">Tests FIND</text>
+			<path d="M 280,160 L 312,160 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="312 160, 302 155, 302 165" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<path d="M 564,160 L 596,160 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="596 160, 586 155, 586 165" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Consume or preserve the latest result immediately. Use ELSE UNASSIGN where supported, or unassign before</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">the dynamic assignment and handle failure.</text>
+		</g>
+	</g>
+</svg>

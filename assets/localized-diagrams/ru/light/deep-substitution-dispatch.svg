@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-substitution-dispatch-ru-title" lang="ru" class="selectable-diagram">
+	<title id="deep-substitution-dispatch-ru-title">Контрпример взаимозаменяемости</title><desc>Допустимое количество 1 выявляет нарушение поведения, хотя типы параметров совпадают. Нижняя таблица отделяет переопределение метода от новой возможности.</desc><clipPath id="deep-substitution-dispatch-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-substitution-dispatch-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-substitution-dispatch-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Одинаковая сигнатура не гарантирует поведение</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Общий quote-контракт: любое положительное количество и запрошенная валюта</text>
+			<rect x="42" y="356" width="250" height="84" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="61" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,822) scale(1,-1)" data-label-width="223.0">quote(quantity = 1,</text>
+			<text x="61" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="223.0">currency = EUR)</text>
+			<path d="M 303,397 L 391,397 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="391 397, 381 392, 381 402" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<path d="M 303,390 L 391,285 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="391 285, 380.7445 289.4526, 388.4088 295.8759" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,32%,12%); fill-rule: evenodd;" />
+			<rect x="404" y="353" width="436" height="91" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="423" y="412" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,824) scale(1,-1)" data-label-width="409.0">Provider A: 12 EUR</text>
+			<text x="423" y="388" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,776) scale(1,-1)" data-label-width="409.0">Принимает обещанный ввод.</text>
+			<rect x="404" y="245" width="436" height="87" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="423" y="301" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,602) scale(1,-1)" data-label-width="409.0">Provider B: минимум 10</text>
+			<text x="423" y="277" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,554) scale(1,-1)" data-label-width="409.0">Нарушает общее предусловие.</text>
+			<rect x="40" y="177" width="327.4117647058824" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="50" y="190" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,380) scale(1,-1)" data-label-width="309.41">Нужное изменение</text>
+			<rect x="369.4117647058824" y="177" width="468.5882352941176" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="379.4117647058824" y="190" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,380) scale(1,-1)" data-label-width="450.59">Как сохранить контракт</text>
+			<rect x="40" y="143" width="327.4117647058824" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="50" y="156" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,312) scale(1,-1)" data-label-width="309.41">Другая унаследованная реализация</text>
+			<rect x="369.4117647058824" y="143" width="468.5882352941176" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="379.4117647058824" y="156" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,312) scale(1,-1)" data-label-width="450.59">REDEFINITION сохраняет сигнатуру</text>
+			<rect x="40" y="109" width="327.4117647058824" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="50" y="122" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,244) scale(1,-1)" data-label-width="309.41">Необязательная симуляция</text>
+			<rect x="369.4117647058824" y="109" width="468.5882352941176" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="379.4117647058824" y="122" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,244) scale(1,-1)" data-label-width="450.59">Отдельная возможность; честный отказ</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Интерфейс позволяет единый вызов разных классов, но не гарантирует бизнес-взаимозаменяемость.</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">Общий код сам по себе не оправдывает superclass.</text>
+		</g>
+	</g>
+</svg>

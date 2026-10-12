@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="senior-query-secure-pipeline-en-title" lang="en" class="selectable-diagram">
+	<title id="senior-query-secure-pipeline-en-title">Secure custom-query filtering, count, and page</title><desc>The same authorized logical set contains IDs 2, 4, and 6. Counting it returns three; skipping one and taking two returns IDs 4 and 6 without revealing hidden B rows.</desc><clipPath id="senior-query-secure-pipeline-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="senior-query-secure-pipeline-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#senior-query-secure-pipeline-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">One authorized predicate must feed both data and count</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Request: user may see A; amount &gt; 100; order by ID; skip 1; take 2</text>
+			<rect x="35" y="407" width="77.22641509433963" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="45" y="420" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,840) scale(1,-1)" data-label-width="59.23">ID</text>
+			<rect x="114.22641509433963" y="407" width="95.50943396226417" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="124.22641509433963" y="420" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,840) scale(1,-1)" data-label-width="77.51">Org</text>
+			<rect x="211.7358490566038" y="407" width="144.2641509433962" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="221.7358490566038" y="420" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,840) scale(1,-1)" data-label-width="126.26">Amount</text>
+			<rect x="35" y="372" width="77.22641509433963" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="385" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,770) scale(1,-1)" data-label-width="59.23">1</text>
+			<rect x="114.22641509433963" y="372" width="95.50943396226417" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="124.22641509433963" y="385" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,770) scale(1,-1)" data-label-width="77.51">A</text>
+			<rect x="211.7358490566038" y="372" width="144.2641509433962" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="221.7358490566038" y="385" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,770) scale(1,-1)" data-label-width="126.26">80</text>
+			<rect x="35" y="337" width="77.22641509433963" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="350" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,700) scale(1,-1)" data-label-width="59.23">2</text>
+			<rect x="114.22641509433963" y="337" width="95.50943396226417" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="124.22641509433963" y="350" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,700) scale(1,-1)" data-label-width="77.51">A</text>
+			<rect x="211.7358490566038" y="337" width="144.2641509433962" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="221.7358490566038" y="350" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,700) scale(1,-1)" data-label-width="126.26">120</text>
+			<rect x="35" y="302" width="77.22641509433963" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="315" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,630) scale(1,-1)" data-label-width="59.23">3</text>
+			<rect x="114.22641509433963" y="302" width="95.50943396226417" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="124.22641509433963" y="315" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,630) scale(1,-1)" data-label-width="77.51">B</text>
+			<rect x="211.7358490566038" y="302" width="144.2641509433962" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="221.7358490566038" y="315" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,630) scale(1,-1)" data-label-width="126.26">200</text>
+			<rect x="35" y="267" width="77.22641509433963" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="280" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,560) scale(1,-1)" data-label-width="59.23">4</text>
+			<rect x="114.22641509433963" y="267" width="95.50943396226417" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="124.22641509433963" y="280" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,560) scale(1,-1)" data-label-width="77.51">A</text>
+			<rect x="211.7358490566038" y="267" width="144.2641509433962" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="221.7358490566038" y="280" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,560) scale(1,-1)" data-label-width="126.26">150</text>
+			<rect x="35" y="232" width="77.22641509433963" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="245" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,490) scale(1,-1)" data-label-width="59.23">5</text>
+			<rect x="114.22641509433963" y="232" width="95.50943396226417" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="124.22641509433963" y="245" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,490) scale(1,-1)" data-label-width="77.51">B</text>
+			<rect x="211.7358490566038" y="232" width="144.2641509433962" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="221.7358490566038" y="245" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,490) scale(1,-1)" data-label-width="126.26">300</text>
+			<rect x="35" y="197" width="77.22641509433963" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="210" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,420) scale(1,-1)" data-label-width="59.23">6</text>
+			<rect x="114.22641509433963" y="197" width="95.50943396226417" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="124.22641509433963" y="210" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,420) scale(1,-1)" data-label-width="77.51">A</text>
+			<rect x="211.7358490566038" y="197" width="144.2641509433962" height="33" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="221.7358490566038" y="210" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,420) scale(1,-1)" data-label-width="126.26">180</text>
+			<text x="35" y="452" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,904) scale(1,-1)" data-label-width="370.0">SOURCE: 6 rows</text>
+			<text x="411" y="452" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,904) scale(1,-1)" data-label-width="461.0">LOGICAL RESULT CONTRACT</text>
+			<rect x="403" y="368" width="437" height="66" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="418" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="414.0">Authorization + request filter</text>
+			<text x="418" y="387" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,774) scale(1,-1)" data-label-width="414.0">Keep IDs 2, 4, 6</text>
+			<rect x="403" y="291" width="437" height="66" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="418" y="333" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,666) scale(1,-1)" data-label-width="414.0">Count the same filtered set</text>
+			<text x="418" y="310" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,620) scale(1,-1)" data-label-width="414.0">count = 3</text>
+			<rect x="403" y="214" width="437" height="66" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="418" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,512) scale(1,-1)" data-label-width="414.0">Deterministic order, then page</text>
+			<text x="418" y="233" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,466) scale(1,-1)" data-label-width="414.0">skip 1, take 2 -&gt; IDs 4, 6</text>
+			<path d="M 622,363 L 622,361 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="622 361, 617 371, 627 371" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<path d="M 622,286 L 622,284 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="622 284, 617 294, 627 294" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="404" y="112" width="436" height="84" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="421" y="166" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,332) scale(1,-1)" data-label-width="411.0">RETURN 2 rows: ID 4 and ID 6</text>
+			<text x="421" y="137" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #192730; stroke:none;" transform="translate(0,274) scale(1,-1)" data-label-width="411.0">RETURN total count 3, not 2 and not 6</text>
+			<text x="38" y="136" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,272) scale(1,-1)" data-label-width="834.0">Do not flatten an unsupported Boolean filter.</text>
+			<text x="38" y="113" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,226) scale(1,-1)" data-label-width="834.0">Translate it correctly or reject it.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Unauthorized rows must not leak through count or aggregation. Stable ordering needs a tie-breaker;</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">concurrent changes require an explicit paging consistency contract.</text>
+		</g>
+	</g>
+</svg>

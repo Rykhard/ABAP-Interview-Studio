@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="query-page-count-en-title" lang="en" class="selectable-diagram">
+	<title id="query-page-count-en-title">Filtering, paging and total count</title><desc>Count and paging answer different questions. Stable ordering matters when the client requests successive pages.</desc><clipPath id="query-page-count-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="query-page-count-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#query-page-count-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Count describes the filtered set; a page is a slice</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Example: 100 orders, 23 match, the current page contains 5</text>
+			<circle cx="42" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="62" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="82" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="102" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="122" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="142" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="162" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="182" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="202" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="222" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="242" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="262" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="282" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="302" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="322" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="342" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="362" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="382" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="402" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="422" cy="428" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="42" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="62" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="82" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="102" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="122" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="142" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="162" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="182" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="202" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="222" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="242" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="262" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="282" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="302" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="322" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="342" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="362" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="382" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="402" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="422" cy="405" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="42" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="62" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="82" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="102" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="122" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="142" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="162" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="182" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="202" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="222" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="242" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="262" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="282" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="302" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="322" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="342" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="362" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="382" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="402" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="422" cy="382" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="42" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="62" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="82" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="102" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="122" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="142" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="162" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="182" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="202" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="222" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="242" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="262" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="282" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="302" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="322" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="342" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="362" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="382" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="402" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="422" cy="359" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="42" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="62" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="82" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="102" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="122" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="142" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="162" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="182" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="202" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="222" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="242" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="262" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="282" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="302" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="322" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="342" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="362" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="382" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="402" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<circle cx="422" cy="336" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #59707b; fill-rule: evenodd;" />
+			<text x="480" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="392.0">100 total orders</text>
+			<text x="480" y="382" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,764) scale(1,-1)" data-label-width="392.0">23 match the filter</text>
+			<rect x="34" y="148" width="192" height="134" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="34" y="243" width="192" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="48" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,512) scale(1,-1)" data-label-width="170.0">Filter</text>
+			<text x="48" y="218" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,436) scale(1,-1)" data-label-width="170.0">23 matching records</text>
+			<path d="M 229,215 L 241,215 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="241 215, 231 210, 231 220" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="246" y="148" width="192" height="134" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="246" y="243" width="192" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="260" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,512) scale(1,-1)" data-label-width="170.0">Order</text>
+			<text x="260" y="218" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,436) scale(1,-1)" data-label-width="170.0">Stable and</text>
+			<text x="260" y="199" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,398) scale(1,-1)" data-label-width="170.0">deterministic</text>
+			<path d="M 441,215 L 453,215 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="453 215, 443 210, 443 220" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="458" y="148" width="192" height="134" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="458" y="243" width="192" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="472" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,512) scale(1,-1)" data-label-width="170.0">Page</text>
+			<text x="472" y="218" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,436) scale(1,-1)" data-label-width="170.0">Skip 10, take 5</text>
+			<path d="M 653,215 L 665,215 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="665 215, 655 210, 655 220" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="670" y="148" width="192" height="134" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="670" y="243" width="192" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="684" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,512) scale(1,-1)" data-label-width="170.0">Return</text>
+			<text x="684" y="218" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,436) scale(1,-1)" data-label-width="170.0">5 rows + count 23</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Respect requested fields, filters, sorting, paging and count in a custom query provider. Do not count</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">only the returned page.</text>
+		</g>
+	</g>
+</svg>

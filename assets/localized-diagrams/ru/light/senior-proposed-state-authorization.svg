@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="senior-proposed-state-authorization-ru-title" lang="ru" class="selectable-diagram">
+	<title id="senior-proposed-state-authorization-ru-title">Полномочия для старого и предлагаемого состояния</title><desc>Право изменять данные области A и право перенести их в B — разные разрешения. Частичное изменение нужно объединить с текущим состоянием: отсутствие поля не означает его очистку.</desc><clipPath id="senior-proposed-state-authorization-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="senior-proposed-state-authorization-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#senior-proposed-state-authorization-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Право на старое состояние не разрешает новое</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Условие примера: можно менять заказы A, но нельзя переносить их в B</text>
+			<rect x="36" y="410" width="99.85436893203882" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="46" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="81.85">Заказ</text>
+			<rect x="137.85436893203882" y="410" width="201.70873786407765" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="147.85436893203882" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="183.71">Текущая организация</text>
+			<rect x="341.5631067961165" y="410" width="217.37864077669906" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="351.5631067961165" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="199.38">Новая организация</text>
+			<rect x="560.9417475728155" y="410" width="280.05825242718447" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="570.9417475728155" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="262.06">Решение</text>
+			<rect x="36" y="363" width="99.85436893203882" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="46" y="376" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,752) scale(1,-1)" data-label-width="81.85">4711</text>
+			<rect x="137.85436893203882" y="363" width="201.70873786407765" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="147.85436893203882" y="376" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,752) scale(1,-1)" data-label-width="183.71">A</text>
+			<rect x="341.5631067961165" y="363" width="217.37864077669906" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="351.5631067961165" y="376" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,752) scale(1,-1)" data-label-width="199.38">A</text>
+			<rect x="560.9417475728155" y="363" width="280.05825242718447" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="570.9417475728155" y="376" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,752) scale(1,-1)" data-label-width="262.06">Разрешено при прочих проверках</text>
+			<rect x="36" y="316" width="99.85436893203882" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="46" y="329" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,658) scale(1,-1)" data-label-width="81.85">4712</text>
+			<rect x="137.85436893203882" y="316" width="201.70873786407765" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="147.85436893203882" y="329" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,658) scale(1,-1)" data-label-width="183.71">A</text>
+			<rect x="341.5631067961165" y="316" width="217.37864077669906" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="351.5631067961165" y="329" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,658) scale(1,-1)" data-label-width="199.38">B</text>
+			<rect x="560.9417475728155" y="316" width="280.05825242718447" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="570.9417475728155" y="329" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,658) scale(1,-1)" data-label-width="262.06">Отклонить перенос</text>
+			<rect x="36" y="269" width="99.85436893203882" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="46" y="282" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,564) scale(1,-1)" data-label-width="81.85">4713</text>
+			<rect x="137.85436893203882" y="269" width="201.70873786407765" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="147.85436893203882" y="282" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,564) scale(1,-1)" data-label-width="183.71">A</text>
+			<rect x="341.5631067961165" y="269" width="217.37864077669906" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="351.5631067961165" y="282" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,564) scale(1,-1)" data-label-width="199.38">(не передано)</text>
+			<rect x="560.9417475728155" y="269" width="280.05825242718447" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="570.9417475728155" y="282" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,564) scale(1,-1)" data-label-width="262.06">Оставить A; проверить намерение</text>
+			<circle cx="143" cy="191" r="58" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 3; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="97.656" y="210" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,420) scale(1,-1)" data-label-width="95.34" textLength="95.34" lengthAdjust="spacingAndGlyphs">ТЕКУЩАЯ A</text>
+			<text x="108.5155" y="184" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,368) scale(1,-1)" data-label-width="84.48" textLength="84.48" lengthAdjust="spacingAndGlyphs">правка: да</text>
+			<text x="100.316" y="163" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,326) scale(1,-1)" data-label-width="92.68" textLength="92.68" lengthAdjust="spacingAndGlyphs">текущий экземпляр</text>
+			<path d="M 212,190 L 310,190 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="310 190, 300 185, 300 195" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<rect x="323" y="140" width="255" height="107" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="337" y="220" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,440) scale(1,-1)" data-label-width="233.0">Учесть частичный запрос</text>
+			<text x="337" y="195" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,390) scale(1,-1)" data-label-width="233.0">Старое состояние + переданные поля</text>
+			<text x="337" y="172" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,344) scale(1,-1)" data-label-width="233.0">Определить итоговое состояние.</text>
+			<path d="M 586,190 L 639,190 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="639 190, 629 185, 629 195" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<circle cx="741" cy="191" r="59" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="700.112" y="210" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(74%,32%,12%); stroke:none;font-weight:700;" transform="translate(0,420) scale(1,-1)" data-label-width="91.89">НОВАЯ B</text>
+			<text x="693.0825" y="184" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(74%,32%,12%); stroke:none;font-weight:700;" transform="translate(0,368) scale(1,-1)" data-label-width="98.92">нет права</text>
+			<text x="694.974" y="163" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(74%,32%,12%); stroke:none;" transform="translate(0,326) scale(1,-1)" data-label-width="97.03" textLength="97.03" lengthAdjust="spacingAndGlyphs">отклонить изменение</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Используйте поддержанные проверки прав и входных изменений. Скрытое или недоступное поле UI</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">не заменяет проверку безопасности в backend.</text>
+		</g>
+	</g>
+</svg>

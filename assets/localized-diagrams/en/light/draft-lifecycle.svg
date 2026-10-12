@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="draft-lifecycle-en-title" lang="en" class="selectable-diagram">
+	<title id="draft-lifecycle-en-title">Draft lifecycle</title><desc>Follow edit, activate and discard for an existing active object, then explain how a new-object draft differs.</desc><clipPath id="draft-lifecycle-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="draft-lifecycle-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#draft-lifecycle-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Draft lifecycle: edit now, activate when consistent</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Persistent draft and active instance are distinct states</text>
+			<rect x="40" y="317" width="228" height="112" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="40" y="390" width="228" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="54" y="403" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,806) scale(1,-1)" data-label-width="206.0">Active instance</text>
+			<text x="54" y="365" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,730) scale(1,-1)" data-label-width="206.0">A saved business record</text>
+			<text x="54" y="346" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,692) scale(1,-1)" data-label-width="206.0">exists.</text>
+			<rect x="326" y="317" width="228" height="112" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="326" y="390" width="228" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="340" y="403" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,806) scale(1,-1)" data-label-width="206.0">Edit draft</text>
+			<text x="340" y="365" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,730) scale(1,-1)" data-label-width="206.0">A persistent working</text>
+			<text x="340" y="346" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,692) scale(1,-1)" data-label-width="206.0">version survives individual</text>
+			<text x="340" y="327" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,654) scale(1,-1)" data-label-width="206.0">requests.</text>
+			<rect x="613" y="317" width="228" height="112" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="613" y="390" width="228" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="627" y="403" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,806) scale(1,-1)" data-label-width="206.0">Activate</text>
+			<text x="627" y="365" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,730) scale(1,-1)" data-label-width="206.0">Validate and transfer the</text>
+			<text x="627" y="346" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,692) scale(1,-1)" data-label-width="206.0">accepted state to active</text>
+			<text x="627" y="327" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,654) scale(1,-1)" data-label-width="206.0">data.</text>
+			<path d="M 275,365 L 318,365 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="318 365, 308 360, 308 370" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<path d="M 561,365 L 605,365 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="605 365, 595 360, 595 370" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<rect x="326" y="137" width="228" height="105" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="326" y="203" width="228" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="340" y="216" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,432) scale(1,-1)" data-label-width="206.0">Discard</text>
+			<text x="340" y="178" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,356) scale(1,-1)" data-label-width="206.0">Abandon the draft; an</text>
+			<text x="340" y="159" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,318) scale(1,-1)" data-label-width="206.0">existing active version</text>
+			<text x="340" y="140" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,280) scale(1,-1)" data-label-width="206.0">remains.</text>
+			<path d="M 440,309 L 440,250 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="440 250, 435 260, 445 260" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<text x="44" y="234" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,468) scale(1,-1)" data-label-width="563.0">New-object draft: there may</text>
+			<text x="44" y="215" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,430) scale(1,-1)" data-label-width="563.0">be no active instance yet.</text>
+			<text x="613" y="234" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,468) scale(1,-1)" data-label-width="259.0">A failed activation must not</text>
+			<text x="613" y="215" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,430) scale(1,-1)" data-label-width="259.0">be described as successful</text>
+			<text x="613" y="196" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,392) scale(1,-1)" data-label-width="259.0">business persistence.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Submit is a business action, not automatically draft activation. Locks and total ETag protect different</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">concurrency situations.</text>
+		</g>
+	</g>
+</svg>

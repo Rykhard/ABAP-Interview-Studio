@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="510" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 510" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-save-methods-en-title" lang="en" class="selectable-diagram">
+	<title id="rap-save-methods-en-title">Save options: who writes the data and which method runs?</title><desc>Compare four persistence choices. Both save extensions of managed BOs use save_modified; a fully unmanaged BO uses save.</desc><clipPath id="rap-save-methods-en-clip">
+		<rect x="0" y="0" width="880" height="510" />
+	</clipPath>
+	<g id="rap-save-methods-en-group" transform="scale(1,-1) translate(0,-510)" style="clip-path: url(#rap-save-methods-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="510" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="473" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,946) scale(1,-1)" data-label-width="844.0">SAVE is a phase; the implementation varies</text>
+			<text x="28" y="445" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,890) scale(1,-1)" data-label-width="844.0">Do not confuse a fully unmanaged BO with managed interaction + unmanaged save.</text>
+			<rect x="28" y="336" width="824" height="72" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="44" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,768) scale(1,-1)" data-label-width="800.0">Managed save</text>
+			<text x="44" y="361" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,722) scale(1,-1)" data-label-width="800.0">RAP writes the BO data.</text>
+			<text x="44" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="800.0">No custom persistence method is needed.</text>
+			<rect x="28" y="253" width="824" height="72" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="44" y="301" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,602) scale(1,-1)" data-label-width="800.0">Managed + additional save</text>
+			<text x="44" y="278" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,556) scale(1,-1)" data-label-width="800.0">RAP writes the BO; your code adds work.</text>
+			<text x="44" y="260" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,520) scale(1,-1)" data-label-width="800.0">with additional save -&gt; save_modified</text>
+			<rect x="28" y="170" width="824" height="72" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="44" y="218" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,436) scale(1,-1)" data-label-width="800.0">Managed + unmanaged save</text>
+			<text x="44" y="195" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,390) scale(1,-1)" data-label-width="800.0">RAP owns interaction; your code writes the data.</text>
+			<text x="44" y="177" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,354) scale(1,-1)" data-label-width="800.0">with unmanaged save -&gt; save_modified</text>
+			<rect x="28" y="87" width="824" height="72" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="44" y="135" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,270) scale(1,-1)" data-label-width="800.0">Fully unmanaged BO</text>
+			<text x="44" y="112" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,224) scale(1,-1)" data-label-width="800.0">Your code owns the buffer and persistence.</text>
+			<text x="44" y="94" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,188) scale(1,-1)" data-label-width="800.0">Implement save in the local saver class.</text>
+			<text x="28" y="54" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,108) scale(1,-1)" data-label-width="844.0">Example: add an audit row with additional save; do not replace managed order persistence.</text>
+			<text x="28" y="28" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,56) scale(1,-1)" data-label-width="844.0">No independent commit. Match the generated saver signature and features to the target release.</text>
+		</g>
+	</g>
+</svg>

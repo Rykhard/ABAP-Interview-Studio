@@ -1,11 +1,6 @@
 // A language change keeps the same stable content IDs and ongoing session.
 const languagePicker=document.createElement('div');
 languagePicker.className='language-picker';languagePicker.setAttribute('role','group');languagePicker.setAttribute('aria-label','Language');
-if(studioLocale==='ru'){
- const diagramNote=document.createElement('p');diagramNote.className='diagram-language-note';
- diagramNote.textContent='Diagram artwork keeps English labels; the explanation below is in Russian.';
- $('visualStage').after(diagramNote);
-}
 languagePicker.innerHTML='<button type="button" data-language="en" lang="en" title="English">EN</button><button type="button" data-language="ru" lang="ru" title="Русский">RU</button>';
 appBar.insertBefore(languagePicker,$('backToTop'));
 languagePicker.querySelectorAll('button').forEach(button=>{

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "draft-storage-illustration",
+    "kind": "comparison",
+    "en": {
+      "panels": [
+        {"title": "Transaction buffer", "body": "Working changes for the current transaction. It is not the persisted draft."},
+        {"title": "Persistent draft", "body": "Saved unfinished work that can survive separate requests. It is not yet the active business state."},
+        {"title": "Active data", "body": "The saved business state. Draft activation must pass the applicable checks before updating it."}
+      ],
+      "description": "The three areas represent different places and lifetimes for data, not three interchangeable names. The transaction buffer holds working changes during a RAP transaction. A persistent draft stores unfinished editing work across requests. Active data is the saved business state used by normal business processing.\n\nFor example, a user can leave an unfinished draft and return later; that does not mean the original transaction buffer stays alive. Activating the draft applies the supported checks and save processing to the active instance. This comparison does not show the draft locks, authorization checks or every runtime phase."
+    },
+    "ru": {
+      "panels": [
+        {"title": "Transaction buffer", "body": "Рабочие изменения текущей транзакции. Это не сохранённый draft."},
+        {"title": "Persistent draft", "body": "Сохранённая незавершённая работа между запросами. Это ещё не активные бизнес-данные."},
+        {"title": "Active data", "body": "Сохранённое бизнес-состояние. Перед его изменением при активации draft должны пройти нужные проверки."}
+      ],
+      "description": "Три области показывают разные места хранения и время жизни данных. Это не три названия одного объекта. Transaction buffer содержит рабочие изменения текущей RAP-транзакции. Persistent draft сохраняет незавершённое редактирование между запросами. Active data — сохранённое бизнес-состояние, с которым работают обычные бизнес-процессы.\n\nНапример, пользователь может оставить draft и вернуться позже. Это не означает, что исходный transaction buffer всё это время остаётся в памяти. При активации draft выполняются предусмотренные проверки и сохранение активного экземпляра. Сравнение не показывает draft locks, проверки прав и все фазы runtime."
+    }
+  },
+  {
+    "id": "etag-story-illustration",
+    "kind": "sequence",
+    "en": {
+      "panels": [
+        {"title": "1. Both read V7", "body": "Alice and Ben read the same record. Both receive its current ETag, represented here as V7."},
+        {"title": "2. Alice saves", "body": "Her If-Match V7 matches the current record. The update succeeds and produces a new ETag, V8."},
+        {"title": "3. Ben is stale", "body": "His If-Match V7 no longer matches V8. The update is rejected; he must refresh and resolve the conflict."}
+      ],
+      "description": "Read the sequence from the shared initial version to two competing updates. Alice and Ben both read version V7. Alice sends her change with If-Match V7 while V7 is still current. Her update succeeds and the saved record receives a new ETag, represented as V8.\n\nBen then sends his change using the older V7. Because the current record is V8, the conditional update is rejected, normally with HTTP 412. Alice's change is not silently overwritten. Ben needs to read the current state and decide how to apply his change. V7 and V8 are illustrative labels: ETags are opaque values, not necessarily sequential numbers. The check does not reserve a record or replace all locking and authorization rules."
+    },
+    "ru": {
+      "panels": [
+        {"title": "1. Оба читают V7", "body": "Alice и Ben читают одну запись. Оба получают текущий ETag, здесь обозначенный как V7."},
+        {"title": "2. Alice сохраняет", "body": "Её If-Match V7 совпадает с текущей версией. Изменение сохраняется, запись получает новый ETag — V8."},
+        {"title": "3. Версия Ben устарела", "body": "Его If-Match V7 уже не совпадает с V8. Изменение отклоняется: нужно перечитать данные и разрешить конфликт."}
+      ],
+      "description": "Последовательность начинается с одной общей версии и показывает два конкурирующих изменения. Alice и Ben читают V7. Alice отправляет изменение с If-Match V7, пока эта версия ещё актуальна. Её изменение сохраняется, а запись получает новый ETag, здесь обозначенный как V8.\n\nЗатем Ben отправляет изменение со старым V7. Текущая версия уже V8, поэтому условный запрос отклоняется, обычно с HTTP 412. Изменение Alice не перезаписывается незаметно. Ben должен прочитать актуальные данные и решить, как применить свою правку. V7 и V8 — условные обозначения: ETag является непрозрачным значением, а не обязательно порядковым номером. Такая проверка не резервирует запись и не заменяет все блокировки и проверки прав."
+    }
+  }
+]

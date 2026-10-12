@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-sql-inputs-en-title" lang="en" class="selectable-diagram">
+	<title id="deep-sql-inputs-en-title">Two input kinds and two safe handling paths</title><desc>The apostrophe is intentionally harmless data on the left. The sort request on the right selects a predefined identifier rather than supplying executable SQL.</desc><clipPath id="deep-sql-inputs-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-sql-inputs-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-sql-inputs-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Bind values; select identifiers from a controlled vocabulary</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Input: customer name = O'Brien; sort option = customer</text>
+			<rect x="40" y="337" width="320" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="53" y="392" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,784) scale(1,-1)" data-label-width="299.0">DATA VALUE</text>
+			<text x="53" y="360" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,720) scale(1,-1)" data-label-width="299.0">O'Brien</text>
+			<rect x="519" y="337" width="320" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="532" y="392" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,784) scale(1,-1)" data-label-width="299.0">USER SORT OPTION</text>
+			<text x="532" y="360" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,720) scale(1,-1)" data-label-width="299.0">customer</text>
+			<path d="M 199,329 L 199,268 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="199 268, 194 278, 204 278" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<path d="M 679,329 L 679,268 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="679 268, 674 278, 684 278" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<rect x="40" y="172" width="320" height="86" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="58" y="225" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,450) scale(1,-1)" data-label-width="294.0">Bind through @customer_name.</text>
+			<text x="58" y="201" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,402) scale(1,-1)" data-label-width="294.0">An apostrophe remains data.</text>
+			<rect x="519" y="172" width="320" height="86" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="537" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="294.0">Map allowed customer option</text>
+			<text x="537" y="203" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,406) scale(1,-1)" data-label-width="294.0">to a server-chosen column.</text>
+			<rect x="374" y="290" width="133" height="53" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="406.9435" y="321" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,642) scale(1,-1)" data-label-width="92.06">not SQL</text>
+			<text x="402.32" y="301" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #efb384; stroke:none;" transform="translate(0,602) scale(1,-1)" data-label-width="96.68">from the client</text>
+			<text x="42" y="119" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,238) scale(1,-1)" data-label-width="830.0">Authorization conditions remain mandatory and independent of user filters.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Quoting a string cannot authorize a column, table, operator, or whole clause. Keep the SQL shape static</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">wherever possible; reject unsupported sort options.</text>
+		</g>
+	</g>
+</svg>

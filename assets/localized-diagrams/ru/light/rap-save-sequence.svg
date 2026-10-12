@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="740" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 740" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-save-sequence-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-save-sequence-ru-title">RAP save sequence: успешное сохранение и ранний отказ</title><desc>Проследите заказ от расчёта итога до очистки буфера. Оранжевая ветка останавливает сохранение до позднего назначения номера и записи данных.</desc><clipPath id="rap-save-sequence-ru-clip">
+		<rect x="0" y="0" width="880" height="740" />
+	</clipPath>
+	<g id="rap-save-sequence-ru-group" transform="scale(1,-1) translate(0,-740)" style="clip-path: url(#rap-save-sequence-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="740" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="704" style="font-family:Arial,Helvetica,sans-serif; font-size: 23px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1408) scale(1,-1)" data-label-width="844.0">RAP save sequence: один заказ по шагам</text>
+			<text x="28" y="680" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,1360) scale(1,-1)" data-label-width="844.0">Сначала расчёт и проверки. Затем номер и запись.</text>
+			<rect x="28" y="582" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="42" y="639" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,1278) scale(1,-1)" data-label-width="508.0">1  FINALIZE</text>
+			<text x="42" y="616" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1232) scale(1,-1)" data-label-width="508.0">Рассчитать сумму заказа.</text>
+			<text x="42" y="595" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,1190) scale(1,-1)" data-label-width="508.0">Последние допустимые изменения буфера.</text>
+			<rect x="28" y="482" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="42" y="539" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,1078) scale(1,-1)" data-label-width="508.0">2  CHECK_BEFORE_SAVE</text>
+			<text x="42" y="516" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1032) scale(1,-1)" data-label-width="508.0">Проверить дату поставки.</text>
+			<text x="42" y="495" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,990) scale(1,-1)" data-label-width="508.0">Проверки должны пройти все BO.</text>
+			<rect x="28" y="336" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="42" y="393" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,786) scale(1,-1)" data-label-width="508.0">3  ADJUST_NUMBERS  (поздний номер)</text>
+			<text x="42" y="370" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,740) scale(1,-1)" data-label-width="508.0">Назначить итоговый номер 4711.</text>
+			<text x="42" y="349" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,698) scale(1,-1)" data-label-width="508.0">При ранней нумерации этот шаг не нужен.</text>
+			<rect x="28" y="236" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="42" y="293" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,586) scale(1,-1)" data-label-width="508.0">4  SAVE  (запись данных)</text>
+			<text x="42" y="270" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,540) scale(1,-1)" data-label-width="508.0">Записать заказ и позиции.</text>
+			<text x="42" y="249" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,498) scale(1,-1)" data-label-width="508.0">Реализация зависит от варианта save.</text>
+			<rect x="28" y="86" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="42" y="143" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,286) scale(1,-1)" data-label-width="508.0">5  CLEANUP</text>
+			<text x="42" y="120" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,240) scale(1,-1)" data-label-width="508.0">Очистить рабочие данные транзакции.</text>
+			<text x="42" y="99" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,198) scale(1,-1)" data-label-width="508.0">Следующая LUW не должна получить старый буфер.</text>
+			<path d="M 290,579 L 290,565 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="290 565, 285 575, 295 575" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<path d="M 290,479 L 290,419 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="290 419, 285 429, 295 429" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<path d="M 290,333 L 290,319 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="290 319, 285 329, 295 329" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<path d="M 290,233 L 290,169 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="290 169, 285 179, 295 179" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<rect x="30" y="434" width="526" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="43" y="446" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,892) scale(1,-1)" data-label-width="505.0">ТОЧКА НЕВОЗВРАТА: все проверки пройдены</text>
+			<rect x="30" y="187" width="526" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="43" y="199" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,398) scale(1,-1)" data-label-width="505.0">Владелец транзакции завершает COMMIT БД</text>
+			<rect x="606" y="460" width="246" height="196" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="620" y="630" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(74%,32%,12%); stroke:none;font-weight:700;" transform="translate(0,1260) scale(1,-1)" data-label-width="224.0">Ранний отказ</text>
+			<text x="620" y="601" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1202) scale(1,-1)" data-label-width="224.0" textLength="224.0" lengthAdjust="spacingAndGlyphs">FINALIZE или CHECK_BEFORE_SAVE</text>
+			<text x="620" y="583" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1166) scale(1,-1)" data-label-width="224.0">завершился ошибкой в любом BO.</text>
+			<text x="620" y="539" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(74%,32%,12%); stroke:none;font-weight:700;" transform="translate(0,1078) scale(1,-1)" data-label-width="224.0">CLEANUP_FINALIZE</text>
+			<text x="620" y="513" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1026) scale(1,-1)" data-label-width="224.0">Очистить после отказа;</text>
+			<text x="620" y="495" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,990) scale(1,-1)" data-label-width="224.0">не переходить к позднему</text>
+			<text x="620" y="477" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,954) scale(1,-1)" data-label-width="224.0">сохранению.</text>
+			<path d="M 560,623 L 602,623 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="602 623, 592 618, 592 628" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,32%,12%); fill-rule: evenodd;" />
+			<path d="M 560,524 L 602,524 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="602 524, 592 519, 592 529" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,32%,12%); fill-rule: evenodd;" />
+			<rect x="606" y="238" width="246" height="186" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="620" y="397" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,794) scale(1,-1)" data-label-width="224.0">Позднее сохранение</text>
+			<text x="620" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="224.0">Обычные бизнес-проверки</text>
+			<text x="620" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="224.0">уже пройдены. При этом</text>
+			<text x="620" y="335" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,670) scale(1,-1)" data-label-width="224.0">техническая ошибка</text>
+			<text x="620" y="317" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,634) scale(1,-1)" data-label-width="224.0">возможна.</text>
+			<text x="620" y="287" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,574) scale(1,-1)" data-label-width="224.0">Особая обработка ошибок BAPI</text>
+			<text x="620" y="270" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,540) scale(1,-1)" data-label-width="224.0">требует нужного saver</text>
+			<text x="620" y="253" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,506) scale(1,-1)" data-label-width="224.0">и поддержки релиза.</text>
+			<text x="28" y="48" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,96) scale(1,-1)" data-label-width="844.0">Запомни: расчёт -&gt; проверка -&gt; номер -&gt; запись -&gt; очистка.</text>
+			<text x="28" y="24" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,48) scale(1,-1)" data-label-width="844.0">Это фазы runtime, а не пять обязательных методов BO. В handler и saver нельзя делать COMMIT.</text>
+		</g>
+	</g>
+</svg>

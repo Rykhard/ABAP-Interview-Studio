@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="clean-core-wrapper-en-title" lang="en" class="selectable-diagram">
+	<title id="clean-core-wrapper-en-title">Clean Core wrapper dependency</title><desc>Trace dependencies across the wrapper instead of classifying the solution from its visible surface alone.</desc><clipPath id="clean-core-wrapper-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="clean-core-wrapper-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clean-core-wrapper-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">A wrapper changes the contract, not its ancestry</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Inspect the dependency behind the clean facade</text>
+			<rect x="40" y="285" width="235" height="150" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="40" y="396" width="235" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="54" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,818) scale(1,-1)" data-label-width="213.0">Custom consumer</text>
+			<text x="54" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="213.0">Uses a deliberate interface</text>
+			<text x="54" y="352" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,704) scale(1,-1)" data-label-width="213.0">and depends on its</text>
+			<text x="54" y="333" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,666) scale(1,-1)" data-label-width="213.0">contract.</text>
+			<rect x="322" y="285" width="235" height="150" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="322" y="396" width="235" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="336" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,818) scale(1,-1)" data-label-width="213.0">Custom wrapper</text>
+			<text x="336" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="213.0">Can isolate access and</text>
+			<text x="336" y="352" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,704) scale(1,-1)" data-label-width="213.0">provide a stable custom</text>
+			<text x="336" y="333" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,666) scale(1,-1)" data-label-width="213.0">surface.</text>
+			<rect x="605" y="285" width="235" height="150" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="605" y="396" width="235" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="619" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,818) scale(1,-1)" data-label-width="213.0">SAP dependency</text>
+			<text x="619" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="213.0">Its actual release status</text>
+			<text x="619" y="352" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,704) scale(1,-1)" data-label-width="213.0">and Clean Core</text>
+			<text x="619" y="333" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,666) scale(1,-1)" data-label-width="213.0">classification still</text>
+			<text x="619" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="213.0">matter.</text>
+			<path d="M 282,357 L 314,357 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="314 357, 304 352, 304 362" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<path d="M 564,357 L 597,357 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="597 357, 587 352, 587 362" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="60" y="208" width="263.1162790697675" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="70" y="221" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,442) scale(1,-1)" data-label-width="245.12">Claim</text>
+			<rect x="325.1162790697675" y="208" width="492.8837209302325" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="335.1162790697675" y="221" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,442) scale(1,-1)" data-label-width="474.88">Reality</text>
+			<rect x="60" y="172" width="263.1162790697675" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="70" y="185" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,370) scale(1,-1)" data-label-width="245.12">Released custom surface</text>
+			<rect x="325.1162790697675" y="172" width="492.8837209302325" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="335.1162790697675" y="185" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,370) scale(1,-1)" data-label-width="474.88">Does not retroactively release the SAP object</text>
+			<rect x="60" y="136" width="263.1162790697675" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="70" y="149" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,298) scale(1,-1)" data-label-width="245.12">Runs side-by-side</text>
+			<rect x="325.1162790697675" y="136" width="492.8837209302325" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="335.1162790697675" y="149" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,298) scale(1,-1)" data-label-width="474.88">Does not prove every consumed API is released</text>
+			<rect x="60" y="100" width="263.1162790697675" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="70" y="113" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,226) scale(1,-1)" data-label-width="245.12">One Level A dependency</text>
+			<rect x="325.1162790697675" y="100" width="492.8837209302325" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="335.1162790697675" y="113" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,226) scale(1,-1)" data-label-width="474.88">Does not classify all other dependencies</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">A-D grades are not a one-to-one renaming of the historical three-tier model. Check permitted use in the</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">target edition.</text>
+		</g>
+	</g>
+</svg>

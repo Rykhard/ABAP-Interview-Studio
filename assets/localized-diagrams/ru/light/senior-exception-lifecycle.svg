@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="senior-exception-lifecycle-ru-title" lang="ru" class="selectable-diagram">
+	<title id="senior-exception-lifecycle-ru-title">Управление исключением и его пересмотр</title><desc>Запись исключения ограничивает допустимую зависимость, фиксирует основания и ответственного, задаёт условия пересмотра и устранения. Изменённая реализация должна оставаться в согласованных границах.</desc><clipPath id="senior-exception-lifecycle-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="senior-exception-lifecycle-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#senior-exception-lifecycle-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Исключение из правил — ограниченное решение, не новый API</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Учебная запись EX-017 разрешает одну проверенную внутреннюю зависимость чтения</text>
+			<rect x="35" y="183" width="406" height="275" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="35" y="413" width="406" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="53" y="430" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,860) scale(1,-1)" data-label-width="380.0">EX-017 / запись исключения для проверки</text>
+			<text x="54" y="388" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,776) scale(1,-1)" data-label-width="379.0">Область: ZCL_LEGACY_READ, один путь чтения</text>
+			<text x="54" y="361" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,722) scale(1,-1)" data-label-width="379.0">Причина: released query не содержит поля</text>
+			<text x="54" y="334" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,668) scale(1,-1)" data-label-width="379.0">Владелец: команда и согласующий риск</text>
+			<text x="54" y="307" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,614) scale(1,-1)" data-label-width="379.0">Проверки: отказ в доступе и суммы результата</text>
+			<text x="54" y="280" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,560) scale(1,-1)" data-label-width="379.0">Пересмотр: upgrade или API-преемник</text>
+			<text x="54" y="253" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,506) scale(1,-1)" data-label-width="379.0">Выход: заменить зависимость, убрать exemption</text>
+			<text x="54" y="226" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,452) scale(1,-1)" data-label-width="379.0">Статус: согласована область, не любой доступ</text>
+			<circle cx="504" cy="432" r="19" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="499.552" y="426" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,852) scale(1,-1)" data-label-width="16.0">1</text>
+			<text x="539" y="440" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,880) scale(1,-1)" data-label-width="333.0">ОЦЕНИТЬ</text>
+			<text x="539" y="415" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,830) scale(1,-1)" data-label-width="333.0">Проверить пробел и альтернативы.</text>
+			<circle cx="504" cy="353" r="19" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="499.552" y="347" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,694) scale(1,-1)" data-label-width="16.0">2</text>
+			<text x="539" y="361" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,722) scale(1,-1)" data-label-width="333.0">РЕШИТЬ</text>
+			<text x="539" y="336" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,672) scale(1,-1)" data-label-width="333.0">Согласовать риск и меры контроля.</text>
+			<circle cx="504" cy="274" r="19" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="499.552" y="268" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,536) scale(1,-1)" data-label-width="16.0">3</text>
+			<text x="539" y="282" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,564) scale(1,-1)" data-label-width="333.0">ПЕРЕПРОВЕРИТЬ</text>
+			<text x="539" y="257" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,514) scale(1,-1)" data-label-width="333.0">Повод: изменение кода, API, релиза.</text>
+			<circle cx="504" cy="195" r="19" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="499.552" y="189" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,378) scale(1,-1)" data-label-width="16.0">4</text>
+			<text x="539" y="203" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,406) scale(1,-1)" data-label-width="333.0">ЗАКРЫТЬ / ПРОДЛИТЬ</text>
+			<text x="539" y="178" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,356) scale(1,-1)" data-label-width="333.0">Показать замену или новые проверки.</text>
+			<path d="M 504,406 L 504,388 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="504 388, 499 398, 509 398" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<path d="M 504,327 L 504,309 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="504 309, 499 319, 509 319" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<path d="M 504,248 L 504,230 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="504 230, 499 240, 509 240" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<rect x="36" y="105" width="807" height="53" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="52" y="126" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(74%,32%,12%); stroke:none;font-weight:700;" transform="translate(0,252) scale(1,-1)" data-label-width="783.0">Новый вызов записи выходит за EX-017. Нужен новый разбор, а не автоматическое разрешение.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Exemption может менять обработку findings, но не разрешает неподдержанный синтаксис ABAP Cloud,</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">не делает SAP-объект released и не доказывает корректность транзакций.</text>
+		</g>
+	</g>
+</svg>

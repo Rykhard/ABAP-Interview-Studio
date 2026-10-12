@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="eml-identity-tags-en-title" lang="en" class="selectable-diagram">
+	<title id="eml-identity-tags-en-title">EML identity tags</title><desc>Content IDs connect entries within a request. Transactional and preliminary identities address other lifecycle needs.</desc><clipPath id="eml-identity-tags-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="eml-identity-tags-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#eml-identity-tags-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">EML identities solve different problems</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">A parent and child created in the same request</text>
+			<rect x="40" y="290" width="345" height="142" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="40" y="393" width="345" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="54" y="406" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,812) scale(1,-1)" data-label-width="323.0">Create parent</text>
+			<text x="54" y="368" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,736) scale(1,-1)" data-label-width="323.0">%cid = ORDER_NEW identifies this request</text>
+			<text x="54" y="349" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,698) scale(1,-1)" data-label-width="323.0">entry before final keys are known.</text>
+			<rect x="488" y="290" width="345" height="142" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="488" y="393" width="345" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="502" y="406" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,812) scale(1,-1)" data-label-width="323.0">Create child by association</text>
+			<text x="502" y="368" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,736) scale(1,-1)" data-label-width="323.0">%cid_ref = ORDER_NEW links the new child</text>
+			<text x="502" y="349" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,698) scale(1,-1)" data-label-width="323.0">to that parent in the request.</text>
+			<path d="M 480,357 L 393,357 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="393 357, 403 362, 403 352" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<text x="410" y="376" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)" data-label-width="462.0">refer to</text>
+			<rect x="40" y="218" width="163.625" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="50" y="231" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,462) scale(1,-1)" data-label-width="145.62">Token</text>
+			<rect x="205.625" y="218" width="627.375" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="215.625" y="231" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,462) scale(1,-1)" data-label-width="609.38">Meaning</text>
+			<rect x="40" y="185" width="163.625" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="50" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="145.62">%tky</text>
+			<rect x="205.625" y="185" width="627.375" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="215.625" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="609.38">Transactional identity; includes required context</text>
+			<rect x="40" y="152" width="163.625" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="50" y="165" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,330) scale(1,-1)" data-label-width="145.62">%pid</text>
+			<rect x="205.625" y="152" width="627.375" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="215.625" y="165" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,330) scale(1,-1)" data-label-width="609.38">Preliminary identity for late-numbering scenarios</text>
+			<rect x="40" y="119" width="163.625" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="50" y="132" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,264) scale(1,-1)" data-label-width="145.62">%pre -&gt; %key</text>
+			<rect x="205.625" y="119" width="627.375" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="215.625" y="132" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,264) scale(1,-1)" data-label-width="609.38">Map preliminary identity to final keys in adjust_numbers</text>
+			<rect x="40" y="86" width="163.625" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="50" y="99" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,198) scale(1,-1)" data-label-width="145.62">MAPPED</text>
+			<rect x="205.625" y="86" width="627.375" height="31" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="215.625" y="99" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,198) scale(1,-1)" data-label-width="609.38">Return correlations and assigned identities</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">%cid is not a database key. %tky must not be reconstructed by blindly copying only the business key.</text>
+		</g>
+	</g>
+</svg>

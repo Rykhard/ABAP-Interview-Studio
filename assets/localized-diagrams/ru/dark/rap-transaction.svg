@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="550" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 550" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-transaction-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-transaction-ru-title">Граница транзакции RAP и workflow</title><desc>Разделите локальную транзакцию, доставку события и последующий обратный вызов workflow.</desc><clipPath id="rap-transaction-ru-clip">
+		<rect x="0" y="0" width="880" height="550" />
+	</clipPath>
+	<g id="rap-transaction-ru-group" transform="scale(1,-1) translate(0,-550)" style="clip-path: url(#rap-transaction-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="550" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="30" y="509" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1018) scale(1,-1)" data-label-width="842.0">Транзакция RAP и согласование</text>
+			<text x="30" y="482" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #aabdc6; stroke:none;" transform="translate(0,964) scale(1,-1)" data-label-width="842.0">Транзакцию завершает framework или внешний EML consumer</text>
+			<rect x="30" y="365" width="240" height="91" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="428" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,856) scale(1,-1)" data-label-width="217.0">1  Запрос consumer</text>
+			<text x="45" y="404" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,808) scale(1,-1)" data-label-width="217.0">Action или изменение через EML</text>
+			<text x="45" y="386" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,772) scale(1,-1)" data-label-width="217.0">Проверить публичный контракт</text>
+			<rect x="320" y="365" width="240" height="91" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="335" y="428" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,856) scale(1,-1)" data-label-width="217.0">2  Interaction</text>
+			<text x="335" y="404" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,808) scale(1,-1)" data-label-width="217.0">Чтение и изменение буфера</text>
+			<text x="335" y="386" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,772) scale(1,-1)" data-label-width="217.0">Расчёт данных, отклонение ошибок</text>
+			<rect x="610" y="365" width="240" height="91" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="625" y="428" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,856) scale(1,-1)" data-label-width="217.0">3  Save sequence</text>
+			<text x="625" y="404" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,808) scale(1,-1)" data-label-width="217.0">Итоговый расчёт и проверки</text>
+			<text x="625" y="386" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,772) scale(1,-1)" data-label-width="217.0">Нумерация и запись по настройкам</text>
+			<path d="M 275,410 L 314,410 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="306 415, 306 405, 314 410" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<path d="M 565,410 L 604,410 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="596 415, 596 405, 604 410" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="30" y="298" width="820" height="44" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="48" y="315" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,630) scale(1,-1)" data-label-width="794.0">В behavior handler и saver нельзя вызывать COMMIT WORK или COMMIT ENTITIES.</text>
+			<path d="M 730,362 L 730,266 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="725 274, 735 274, 730 266" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="610" y="172" width="240" height="89" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="625" y="235" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,470) scale(1,-1)" data-label-width="217.0">4  COMMIT и публикация</text>
+			<text x="625" y="212" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: #aabdc6; stroke:none;" transform="translate(0,424) scale(1,-1)" data-label-width="217.0">Использовать поддерживаемую</text>
+			<text x="625" y="194" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: #aabdc6; stroke:none;" transform="translate(0,388) scale(1,-1)" data-label-width="217.0">транзакционную доставку событий</text>
+			<rect x="320" y="172" width="240" height="89" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="335" y="235" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,470) scale(1,-1)" data-label-width="217.0">5  Workflow consumer</text>
+			<text x="335" y="212" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: #aabdc6; stroke:none;" transform="translate(0,424) scale(1,-1)" data-label-width="217.0">Связать события, убрать дубли</text>
+			<text x="335" y="194" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: #aabdc6; stroke:none;" transform="translate(0,388) scale(1,-1)" data-label-width="217.0">Следить за повторами и ошибками</text>
+			<path d="M 604,218 L 566,218 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="566 218, 574 223, 574 213" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<rect x="30" y="172" width="240" height="89" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="235" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,470) scale(1,-1)" data-label-width="217.0">6  Ответ согласования</text>
+			<text x="45" y="212" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: #aabdc6; stroke:none;" transform="translate(0,424) scale(1,-1)" data-label-width="217.0">Проверить автора и состояние</text>
+			<text x="45" y="194" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: #aabdc6; stroke:none;" transform="translate(0,388) scale(1,-1)" data-label-width="217.0">Применить решение идемпотентно</text>
+			<path d="M 314,218 L 275,218 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="275 218, 283 223, 283 213" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<text x="30" y="120" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,240) scale(1,-1)" data-label-width="842.0">Обратный вызов — новая транзакция. Локальный ROLLBACK не отменяет удалённые действия.</text>
+			<text x="30" y="91" style="font-family:Arial,Helvetica,sans-serif; font-size: 11px;fill: #aabdc6; stroke:none;" transform="translate(0,182) scale(1,-1)" data-label-width="842.0">Draft хранится между запросами; транзакционный буфер в памяти — нет.</text>
+			<text x="30" y="63" style="font-family:Arial,Helvetica,sans-serif; font-size: 10px;fill: #aabdc6; stroke:none;" transform="translate(0,126) scale(1,-1)" data-label-width="842.0">Общая схема: save methods и доставка событий зависят от сценария и релиза.</text>
+		</g>
+	</g>
+</svg>

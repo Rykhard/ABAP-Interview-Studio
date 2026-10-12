@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="classic-internal-table-lookup-ru-title" lang="ru" class="selectable-diagram">
+	<title id="classic-internal-table-lookup-ru-title">Поиск во внутренней таблице</title><desc>Последовательный поиск, поиск по отсортированному ключу и поиск по полному hashed key находят одну запись разными способами.</desc><clipPath id="classic-internal-table-lookup-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="classic-internal-table-lookup-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#classic-internal-table-lookup-ru-clip)">
+		<g transform="">
+			<rect x="1" y="1" width="878" height="558" style="stroke: #10191f; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<rect x="26" y="512" width="7" height="24" rx="2" ry="2" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="46" y="514" style="font-family:Arial,Helvetica,sans-serif; font-size: 26px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1028) scale(1,-1)" data-label-width="825.0">Поиск ключа 50: три способа доступа к internal table</text>
+			<text x="28" y="483" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #aabdc6; stroke:none;" transform="translate(0,966) scale(1,-1)" data-label-width="843.0">Те же семь записей: выбирайте таблицу и ключ под способ чтения.</text>
+			<rect x="28" y="111" width="260" height="348" rx="10" ry="10" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="432" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,864) scale(1,-1)" data-label-width="235.0">STANDARD</text>
+			<text x="45" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,818) scale(1,-1)" data-label-width="235.0">Линейный поиск по полю</text>
+			<rect x="310" y="111" width="260" height="348" rx="10" ry="10" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="327" y="432" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,864) scale(1,-1)" data-label-width="235.0">SORTED</text>
+			<text x="327" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,818) scale(1,-1)" data-label-width="235.0">Поиск по сортированному ключу</text>
+			<rect x="592" y="111" width="260" height="348" rx="10" ry="10" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="609" y="432" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,864) scale(1,-1)" data-label-width="235.0">HASHED</text>
+			<text x="609" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,818) scale(1,-1)" data-label-width="235.0">Полный уникальный ключ</text>
+			<rect x="46" y="363" width="221" height="29" style="stroke: #e7eff2; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="56" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,744) scale(1,-1)" data-label-width="42.0" textLength="42.0" lengthAdjust="spacingAndGlyphs">Строка</text>
+			<text x="104" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,744) scale(1,-1)" data-label-width="61.0">Ключ</text>
+			<text x="171" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,744) scale(1,-1)" data-label-width="88.0">Проверка</text>
+			<rect x="46" y="334" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #192730; fill-rule: evenodd;" />
+			<text x="56" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="42.0">1</text>
+			<text x="104" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="61.0">30</text>
+			<text x="171" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="13.0" />
+			<rect x="46" y="305" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #203c35; fill-rule: evenodd;" />
+			<text x="56" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="42.0">2</text>
+			<text x="104" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="61.0">70</text>
+			<text x="171" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="13.0" />
+			<rect x="46" y="276" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #192730; fill-rule: evenodd;" />
+			<text x="56" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="42.0">3</text>
+			<text x="104" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="61.0">10</text>
+			<text x="171" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="13.0" />
+			<rect x="46" y="247" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #203c35; fill-rule: evenodd;" />
+			<text x="56" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,512) scale(1,-1)" data-label-width="42.0">4</text>
+			<text x="104" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,512) scale(1,-1)" data-label-width="61.0">20</text>
+			<text x="171" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,512) scale(1,-1)" data-label-width="13.0" />
+			<rect x="46" y="218" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #463125; fill-rule: evenodd;" />
+			<text x="56" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,454) scale(1,-1)" data-label-width="42.0">5</text>
+			<text x="104" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,454) scale(1,-1)" data-label-width="61.0">50</text>
+			<text x="171" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,454) scale(1,-1)" data-label-width="88.0">найдено</text>
+			<rect x="46" y="189" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #203c35; fill-rule: evenodd;" />
+			<text x="56" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="42.0">6</text>
+			<text x="104" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="61.0">40</text>
+			<text x="171" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="88.0" />
+			<rect x="46" y="160" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #192730; fill-rule: evenodd;" />
+			<text x="56" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="42.0">7</text>
+			<text x="104" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="61.0">60</text>
+			<text x="171" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="88.0" />
+			<text x="182" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="77.0">1</text>
+			<text x="182" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="77.0">2</text>
+			<text x="182" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="77.0">3</text>
+			<text x="182" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,512) scale(1,-1)" data-label-width="77.0">4</text>
+			<text x="46" y="135" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,270) scale(1,-1)" data-label-width="234.0">Проверяем строки до совпадения.</text>
+			<rect x="328" y="363" width="221" height="29" style="stroke: #e7eff2; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="338" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,744) scale(1,-1)" data-label-width="42.0" textLength="42.0" lengthAdjust="spacingAndGlyphs">Строка</text>
+			<text x="386" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,744) scale(1,-1)" data-label-width="61.0">Ключ</text>
+			<text x="453" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,744) scale(1,-1)" data-label-width="88.0">Проба</text>
+			<rect x="328" y="334" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #192730; fill-rule: evenodd;" />
+			<text x="338" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="42.0">1</text>
+			<text x="386" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="61.0">10</text>
+			<text x="453" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="88.0" />
+			<rect x="328" y="305" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #203c35; fill-rule: evenodd;" />
+			<text x="338" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="42.0">2</text>
+			<text x="386" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="61.0">20</text>
+			<text x="453" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="88.0" />
+			<rect x="328" y="276" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #192730; fill-rule: evenodd;" />
+			<text x="338" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="42.0">3</text>
+			<text x="386" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="61.0">30</text>
+			<text x="453" y="285" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,570) scale(1,-1)" data-label-width="88.0" />
+			<rect x="328" y="247" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #203c35; fill-rule: evenodd;" />
+			<text x="338" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,512) scale(1,-1)" data-label-width="42.0">4</text>
+			<text x="386" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,512) scale(1,-1)" data-label-width="61.0">40</text>
+			<text x="453" y="256" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,512) scale(1,-1)" data-label-width="88.0">1-я</text>
+			<rect x="328" y="218" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #463125; fill-rule: evenodd;" />
+			<text x="338" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,454) scale(1,-1)" data-label-width="42.0">5</text>
+			<text x="386" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,454) scale(1,-1)" data-label-width="61.0">50</text>
+			<text x="453" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,454) scale(1,-1)" data-label-width="88.0">3-я</text>
+			<rect x="328" y="189" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #203c35; fill-rule: evenodd;" />
+			<text x="338" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="42.0">6</text>
+			<text x="386" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="61.0">60</text>
+			<text x="453" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="88.0">2-я</text>
+			<rect x="328" y="160" width="221" height="29" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #192730; fill-rule: evenodd;" />
+			<text x="338" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="42.0">7</text>
+			<text x="386" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="61.0">70</text>
+			<text x="453" y="169" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,338) scale(1,-1)" data-label-width="88.0" />
+			<text x="328" y="135" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,270) scale(1,-1)" data-label-width="234.0">Пример проверок: 40, 60, 50.</text>
+			<rect x="619" y="352" width="82" height="38" rx="5" ry="5" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 1; fill: #463125; fill-rule: evenodd;" />
+			<text x="637.065" y="365" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,730) scale(1,-1)" data-label-width="55.93" textLength="55.93" lengthAdjust="spacingAndGlyphs">ключ 50</text>
+			<path d="M 701,371 L 737,371 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="737 371, 728.896 374.9147, 728.896 367.0853" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<circle cx="774" cy="371" r="30" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2; fill: #203c35; fill-rule: evenodd;" />
+			<text x="757.662" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,732) scale(1,-1)" data-label-width="38.34">хеш</text>
+			<polyline points="774 339, 774 316, 652 316, 652 287" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2; fill: None; fill-rule: evenodd;" />
+			<path d="M 652,294 L 652,281 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="652 281, 655.9147 289.104, 648.0853 289.104" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<rect x="610" y="248" width="221" height="32" style="stroke: #e7eff2; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="620" y="260" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,520) scale(1,-1)" data-label-width="72.0">Ячейка</text>
+			<text x="698" y="260" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,520) scale(1,-1)" data-label-width="125.0">Ключ записи</text>
+			<rect x="610" y="216" width="221" height="32" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #192730; fill-rule: evenodd;" />
+			<text x="620" y="225" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,450) scale(1,-1)" data-label-width="72.0">...</text>
+			<text x="698" y="225" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,450) scale(1,-1)" data-label-width="125.0">...</text>
+			<rect x="610" y="184" width="221" height="32" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #463125; fill-rule: evenodd;" />
+			<text x="620" y="193" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,386) scale(1,-1)" data-label-width="72.0">h(50)</text>
+			<text x="698" y="193" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,386) scale(1,-1)" data-label-width="125.0">50  [найдено]</text>
+			<rect x="610" y="152" width="221" height="32" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 0.6; fill: #192730; fill-rule: evenodd;" />
+			<text x="620" y="161" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,322) scale(1,-1)" data-label-width="72.0">...</text>
+			<text x="698" y="161" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,322) scale(1,-1)" data-label-width="125.0">...</text>
+			<text x="610" y="138" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,276) scale(1,-1)" data-label-width="234.0">Путь к ячейке условный.</text>
+			<text x="610" y="119" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,238) scale(1,-1)" data-label-width="234.0">Нет первичного индекса.</text>
+			<text x="28" y="80" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,160) scale(1,-1)" data-label-width="843.0">Учитывайте secondary keys, вставки, память и чтение диапазонов.</text>
+			<path d="M 28,51 L 850,51 Z" style="stroke: #68877d; stroke-linecap: butt; stroke-width: 2;" />
+			<text x="28" y="27" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,54) scale(1,-1)" data-label-width="843.0">Это не замер скорости: проверки и хеш-ячейки лишь объясняют принцип.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-query-calculation-placement-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-query-calculation-placement-ru-title">Где рассчитывать значение для запроса</title><desc>Требование определяет, должно ли вычисленное значение быть доступно до фильтрации, сортировки или суммирования.</desc><clipPath id="rap-query-calculation-placement-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-query-calculation-placement-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-query-calculation-placement-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Вычисляйте там, где решается задача</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Удалённое virtual-поле влияет на стоимость и возможности запроса</text>
+			<rect x="35" y="402" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="45" y="415" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,830) scale(1,-1)" data-label-width="208.71">Требование</text>
+			<rect x="263.7058823529412" y="402" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="273.7058823529412" y="415" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,830) scale(1,-1)" data-label-width="294.47">Возможное решение</text>
+			<rect x="578.1764705882354" y="402" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="588.1764705882354" y="415" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,830) scale(1,-1)" data-label-width="246.82">Что проверить</text>
+			<rect x="35" y="355" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="45" y="368" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,736) scale(1,-1)" data-label-width="208.71">Дополнить вывод</text>
+			<rect x="263.7058823529412" y="355" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="273.7058823529412" y="368" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,736) scale(1,-1)" data-label-width="294.47">Batch remote lookup</text>
+			<rect x="578.1764705882354" y="355" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="588.1764705882354" y="368" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,736) scale(1,-1)" data-label-width="246.82">Число вызовов, нет данных</text>
+			<rect x="35" y="308" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="45" y="321" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,642) scale(1,-1)" data-label-width="208.71">Фильтр до paging</text>
+			<rect x="263.7058823529412" y="308" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="273.7058823529412" y="321" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,642) scale(1,-1)" data-label-width="294.47">Условие в БД / сохранённое поле</text>
+			<rect x="578.1764705882354" y="308" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="588.1764705882354" y="321" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,642) scale(1,-1)" data-label-width="246.82">Полноту результата</text>
+			<rect x="35" y="261" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="45" y="274" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,548) scale(1,-1)" data-label-width="208.71">Сортировка миллиона строк</text>
+			<rect x="263.7058823529412" y="261" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="273.7058823529412" y="274" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,548) scale(1,-1)" data-label-width="294.47">Модель с нужной сортировкой</text>
+			<rect x="578.1764705882354" y="261" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="588.1764705882354" y="274" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,548) scale(1,-1)" data-label-width="246.82">Общий стабильный порядок</text>
+			<rect x="35" y="214" width="226.70588235294122" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="45" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="208.71">Агрегация для аналитики</text>
+			<rect x="263.7058823529412" y="214" width="312.47058823529414" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="273.7058823529412" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="294.47">Верная детализация / pushdown</text>
+			<rect x="578.1764705882354" y="214" width="264.82352941176464" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="588.1764705882354" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="246.82">Единицы, валюту, число строк</text>
+			<rect x="38" y="110" width="806" height="94" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="38" y="165" width="806" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="52" y="178" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,356) scale(1,-1)" data-label-width="784.0">Ошибка: дополнить одну страницу, затем отсортировать</text>
+			<text x="52" y="140" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,280) scale(1,-1)" data-label-width="784.0">Сортировка десяти загруженных строк не найдёт лучшие десять из миллиона. Вычисление для вывода</text>
+			<text x="52" y="121" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,242) scale(1,-1)" data-label-width="784.0">не даёт автоматически фильтрацию или сортировку в БД.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Проверьте возможности provider и consumer в вашем релизе: не каждый virtual element поддерживает</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">передачу фильтра или сортировки в БД.</text>
+		</g>
+	</g>
+</svg>

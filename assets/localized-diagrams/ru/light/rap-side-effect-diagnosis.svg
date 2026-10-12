@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-side-effect-diagnosis-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-side-effect-diagnosis-ru-title">Side effects: почему экран показывает старые данные</title><desc>Следующий шаг отладки зависит от того, какое значение уже хранится на сервере.</desc><clipPath id="rap-side-effect-diagnosis-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-side-effect-diagnosis-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-side-effect-diagnosis-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">В backend верно, а на экране старое значение</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Разделяйте правильность данных и обновление клиента</text>
+			<rect x="34" y="300" width="230" height="134" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="34" y="395" width="230" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="48" y="408" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,816) scale(1,-1)" data-label-width="208.0">1  Меняется количество</text>
+			<text x="48" y="370" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,740) scale(1,-1)" data-label-width="208.0">Ввод: количество 2 -&gt; 3.</text>
+			<text x="48" y="351" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,702) scale(1,-1)" data-label-width="208.0">Backend вычисляет итог</text>
+			<text x="48" y="332" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,664) scale(1,-1)" data-label-width="208.0">300.</text>
+			<rect x="323" y="300" width="232" height="134" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="323" y="395" width="232" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="337" y="408" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,816) scale(1,-1)" data-label-width="210.0">2  Ответ / metadata</text>
+			<text x="337" y="370" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,740) scale(1,-1)" data-label-width="210.0">Результат action и side effects</text>
+			<text x="337" y="351" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,702) scale(1,-1)" data-label-width="210.0" textLength="210.0" lengthAdjust="spacingAndGlyphs">при наличии поддержки задают,</text>
+			<text x="337" y="332" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,664) scale(1,-1)" data-label-width="210.0">что нужно перечитать.</text>
+			<rect x="614" y="300" width="232" height="134" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="614" y="395" width="232" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="628" y="408" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,816) scale(1,-1)" data-label-width="210.0">3  Обновление клиента</text>
+			<text x="628" y="370" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,740) scale(1,-1)" data-label-width="210.0">Проверьте реальные запросы.</text>
+			<text x="628" y="351" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,702) scale(1,-1)" data-label-width="210.0">UI должен получить и</text>
+			<text x="628" y="332" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,664) scale(1,-1)" data-label-width="210.0">показать новый итог.</text>
+			<path d="M 269,366 L 317,366 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="317 366, 307 361, 307 371" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<path d="M 560,366 L 607,366 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="607 366, 597 361, 597 371" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<rect x="40" y="174" width="308.33333333333326" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="50" y="187" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,374) scale(1,-1)" data-label-width="290.33">Наблюдение</text>
+			<rect x="350.33333333333326" y="174" width="485.66666666666674" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="360.33333333333326" y="187" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,374) scale(1,-1)" data-label-width="467.67">Что проверить дальше</text>
+			<rect x="40" y="131" width="308.33333333333326" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="50" y="144" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,288) scale(1,-1)" data-label-width="290.33">В backend всё ещё 200</text>
+			<rect x="350.33333333333326" y="131" width="485.66666666666674" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="360.33333333333326" y="144" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,288) scale(1,-1)" data-label-width="467.67">Расчёт / транзакционное чтение</text>
+			<rect x="40" y="88" width="308.33333333333326" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="50" y="101" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,202) scale(1,-1)" data-label-width="290.33">В backend 300; в UI 200</text>
+			<rect x="350.33333333333326" y="88" width="485.66666666666674" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="360.33333333333326" y="101" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,202) scale(1,-1)" data-label-width="467.67">Цели side effects / ответ / binding</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Перезагрузка страницы может скрыть проблему, но не объяснит отсутствие обновления. Ещё один COMMIT</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">не является механизмом обновления UI.</text>
+		</g>
+	</g>
+</svg>

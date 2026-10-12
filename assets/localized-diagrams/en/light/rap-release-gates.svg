@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-release-gates-en-title" lang="en" class="selectable-diagram">
+	<title id="rap-release-gates-en-title">RAP release and consumption gates</title><desc>Review eligibility, behavior and delivery as separate evidence gates.</desc><clipPath id="rap-release-gates-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-release-gates-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-release-gates-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">A green language check is one gate, not the whole release</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Move from source eligibility to the consumer and operational contract</text>
+			<rect x="34" y="266" width="252" height="170" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="34" y="397" width="252" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="48" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="230.0">Language / API</text>
+			<text x="48" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,744) scale(1,-1)" data-label-width="230.0">Allowed syntax, released</text>
+			<text x="48" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="230.0">dependencies and visibility.</text>
+			<rect x="314" y="266" width="252" height="170" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="314" y="397" width="252" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="328" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="230.0">BO contract</text>
+			<text x="328" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,744) scale(1,-1)" data-label-width="230.0">Strict behavior rules,</text>
+			<text x="328" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="230.0">security, transaction and</text>
+			<text x="328" y="334" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,668) scale(1,-1)" data-label-width="230.0">compatibility.</text>
+			<rect x="594" y="266" width="252" height="170" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="594" y="397" width="252" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="608" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="230.0">Delivery evidence</text>
+			<text x="608" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,744) scale(1,-1)" data-label-width="230.0">Target activation, service</text>
+			<text x="608" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="230.0">access, tests and recovery.</text>
+			<path d="M 291,349 L 308,349 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="308 349, 298 344, 298 354" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<path d="M 571,349 L 588,349 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="588 349, 578 344, 578 354" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<text x="48" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="824.0">A released BO interface can expose a narrower supported contract than the underlying</text>
+			<text x="48" y="178" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,356) scale(1,-1)" data-label-width="824.0">implementation. Consume the permitted layer, even when ADT can display more objects.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">strict(2), C1 release and a working service binding are different facts. None alone certifies production</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">readiness.</text>
+		</g>
+	</g>
+</svg>

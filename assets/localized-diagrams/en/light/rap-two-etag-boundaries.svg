@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-two-etag-boundaries-en-title" lang="en" class="selectable-diagram">
+	<title id="rap-two-etag-boundaries-en-title">Two ETag boundaries</title><desc>The left side tests a conditional entity update; the right tests the active-state basis of a resumed draft.</desc><clipPath id="rap-two-etag-boundaries-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-two-etag-boundaries-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-two-etag-boundaries-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Entity ETag and total ETag protect different checks</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">One order root, one child change, two concurrency situations</text>
+			<rect x="34" y="290" width="391" height="153" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="34" y="404" width="391" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="48" y="417" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,834) scale(1,-1)" data-label-width="369.0">Entity conditional update</text>
+			<text x="48" y="379" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,758) scale(1,-1)" data-label-width="369.0">Alice and Ben read the same entity version. Alice</text>
+			<text x="48" y="360" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,720) scale(1,-1)" data-label-width="369.0">saves. Ben submits the old If-Match value.</text>
+			<rect x="456" y="290" width="391" height="153" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="456" y="404" width="391" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="470" y="417" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,834) scale(1,-1)" data-label-width="369.0">Draft resume after lock expiry</text>
+			<text x="470" y="379" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,758) scale(1,-1)" data-label-width="369.0">A draft was based on active state. Another</text>
+			<text x="470" y="360" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,720) scale(1,-1)" data-label-width="369.0">process changes an active child. Resume must</text>
+			<text x="470" y="341" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,682) scale(1,-1)" data-label-width="369.0">detect a stale base.</text>
+			<rect x="35" y="180" width="190.8571428571429" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="45" y="193" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,386) scale(1,-1)" data-label-width="172.86">Check</text>
+			<rect x="227.8571428571429" y="180" width="248.71428571428578" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="237.8571428571429" y="193" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,386) scale(1,-1)" data-label-width="230.71">Protects</text>
+			<rect x="478.57142857142867" y="180" width="364.42857142857156" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="488.57142857142867" y="193" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,386) scale(1,-1)" data-label-width="346.43">Expected response</text>
+			<rect x="35" y="137" width="190.8571428571429" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="45" y="150" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,300) scale(1,-1)" data-label-width="172.86">Entity ETag</text>
+			<rect x="227.8571428571429" y="137" width="248.71428571428578" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="237.8571428571429" y="150" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,300) scale(1,-1)" data-label-width="230.71">Same entity update version</text>
+			<rect x="478.57142857142867" y="137" width="364.42857142857156" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="488.57142857142867" y="150" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,300) scale(1,-1)" data-label-width="346.43">Reject stale conditional update</text>
+			<rect x="35" y="94" width="190.8571428571429" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="45" y="107" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,214) scale(1,-1)" data-label-width="172.86">Total ETag</text>
+			<rect x="227.8571428571429" y="94" width="248.71428571428578" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="237.8571428571429" y="107" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,214) scale(1,-1)" data-label-width="230.71">Relevant active BO state</text>
+			<rect x="478.57142857142867" y="94" width="364.42857142857156" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="488.57142857142867" y="107" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,214) scale(1,-1)" data-label-width="346.43">Detect stale draft on resume</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Use two independent contexts for a real concurrency test. A child-only change must participate in the</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">required total-ETag contract.</text>
+		</g>
+	</g>
+</svg>

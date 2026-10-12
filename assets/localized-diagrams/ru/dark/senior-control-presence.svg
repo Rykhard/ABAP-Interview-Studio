@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="senior-control-presence-ru-title" lang="ru" class="selectable-diagram">
+	<title id="senior-control-presence-ru-title">EML UPDATE: поле не передано или очищено</title><desc>В первых двух запросах одинаковое начальное значение ABAP, но разное намерение. Управление полями определяет, оставить старый Comment или очистить его.</desc><clipPath id="senior-control-presence-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="senior-control-presence-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#senior-control-presence-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Initial value не означает, что поле пропущено</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Пример EML: сохранены Comment = "Urgent" и Amount = 120 EUR</text>
+			<rect x="34" y="414" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="44" y="427" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,854) scale(1,-1)" data-label-width="169.72">Что изменить</text>
+			<rect x="223.71962616822432" y="414" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="233.71962616822432" y="427" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,854) scale(1,-1)" data-label-width="169.72">Значение Comment</text>
+			<rect x="413.43925233644865" y="414" width="202.89719626168227" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="423.43925233644865" y="427" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,854) scale(1,-1)" data-label-width="184.9">%control-Comment</text>
+			<rect x="618.3364485981309" y="414" width="225.6635514018692" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="628.3364485981309" y="427" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,854) scale(1,-1)" data-label-width="207.66">Итоговый Comment</text>
+			<rect x="34" y="366" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="44" y="379" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,758) scale(1,-1)" data-label-width="169.72">Не менять</text>
+			<rect x="223.71962616822432" y="366" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="233.71962616822432" y="379" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,758) scale(1,-1)" data-label-width="169.72">Initial / пусто</text>
+			<rect x="413.43925233644865" y="366" width="202.89719626168227" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="423.43925233644865" y="379" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,758) scale(1,-1)" data-label-width="184.9">off</text>
+			<rect x="618.3364485981309" y="366" width="225.6635514018692" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="628.3364485981309" y="379" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,758) scale(1,-1)" data-label-width="207.66">Urgent</text>
+			<rect x="34" y="318" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="44" y="331" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,662) scale(1,-1)" data-label-width="169.72">Явно очистить</text>
+			<rect x="223.71962616822432" y="318" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="233.71962616822432" y="331" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,662) scale(1,-1)" data-label-width="169.72">Initial / пусто</text>
+			<rect x="413.43925233644865" y="318" width="202.89719626168227" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="423.43925233644865" y="331" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,662) scale(1,-1)" data-label-width="184.9">on</text>
+			<rect x="618.3364485981309" y="318" width="225.6635514018692" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="628.3364485981309" y="331" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,662) scale(1,-1)" data-label-width="207.66">(пусто)</text>
+			<rect x="34" y="270" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="44" y="283" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,566) scale(1,-1)" data-label-width="169.72">Заменить текст</text>
+			<rect x="223.71962616822432" y="270" width="187.71962616822432" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="233.71962616822432" y="283" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,566) scale(1,-1)" data-label-width="169.72">Follow up</text>
+			<rect x="413.43925233644865" y="270" width="202.89719626168227" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="423.43925233644865" y="283" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,566) scale(1,-1)" data-label-width="184.9">on</text>
+			<rect x="618.3364485981309" y="270" width="225.6635514018692" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="628.3364485981309" y="283" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,566) scale(1,-1)" data-label-width="207.66">Follow up</text>
+			<rect x="38" y="139" width="382" height="96" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="55" y="207" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,414) scale(1,-1)" data-label-width="357.0">Значение одно, намерение разное</text>
+			<text x="55" y="180" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,360) scale(1,-1)" data-label-width="357.0">Пусто + off сохраняет старый текст.</text>
+			<text x="55" y="157" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,314) scale(1,-1)" data-label-width="357.0">Пусто + on запрашивает очистку.</text>
+			<rect x="458" y="139" width="383" height="96" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="475" y="207" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,414) scale(1,-1)" data-label-width="358.0">Прочие поля не меняются</text>
+			<text x="475" y="180" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,360) scale(1,-1)" data-label-width="358.0">Во всех трёх случаях Amount = 120 EUR.</text>
+			<text x="475" y="157" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,314) scale(1,-1)" data-label-width="358.0">Не включайте все control flags сразу.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Используйте generated field control или UPDATE FIELDS. Проверьте mapping и determinations;</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">IS INITIAL не является общей проверкой наличия поля.</text>
+		</g>
+	</g>
+</svg>

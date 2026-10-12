@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-save-ownership-matrix-en-title" lang="en" class="selectable-diagram">
+	<title id="rap-save-ownership-matrix-en-title">RAP implementation ownership matrix</title><desc>Trace the same request through three implementation choices and name the owner of each responsibility.</desc><clipPath id="rap-save-ownership-matrix-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-save-ownership-matrix-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-save-ownership-matrix-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Choose who owns interaction and persistence</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Compare implementation responsibilities, not the age of the application</text>
+			<rect x="32" y="406" width="360.6666666666667" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="42" y="419" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,838) scale(1,-1)" data-label-width="342.67">Scenario</text>
+			<rect x="394.6666666666667" y="406" width="224.66666666666669" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="404.6666666666667" y="419" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,838) scale(1,-1)" data-label-width="206.67">Interaction buffer</text>
+			<rect x="621.3333333333334" y="406" width="224.66666666666663" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="631.3333333333334" y="419" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,838) scale(1,-1)" data-label-width="206.67">Persistence</text>
+			<rect x="32" y="354" width="360.6666666666667" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="42" y="367" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,734) scale(1,-1)" data-label-width="342.67">Managed</text>
+			<rect x="394.6666666666667" y="354" width="224.66666666666669" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="404.6666666666667" y="367" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,734) scale(1,-1)" data-label-width="206.67">Framework</text>
+			<rect x="621.3333333333334" y="354" width="224.66666666666663" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="631.3333333333334" y="367" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,734) scale(1,-1)" data-label-width="206.67">Framework</text>
+			<rect x="32" y="302" width="360.6666666666667" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="42" y="315" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,630) scale(1,-1)" data-label-width="342.67">Managed + unmanaged save</text>
+			<rect x="394.6666666666667" y="302" width="224.66666666666669" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="404.6666666666667" y="315" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,630) scale(1,-1)" data-label-width="206.67">Framework</text>
+			<rect x="621.3333333333334" y="302" width="224.66666666666663" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="631.3333333333334" y="315" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,630) scale(1,-1)" data-label-width="206.67">Application saver</text>
+			<rect x="32" y="250" width="360.6666666666667" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="42" y="263" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,526) scale(1,-1)" data-label-width="342.67">Unmanaged</text>
+			<rect x="394.6666666666667" y="250" width="224.66666666666669" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="404.6666666666667" y="263" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,526) scale(1,-1)" data-label-width="206.67">Application</text>
+			<rect x="621.3333333333334" y="250" width="224.66666666666663" height="50" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="631.3333333333334" y="263" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,526) scale(1,-1)" data-label-width="206.67">Application saver</text>
+			<rect x="36" y="124" width="390" height="108" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="36" y="193" width="390" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="50" y="206" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,412) scale(1,-1)" data-label-width="368.0">Existing API fits?</text>
+			<text x="50" y="168" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,336) scale(1,-1)" data-label-width="368.0">Check transaction ownership, supported save</text>
+			<text x="50" y="149" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,298) scale(1,-1)" data-label-width="368.0">phase, numbering and failure behavior.</text>
+			<rect x="452" y="124" width="390" height="108" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="452" y="193" width="390" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="466" y="206" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,412) scale(1,-1)" data-label-width="368.0">Commit owner stays fixed</text>
+			<text x="466" y="168" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,336) scale(1,-1)" data-label-width="368.0">A behavior implementation cannot take over</text>
+			<text x="466" y="149" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,298) scale(1,-1)" data-label-width="368.0">transaction completion with COMMIT WORK.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Additional save supplements managed persistence. It is not the same as replacing persistence with</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">unmanaged save.</text>
+		</g>
+	</g>
+</svg>

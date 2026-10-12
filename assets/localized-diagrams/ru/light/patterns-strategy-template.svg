@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="patterns-strategy-template-ru-title" lang="ru" class="selectable-diagram">
+	<title id="patterns-strategy-template-ru-title">Strategy и Template Method для согласования</title><desc>Один запрос на 700 EUR получает разные решения через общий интерфейс Strategy. Template Method задаёт общую последовательность и оставляет определённые шаги подклассам.</desc><clipPath id="patterns-strategy-template-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="patterns-strategy-template-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#patterns-strategy-template-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Что менять: правило целиком или шаг процесса?</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Правила согласования зависят от страны; владелец процесса остаётся прежним</text>
+			<rect x="35" y="190" width="393" height="267" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="452" y="190" width="393" height="267" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="52" y="429" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,858) scale(1,-1)" data-label-width="368.0">STRATEGY / композиция</text>
+			<text x="470" y="429" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,858) scale(1,-1)" data-label-width="367.0">TEMPLATE METHOD / наследование</text>
+			<rect x="55" y="354" width="349" height="45" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="69" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="327.0">Координатор -&gt; интерфейс правила</text>
+			<path d="M 229,349 L 229,321 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="229 321, 224 331, 234 331" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<rect x="56" y="249" width="166" height="69" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="66" y="293" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,586) scale(1,-1)" data-label-width="148.0">Правило страны A</text>
+			<text x="66" y="269" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,538) scale(1,-1)" data-label-width="148.0">Лимит: 500 EUR</text>
+			<rect x="238" y="249" width="166" height="69" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="248" y="293" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,586) scale(1,-1)" data-label-width="148.0">Правило страны B</text>
+			<text x="248" y="269" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,538) scale(1,-1)" data-label-width="148.0">Лимит: 900 EUR</text>
+			<text x="56" y="216" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,432) scale(1,-1)" data-label-width="364.0">700 EUR: A отклоняет, B принимает в примере.</text>
+			<circle cx="492" cy="371" r="15" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="488.386" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,732) scale(1,-1)" data-label-width="13.0">1</text>
+			<text x="518" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,732) scale(1,-1)" data-label-width="319.0">Прочитать вход</text>
+			<path d="M 492,351 L 492,335 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="492 335, 487 345, 497 345" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<circle cx="492" cy="314" r="15" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="488.386" y="309" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,618) scale(1,-1)" data-label-width="13.0">2</text>
+			<text x="518" y="309" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,618) scale(1,-1)" data-label-width="319.0">Рассчитать правило</text>
+			<path d="M 492,294 L 492,278 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="492 278, 487 288, 497 288" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<circle cx="492" cy="257" r="15" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="488.386" y="252" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,504) scale(1,-1)" data-label-width="13.0">3</text>
+			<text x="518" y="252" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,504) scale(1,-1)" data-label-width="319.0">Вернуть решение</text>
+			<text x="471" y="216" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,432) scale(1,-1)" data-label-width="366.0">Общий каркас; подкласс реализует выбранный шаг.</text>
+			<rect x="37" y="140" width="259.95" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="47" y="153" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,306) scale(1,-1)" data-label-width="241.95">Сборка объектов</text>
+			<rect x="298.95" y="140" width="542.05" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="308.95" y="153" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,306) scale(1,-1)" data-label-width="524.05">Что сохранить</text>
+			<rect x="37" y="111" width="259.95" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="47" y="124" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,248) scale(1,-1)" data-label-width="241.95">Factory выбирает правило</text>
+			<rect x="298.95" y="111" width="542.05" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="308.95" y="124" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,248) scale(1,-1)" data-label-width="524.05">Проверить страну и версию правил</text>
+			<rect x="37" y="82" width="259.95" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="47" y="95" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,190) scale(1,-1)" data-label-width="241.95">Constructor принимает правило</text>
+			<rect x="298.95" y="82" width="542.05" height="27" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="308.95" y="95" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,190) scale(1,-1)" data-label-width="524.05">Правило возвращает решение, без COMMIT</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Суммы учебные. Выбирай реальную точку изменений: один переиспользуемый расчёт сам по себе</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">не требует иерархии наследования.</text>
+		</g>
+	</g>
+</svg>

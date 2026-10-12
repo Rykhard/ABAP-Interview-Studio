@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-numbering-timeline-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-numbering-timeline-ru-title">Идентификаторы RAP и назначение номеров</title><desc>Сравните момент появления окончательного ключа и момент подтверждённой записи в БД.</desc><clipPath id="rap-numbering-timeline-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-numbering-timeline-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-numbering-timeline-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Early и late numbering: какой ключ у вас сейчас</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Пример: у нового заказа сначала есть ID запроса, затем окончательный номер</text>
+			<rect x="35" y="403" width="190.85714285714286" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="45" y="416" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,832) scale(1,-1)" data-label-width="172.86">Этап</text>
+			<rect x="227.85714285714286" y="403" width="287.2857142857142" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="237.85714285714286" y="416" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,832) scale(1,-1)" data-label-width="269.29">Пример early numbering</text>
+			<rect x="517.1428571428571" y="403" width="325.8571428571429" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="527.1428571428571" y="416" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,832) scale(1,-1)" data-label-width="307.86">Пример late numbering</text>
+			<rect x="35" y="355" width="190.85714285714286" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="368" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,736) scale(1,-1)" data-label-width="172.86">Запрос создания</text>
+			<rect x="227.85714285714286" y="355" width="287.2857142857142" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="237.85714285714286" y="368" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,736) scale(1,-1)" data-label-width="269.29">%cid = NEW_1</text>
+			<rect x="517.1428571428571" y="355" width="325.8571428571429" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="527.1428571428571" y="368" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,736) scale(1,-1)" data-label-width="307.86">%cid = NEW_1</text>
+			<rect x="35" y="307" width="190.85714285714286" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="320" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,640) scale(1,-1)" data-label-width="172.86">Interaction phase</text>
+			<rect x="227.85714285714286" y="307" width="287.2857142857142" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="237.85714285714286" y="320" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,640) scale(1,-1)" data-label-width="269.29">Окончательный ключ уже назначен</text>
+			<rect x="517.1428571428571" y="307" width="325.8571428571429" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="527.1428571428571" y="320" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,640) scale(1,-1)" data-label-width="307.86">Предварительный ID по сценарию</text>
+			<rect x="35" y="259" width="190.85714285714286" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="272" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,544) scale(1,-1)" data-label-width="172.86">ADJUST_NUMBERS</text>
+			<rect x="227.85714285714286" y="259" width="287.2857142857142" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="237.85714285714286" y="272" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,544) scale(1,-1)" data-label-width="269.29">Позднее назначение не нужно</text>
+			<rect x="517.1428571428571" y="259" width="325.8571428571429" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="527.1428571428571" y="272" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,544) scale(1,-1)" data-label-width="307.86">Связать предварительный и итоговый ключ</text>
+			<rect x="35" y="211" width="190.85714285714286" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="224" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,448) scale(1,-1)" data-label-width="172.86" textLength="172.86" lengthAdjust="spacingAndGlyphs">После успешного сохранения</text>
+			<rect x="227.85714285714286" y="211" width="287.2857142857142" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="237.85714285714286" y="224" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,448) scale(1,-1)" data-label-width="269.29">У клиента сохранённый ключ</text>
+			<rect x="517.1428571428571" y="211" width="325.8571428571429" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="527.1428571428571" y="224" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,448) scale(1,-1)" data-label-width="307.86">Клиент получает итоговый ключ</text>
+			<text x="45" y="157" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,314) scale(1,-1)" data-label-width="827.0">UUID и бизнес-номер с требованиями к пропускам решают разные задачи. Не выдавайте</text>
+			<text x="45" y="137" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,274) scale(1,-1)" data-label-width="827.0">предварительный ID за сохранённый окончательный номер документа.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Назначенный ключ не доказывает COMMIT. ROLLBACK ещё может повлиять на результат; проверяйте</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">контракты numbering и сохранения.</text>
+		</g>
+	</g>
+</svg>

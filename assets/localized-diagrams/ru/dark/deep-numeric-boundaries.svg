@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-numeric-boundaries-ru-title" lang="ru" class="selectable-diagram">
+	<title id="deep-numeric-boundaries-ru-title">Ошибки преобразования, округления и вычисления итога</title><desc>Потерянный символ, расхождение в один цент и неверный максимум показывают три разные ошибки за кратким синтаксисом.</desc><clipPath id="deep-numeric-boundaries-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-numeric-boundaries-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-numeric-boundaries-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Малые примеры выявляют три разных правила</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Точность преобразования, округление и начальное значение — отдельные решения</text>
+			<text x="37" y="442" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,884) scale(1,-1)" data-label-width="835.0">ПРЕОБРАЗОВАНИЕ БЕЗ ПОТЕРЬ</text>
+			<rect x="39" y="368" width="40" height="44" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="51.419" y="383" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,766) scale(1,-1)" data-label-width="21.0">A</text>
+			<rect x="87" y="368" width="40" height="44" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="99.419" y="383" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,766) scale(1,-1)" data-label-width="21.0">B</text>
+			<rect x="135" y="368" width="40" height="44" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="147.419" y="383" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,766) scale(1,-1)" data-label-width="21.0">C</text>
+			<rect x="183" y="368" width="40" height="44" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;" />
+			<text x="195.419" y="383" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,766) scale(1,-1)" data-label-width="21.0">D</text>
+			<path d="M 251,390 L 321,390 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="321 390, 311 385, 311 395" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<text x="347" y="395" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,790) scale(1,-1)" data-label-width="525.0">Цель: 3 символа</text>
+			<text x="347" y="368" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #efb384; stroke:none;" transform="translate(0,736) scale(1,-1)" data-label-width="525.0">EXACT отвергает потерю D.</text>
+			<rect x="36" y="291" width="419.31818181818176" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="46" y="304" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,608) scale(1,-1)" data-label-width="401.32">Half-up до 2 знаков</text>
+			<rect x="457.31818181818176" y="291" width="236.13636363636363" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="467.31818181818176" y="304" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,608) scale(1,-1)" data-label-width="218.14">Расчёт</text>
+			<rect x="695.4545454545454" y="291" width="144.54545454545462" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="705.4545454545454" y="304" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,608) scale(1,-1)" data-label-width="126.55">Итог</text>
+			<rect x="36" y="251" width="419.31818181818176" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="46" y="264" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,528) scale(1,-1)" data-label-width="401.32">Округлить строки, сложить</text>
+			<rect x="457.31818181818176" y="251" width="236.13636363636363" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="467.31818181818176" y="264" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,528) scale(1,-1)" data-label-width="218.14">0.01 + 0.01</text>
+			<rect x="695.4545454545454" y="251" width="144.54545454545462" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="705.4545454545454" y="264" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,528) scale(1,-1)" data-label-width="126.55">0.02</text>
+			<rect x="36" y="211" width="419.31818181818176" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="46" y="224" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,448) scale(1,-1)" data-label-width="401.32">Сложить 0.005 + 0.005, округлить</text>
+			<rect x="457.31818181818176" y="211" width="236.13636363636363" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="467.31818181818176" y="224" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,448) scale(1,-1)" data-label-width="218.14">round(0.010)</text>
+			<rect x="695.4545454545454" y="211" width="144.54545454545462" height="38" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="705.4545454545454" y="224" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,448) scale(1,-1)" data-label-width="126.55">0.01</text>
+			<rect x="38" y="106" width="804" height="76" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="56" y="155" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,310) scale(1,-1)" data-label-width="778.0">MAX {-8, -3}: верный результат = -3</text>
+			<text x="56" y="126" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,252) scale(1,-1)" data-label-width="778.0">Начальное значение 0 создаёт больший кандидат, которого нет во входных данных.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Форматирование — не проверка. Задайте этап и режим округления, а также результат для пустого ввода,</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">прежде чем выбирать выражение.</text>
+		</g>
+	</g>
+</svg>

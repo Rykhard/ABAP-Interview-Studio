@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-alias-snapshot-en-title" lang="en" class="selectable-diagram">
+	<title id="deep-alias-snapshot-en-title">Value components versus a shared referent</title><desc>Two structure values own independent string values but lead to the same pricing object. The arrow targets explain why a getter can expose mutable state.</desc><clipPath id="deep-alias-snapshot-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-alias-snapshot-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-alias-snapshot-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Copying a structure does not clone its referenced object</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Before: both structures contain note = Draft and a reference to the same pricing object</text>
+			<rect x="38" y="290" width="377" height="159" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="56" y="420" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,840) scale(1,-1)" data-label-width="351.0">ls_original</text>
+			<text x="56" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="191.0">note (string)</text>
+			<text x="253" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,768) scale(1,-1)" data-label-width="154.0">Draft</text>
+			<text x="56" y="338" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,676) scale(1,-1)" data-label-width="351.0">price_ref</text>
+			<circle cx="273" cy="342" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<rect x="465" y="290" width="377" height="159" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="483" y="420" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,840) scale(1,-1)" data-label-width="351.0">ls_copy</text>
+			<text x="483" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="191.0">note (string)</text>
+			<text x="680" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,768) scale(1,-1)" data-label-width="154.0">Revised</text>
+			<text x="483" y="338" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,676) scale(1,-1)" data-label-width="351.0">price_ref</text>
+			<circle cx="700" cy="342" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<rect x="264" y="126" width="356" height="117" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="288" y="211" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,422) scale(1,-1)" data-label-width="324.0">ONE PRICING OBJECT</text>
+			<text x="288" y="175" style="font-family:Arial,Helvetica,sans-serif; font-size: 20px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,350) scale(1,-1)" data-label-width="324.0">amount: 100 -&gt; 120 EUR</text>
+			<text x="288" y="147" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,294) scale(1,-1)" data-label-width="324.0">Mutation is visible through either reference.</text>
+			<path d="M 273,330 L 355,251 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="355 251, 344.3294 254.3373, 351.2675 261.5389" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<path d="M 700,330 L 530,251 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="530 251, 536.9615 259.7486, 541.1758 250.6799" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">The copied string changes independently. Clearing one reference leaves the other usable. A snapshot must</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">define how mutable referenced objects are handled.</text>
+		</g>
+	</g>
+</svg>

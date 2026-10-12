@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="patterns-chain-command-ru-title" lang="ru" class="selectable-diagram">
+	<title id="patterns-chain-command-ru-title">Первое подходящее правило и идемпотентная Command</title><desc>Запрос на 700 EUR проходит правило руководителя группы и останавливается на правиле менеджера. Для безопасной повторной доставки операции нужен сохраняемый идентификатор.</desc><clipPath id="patterns-chain-command-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="patterns-chain-command-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#patterns-chain-command-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Выбери маршрут и правила безопасного повтора</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Запрос на 700 EUR. Правила по порядку выбирают первого подходящего согласующего.</text>
+			<rect x="35" y="322" width="242" height="122" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="48" y="414" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,828) scale(1,-1)" data-label-width="221.0">Правило 1: team lead</text>
+			<text x="48" y="385" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,770) scale(1,-1)" data-label-width="221.0">&lt;= 500 EUR</text>
+			<text x="48" y="350" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,700) scale(1,-1)" data-label-width="221.0">Не подходит</text>
+			<rect x="319" y="322" width="242" height="122" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="332" y="414" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,828) scale(1,-1)" data-label-width="221.0">Правило 2: manager</text>
+			<text x="332" y="385" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,770) scale(1,-1)" data-label-width="221.0">&lt;= 1,000 EUR</text>
+			<text x="332" y="350" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,700) scale(1,-1)" data-label-width="221.0">Обработано: manager</text>
+			<rect x="603" y="322" width="242" height="122" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="616" y="414" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,828) scale(1,-1)" data-label-width="221.0">Правило 3: fallback</text>
+			<text x="616" y="385" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,770) scale(1,-1)" data-label-width="221.0">Другие допустимые случаи</text>
+			<text x="616" y="350" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,700) scale(1,-1)" data-label-width="221.0">Не выполняется</text>
+			<path d="M 284,381 L 311,381 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="311 381, 301 376, 301 386" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<path d="M 569,381 L 596,381 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2; stroke-dasharray: 4, 3;" />
+			<text x="35" y="292" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,584) scale(1,-1)" data-label-width="837.0">Ошибка handler не означает «правило не подходит».</text>
+			<rect x="36" y="236" width="184.8842105263158" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="46" y="249" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,498) scale(1,-1)" data-label-width="166.88">ID команды</text>
+			<rect x="222.8842105263158" y="236" width="278.3263157894737" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="232.8842105263158" y="249" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,498) scale(1,-1)" data-label-width="260.33">Доставка</text>
+			<rect x="503.2105263157895" y="236" width="337.7894736842105" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="513.2105263157895" y="249" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,498) scale(1,-1)" data-label-width="319.79">Фактический итог</text>
+			<rect x="36" y="195" width="184.8842105263158" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="46" y="208" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,416) scale(1,-1)" data-label-width="166.88">SUBMIT-42</text>
+			<rect x="222.8842105263158" y="195" width="278.3263157894737" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="232.8842105263158" y="208" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,416) scale(1,-1)" data-label-width="260.33">Первое выполнение</text>
+			<rect x="503.2105263157895" y="195" width="337.7894736842105" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="513.2105263157895" y="208" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,416) scale(1,-1)" data-label-width="319.79">Записан один переход состояния</text>
+			<rect x="36" y="154" width="184.8842105263158" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="46" y="167" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,334) scale(1,-1)" data-label-width="166.88">SUBMIT-42</text>
+			<rect x="222.8842105263158" y="154" width="278.3263157894737" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="232.8842105263158" y="167" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,334) scale(1,-1)" data-label-width="260.33">Повтор после потери ответа</text>
+			<rect x="503.2105263157895" y="154" width="337.7894736842105" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="513.2105263157895" y="167" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,334) scale(1,-1)" data-label-width="319.79">Оговорённый ответ, без нового перехода</text>
+			<text x="37" y="106" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,212) scale(1,-1)" data-label-width="835.0">Command оформляет операцию. Сохранённый ID позволяет безопасный повтор.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Первое совпадение отличается от проверки всех правил. Сам Command не даёт постоянной очереди,</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">идемпотентности или операции отмены.</text>
+		</g>
+	</g>
+</svg>

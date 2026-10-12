@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="clean-core-wrapper-ru-title" lang="ru" class="selectable-diagram">
+	<title id="clean-core-wrapper-ru-title">Зависимости за обёрткой Clean Core</title><desc>Проследите вызовы внутри обёртки. Нельзя классифицировать решение только по внешнему интерфейсу.</desc><clipPath id="clean-core-wrapper-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="clean-core-wrapper-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#clean-core-wrapper-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Wrapper меняет контракт, но не зависимости</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Проверь, что скрыто за аккуратным фасадом</text>
+			<rect x="40" y="285" width="235" height="150" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="40" y="396" width="235" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="54" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,818) scale(1,-1)" data-label-width="213.0">Custom consumer</text>
+			<text x="54" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="213.0">Использует выбранный</text>
+			<text x="54" y="352" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,704) scale(1,-1)" data-label-width="213.0">интерфейс и зависит</text>
+			<text x="54" y="333" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,666) scale(1,-1)" data-label-width="213.0">от его контракта.</text>
+			<rect x="322" y="285" width="235" height="150" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="322" y="396" width="235" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="336" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,818) scale(1,-1)" data-label-width="213.0">Custom wrapper</text>
+			<text x="336" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="213.0">Изолирует доступ и</text>
+			<text x="336" y="352" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,704) scale(1,-1)" data-label-width="213.0">даёт стабильный</text>
+			<text x="336" y="333" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,666) scale(1,-1)" data-label-width="213.0">интерфейс.</text>
+			<rect x="605" y="285" width="235" height="150" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="605" y="396" width="235" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="619" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,818) scale(1,-1)" data-label-width="213.0">Зависимость SAP</text>
+			<text x="619" y="371" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,742) scale(1,-1)" data-label-width="213.0">Её release status</text>
+			<text x="619" y="352" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,704) scale(1,-1)" data-label-width="213.0">и классификация</text>
+			<text x="619" y="333" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,666) scale(1,-1)" data-label-width="213.0">Clean Core всё ещё</text>
+			<text x="619" y="314" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,628) scale(1,-1)" data-label-width="213.0">важны.</text>
+			<path d="M 282,357 L 314,357 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="314 357, 304 352, 304 362" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<path d="M 564,357 L 597,357 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="597 357, 587 352, 587 362" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<rect x="60" y="208" width="263.1162790697675" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="70" y="221" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,442) scale(1,-1)" data-label-width="245.12">Утверждение</text>
+			<rect x="325.1162790697675" y="208" width="492.8837209302325" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="335.1162790697675" y="221" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,442) scale(1,-1)" data-label-width="474.88">На практике</text>
+			<rect x="60" y="172" width="263.1162790697675" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="70" y="185" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,370) scale(1,-1)" data-label-width="245.12">Custom API released</text>
+			<rect x="325.1162790697675" y="172" width="492.8837209302325" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="335.1162790697675" y="185" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,370) scale(1,-1)" data-label-width="474.88">Это не делает SAP-объект released</text>
+			<rect x="60" y="136" width="263.1162790697675" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="70" y="149" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,298) scale(1,-1)" data-label-width="245.12">Запущено side-by-side</text>
+			<rect x="325.1162790697675" y="136" width="492.8837209302325" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="335.1162790697675" y="149" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,298) scale(1,-1)" data-label-width="474.88">Не значит, что все API released</text>
+			<rect x="60" y="100" width="263.1162790697675" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="70" y="113" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,226) scale(1,-1)" data-label-width="245.12">Одна зависимость Level A</text>
+			<rect x="325.1162790697675" y="100" width="492.8837209302325" height="34" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="335.1162790697675" y="113" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,226) scale(1,-1)" data-label-width="474.88">Не определяет остальные зависимости</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Уровни A–D не заменяют один-к-одному старую модель трёх tiers. Проверь допустимость в целевой</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">редакции продукта.</text>
+		</g>
+	</g>
+</svg>

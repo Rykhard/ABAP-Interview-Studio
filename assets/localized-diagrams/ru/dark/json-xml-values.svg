@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="json-xml-values-ru-title" lang="ru" class="selectable-diagram">
+	<title id="json-xml-values-ru-title">JSON и XML: значения и преобразование</title><desc>Два явно заданных представления одинаковых значений. Это не универсальное автоматическое преобразование JSON в XML.</desc><clipPath id="json-xml-values-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="json-xml-values-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#json-xml-values-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Одни бизнес-значения, два контракта формата</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">ID — не число; отсутствующее значение — не обязательно null</text>
+			<rect x="35" y="233" width="395" height="211" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="35" y="405" width="395" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="49" y="418" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,836) scale(1,-1)" data-label-width="373.0">Пример JSON</text>
+			<rect x="455" y="233" width="390" height="211" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="455" y="405" width="390" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="469" y="418" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,836) scale(1,-1)" data-label-width="368.0">Пример XML</text>
+			<text x="54" y="376" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)" data-label-width="368.0">{</text>
+			<text x="54" y="348" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,696) scale(1,-1)" data-label-width="368.0">  "id": "0004711",</text>
+			<text x="54" y="320" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,640) scale(1,-1)" data-label-width="368.0">  "currency": "EUR",</text>
+			<text x="54" y="292" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,584) scale(1,-1)" data-label-width="368.0">  "amount": "120.50"</text>
+			<text x="54" y="264" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,528) scale(1,-1)" data-label-width="368.0">}</text>
+			<text x="474" y="376" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,752) scale(1,-1)" data-label-width="363.0">&lt;order id="json-xml-values-ru-0004711"&gt;</text>
+			<text x="474" y="348" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,696) scale(1,-1)" data-label-width="363.0">  &lt;currency&gt;EUR&lt;/currency&gt;</text>
+			<text x="474" y="320" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,640) scale(1,-1)" data-label-width="363.0">  &lt;amount&gt;120.50&lt;/amount&gt;</text>
+			<text x="474" y="292" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,584) scale(1,-1)" data-label-width="363.0">&lt;/order&gt;</text>
+			<rect x="48" y="168" width="235.93023255813955" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="58" y="181" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,362) scale(1,-1)" data-label-width="217.93">Случай</text>
+			<rect x="285.93023255813955" y="168" width="547.0697674418604" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="295.93023255813955" y="181" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,362) scale(1,-1)" data-label-width="529.07">Что нужно решить</text>
+			<rect x="48" y="134" width="235.93023255813955" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="58" y="147" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,294) scale(1,-1)" data-label-width="217.93">"0004711"</text>
+			<rect x="285.93023255813955" y="134" width="547.0697674418604" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="295.93023255813955" y="147" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,294) scale(1,-1)" data-label-width="529.07">Сохранить ведущие нули: это идентификатор</text>
+			<rect x="48" y="100" width="235.93023255813955" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="58" y="113" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,226) scale(1,-1)" data-label-width="217.93">Нет / null / пусто</text>
+			<rect x="285.93023255813955" y="100" width="547.0697674418604" height="32" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="295.93023255813955" y="113" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,226) scale(1,-1)" data-label-width="529.07">Задать смысл каждого случая, особенно при PATCH</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">В примере amount — строка по контракту. JSON и XML сами не определяют точность бизнес-значений</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">и правила проверок.</text>
+		</g>
+	</g>
+</svg>

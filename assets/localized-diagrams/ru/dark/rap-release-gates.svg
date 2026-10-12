@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rap-release-gates-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rap-release-gates-ru-title">Проверки допуска и использования RAP</title><desc>Отдельно проверяйте разрешённость API, правильность поведения и готовность поставки. Для каждого вывода нужны свои доказательства.</desc><clipPath id="rap-release-gates-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rap-release-gates-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rap-release-gates-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Проверка языка — лишь один этап готовности релиза</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">От допустимого кода — к контракту клиента и эксплуатации</text>
+			<rect x="34" y="266" width="252" height="170" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="34" y="397" width="252" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="48" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="230.0">Язык / API</text>
+			<text x="48" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,744) scale(1,-1)" data-label-width="230.0">Допустимый синтаксис, released</text>
+			<text x="48" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="230.0">зависимости и видимость.</text>
+			<rect x="314" y="266" width="252" height="170" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="314" y="397" width="252" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="328" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="230.0">Контракт BO</text>
+			<text x="328" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,744) scale(1,-1)" data-label-width="230.0">Строгие правила behavior,</text>
+			<text x="328" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="230.0">права, транзакции и</text>
+			<text x="328" y="334" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,668) scale(1,-1)" data-label-width="230.0">совместимость.</text>
+			<rect x="594" y="266" width="252" height="170" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="594" y="397" width="252" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="608" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="230.0">Проверка поставки</text>
+			<text x="608" y="372" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,744) scale(1,-1)" data-label-width="230.0" textLength="230.0" lengthAdjust="spacingAndGlyphs">Целевая активация, доступ к сервису,</text>
+			<text x="608" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="230.0">тесты и восстановление.</text>
+			<path d="M 291,349 L 308,349 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="308 349, 298 344, 298 354" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<path d="M 571,349 L 588,349 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="588 349, 578 344, 578 354" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<text x="48" y="198" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,396) scale(1,-1)" data-label-width="824.0">Released BO interface может предоставлять более узкий контракт, чем внутренняя</text>
+			<text x="48" y="178" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,356) scale(1,-1)" data-label-width="824.0">реализация. Используйте разрешённый слой, даже если ADT показывает другие объекты.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">strict(2), C1 release и работающий service binding — разные факты. Ни один сам по себе не доказывает</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">готовность к production.</text>
+		</g>
+	</g>
+</svg>

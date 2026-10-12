@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="delivery-source-runtime-evidence-ru-title" lang="ru" class="selectable-diagram">
+	<title id="delivery-source-runtime-evidence-ru-title">Исходники, поставка и работа в системе</title><desc>Четыре вида доказательств отвечают на разные вопросы. При выпуске свяжите проверенную ревизию с импортированной версией, затем проверьте настоящего клиента и настройки.</desc><clipPath id="delivery-source-runtime-evidence-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="delivery-source-runtime-evidence-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#delivery-source-runtime-evidence-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Версия исходников — не работающая система</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Пример релиза: свяжите commit REV-42, поставку D-17 и целевую систему TST</text>
+			<rect x="35" y="410" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="45" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="208.91">Уровень доказательства</text>
+			<rect x="263.9130434782609" y="410" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="270.54">Что подтверждает</text>
+			<rect x="554.4565217391305" y="410" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="270.54">Чего не доказывает</text>
+			<rect x="35" y="371" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="208.91">Git commit REV-42</text>
+			<rect x="263.9130434782609" y="371" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="270.54">Версию кода для ревью</text>
+			<rect x="554.4565217391305" y="371" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="270.54">Активацию или импорт</text>
+			<rect x="35" y="332" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="345" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,690) scale(1,-1)" data-label-width="208.91">Перенос через abapGit</text>
+			<rect x="263.9130434782609" y="332" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="345" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,690) scale(1,-1)" data-label-width="270.54">Перенос поддержанных объектов</text>
+			<rect x="554.4565217391305" y="332" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="345" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,690) scale(1,-1)" data-label-width="270.54">Полную поставку в production</text>
+			<rect x="35" y="293" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="306" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,612) scale(1,-1)" data-label-width="208.91">Проверки REV-42</text>
+			<rect x="263.9130434782609" y="293" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="306" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,612) scale(1,-1)" data-label-width="270.54">Записанные syntax / ATC / tests</text>
+			<rect x="554.4565217391305" y="293" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="306" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,612) scale(1,-1)" data-label-width="270.54">Все внешние интеграции</text>
+			<rect x="35" y="254" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="267" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,534) scale(1,-1)" data-label-width="208.91">Поставка D-17 в TST</text>
+			<rect x="263.9130434782609" y="254" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="267" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,534) scale(1,-1)" data-label-width="270.54">Импорт и его версию</text>
+			<rect x="554.4565217391305" y="254" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="267" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,534) scale(1,-1)" data-label-width="270.54">Работу сервиса без проверки</text>
+			<rect x="36" y="131" width="247" height="109" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="36" y="201" width="247" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="50" y="214" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,428) scale(1,-1)" data-label-width="225.0">СПОСОБ ПОСТАВКИ</text>
+			<text x="49" y="177" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,354) scale(1,-1)" data-label-width="226.0">Продукт, software component,</text>
+			<text x="49" y="159" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,318) scale(1,-1)" data-label-width="226.0">transport или delivery package.</text>
+			<rect x="316" y="131" width="247" height="109" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="316" y="201" width="247" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="330" y="214" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,428) scale(1,-1)" data-label-width="225.0">ПРОВЕРИТЬ УСЛОВИЯ</text>
+			<text x="329" y="177" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,354) scale(1,-1)" data-label-width="226.0">Версии зависимостей, порядок</text>
+			<text x="329" y="159" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,318) scale(1,-1)" data-label-width="226.0">импорта, настройки сервиса</text>
+			<text x="329" y="141" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,282) scale(1,-1)" data-label-width="226.0">и communication.</text>
+			<rect x="596" y="131" width="247" height="109" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="596" y="201" width="247" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="610" y="214" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,428) scale(1,-1)" data-label-width="225.0">ПРОВЕРИТЬ РЕЗУЛЬТАТ</text>
+			<text x="609" y="177" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,354) scale(1,-1)" data-label-width="226.0">Версию, smoke test,</text>
+			<text x="609" y="159" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,318) scale(1,-1)" data-label-width="226.0">отказ в доступе, ответственного</text>
+			<text x="609" y="141" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,282) scale(1,-1)" data-label-width="226.0">за восстановление.</text>
+			<path d="M 290,179 L 309,179 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="309 179, 299 174, 299 184" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<path d="M 570,179 L 589,179 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="589 179, 579 174, 579 184" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<text x="38" y="102" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,204) scale(1,-1)" data-label-width="834.0">Local lint и mock-тесты полезны, но дают более узкое доказательство.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">abapGit и gCTS — разные инструменты. Поставку BTP ABAP environment нельзя навязывать всем</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">ABAP Cloud-продуктам и системам.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-sql-inputs-ru-title" lang="ru" class="selectable-diagram">
+	<title id="deep-sql-inputs-ru-title">Данные запроса и SQL-идентификаторы</title><desc>Апостроф слева остаётся обычным символом данных. Справа пользователь выбирает сортировку из разрешённых вариантов, а не передаёт исполняемый SQL.</desc><clipPath id="deep-sql-inputs-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-sql-inputs-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-sql-inputs-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Значения связывайте; имена выбирайте из разрешённого списка</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Ввод: имя клиента = O'Brien; сортировка = customer</text>
+			<rect x="40" y="337" width="320" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="53" y="392" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,784) scale(1,-1)" data-label-width="299.0">ЗНАЧЕНИЕ ДАННЫХ</text>
+			<text x="53" y="360" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,720) scale(1,-1)" data-label-width="299.0">O'Brien</text>
+			<rect x="519" y="337" width="320" height="82" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="532" y="392" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,784) scale(1,-1)" data-label-width="299.0">ВЫБОР СОРТИРОВКИ</text>
+			<text x="532" y="360" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,720) scale(1,-1)" data-label-width="299.0">customer</text>
+			<path d="M 199,329 L 199,268 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="199 268, 194 278, 204 278" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<path d="M 679,329 L 679,268 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="679 268, 674 278, 684 278" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<rect x="40" y="172" width="320" height="86" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="58" y="225" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,450) scale(1,-1)" data-label-width="294.0">Свяжите через @customer_name.</text>
+			<text x="58" y="201" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,402) scale(1,-1)" data-label-width="294.0">Апостроф остаётся частью данных.</text>
+			<rect x="519" y="172" width="320" height="86" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="537" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="294.0">Вариант customer сопоставьте</text>
+			<text x="537" y="203" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,406) scale(1,-1)" data-label-width="294.0">с разрешённым сервером столбцом.</text>
+			<rect x="374" y="290" width="133" height="53" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="406.9435" y="321" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(74%,32%,12%); stroke:none;font-weight:700;" transform="translate(0,642) scale(1,-1)" data-label-width="92.06">не SQL</text>
+			<text x="402.32" y="301" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(74%,32%,12%); stroke:none;" transform="translate(0,602) scale(1,-1)" data-label-width="96.68">от клиента</text>
+			<text x="42" y="119" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,238) scale(1,-1)" data-label-width="830.0">Условия авторизации обязательны и не зависят от пользовательских фильтров.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Кавычки не разрешают столбец, таблицу, оператор или часть запроса. По возможности сохраняйте SQL</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">статическим; отклоняйте неподдержанные варианты сортировки.</text>
+		</g>
+	</g>
+</svg>

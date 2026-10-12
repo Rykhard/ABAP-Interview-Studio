@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-group-filter-ru-title" lang="ru" class="selectable-diagram">
+	<title id="deep-group-filter-ru-title">Группы без сортировки и явные ключи FILTER</title><desc>Несоседние строки A попадают в одну группу. Итог рассчитывается по всем её элементам, а не берётся из строки-представителя.</desc><clipPath id="deep-group-filter-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-group-filter-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-group-filter-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">GROUP BY собирает группы; FILTER выбирает путь по ключу</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Порядок: A/10, B/20, A/30. Для GROUP BY customer предварительный SORT не нужен.</text>
+			<rect x="40" y="379" width="170" height="55" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="58" y="397" style="font-family:Arial,Helvetica,sans-serif; font-size: 22px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,794) scale(1,-1)" data-label-width="144.0">A / 10</text>
+			<path d="M 219,406 L 354,388 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="354 388, 343.4269 384.3655, 344.7485 394.2778" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<rect x="40" y="302" width="170" height="55" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="58" y="320" style="font-family:Arial,Helvetica,sans-serif; font-size: 22px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,640) scale(1,-1)" data-label-width="144.0">B / 20</text>
+			<path d="M 219,329 L 627,253 Z" style="stroke: #e7eff2; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="627 253, 616.2535 249.9158, 618.0847 259.7467" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<rect x="40" y="225" width="170" height="55" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="58" y="243" style="font-family:Arial,Helvetica,sans-serif; font-size: 22px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,486) scale(1,-1)" data-label-width="144.0">A / 30</text>
+			<path d="M 219,252 L 354,388 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="354 388, 350.5036 377.3804, 343.4065 384.4254" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<rect x="365" y="347" width="470" height="92" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="386" y="408" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,816) scale(1,-1)" data-label-width="441.0">Группа A: две строки</text>
+			<text x="386" y="376" style="font-family:Arial,Helvetica,sans-serif; font-size: 22px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,752) scale(1,-1)" data-label-width="441.0">10 + 30 = 40</text>
+			<rect x="628" y="213" width="207" height="84" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="645" y="266" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,532) scale(1,-1)" data-label-width="182.0">Группа B</text>
+			<text x="645" y="237" style="font-family:Arial,Helvetica,sans-serif; font-size: 22px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,474) scale(1,-1)" data-label-width="182.0">20</text>
+			<rect x="40" y="104" width="796" height="83" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="55" y="159" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,318) scale(1,-1)" data-label-width="773.0">STANDARD TABLE с пустым primary key: этого мало для обычного FILTER.</text>
+			<text x="55" y="130" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,260) scale(1,-1)" data-label-width="773.0">Подходящий SORTED secondary key по customer выбирается через USING KEY.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Тело группы — один раз на группу; цикл участников — на строку. Условия FILTER должны соответствовать</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">правилам выбранного SORTED/HASHED key.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-memory-lifetime-en-title" lang="en" class="selectable-diagram">
+	<title id="deep-memory-lifetime-en-title">Three distinct state and memory lifetimes</title><desc>Empty row slots and the initial allocation are deliberately drawn separately. A new object does not imply a new internal session or empty class cache.</desc><clipPath id="deep-memory-lifetime-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-memory-lifetime-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-memory-lifetime-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Row contents, allocation, and class state are different</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Conceptual memory ledger: bars are not measured sizes</text>
+			<text x="40" y="410" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,820) scale(1,-1)" data-label-width="832.0">Populated table</text>
+			<rect x="257" y="391" width="120" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="301.054" y="421" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,842) scale(1,-1)" data-label-width="67.95">initial</text>
+			<text x="291.656" y="402" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,804) scale(1,-1)" data-label-width="77.34">allocation</text>
+			<rect x="390" y="391" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="408.552" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,822) scale(1,-1)" data-label-width="20.45">1</text>
+			<rect x="447" y="391" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="465.552" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,822) scale(1,-1)" data-label-width="20.45">2</text>
+			<rect x="504" y="391" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="522.552" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,822) scale(1,-1)" data-label-width="20.45">3</text>
+			<rect x="561" y="391" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="579.552" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,822) scale(1,-1)" data-label-width="20.45">4</text>
+			<rect x="618" y="391" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="636.552" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,822) scale(1,-1)" data-label-width="20.45">5</text>
+			<rect x="675" y="391" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="693.552" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,822) scale(1,-1)" data-label-width="20.45">6</text>
+			<rect x="732" y="391" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="750.552" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,822) scale(1,-1)" data-label-width="20.45">7</text>
+			<text x="40" y="318" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,636) scale(1,-1)" data-label-width="832.0">After CLEAR</text>
+			<rect x="257" y="299" width="120" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="301.054" y="329" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,658) scale(1,-1)" data-label-width="67.95">initial</text>
+			<text x="291.656" y="310" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,620) scale(1,-1)" data-label-width="77.34">allocation</text>
+			<rect x="390" y="299" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="410.336" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="447" y="299" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="467.336" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="504" y="299" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="524.336" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="561" y="299" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="581.336" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="618" y="299" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="638.336" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="675" y="299" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="695.336" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="732" y="299" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="752.336" y="319" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,638) scale(1,-1)" data-label-width="18.66">-</text>
+			<text x="40" y="226" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,452) scale(1,-1)" data-label-width="832.0">After FREE</text>
+			<rect x="257" y="207" width="120" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="301.054" y="237" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,474) scale(1,-1)" data-label-width="67.95">initial</text>
+			<text x="293.99" y="218" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,436) scale(1,-1)" data-label-width="75.01">released</text>
+			<rect x="390" y="207" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="410.336" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="447" y="207" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="467.336" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="504" y="207" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="524.336" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="561" y="207" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="581.336" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="618" y="207" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="638.336" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="675" y="207" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="695.336" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="18.66">-</text>
+			<rect x="732" y="207" width="47" height="54" rx="8" ry="8" style="stroke: rgb(83%,87%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="752.336" y="227" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,454) scale(1,-1)" data-label-width="18.66">-</text>
+			<text x="41" y="165" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,330) scale(1,-1)" data-label-width="831.0">NEW service( ) resets neither a class cache nor another reference.</text>
+			<text x="41" y="133" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,266) scale(1,-1)" data-label-width="831.0">Instance lifetime != static lifetime != resource ownership.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">CLEAR retains the table initial allocation; FREE releases it too. Neither guarantees immediate</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">operating-system memory shrinkage or resets CLASS-DATA.</text>
+		</g>
+	</g>
+</svg>

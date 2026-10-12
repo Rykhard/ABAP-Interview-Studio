@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="patterns-factory-families-en-title" lang="en" class="selectable-diagram">
+	<title id="patterns-factory-families-en-title">Three factory choices and a concrete family constraint</title><desc>The family boundary prevents an A serializer from being combined accidentally with a B sender. The table distinguishes a simple choice from subclass creation and related-product creation.</desc><clipPath id="patterns-factory-families-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="patterns-factory-families-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#patterns-factory-families-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Construction must protect a real invariant</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Worked family: provider A serializer must be paired with provider A sender</text>
+			<rect x="35" y="410" width="187.5744680851064" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="45" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="169.57">Approach</text>
+			<rect x="224.5744680851064" y="410" width="290.9787234042554" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="234.5744680851064" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="272.98">Construction decision</text>
+			<rect x="517.5531914893618" y="410" width="325.4468085106382" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="527.5531914893618" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="307.45">Use when</text>
+			<rect x="35" y="367" width="187.5744680851064" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="380" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,760) scale(1,-1)" data-label-width="169.57">Simple factory</text>
+			<rect x="224.5744680851064" y="367" width="290.9787234042554" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="234.5744680851064" y="380" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,760) scale(1,-1)" data-label-width="272.98">Explicit supported choice</text>
+			<rect x="517.5531914893618" y="367" width="325.4468085106382" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="527.5531914893618" y="380" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,760) scale(1,-1)" data-label-width="307.45">Small, stable implementation set</text>
+			<rect x="35" y="324" width="187.5744680851064" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="337" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,674) scale(1,-1)" data-label-width="169.57">Factory Method</text>
+			<rect x="224.5744680851064" y="324" width="290.9787234042554" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="234.5744680851064" y="337" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,674) scale(1,-1)" data-label-width="272.98">Creator subclass supplies object</text>
+			<rect x="517.5531914893618" y="324" width="325.4468085106382" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="527.5531914893618" y="337" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,674) scale(1,-1)" data-label-width="307.45">Creator extension is intentional</text>
+			<rect x="35" y="281" width="187.5744680851064" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="294" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,588) scale(1,-1)" data-label-width="169.57">Abstract Factory</text>
+			<rect x="224.5744680851064" y="281" width="290.9787234042554" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="234.5744680851064" y="294" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,588) scale(1,-1)" data-label-width="272.98">Factory supplies related family</text>
+			<rect x="517.5531914893618" y="281" width="325.4468085106382" height="41" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="527.5531914893618" y="294" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,588) scale(1,-1)" data-label-width="307.45">Products must remain compatible</text>
+			<rect x="36" y="139" width="383" height="104" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="51" y="218" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,436) scale(1,-1)" data-label-width="360.0">PROVIDER A FAMILY</text>
+			<text x="51" y="187" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,374) scale(1,-1)" data-label-width="239.0">Serializer</text>
+			<path d="M 147,190 L 279,190 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="279 190, 269 185, 269 195" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="296" y="187" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,374) scale(1,-1)" data-label-width="115.0">Sender</text>
+			<text x="51" y="160" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #e7eff2; stroke:none;" transform="translate(0,320) scale(1,-1)" data-label-width="360.0">Validate family; reject unsupported provider.</text>
+			<rect x="460" y="139" width="383" height="104" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="475" y="218" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,436) scale(1,-1)" data-label-width="360.0">PROVIDER B FAMILY</text>
+			<text x="475" y="187" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,374) scale(1,-1)" data-label-width="239.0">Serializer</text>
+			<path d="M 571,190 L 703,190 Z" style="stroke: #9bdac1; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="703 190, 693 185, 693 195" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="720" y="187" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,374) scale(1,-1)" data-label-width="115.0">Sender</text>
+			<text x="475" y="160" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #e7eff2; stroke:none;" transform="translate(0,320) scale(1,-1)" data-label-width="360.0">Validate family; reject unsupported provider.</text>
+			<path d="M 416,195 L 460,195 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2; stroke-dasharray: 4, 3;" />
+			<text x="423" y="177" style="font-family:Arial,Helvetica,sans-serif; font-size: 22px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,354) scale(1,-1)" data-label-width="449.0">X</text>
+			<text x="38" y="108" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,216) scale(1,-1)" data-label-width="834.0">A factory is useful here because an A/B mixed pair is invalid.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">A static method returning an object is not automatically Factory Method. Do not create a product-family</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">abstraction when there is only one trivial product.</text>
+		</g>
+	</g>
+</svg>

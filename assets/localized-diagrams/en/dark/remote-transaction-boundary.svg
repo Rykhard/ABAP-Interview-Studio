@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="remote-transaction-boundary-en-title" lang="en" class="selectable-diagram">
+	<title id="remote-transaction-boundary-en-title">Local and remote transaction boundaries</title><desc>The remote commit belongs to another system, so local failure needs an explicit recovery strategy.</desc><clipPath id="remote-transaction-boundary-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="remote-transaction-boundary-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#remote-transaction-boundary-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Remote success cannot be undone by local rollback</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Two systems require a recovery design</text>
+			<rect x="43" y="280" width="342" height="157" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="43" y="398" width="342" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="57" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,822) scale(1,-1)" data-label-width="320.0">System A: local order</text>
+			<text x="57" y="373" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,746) scale(1,-1)" data-label-width="320.0">Start local work. Send a remote operation.</text>
+			<text x="57" y="354" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,708) scale(1,-1)" data-label-width="320.0">Later local persistence fails.</text>
+			<rect x="493" y="280" width="342" height="157" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="493" y="398" width="342" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="507" y="411" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,822) scale(1,-1)" data-label-width="320.0">System B: remote service</text>
+			<text x="507" y="373" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,746) scale(1,-1)" data-label-width="320.0">Accept the operation and commit its own</text>
+			<text x="507" y="354" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,708) scale(1,-1)" data-label-width="320.0">change. It owns its transaction.</text>
+			<path d="M 393,356 L 485,356 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="485 356, 475 351, 475 361" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<text x="408" y="380" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,760) scale(1,-1)" data-label-width="464.0">request</text>
+			<rect x="43" y="114" width="342" height="124" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="43" y="199" width="342" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="57" y="212" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,424) scale(1,-1)" data-label-width="320.0">Incorrect assumption</text>
+			<text x="57" y="174" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,348) scale(1,-1)" data-label-width="320.0">Rolling back A also rolls back B. There is</text>
+			<text x="57" y="155" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,310) scale(1,-1)" data-label-width="320.0">no such automatic guarantee.</text>
+			<rect x="493" y="114" width="342" height="124" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="493" y="199" width="342" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="507" y="212" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,424) scale(1,-1)" data-label-width="320.0">Explicit recovery</text>
+			<text x="507" y="174" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,348) scale(1,-1)" data-label-width="320.0">Use transactional event delivery where</text>
+			<text x="507" y="155" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,310) scale(1,-1)" data-label-width="320.0">supported, idempotency, retries and</text>
+			<text x="507" y="136" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: #e7eff2; stroke:none;" transform="translate(0,272) scale(1,-1)" data-label-width="320.0">compensation when needed.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Define ownership, correlation IDs, monitoring and reconciliation. Do not promise exactly-once delivery</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">without proof.</text>
+		</g>
+	</g>
+</svg>

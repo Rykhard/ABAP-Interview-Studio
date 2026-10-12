@@ -5,12 +5,14 @@ from study_catalog import ordered_modules, catalog
 from study_topics import topic_catalog
 from code_examples import load_examples, write_example_guide
 from theme_visuals import build_dark_visuals
+from diagram_assets import build_diagram_assets, diagram_theme_css
 from guided_lessons import load_lessons, write_lesson_guide
 from localization import localized_payloads, read_json, translate_app
 
 
 def write_studio(root, modules, visual_metadata, quiz_items):
     build_dark_visuals(root, visual_metadata)
+    diagrams=build_diagram_assets(root, visual_metadata)
     def payload(data):
         return json.dumps(data,ensure_ascii=False).replace('<','\\u003c')
     template=(root/'scripts/study-template.html').read_text(encoding='utf-8-sig')
@@ -36,6 +38,8 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     values['__CALM_CSS__']=(root/'scripts/calm.css').read_text(encoding='utf-8')
     values['__LESSON_DATA__']=payload(lessons)
     values['__SIMPLIFY_CSS__']=(root/'scripts/simplify.css').read_text(encoding='utf-8')
+    values['__SIMPLIFY_CSS__']+='\n'+(root/'scripts/diagrams.css').read_text(encoding='utf-8')+'\n'+diagram_theme_css()
+    values['__DIAGRAM_DATA__']=payload(diagrams)
     values['__LESSON_CSS__']=(root/'scripts/lessons.css').read_text(encoding='utf-8')
     for token,value in values.items():template=template.replace(token,value)
     (root/'START_HERE.html').write_text(template,encoding='utf-8')

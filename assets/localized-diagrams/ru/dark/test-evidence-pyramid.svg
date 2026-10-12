@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="test-evidence-pyramid-ru-title" lang="ru" class="selectable-diagram">
+	<title id="test-evidence-pyramid-ru-title">Область тестирования и доказательства</title><desc>Широкое основание предполагает много сфокусированных проверок, но обязательного числового соотношения нет.</desc><clipPath id="test-evidence-pyramid-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="test-evidence-pyramid-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#test-evidence-pyramid-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Разные тесты дают разные доказательства</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Успешный тест с double не доказывает работу сервиса после деплоя</text>
+			<rect x="287" y="365" width="306" height="71" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="304" y="408" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,816) scale(1,-1)" data-label-width="281.0">UI / end-to-end</text>
+			<text x="304" y="383" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,766) scale(1,-1)" data-label-width="281.0">Реальный клиент и среда</text>
+			<rect x="197" y="275" width="486" height="71" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="214" y="318" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,636) scale(1,-1)" data-label-width="461.0">Сервис / интеграция</text>
+			<text x="214" y="293" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,586) scale(1,-1)" data-label-width="461.0">Протокол, доступ, запись</text>
+			<rect x="108" y="185" width="664" height="71" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="125" y="228" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,456) scale(1,-1)" data-label-width="639.0">BO / contract tests</text>
+			<text x="125" y="203" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,406) scale(1,-1)" data-label-width="639.0">EML, сообщения, rollback</text>
+			<rect x="39" y="95" width="802" height="71" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="56" y="138" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,276) scale(1,-1)" data-label-width="777.0">Локальные unit-тесты</text>
+			<text x="56" y="113" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;" transform="translate(0,226) scale(1,-1)" data-label-width="777.0">Бизнес-правила и важные границы</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Отмечайте: подготовлен / выполнен / успешен / ожидает. Проверяйте отказ в доступе, конкурирующие</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">изменения и ошибки.</text>
+		</g>
+	</g>
+</svg>

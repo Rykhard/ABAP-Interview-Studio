@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="delivery-source-runtime-evidence-en-title" lang="en" class="selectable-diagram">
+	<title id="delivery-source-runtime-evidence-en-title">Source transfer, delivery and verified runtime evidence</title><desc>Four evidence layers answer different questions. A release links the reviewed and tested revision to an actual imported state, then verifies the target consumer and configuration.</desc><clipPath id="delivery-source-runtime-evidence-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="delivery-source-runtime-evidence-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#delivery-source-runtime-evidence-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">A source revision is not a deployed runtime</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Worked release evidence: connect commit REV-42 to delivery D-17 and target system TST</text>
+			<rect x="35" y="410" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="45" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="208.91">Evidence layer</text>
+			<rect x="263.9130434782609" y="410" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="270.54">What it establishes</text>
+			<rect x="554.4565217391305" y="410" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="423" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,846) scale(1,-1)" data-label-width="270.54">What it does not prove</text>
+			<rect x="35" y="371" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="208.91">Git commit REV-42</text>
+			<rect x="263.9130434782609" y="371" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="270.54">Reviewable source revision</text>
+			<rect x="554.4565217391305" y="371" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="384" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,768) scale(1,-1)" data-label-width="270.54">Target activation or import</text>
+			<rect x="35" y="332" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="345" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,690) scale(1,-1)" data-label-width="208.91">abapGit source transfer</text>
+			<rect x="263.9130434782609" y="332" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="345" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,690) scale(1,-1)" data-label-width="270.54">Supported objects transferred</text>
+			<rect x="554.4565217391305" y="332" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="345" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,690) scale(1,-1)" data-label-width="270.54">Complete productive delivery</text>
+			<rect x="35" y="293" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="45" y="306" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,612) scale(1,-1)" data-label-width="208.91">Target checks for REV-42</text>
+			<rect x="263.9130434782609" y="293" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="306" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,612) scale(1,-1)" data-label-width="270.54">Recorded syntax / ATC / tests</text>
+			<rect x="554.4565217391305" y="293" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="306" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,612) scale(1,-1)" data-label-width="270.54">Every external integration</text>
+			<rect x="35" y="254" width="226.91304347826087" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="45" y="267" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,534) scale(1,-1)" data-label-width="208.91">Delivery D-17 into TST</text>
+			<rect x="263.9130434782609" y="254" width="288.5434782608696" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="273.9130434782609" y="267" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,534) scale(1,-1)" data-label-width="270.54">Recorded import and revision</text>
+			<rect x="554.4565217391305" y="254" width="288.5434782608695" height="37" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #203c35; fill-rule: evenodd;" />
+			<text x="564.4565217391305" y="267" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,534) scale(1,-1)" data-label-width="270.54">Service works until tested</text>
+			<rect x="36" y="131" width="247" height="109" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="36" y="201" width="247" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="50" y="214" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,428) scale(1,-1)" data-label-width="225.0">CHOOSE THE TARGET ROUTE</text>
+			<text x="49" y="177" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,354) scale(1,-1)" data-label-width="226.0">Product, software component,</text>
+			<text x="49" y="159" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,318) scale(1,-1)" data-label-width="226.0">transport or delivery package.</text>
+			<rect x="316" y="131" width="247" height="109" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="316" y="201" width="247" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="330" y="214" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,428) scale(1,-1)" data-label-width="225.0">VERIFY PREREQUISITES</text>
+			<text x="329" y="177" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,354) scale(1,-1)" data-label-width="226.0">Dependency versions, import</text>
+			<text x="329" y="159" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,318) scale(1,-1)" data-label-width="226.0">order, service and</text>
+			<text x="329" y="141" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,282) scale(1,-1)" data-label-width="226.0">communication setup.</text>
+			<rect x="596" y="131" width="247" height="109" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<rect x="596" y="201" width="247" height="39" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #9bdac1; fill-rule: evenodd;" />
+			<text x="610" y="214" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,428) scale(1,-1)" data-label-width="225.0">OBSERVE THE TARGET</text>
+			<text x="609" y="177" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,354) scale(1,-1)" data-label-width="226.0">Revision readback, smoke test,</text>
+			<text x="609" y="159" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,318) scale(1,-1)" data-label-width="226.0">denied-user check, recovery</text>
+			<text x="609" y="141" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,282) scale(1,-1)" data-label-width="226.0">owner.</text>
+			<path d="M 290,179 L 309,179 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="309 179, 299 174, 299 184" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<path d="M 570,179 L 589,179 Z" style="stroke: #aabdc6; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="589 179, 579 174, 579 184" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #aabdc6; fill-rule: evenodd;" />
+			<text x="38" y="102" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,204) scale(1,-1)" data-label-width="834.0">Local lint and mock tests are useful evidence with a narrower scope.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">abapGit and gCTS are different tools. BTP ABAP environment delivery choices must not be imposed on every</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">ABAP Cloud product or landscape.</text>
+		</g>
+	</g>
+</svg>

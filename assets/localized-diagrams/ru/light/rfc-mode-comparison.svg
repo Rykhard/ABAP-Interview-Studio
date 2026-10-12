@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="rfc-mode-comparison-ru-title" lang="ru" class="selectable-diagram">
+	<title id="rfc-mode-comparison-ru-title">Режимы RFC и границы гарантий</title><desc>Сравните поведение вызывающего кода и единицы доставки. Уточните, кто отвечает за наблюдение и повторную обработку.</desc><clipPath id="rfc-mode-comparison-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="rfc-mode-comparison-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#rfc-mode-comparison-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Режим RFC определяет выполнение и доставку</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Сначала выберите гарантии, затем синтаксис</text>
+			<rect x="36" y="401" width="117.36363636363637" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="46" y="414" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,828) scale(1,-1)" data-label-width="99.36">Режим</text>
+			<rect x="155.36363636363637" y="401" width="264.2727272727273" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="165.36363636363637" y="414" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,828) scale(1,-1)" data-label-width="246.27">Суть</text>
+			<rect x="421.6363636363637" y="401" width="420.3636363636363" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="431.6363636363637" y="414" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,828) scale(1,-1)" data-label-width="402.36">Что важно различать</text>
+			<rect x="36" y="353" width="117.36363636363637" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="46" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,732) scale(1,-1)" data-label-width="99.36">sRFC</text>
+			<rect x="155.36363636363637" y="353" width="264.2727272727273" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="165.36363636363637" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,732) scale(1,-1)" data-label-width="246.27">Вызывающий ждёт результат</text>
+			<rect x="421.6363636363637" y="353" width="420.3636363636363" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="431.6363636363637" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,732) scale(1,-1)" data-label-width="402.36">Удалённый вызов не даёт локальную атомарность</text>
+			<rect x="36" y="305" width="117.36363636363637" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="46" y="318" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,636) scale(1,-1)" data-label-width="99.36">aRFC</text>
+			<rect x="155.36363636363637" y="305" width="264.2727272727273" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="165.36363636363637" y="318" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,636) scale(1,-1)" data-label-width="246.27">Вызывающий продолжает работу</text>
+			<rect x="421.6363636363637" y="305" width="420.3636363636363" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="431.6363636363637" y="318" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,636) scale(1,-1)" data-label-width="402.36">Соберите результаты; надёжный повтор не встроен</text>
+			<rect x="36" y="257" width="117.36363636363637" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="46" y="270" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,540) scale(1,-1)" data-label-width="99.36">tRFC</text>
+			<rect x="155.36363636363637" y="257" width="264.2727272727273" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="165.36363636363637" y="270" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,540) scale(1,-1)" data-label-width="246.27">Транзакционная единица доставки</text>
+			<rect x="421.6363636363637" y="257" width="420.3636363636363" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="431.6363636363637" y="270" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,540) scale(1,-1)" data-label-width="402.36">Границы runtime/TID; нет общего порядка</text>
+			<rect x="36" y="209" width="117.36363636363637" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="46" y="222" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,444) scale(1,-1)" data-label-width="99.36">qRFC</text>
+			<rect x="155.36363636363637" y="209" width="264.2727272727273" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="165.36363636363637" y="222" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,444) scale(1,-1)" data-label-width="246.27">Очередь упорядочивает единицы</text>
+			<rect x="421.6363636363637" y="209" width="420.3636363636363" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="431.6363636363637" y="222" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,444) scale(1,-1)" data-label-width="402.36">Порядок действует в настроенных очередях</text>
+			<rect x="36" y="161" width="117.36363636363637" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="46" y="174" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,348) scale(1,-1)" data-label-width="99.36">bgRFC</text>
+			<rect x="155.36363636363637" y="161" width="264.2727272727273" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="165.36363636363637" y="174" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,348) scale(1,-1)" data-label-width="246.27">Фоновые единицы / очереди</text>
+			<rect x="421.6363636363637" y="161" width="420.3636363636363" height="46" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="431.6363636363637" y="174" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,348) scale(1,-1)" data-label-width="402.36">Проверьте тип, настройки и мониторинг</text>
+			<text x="51" y="118" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,236) scale(1,-1)" data-label-width="821.0">BAPI — бизнес-контракт интерфейса. RFC — механизм вызова. Background job — способ планирования</text>
+			<text x="51" y="99" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,198) scale(1,-1)" data-label-width="821.0">выполнения.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Гарантии доставки не доказывают exactly-once бизнес-эффект в произвольных внешних системах</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">или при ручной повторной отправке.</text>
+		</g>
+	</g>
+</svg>

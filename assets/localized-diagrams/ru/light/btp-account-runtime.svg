@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="btp-account-runtime-ru-title" lang="ru" class="selectable-diagram">
+	<title id="btp-account-runtime-ru-title">Учётная структура и среда выполнения BTP</title><desc>Вложенность показывает организационный пример. Различайте приложение, экземпляр сервиса и учётные данные.</desc><clipPath id="btp-account-runtime-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="btp-account-runtime-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#btp-account-runtime-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Организация BTP и runtime — разные понятия</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Условный пример Cloud Foundry</text>
+			<rect x="36" y="124" width="807" height="316" rx="8" ry="8" style="stroke: rgb(7%,16%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(88%,91%,94%); fill-rule: evenodd;" />
+			<text x="56" y="409" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,818) scale(1,-1)" data-label-width="779.0">GLOBAL ACCOUNT / договор и доступные ресурсы</text>
+			<rect x="58" y="145" width="764" height="231" rx="8" ry="8" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="77" y="349" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,698) scale(1,-1)" data-label-width="737.0">SUBACCOUNT / регион, сервисы, доверие и подписки</text>
+			<rect x="78" y="169" width="369" height="145" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="93" y="286" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,572) scale(1,-1)" data-label-width="346.0">Cloud Foundry org / space</text>
+			<rect x="96" y="190" width="145" height="62" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="108" y="215" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,430) scale(1,-1)" data-label-width="125.0">Приложение</text>
+			<rect x="265" y="190" width="161" height="62" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="276" y="215" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,430) scale(1,-1)" data-label-width="142.0">Service instance</text>
+			<path d="M 245,220 L 258,220 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="258 220, 248 215, 248 225" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;" />
+			<text x="176" y="264" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,528) scale(1,-1)" data-label-width="263.0">binding даёт доступ</text>
+			<text x="478" y="278" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,556) scale(1,-1)" data-label-width="336.0">Service key даёт доступ отдельному</text>
+			<text x="478" y="259" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,518) scale(1,-1)" data-label-width="336.0">клиенту. Не у всех сервисов</text>
+			<text x="478" y="240" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,480) scale(1,-1)" data-label-width="336.0">одинаковый механизм binding.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Cloud Foundry spaces не описывают все BTP runtime. Не храните учётные данные сервисов</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">в Git.</text>
+		</g>
+	</g>
+</svg>

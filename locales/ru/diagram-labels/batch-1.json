@@ -1,0 +1,2605 @@
+[
+  {
+    "id": "rap-save-sequence",
+    "labels": [
+      {
+        "en": "RAP save sequence: one order, step by step",
+        "ru": "RAP save sequence: один заказ по шагам"
+      },
+      {
+        "en": "Prepare and check first. Then assign the final number and write.",
+        "ru": "Сначала расчёт и проверки. Затем номер и запись."
+      },
+      {
+        "en": "1  FINALIZE",
+        "ru": "1  FINALIZE"
+      },
+      {
+        "en": "Calculate the order total.",
+        "ru": "Рассчитать сумму заказа."
+      },
+      {
+        "en": "Last phase for allowed buffer changes.",
+        "ru": "Последние допустимые изменения буфера."
+      },
+      {
+        "en": "2  CHECK_BEFORE_SAVE",
+        "ru": "2  CHECK_BEFORE_SAVE"
+      },
+      {
+        "en": "Check that the delivery date is valid.",
+        "ru": "Проверить дату поставки."
+      },
+      {
+        "en": "All involved BOs must pass the checks.",
+        "ru": "Проверки должны пройти все BO."
+      },
+      {
+        "en": "3  ADJUST_NUMBERS  (late numbering)",
+        "ru": "3  ADJUST_NUMBERS  (поздний номер)"
+      },
+      {
+        "en": "Assign final document number 4711.",
+        "ru": "Назначить итоговый номер 4711."
+      },
+      {
+        "en": "Skip this assignment when using early numbering.",
+        "ru": "При ранней нумерации этот шаг не нужен."
+      },
+      {
+        "en": "4  SAVE  (persistence phase)",
+        "ru": "4  SAVE  (запись данных)"
+      },
+      {
+        "en": "Write the order and its items.",
+        "ru": "Записать заказ и позиции."
+      },
+      {
+        "en": "The implementation depends on the save option.",
+        "ru": "Реализация зависит от варианта save."
+      },
+      {
+        "en": "5  CLEANUP",
+        "ru": "5  CLEANUP"
+      },
+      {
+        "en": "Clear transaction-local working data.",
+        "ru": "Очистить рабочие данные транзакции."
+      },
+      {
+        "en": "The next LUW must not inherit old buffer entries.",
+        "ru": "Следующая LUW не должна получить старый буфер."
+      },
+      {
+        "en": "POINT OF NO RETURN: after all checks pass",
+        "ru": "ТОЧКА НЕВОЗВРАТА: все проверки пройдены"
+      },
+      {
+        "en": "Transaction owner completes the database commit",
+        "ru": "Владелец транзакции завершает COMMIT БД"
+      },
+      {
+        "en": "Early failure path",
+        "ru": "Ранний отказ"
+      },
+      {
+        "en": "FINALIZE or CHECK_BEFORE_SAVE",
+        "ru": "FINALIZE или CHECK_BEFORE_SAVE"
+      },
+      {
+        "en": "fails in any involved BO.",
+        "ru": "завершился ошибкой в любом BO."
+      },
+      {
+        "en": "CLEANUP_FINALIZE",
+        "ru": "CLEANUP_FINALIZE"
+      },
+      {
+        "en": "Run early-failure cleanup;",
+        "ru": "Очистить после отказа;"
+      },
+      {
+        "en": "do not continue to late",
+        "ru": "не переходить к позднему"
+      },
+      {
+        "en": "saving.",
+        "ru": "сохранению."
+      },
+      {
+        "en": "Late save",
+        "ru": "Позднее сохранение"
+      },
+      {
+        "en": "Ordinary business checks must",
+        "ru": "Обычные бизнес-проверки"
+      },
+      {
+        "en": "already have passed. A",
+        "ru": "уже пройдены. При этом"
+      },
+      {
+        "en": "technical failure is not",
+        "ru": "техническая ошибка"
+      },
+      {
+        "en": "impossible.",
+        "ru": "возможна."
+      },
+      {
+        "en": "Special BAPI failure handling",
+        "ru": "Особая обработка ошибок BAPI"
+      },
+      {
+        "en": "needs the documented saver",
+        "ru": "требует нужного saver"
+      },
+      {
+        "en": "and release support.",
+        "ru": "и поддержки релиза."
+      },
+      {
+        "en": "Remember: calculate -> check -> number -> write -> clear.",
+        "ru": "Запомни: расчёт -> проверка -> номер -> запись -> очистка."
+      },
+      {
+        "en": "Runtime phases, not five methods you must implement in every BO. No commit inside a handler or saver.",
+        "ru": "Это фазы runtime, а не пять обязательных методов BO. В handler и saver нельзя делать COMMIT."
+      }
+    ],
+    "description": {
+      "en": "Follow the main path from FINALIZE, where allowed final buffer changes occur, to CHECK_BEFORE_SAVE. Every involved BO must pass its checks before the point of no return. Late numbering then assigns document 4711, SAVE persists the order and items, and CLEANUP clears transaction-local data. The transaction owner completes the database commit.\n\nThe side branch shows an early failure in FINALIZE or CHECK_BEFORE_SAVE: run CLEANUP_FINALIZE instead of continuing to late saving. These are runtime phases, not five mandatory custom methods. Save hooks vary by implementation; special late BAPI failure handling requires documented release support.",
+      "ru": "Основной путь начинается с FINALIZE: здесь допустимы последние изменения буфера. Затем CHECK_BEFORE_SAVE проверяет данные. Все участвующие BO должны пройти проверки до точки невозврата. Поздняя нумерация назначает номер 4711, SAVE записывает заказ и позиции, а CLEANUP очищает рабочие данные транзакции. COMMIT базы данных завершает владелец транзакции.\n\nБоковая ветка показывает ранний отказ в FINALIZE или CHECK_BEFORE_SAVE: выполняется CLEANUP_FINALIZE, перехода к позднему сохранению нет. Это фазы runtime, а не пять обязательных пользовательских методов. Набор save hooks зависит от реализации; особая обработка поздних ошибок BAPI требует документированной поддержки релиза."
+    }
+  },
+  {
+    "id": "rap-transaction",
+    "labels": [
+      {
+        "en": "RAP transaction and approval flow",
+        "ru": "Транзакция RAP и согласование"
+      },
+      {
+        "en": "Transaction completion belongs to the framework or the external EML consumer",
+        "ru": "Транзакцию завершает framework или внешний EML consumer"
+      },
+      {
+        "en": "1  Consumer request",
+        "ru": "1  Запрос consumer"
+      },
+      {
+        "en": "Action or EML modification",
+        "ru": "Action или изменение через EML"
+      },
+      {
+        "en": "Check the public contract",
+        "ru": "Проверить публичный контракт"
+      },
+      {
+        "en": "2  Interaction",
+        "ru": "2  Interaction"
+      },
+      {
+        "en": "Read and change the buffer",
+        "ru": "Чтение и изменение буфера"
+      },
+      {
+        "en": "Derive data and reject failures",
+        "ru": "Расчёт данных, отклонение ошибок"
+      },
+      {
+        "en": "3  Save sequence",
+        "ru": "3  Save sequence"
+      },
+      {
+        "en": "Finalize and validate",
+        "ru": "Итоговый расчёт и проверки"
+      },
+      {
+        "en": "Number and persist as configured",
+        "ru": "Нумерация и запись по настройкам"
+      },
+      {
+        "en": "No COMMIT WORK or COMMIT ENTITIES inside behavior handlers or savers.",
+        "ru": "В behavior handler и saver нельзя вызывать COMMIT WORK или COMMIT ENTITIES."
+      },
+      {
+        "en": "4  Commit and publish",
+        "ru": "4  COMMIT и публикация"
+      },
+      {
+        "en": "Use supported transactional",
+        "ru": "Использовать поддерживаемую"
+      },
+      {
+        "en": "event delivery mechanisms",
+        "ru": "транзакционную доставку событий"
+      },
+      {
+        "en": "5  Workflow consumer",
+        "ru": "5  Workflow consumer"
+      },
+      {
+        "en": "Correlate and deduplicate",
+        "ru": "Связать события, убрать дубли"
+      },
+      {
+        "en": "Monitor retries and failures",
+        "ru": "Следить за повторами и ошибками"
+      },
+      {
+        "en": "6  Approval callback",
+        "ru": "6  Ответ согласования"
+      },
+      {
+        "en": "Check actor and current state",
+        "ru": "Проверить автора и состояние"
+      },
+      {
+        "en": "Apply an idempotent decision",
+        "ru": "Применить решение идемпотентно"
+      },
+      {
+        "en": "The callback is a new transaction. Remote actions do not share the local database rollback.",
+        "ru": "Обратный вызов — новая транзакция. Локальный ROLLBACK не отменяет удалённые действия."
+      },
+      {
+        "en": "Draft persistence spans requests; the in-memory transactional buffer does not.",
+        "ru": "Draft хранится между запросами; транзакционный буфер в памяти — нет."
+      },
+      {
+        "en": "Conceptual flow: exact RAP save methods and event infrastructure depend on the scenario and release.",
+        "ru": "Общая схема: save methods и доставка событий зависят от сценария и релиза."
+      }
+    ],
+    "description": {
+      "en": "A consumer sends an action or EML change. Interaction processing reads and changes the transactional buffer, derives data and rejects invalid requests. The save sequence finalizes, checks, numbers and persists the changes. The framework or external EML consumer owns transaction completion; handlers and savers must not call COMMIT WORK or COMMIT ENTITIES.\n\nAfter commit, supported event delivery reaches a workflow consumer that correlates events, handles duplicates and monitors retries. Approval returns through a new transaction that checks the actor and current state. Remote effects do not share local rollback. Draft persistence can span requests, unlike the in-memory buffer.",
+      "ru": "Consumer отправляет action или изменение через EML. На этапе interaction код читает и меняет транзакционный буфер, рассчитывает данные и отклоняет неверные запросы. Save sequence завершает расчёты, проверяет, нумерует и записывает изменения. Завершением транзакции управляет framework или внешний EML consumer; handler и saver не должны вызывать COMMIT WORK или COMMIT ENTITIES.\n\nПосле COMMIT поддерживаемый механизм доставки передаёт событие в workflow. Consumer связывает события, обрабатывает дубли и контролирует повторы. Ответ согласования приходит в новой транзакции, где проверяются автор и текущее состояние. Локальный ROLLBACK не отменяет удалённые эффекты. Draft может сохраняться между запросами, буфер в памяти — нет."
+    }
+  },
+  {
+    "id": "classic-ddic-layers",
+    "labels": [
+      {
+        "en": "DDIC: technical shape, business meaning, stored value",
+        "ru": "DDIC: тип, бизнес-смысл и хранимое значение"
+      },
+      {
+        "en": "One domain can support different data elements; a table column chooses its business meaning.",
+        "ru": "Один domain подходит разным data elements; поле таблицы получает свой бизнес-смысл."
+      },
+      {
+        "en": "DOMAIN",
+        "ru": "DOMAIN"
+      },
+      {
+        "en": "ZDOC_ID",
+        "ru": "ZDOC_ID"
+      },
+      {
+        "en": "Technical shape: CHAR(10)",
+        "ru": "Технический тип: CHAR(10)"
+      },
+      {
+        "en": "0",
+        "ru": "0"
+      },
+      {
+        "en": "0",
+        "ru": "0"
+      },
+      {
+        "en": "0",
+        "ru": "0"
+      },
+      {
+        "en": "0",
+        "ru": "0"
+      },
+      {
+        "en": "0",
+        "ru": "0"
+      },
+      {
+        "en": "0",
+        "ru": "0"
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "2",
+        "ru": "2"
+      },
+      {
+        "en": "3",
+        "ru": "3"
+      },
+      {
+        "en": "4",
+        "ru": "4"
+      },
+      {
+        "en": "10 character positions",
+        "ru": "10 позиций для символов"
+      },
+      {
+        "en": "ZSALES_ORDER_ID",
+        "ru": "ZSALES_ORDER_ID"
+      },
+      {
+        "en": "Label: Sales order",
+        "ru": "Подпись: Заказ"
+      },
+      {
+        "en": "ZDELIVERY_ID",
+        "ru": "ZDELIVERY_ID"
+      },
+      {
+        "en": "Label: Delivery",
+        "ru": "Подпись: Поставка"
+      },
+      {
+        "en": "DATA ELEMENTS",
+        "ru": "DATA ELEMENTS"
+      },
+      {
+        "en": "TABLE COLUMNS",
+        "ru": "ПОЛЯ ТАБЛИЦЫ"
+      },
+      {
+        "en": "ORDER_ID",
+        "ru": "ORDER_ID"
+      },
+      {
+        "en": "DELIVERY_ID",
+        "ru": "DELIVERY_ID"
+      },
+      {
+        "en": "0000001234",
+        "ru": "0000001234"
+      },
+      {
+        "en": "0080000456",
+        "ru": "0080000456"
+      },
+      {
+        "en": "0000001235",
+        "ru": "0000001235"
+      },
+      {
+        "en": "0080000457",
+        "ru": "0080000457"
+      },
+      {
+        "en": "0000001236",
+        "ru": "0000001236"
+      },
+      {
+        "en": "0080000458",
+        "ru": "0080000458"
+      },
+      {
+        "en": "Keep the concepts separate",
+        "ru": "Не смешивай понятия"
+      },
+      {
+        "en": "Domain: technical properties.  Data element: semantic type, labels, documentation.",
+        "ru": "Domain: технические свойства. Data element: смысл, подписи и документация."
+      },
+      {
+        "en": "Table field: a component of a persistent table.  Structure: no persistence by itself.",
+        "ru": "Поле таблицы хранит значение. Structure сама по себе данные не сохраняет."
+      },
+      {
+        "en": "A value table proposal alone does not create a complete foreign-key check.",
+        "ru": "Одна value table не обеспечивает полную проверку внешнего ключа."
+      },
+      {
+        "en": "Illustrative custom names and values; this is not a proposed production data model.",
+        "ru": "Учебные имена и значения; это не готовая модель для production."
+      }
+    ],
+    "description": {
+      "en": "The domain ZDOC_ID defines the technical shape CHAR(10), shown as ten character positions. Two data elements reuse that shape while giving it different meanings: sales order and delivery. Table columns ORDER_ID and DELIVERY_ID then hold sample values according to those semantic types.\n\nThe layers answer different questions: the domain describes technical properties; the data element supplies meaning, labels and documentation; a persistent table holds records. A structure does not persist data on its own. A proposed value table alone does not establish a complete foreign-key check. Names and values are fictional teaching examples.",
+      "ru": "Domain ZDOC_ID задаёт техническую форму CHAR(10), показанную десятью позициями для символов. Два data elements используют эту форму, но придают ей разный смысл: заказ и поставка. Поля ORDER_ID и DELIVERY_ID хранят примерные значения с соответствующим бизнес-смыслом.\n\nКаждый слой отвечает на свой вопрос. Domain описывает технические свойства; data element задаёт смысл, подписи и документацию; постоянная таблица хранит записи. Structure сама по себе данные не сохраняет. Указанная value table ещё не обеспечивает полную проверку внешнего ключа. Имена и значения в схеме служат учебным примером."
+    }
+  },
+  {
+    "id": "classic-sql-join-grain",
+    "labels": [
+      {
+        "en": "A join repeats the header once for every matching item",
+        "ru": "JOIN повторяет заголовок для каждой подходящей позиции"
+      },
+      {
+        "en": "Example: sum the order totals before and after a one-to-many join. All amounts are EUR.",
+        "ru": "Сумма заказов до и после связи один-ко-многим. Все суммы в EUR."
+      },
+      {
+        "en": "ORDERS: 2 rows",
+        "ru": "ORDERS: 2 строки"
+      },
+      {
+        "en": "Order",
+        "ru": "Заказ"
+      },
+      {
+        "en": "Header total",
+        "ru": "Сумма заказа"
+      },
+      {
+        "en": "Currency",
+        "ru": "Валюта"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "100",
+        "ru": "100"
+      },
+      {
+        "en": "EUR",
+        "ru": "EUR"
+      },
+      {
+        "en": "20",
+        "ru": "20"
+      },
+      {
+        "en": "80",
+        "ru": "80"
+      },
+      {
+        "en": "EUR",
+        "ru": "EUR"
+      },
+      {
+        "en": "ITEMS: 3 rows",
+        "ru": "ITEMS: 3 строки"
+      },
+      {
+        "en": "Order",
+        "ru": "Заказ"
+      },
+      {
+        "en": "Item",
+        "ru": "Позиция"
+      },
+      {
+        "en": "Product",
+        "ru": "Товар"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "A",
+        "ru": "A"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "2",
+        "ru": "2"
+      },
+      {
+        "en": "B",
+        "ru": "B"
+      },
+      {
+        "en": "20",
+        "ru": "20"
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "C",
+        "ru": "C"
+      },
+      {
+        "en": "JOIN ON order ID",
+        "ru": "JOIN ON ID заказа"
+      },
+      {
+        "en": "RESULT: 3 rows",
+        "ru": "ИТОГ: 3 строки"
+      },
+      {
+        "en": "Order",
+        "ru": "Заказ"
+      },
+      {
+        "en": "Item",
+        "ru": "Позиция"
+      },
+      {
+        "en": "Header total",
+        "ru": "Сумма заказа"
+      },
+      {
+        "en": "Currency",
+        "ru": "Валюта"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "100",
+        "ru": "100"
+      },
+      {
+        "en": "EUR",
+        "ru": "EUR"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "2",
+        "ru": "2"
+      },
+      {
+        "en": "100",
+        "ru": "100"
+      },
+      {
+        "en": "EUR",
+        "ru": "EUR"
+      },
+      {
+        "en": "20",
+        "ru": "20"
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "80",
+        "ru": "80"
+      },
+      {
+        "en": "EUR",
+        "ru": "EUR"
+      },
+      {
+        "en": "100",
+        "ru": "100"
+      },
+      {
+        "en": "100",
+        "ru": "100"
+      },
+      {
+        "en": "80",
+        "ru": "80"
+      },
+      {
+        "en": "Joined sum = 280",
+        "ru": "Сумма после JOIN = 280"
+      },
+      {
+        "en": "Actual order total = 180",
+        "ru": "Реальная сумма заказов = 180"
+      },
+      {
+        "en": "Fix the grain: aggregate at the intended business level before combining results.",
+        "ru": "Сначала агрегируй на нужном бизнес-уровне, затем объединяй результаты."
+      },
+      {
+        "en": "SUM(DISTINCT amount) is not a general fix: different orders can have equal totals.",
+        "ru": "SUM(DISTINCT amount) не решает всё: у разных заказов могут быть равные суммы."
+      },
+      {
+        "en": "Outer join caveat: a WHERE predicate on the missing right side can remove unmatched left rows.",
+        "ru": "В outer join условие WHERE справа может убрать строки слева без совпадения."
+      }
+    ],
+    "description": {
+      "en": "Order 10 has a header total of EUR 100 and two items; order 20 has a total of EUR 80 and one item. Joining by order ID produces three rows. The first order's total appears twice, so summing the joined header amounts gives EUR 280 instead of EUR 180.\n\nChoose what one result row should represent and aggregate at that business level before combining results. SUM(DISTINCT amount) is not a general repair because separate orders may have equal totals. This drawing uses an inner join. With an outer join, a right-side WHERE condition can also remove unmatched left rows.",
+      "ru": "У заказа 10 сумма заголовка равна 100 EUR и две позиции; у заказа 20 — 80 EUR и одна позиция. JOIN по ID заказа создаёт три строки. Сумма первого заказа появляется дважды, поэтому итог по суммам заголовков становится 280 EUR вместо 180 EUR.\n\nСначала определи, что означает одна строка результата, и агрегируй на этом бизнес-уровне до объединения. SUM(DISTINCT amount) не является общим исправлением: разные заказы могут иметь одинаковые суммы. Здесь показан inner join. При outer join условие WHERE по правой стороне также может удалить строки слева, для которых нет совпадения."
+    }
+  },
+  {
+    "id": "cds-relationships",
+    "labels": [
+      {
+        "en": "Association is a link; composition is ownership",
+        "ru": "Association — ссылка; composition — владение"
+      },
+      {
+        "en": "An order example separates navigation from the business object boundary",
+        "ru": "Пример заказа разделяет навигацию и границу бизнес-объекта"
+      },
+      {
+        "en": "Order 4711",
+        "ru": "Заказ 4711"
+      },
+      {
+        "en": "Root of the business",
+        "ru": "Корень бизнес-объекта."
+      },
+      {
+        "en": "object. Owns its item",
+        "ru": "Управляет жизненным"
+      },
+      {
+        "en": "lifecycle.",
+        "ru": "циклом позиций."
+      },
+      {
+        "en": "Order items",
+        "ru": "Позиции заказа"
+      },
+      {
+        "en": "10: keyboard / 20: mouse",
+        "ru": "10: клавиатура / 20: мышь"
+      },
+      {
+        "en": "composition",
+        "ru": "composition"
+      },
+      {
+        "en": "Business partner 900",
+        "ru": "Бизнес-партнёр 900"
+      },
+      {
+        "en": "An independently managed entity;",
+        "ru": "Самостоятельная сущность;"
+      },
+      {
+        "en": "not owned by this order.",
+        "ru": "не принадлежит заказу."
+      },
+      {
+        "en": "association",
+        "ru": "association"
+      },
+      {
+        "en": "Declaring a cardinality describes the intended relationship.",
+        "ru": "Cardinality описывает ожидаемую связь."
+      },
+      {
+        "en": "It does not clean duplicate data or create a database",
+        "ru": "Она не удаляет дубли и не создаёт в БД"
+      },
+      {
+        "en": "uniqueness constraint.",
+        "ru": "ограничение уникальности."
+      },
+      {
+        "en": "Model [0..1], [1..1] or to-many relationships from actual data and the intended join conditions.",
+        "ru": "Выбирай [0..1], [1..1] или to-many по реальным данным и условиям JOIN."
+      }
+    ],
+    "description": {
+      "en": "Order 4711 is the business object root. Its composition leads to order items 10 and 20, expressing ownership of their lifecycle within the BO. A separate association points to business partner 900, an independently managed entity that the order does not own.\n\nUse the distinction to separate navigation from ownership. Declared cardinality describes the intended relationship; it neither removes duplicate data nor creates a uniqueness constraint in the database. Choose optional, mandatory or to-many relationships from actual data and join conditions. Composition behavior and generated operations still need the corresponding RAP model.",
+      "ru": "Заказ 4711 — корень бизнес-объекта. Composition связывает его с позициями 10 и 20: заказ управляет их жизненным циклом в рамках BO. Отдельная association ведёт к бизнес-партнёру 900. Это самостоятельная сущность, которой заказ не владеет.\n\nЭто различие помогает отделить навигацию от владения. Объявленная cardinality описывает ожидаемую связь, но не удаляет дубли и не создаёт ограничение уникальности в базе данных. Выбирай необязательную, обязательную связь или to-many по реальным данным и условиям JOIN. Для поведения composition и сгенерированных операций всё равно нужна соответствующая RAP-модель."
+    }
+  },
+  {
+    "id": "rap-hook-choices",
+    "labels": [
+      {
+        "en": "Four hooks answer four different questions",
+        "ru": "Четыре hook — четыре разных задачи"
+      },
+      {
+        "en": "Choose by responsibility and supported trigger, not by an assumed method order",
+        "ru": "Выбирай по задаче и поддерживаемому trigger, а не по мнимому порядку методов"
+      },
+      {
+        "en": "Precheck: accept this request?",
+        "ru": "Precheck: принять запрос?"
+      },
+      {
+        "en": "Check incoming changes before they are applied",
+        "ru": "Проверь входящие изменения до записи"
+      },
+      {
+        "en": "to the transactional buffer. Example: reject an",
+        "ru": "в транзакционный буфер. Например, отклони"
+      },
+      {
+        "en": "invalid requested transition.",
+        "ru": "недопустимый переход состояния."
+      },
+      {
+        "en": "Determination: derive what?",
+        "ru": "Determination: что рассчитать?"
+      },
+      {
+        "en": "Derive values after relevant triggers. Example:",
+        "ru": "Рассчитай значения по нужному trigger:"
+      },
+      {
+        "en": "calculate a default or dependent field. Design",
+        "ru": "default или зависимое поле. Повторный"
+      },
+      {
+        "en": "repeated execution to be safe.",
+        "ru": "вызов должен быть безопасным."
+      },
+      {
+        "en": "Validation: may this be saved?",
+        "ru": "Validation: можно сохранить?"
+      },
+      {
+        "en": "Check consistency at supported validation",
+        "ru": "Проверь согласованность в допустимой"
+      },
+      {
+        "en": "points. Example: a mandatory approval reason",
+        "ru": "точке. Например, обязательная причина"
+      },
+      {
+        "en": "must be present.",
+        "ru": "согласования должна быть заполнена."
+      },
+      {
+        "en": "Action: do which business operation?",
+        "ru": "Action: какую операцию выполнить?"
+      },
+      {
+        "en": "An explicit operation, such as Submit. It may",
+        "ru": "Явная операция, например Submit. Может"
+      },
+      {
+        "en": "modify state and return a result under its",
+        "ru": "менять состояние и возвращать результат"
+      },
+      {
+        "en": "declared contract.",
+        "ru": "по объявленному контракту."
+      },
+      {
+        "en": "Unmanaged RAP determinations and validations have draft-specific support. Implement active-instance",
+        "ru": "В unmanaged RAP поддержка determinations и validations связана с draft. Проверки active instances"
+      },
+      {
+        "en": "checks in supported handlers/save logic.",
+        "ru": "реализуй в допустимых handlers/save logic."
+      }
+    ],
+    "description": {
+      "en": "The four cards are alternatives by responsibility, not a runtime sequence. A precheck examines incoming changes before they enter the transactional buffer, for example rejecting an invalid requested transition. A determination derives a default or dependent value after a supported trigger and should tolerate repeated execution.\n\nA validation checks whether data is consistent enough to save, such as requiring an approval reason. An action exposes an explicit business operation such as Submit under its declared contract. Availability differs by scenario and release; unmanaged determinations and validations have draft-specific support. Do not assume an undocumented ordering of independent hooks.",
+      "ru": "Четыре карточки разделяют обязанности, а не показывают порядок вызовов. Precheck проверяет входящие изменения до их применения к транзакционному буферу — например, отклоняет недопустимый переход состояния. Determination рассчитывает default или зависимое значение по поддерживаемому trigger; повторный вызов должен быть безопасным.\n\nValidation проверяет, можно ли сохранить согласованные данные: например, заполнена ли причина согласования. Action предоставляет явную бизнес-операцию, такую как Submit, по объявленному контракту. Доступность зависит от сценария и релиза; в unmanaged RAP поддержка determinations и validations связана с draft. Нельзя полагаться на недокументированный порядок независимых hooks."
+    }
+  },
+  {
+    "id": "security-three-gates",
+    "labels": [
+      {
+        "en": "Three gates: identity, permission and availability",
+        "ru": "Три проверки: личность, права и доступность"
+      },
+      {
+        "en": "A disabled button is not a security boundary",
+        "ru": "Отключённая кнопка не обеспечивает безопасность"
+      },
+      {
+        "en": "Authentication",
+        "ru": "Аутентификация"
+      },
+      {
+        "en": "Who is the caller?",
+        "ru": "Кто вызывает?"
+      },
+      {
+        "en": "Establish a verified",
+        "ru": "Подтверди личность"
+      },
+      {
+        "en": "identity.",
+        "ru": "пользователя."
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "Authorization",
+        "ru": "Авторизация"
+      },
+      {
+        "en": "May this caller perform the",
+        "ru": "Есть право на операцию?"
+      },
+      {
+        "en": "operation? Check global and",
+        "ru": "Проверь общие права"
+      },
+      {
+        "en": "instance permissions.",
+        "ru": "и права на экземпляр."
+      },
+      {
+        "en": "2",
+        "ru": "2"
+      },
+      {
+        "en": "Feature control",
+        "ru": "Feature control"
+      },
+      {
+        "en": "Is the operation currently",
+        "ru": "Разрешена ли операция"
+      },
+      {
+        "en": "enabled by the business",
+        "ru": "в текущем бизнес-"
+      },
+      {
+        "en": "state?",
+        "ru": "состоянии?"
+      },
+      {
+        "en": "3",
+        "ru": "3"
+      },
+      {
+        "en": "Order state",
+        "ru": "Состояние"
+      },
+      {
+        "en": "Submit feature",
+        "ru": "Submit"
+      },
+      {
+        "en": "Permission",
+        "ru": "Права"
+      },
+      {
+        "en": "Open",
+        "ru": "Open"
+      },
+      {
+        "en": "Enabled",
+        "ru": "Доступен"
+      },
+      {
+        "en": "Still required",
+        "ru": "Всё ещё нужны"
+      },
+      {
+        "en": "Submitted",
+        "ru": "Submitted"
+      },
+      {
+        "en": "Disabled",
+        "ru": "Недоступен"
+      },
+      {
+        "en": "Does not replace authorization",
+        "ru": "Не заменяет авторизацию"
+      },
+      {
+        "en": "CSRF protects against request forgery in the relevant HTTP flow; it does not grant business",
+        "ru": "CSRF защищает от подделки запросов в соответствующем HTTP-сценарии; он не даёт бизнес-"
+      },
+      {
+        "en": "authorization.",
+        "ru": "полномочий."
+      }
+    ],
+    "description": {
+      "en": "The three gates answer separate questions. Authentication verifies who calls. Authorization decides whether that caller may perform the operation, including global and instance permissions. Feature control decides whether the operation is currently available for the business state.\n\nAn open order can enable Submit while still requiring authorization. A submitted order can disable Submit, but that UI state does not replace permission checks against direct service calls. CSRF protection addresses request forgery in the relevant HTTP flow; it does not grant business permissions. Static operation characteristics and dynamic instance or global feature checks have different contracts.",
+      "ru": "Три проверки отвечают на разные вопросы. Аутентификация подтверждает, кто вызывает сервис. Авторизация определяет, разрешена ли этому пользователю операция, включая общие права и права на экземпляр. Feature control определяет доступность операции в текущем бизнес-состоянии.\n\nДля заказа Open операция Submit может быть доступна, но права всё равно нужно проверить. Для Submitted кнопка может быть отключена; это не заменяет проверку прав при прямом вызове сервиса. CSRF защищает от подделки запросов в соответствующем HTTP-сценарии и не выдаёт бизнес-полномочия. Статические свойства операций и динамические instance/global feature checks имеют разные контракты."
+    }
+  },
+  {
+    "id": "clean-core-wrapper",
+    "labels": [
+      {
+        "en": "A wrapper changes the contract, not its ancestry",
+        "ru": "Wrapper меняет контракт, но не зависимости"
+      },
+      {
+        "en": "Inspect the dependency behind the clean facade",
+        "ru": "Проверь, что скрыто за аккуратным фасадом"
+      },
+      {
+        "en": "Custom consumer",
+        "ru": "Custom consumer"
+      },
+      {
+        "en": "Uses a deliberate interface",
+        "ru": "Использует выбранный"
+      },
+      {
+        "en": "and depends on its",
+        "ru": "интерфейс и зависит"
+      },
+      {
+        "en": "contract.",
+        "ru": "от его контракта."
+      },
+      {
+        "en": "Custom wrapper",
+        "ru": "Custom wrapper"
+      },
+      {
+        "en": "Can isolate access and",
+        "ru": "Изолирует доступ и"
+      },
+      {
+        "en": "provide a stable custom",
+        "ru": "даёт стабильный"
+      },
+      {
+        "en": "surface.",
+        "ru": "интерфейс."
+      },
+      {
+        "en": "SAP dependency",
+        "ru": "Зависимость SAP"
+      },
+      {
+        "en": "Its actual release status",
+        "ru": "Её release status"
+      },
+      {
+        "en": "and Clean Core",
+        "ru": "и классификация"
+      },
+      {
+        "en": "classification still",
+        "ru": "Clean Core всё ещё"
+      },
+      {
+        "en": "matter.",
+        "ru": "важны."
+      },
+      {
+        "en": "Claim",
+        "ru": "Утверждение"
+      },
+      {
+        "en": "Reality",
+        "ru": "На практике"
+      },
+      {
+        "en": "Released custom surface",
+        "ru": "Custom API released"
+      },
+      {
+        "en": "Does not retroactively release the SAP object",
+        "ru": "Это не делает SAP-объект released"
+      },
+      {
+        "en": "Runs side-by-side",
+        "ru": "Запущено side-by-side"
+      },
+      {
+        "en": "Does not prove every consumed API is released",
+        "ru": "Не значит, что все API released"
+      },
+      {
+        "en": "One Level A dependency",
+        "ru": "Одна зависимость Level A"
+      },
+      {
+        "en": "Does not classify all other dependencies",
+        "ru": "Не определяет остальные зависимости"
+      },
+      {
+        "en": "A-D grades are not a one-to-one renaming of the historical three-tier model. Check permitted use in the",
+        "ru": "Уровни A–D не заменяют один-к-одному старую модель трёх tiers. Проверь допустимость в целевой"
+      },
+      {
+        "en": "target edition.",
+        "ru": "редакции продукта."
+      }
+    ],
+    "description": {
+      "en": "Read the dependency chain from the custom consumer through its wrapper to the SAP object underneath. The wrapper can isolate access and provide a stable custom contract, but the original object's release status and Clean Core classification remain relevant.\n\nThe comparison rejects three shortcuts: releasing the custom surface does not release the SAP object; side-by-side placement does not prove every API is released; one Level A dependency does not classify all others. Review the complete dependency chain, technology restrictions and lifecycle risk in the target edition. A–D levels are not a one-to-one renaming of the historical three-tier model.",
+      "ru": "Проследи цепочку от custom consumer через wrapper до исходного SAP-объекта. Wrapper может изолировать доступ и предоставить стабильный собственный контракт. Но release status исходного объекта и его классификация Clean Core остаются важными.\n\nСравнение опровергает три упрощения: публикация собственного API не делает SAP-объект released; размещение side-by-side не доказывает, что все API released; одна зависимость Level A не определяет остальные. Проверяй всю цепочку зависимостей, технологические ограничения и риски жизненного цикла в целевой редакции. Уровни A–D не являются простым переименованием старой модели трёх tiers."
+    }
+  },
+  {
+    "id": "event-idempotency",
+    "labels": [
+      {
+        "en": "One business effect, even if the message arrives twice",
+        "ru": "Один бизнес-эффект, даже если сообщение пришло дважды"
+      },
+      {
+        "en": "Idempotency needs a key, a state check and safe persistence",
+        "ru": "Идемпотентность: ключ, проверка состояния и надёжная запись"
+      },
+      {
+        "en": "Delivery",
+        "ru": "Доставка"
+      },
+      {
+        "en": "Business event ID",
+        "ru": "ID бизнес-события"
+      },
+      {
+        "en": "Attempt 1",
+        "ru": "Попытка 1"
+      },
+      {
+        "en": "EVT-204",
+        "ru": "EVT-204"
+      },
+      {
+        "en": "Retry",
+        "ru": "Повтор"
+      },
+      {
+        "en": "EVT-204",
+        "ru": "EVT-204"
+      },
+      {
+        "en": "Consumer transaction",
+        "ru": "Транзакция consumer"
+      },
+      {
+        "en": "Check event identity and current state.",
+        "ru": "Проверь ID события и текущее состояние."
+      },
+      {
+        "en": "Apply an allowed transition and record",
+        "ru": "Примени допустимый переход и запиши"
+      },
+      {
+        "en": "processing safely together.",
+        "ru": "факт обработки согласованно."
+      },
+      {
+        "en": "Current state",
+        "ru": "Текущее состояние"
+      },
+      {
+        "en": "Incoming request",
+        "ru": "Входящий запрос"
+      },
+      {
+        "en": "Result",
+        "ru": "Результат"
+      },
+      {
+        "en": "Pending / new event",
+        "ru": "Pending / новое событие"
+      },
+      {
+        "en": "Approve",
+        "ru": "Согласовать"
+      },
+      {
+        "en": "Apply once",
+        "ru": "Применить один раз"
+      },
+      {
+        "en": "Approved / same event",
+        "ru": "Approved / то же событие"
+      },
+      {
+        "en": "Approve again",
+        "ru": "Согласовать снова"
+      },
+      {
+        "en": "Return prior outcome or no-op",
+        "ru": "Вернуть прежний итог или no-op"
+      },
+      {
+        "en": "Changed / stale version",
+        "ru": "Изменено / старая версия"
+      },
+      {
+        "en": "Old approval",
+        "ru": "Старое решение"
+      },
+      {
+        "en": "Reject or reconcile; do not overwrite",
+        "ru": "Отклонить или сверить, не затереть"
+      },
+      {
+        "en": "A check-then-write race is not solved by an in-memory set. Enforce the concurrency and persistence",
+        "ru": "Набор в памяти не решает гонку между проверкой и записью. Обеспечь границу конкурентного доступа"
+      },
+      {
+        "en": "boundary.",
+        "ru": "и сохранения."
+      }
+    ],
+    "description": {
+      "en": "Both deliveries carry EVT-204, so the consumer must identify the same business event rather than treat a retry as new work. Within a safe persistence boundary it checks the current state, applies an allowed transition and records processing together.\n\nA new event for a pending object is applied once. Repeating it for an already approved object returns the prior outcome or does nothing. An old approval against a changed version must be rejected or reconciled instead of overwriting newer state. An in-memory set cannot prevent concurrent check-then-write races. The infrastructure determines the concrete transactional deduplication mechanism.",
+      "ru": "Обе доставки содержат EVT-204, поэтому consumer должен узнать одно и то же бизнес-событие, а не считать повтор новой работой. В надёжной границе сохранения он проверяет текущее состояние, применяет допустимый переход и вместе с ним фиксирует обработку.\n\nНовое событие для объекта Pending применяется один раз. Повтор для уже согласованного объекта возвращает прежний результат или ничего не меняет. Старое решение для изменённой версии нужно отклонить или сверить, не затирая новое состояние. Набор в памяти не защищает от одновременной проверки и записи. Конкретный механизм транзакционной дедупликации зависит от инфраструктуры."
+    }
+  },
+  {
+    "id": "http-message-anatomy",
+    "labels": [
+      {
+        "en": "Read an HTTP exchange as a contract",
+        "ru": "HTTP-обмен как контракт"
+      },
+      {
+        "en": "Illustrative HTTP/1.1 layout; HTTPS protects the transport",
+        "ru": "Учебный формат HTTP/1.1; HTTPS защищает передачу"
+      },
+      {
+        "en": "REQUEST: client to service",
+        "ru": "ЗАПРОС: клиент -> сервис"
+      },
+      {
+        "en": "RESPONSE: service to client",
+        "ru": "ОТВЕТ: сервис -> клиент"
+      },
+      {
+        "en": "GET /orders/4711 HTTP/1.1",
+        "ru": "GET /orders/4711 HTTP/1.1"
+      },
+      {
+        "en": "Host: api.example.test",
+        "ru": "Host: api.example.test"
+      },
+      {
+        "en": "Accept: application/json",
+        "ru": "Accept: application/json"
+      },
+      {
+        "en": "",
+        "ru": ""
+      },
+      {
+        "en": "Method + target identify the request.",
+        "ru": "Метод и адрес задают запрос."
+      },
+      {
+        "en": "Accept asks for a representation.",
+        "ru": "Accept запрашивает формат ответа."
+      },
+      {
+        "en": "Credentials are intentionally omitted.",
+        "ru": "Учётные данные намеренно скрыты."
+      },
+      {
+        "en": "HTTP/1.1 200 OK",
+        "ru": "HTTP/1.1 200 OK"
+      },
+      {
+        "en": "Content-Type: application/json",
+        "ru": "Content-Type: application/json"
+      },
+      {
+        "en": "ETag: \"v7\"",
+        "ru": "ETag: \"v7\""
+      },
+      {
+        "en": "",
+        "ru": ""
+      },
+      {
+        "en": "{\"id\":\"4711\",\"status\":\"Open\"}",
+        "ru": "{\"id\":\"4711\",\"status\":\"Open\"}"
+      },
+      {
+        "en": "",
+        "ru": ""
+      },
+      {
+        "en": "ETag is an opaque version validator.",
+        "ru": "ETag — непрозрачный маркер версии."
+      },
+      {
+        "en": "Transport / HTTP",
+        "ru": "Передача / HTTP"
+      },
+      {
+        "en": "Representation / JSON",
+        "ru": "Представление / JSON"
+      },
+      {
+        "en": "REST is an architectural style; JSON and XML are payload formats. OData adds service conventions on top",
+        "ru": "REST — архитектурный стиль; JSON и XML — форматы данных. OData добавляет правила сервиса поверх"
+      },
+      {
+        "en": "of HTTP.",
+        "ru": "HTTP."
+      }
+    ],
+    "description": {
+      "en": "The client sends GET /orders/4711 to the sample host and asks for JSON using Accept. The service returns HTTP 200 OK, identifies the body format with Content-Type, and provides an opaque ETag version validator. The JSON body contains the order ID and status.\n\nRead method, target, status and headers before interpreting the body. HTTP provides the exchange, JSON is a representation format, REST is an architectural style, and OData adds service conventions. Credentials are omitted intentionally and the endpoint is not runnable. The layout illustrates HTTP/1.1; HTTP/2 and HTTP/3 have different wire framing.",
+      "ru": "Клиент отправляет GET /orders/4711 на учебный адрес и запрашивает JSON через Accept. Сервис возвращает HTTP 200 OK, указывает формат тела в Content-Type и передаёт непрозрачный маркер версии ETag. Тело JSON содержит ID и состояние заказа.\n\nДо разбора тела посмотри на метод, адрес, статус и заголовки. HTTP обеспечивает обмен, JSON задаёт формат представления, REST является архитектурным стилем, а OData добавляет правила сервиса. Учётные данные намеренно не показаны, адрес не предназначен для выполнения запросов. Схема иллюстрирует HTTP/1.1; HTTP/2 и HTTP/3 используют другое представление данных при передаче."
+    }
+  },
+  {
+    "id": "parallel-job-workers",
+    "labels": [
+      {
+        "en": "A job can coordinate parallel workers",
+        "ru": "Job может управлять параллельными workers"
+      },
+      {
+        "en": "Scheduled execution and concurrent work are independent design choices",
+        "ru": "Запуск по расписанию и параллельная обработка — разные решения"
+      },
+      {
+        "en": "Scheduled coordinator",
+        "ru": "Координатор по расписанию"
+      },
+      {
+        "en": "Read a stable worklist,",
+        "ru": "Прочитать стабильный список,"
+      },
+      {
+        "en": "partition it and limit the",
+        "ru": "разделить его и ограничить"
+      },
+      {
+        "en": "number of active tasks.",
+        "ru": "число активных задач."
+      },
+      {
+        "en": "Worker A",
+        "ru": "Worker A"
+      },
+      {
+        "en": "Partition 1 / own outcome",
+        "ru": "Часть 1 / свой результат"
+      },
+      {
+        "en": "Worker B",
+        "ru": "Worker B"
+      },
+      {
+        "en": "Partition 2 / own outcome",
+        "ru": "Часть 2 / свой результат"
+      },
+      {
+        "en": "Worker C",
+        "ru": "Worker C"
+      },
+      {
+        "en": "Partition 3 / own outcome",
+        "ru": "Часть 3 / свой результат"
+      },
+      {
+        "en": "Collect + checkpoint",
+        "ru": "Сбор и фиксация итогов"
+      },
+      {
+        "en": "Handle callbacks and",
+        "ru": "Обработать ответы и"
+      },
+      {
+        "en": "errors. Record completed",
+        "ru": "ошибки. Записать готовые"
+      },
+      {
+        "en": "units. Retry only safe",
+        "ru": "части. Повторять лишь"
+      },
+      {
+        "en": "unfinished work.",
+        "ru": "безопасные остатки."
+      },
+      {
+        "en": "Keep shared locks and hot",
+        "ru": "Общие блокировки и часто"
+      },
+      {
+        "en": "database rows out of",
+        "ru": "меняемые строки БД не"
+      },
+      {
+        "en": "competing partitions.",
+        "ru": "разделять между workers."
+      },
+      {
+        "en": "Bound concurrency by available resources. A finished job status does not prove every business item",
+        "ru": "Ограничивай параллелизм ресурсами. Статус «job завершён» не доказывает успех каждого бизнес-объекта."
+      },
+      {
+        "en": "succeeded. WAIT can affect the DB LUW.",
+        "ru": "WAIT может влиять на DB LUW."
+      }
+    ],
+    "description": {
+      "en": "The scheduled coordinator reads a stable worklist, partitions it and limits active tasks. Work fans out to workers A, B and C, each with its own partition and explicit outcome, then returns to a collection and checkpoint stage. This stage handles callbacks and errors and records completed units.\n\nRetry only unfinished work that is safe to repeat. If one worker commits before another fails, job-level failure does not undo that completed work. Keep shared locks and heavily updated rows out of competing partitions. Scheduling alone does not create parallelism; worker sessions, transaction boundaries and resource limits need deliberate design. WAIT can affect the DB LUW.",
+      "ru": "Координатор по расписанию читает стабильный список работ, делит его и ограничивает число активных задач. Работа расходится к workers A, B и C: каждый получает свою часть и возвращает явный результат. Затем координатор собирает ответы, обрабатывает ошибки и фиксирует завершённые части.\n\nПовторять нужно только незавершённую работу, которую безопасно выполнить снова. Если один worker уже сделал COMMIT, ошибка другого не отменяет готовую часть. Не допускай конкуренции частей за общие блокировки и часто меняемые строки. Само расписание не создаёт параллелизм: сессии, транзакционные границы и ресурсы нужно спроектировать. WAIT может влиять на DB LUW."
+    }
+  },
+  {
+    "id": "senior-response-channels",
+    "labels": [
+      {
+        "en": "Three response channels; three different meanings",
+        "ru": "Три канала ответа — три разных смысла"
+      },
+      {
+        "en": "Illustrative create interaction: C1 and C3 accepted into the buffer; C2 rejected",
+        "ru": "Пример create: C1 и C3 приняты в буфер, C2 отклонён"
+      },
+      {
+        "en": "Input %cid",
+        "ru": "Входной %cid"
+      },
+      {
+        "en": "Amount",
+        "ru": "Сумма"
+      },
+      {
+        "en": "Interaction outcome",
+        "ru": "Итог interaction"
+      },
+      {
+        "en": "C1",
+        "ru": "C1"
+      },
+      {
+        "en": "100 EUR",
+        "ru": "100 EUR"
+      },
+      {
+        "en": "Accepted; assigned key 4711",
+        "ru": "Принят; назначен ключ 4711"
+      },
+      {
+        "en": "C2",
+        "ru": "C2"
+      },
+      {
+        "en": "-5 EUR",
+        "ru": "-5 EUR"
+      },
+      {
+        "en": "Rejected: amount must be positive",
+        "ru": "Отказ: сумма должна быть > 0"
+      },
+      {
+        "en": "C3",
+        "ru": "C3"
+      },
+      {
+        "en": "80 EUR",
+        "ru": "80 EUR"
+      },
+      {
+        "en": "Accepted; key 4712; informational message",
+        "ru": "Принят; ключ 4712; информационное сообщение"
+      },
+      {
+        "en": "FAILED",
+        "ru": "FAILED"
+      },
+      {
+        "en": "REPORTED",
+        "ru": "REPORTED"
+      },
+      {
+        "en": "MAPPED",
+        "ru": "MAPPED"
+      },
+      {
+        "en": "C2: rejected create",
+        "ru": "C2: create отклонён"
+      },
+      {
+        "en": "",
+        "ru": ""
+      },
+      {
+        "en": "Identity + failure cause",
+        "ru": "Идентификатор + причина отказа"
+      },
+      {
+        "en": "C2: amount error",
+        "ru": "C2: ошибка суммы"
+      },
+      {
+        "en": "C3: information",
+        "ru": "C3: информация"
+      },
+      {
+        "en": "Message + instance context",
+        "ru": "Сообщение + контекст экземпляра"
+      },
+      {
+        "en": "C1 -> 4711",
+        "ru": "C1 -> 4711"
+      },
+      {
+        "en": "C3 -> 4712",
+        "ru": "C3 -> 4712"
+      },
+      {
+        "en": "Creation / key correlation",
+        "ru": "Связь create с ключом"
+      },
+      {
+        "en": "Interaction responses are not a commit receipt. Inspect the subsequent save outcome.",
+        "ru": "Ответ interaction ещё не подтверждает COMMIT. Проверь последующий результат save."
+      },
+      {
+        "en": "A REPORTED message is not always a failure; MAPPED is not a universal success list. The consumer and",
+        "ru": "REPORTED не всегда означает отказ; MAPPED — не общий список успехов. Атомарность задают consumer"
+      },
+      {
+        "en": "request boundary determine the atomicity policy.",
+        "ru": "и граница запроса."
+      }
+    ],
+    "description": {
+      "en": "Three create inputs show the channels together. C1 with EUR 100 enters the buffer and maps to key 4711. C2 with EUR -5 is rejected and appears in FAILED with its identity and failure cause, plus an error message in REPORTED. C3 with EUR 80 maps to key 4712 and also receives an informational message.\n\nThus REPORTED can describe a non-failing instance, while MAPPED correlates creation identities and keys rather than listing every success. Acceptance during interaction is not proof of commit: inspect the later save outcome. The consumer and request boundary determine the atomicity policy.",
+      "ru": "Три входа create показывают каналы вместе. C1 с суммой 100 EUR принимается в буфер и получает соответствие ключу 4711. C2 с суммой -5 EUR отклоняется: FAILED содержит идентификатор и причину отказа, а REPORTED — сообщение об ошибке. C3 с суммой 80 EUR связывается с ключом 4712 и дополнительно получает информационное сообщение.\n\nЗначит, REPORTED может относиться к успешному экземпляру, а MAPPED связывает create с ключами и не является списком всех успехов. Принятие на этапе interaction не подтверждает COMMIT: нужно проверить последующий save. Политику атомарности определяют consumer и граница запроса."
+    }
+  },
+  {
+    "id": "senior-query-secure-pipeline",
+    "labels": [
+      {
+        "en": "One authorized predicate must feed both data and count",
+        "ru": "Данные и count должны использовать одинаковые права и фильтр"
+      },
+      {
+        "en": "Request: user may see A; amount > 100; order by ID; skip 1; take 2",
+        "ru": "Запрос: доступна A; amount > 100; порядок ID; пропустить 1, взять 2"
+      },
+      {
+        "en": "ID",
+        "ru": "ID"
+      },
+      {
+        "en": "Org",
+        "ru": "Орг."
+      },
+      {
+        "en": "Amount",
+        "ru": "Сумма"
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "A",
+        "ru": "A"
+      },
+      {
+        "en": "80",
+        "ru": "80"
+      },
+      {
+        "en": "2",
+        "ru": "2"
+      },
+      {
+        "en": "A",
+        "ru": "A"
+      },
+      {
+        "en": "120",
+        "ru": "120"
+      },
+      {
+        "en": "3",
+        "ru": "3"
+      },
+      {
+        "en": "B",
+        "ru": "B"
+      },
+      {
+        "en": "200",
+        "ru": "200"
+      },
+      {
+        "en": "4",
+        "ru": "4"
+      },
+      {
+        "en": "A",
+        "ru": "A"
+      },
+      {
+        "en": "150",
+        "ru": "150"
+      },
+      {
+        "en": "5",
+        "ru": "5"
+      },
+      {
+        "en": "B",
+        "ru": "B"
+      },
+      {
+        "en": "300",
+        "ru": "300"
+      },
+      {
+        "en": "6",
+        "ru": "6"
+      },
+      {
+        "en": "A",
+        "ru": "A"
+      },
+      {
+        "en": "180",
+        "ru": "180"
+      },
+      {
+        "en": "SOURCE: 6 rows",
+        "ru": "ИСТОЧНИК: 6 строк"
+      },
+      {
+        "en": "LOGICAL RESULT CONTRACT",
+        "ru": "КОНТРАКТ РЕЗУЛЬТАТА"
+      },
+      {
+        "en": "Authorization + request filter",
+        "ru": "Права + фильтр запроса"
+      },
+      {
+        "en": "Keep IDs 2, 4, 6",
+        "ru": "Оставить ID 2, 4, 6"
+      },
+      {
+        "en": "Count the same filtered set",
+        "ru": "Посчитать тот же набор"
+      },
+      {
+        "en": "count = 3",
+        "ru": "count = 3"
+      },
+      {
+        "en": "Deterministic order, then page",
+        "ru": "Стабильный порядок, затем страница"
+      },
+      {
+        "en": "skip 1, take 2 -> IDs 4, 6",
+        "ru": "Пропуск 1, взять 2 -> ID 4, 6"
+      },
+      {
+        "en": "RETURN 2 rows: ID 4 and ID 6",
+        "ru": "ВЕРНУТЬ 2 строки: ID 4 и ID 6"
+      },
+      {
+        "en": "RETURN total count 3, not 2 and not 6",
+        "ru": "ВЕРНУТЬ общий count 3, не 2 и не 6"
+      },
+      {
+        "en": "Do not flatten an unsupported Boolean filter.",
+        "ru": "Не упрощай неподдержанный Boolean-фильтр."
+      },
+      {
+        "en": "Translate it correctly or reject it.",
+        "ru": "Преобразуй точно или отклони."
+      },
+      {
+        "en": "Unauthorized rows must not leak through count or aggregation. Stable ordering needs a tie-breaker;",
+        "ru": "Count и агрегаты не должны раскрывать закрытые строки. Для равных значений сортировки нужен tie-breaker;"
+      },
+      {
+        "en": "concurrent changes require an explicit paging consistency contract.",
+        "ru": "при изменении данных нужен явный контракт согласованности страниц."
+      }
+    ],
+    "description": {
+      "en": "The source has six rows across organizations A and B. The caller may see A and requests amount greater than 100. Applying both restrictions leaves IDs 2, 4 and 6. Count uses this same logical set and returns three. Ordering by ID, skipping one and taking two returns IDs 4 and 6.\n\nNeither the page size two nor the source size six is the total count. Hidden B rows must not leak through counts or aggregates. Translate unsupported Boolean filters faithfully or reject them. This is a semantic contract, not a required physical plan; paging needs deterministic ordering and an explicit consistency policy for concurrent changes.",
+      "ru": "В источнике шесть строк организаций A и B. Пользователь видит только A и запрашивает amount больше 100. После обеих проверок остаются ID 2, 4 и 6. Count считает этот же логический набор и возвращает три. Сортировка по ID, пропуск одной строки и выбор двух дают ID 4 и 6.\n\nОбщий count не равен ни размеру страницы два, ни размеру источника шесть. Закрытые строки B не должны проявляться в count или агрегатах. Boolean-фильтры нужно преобразовывать без потери смысла либо отклонять. Это контракт результата, не обязательный план выполнения; для страниц нужны стабильный порядок и правила согласованности при конкурентных изменениях."
+    }
+  },
+  {
+    "id": "senior-exception-lifecycle",
+    "labels": [
+      {
+        "en": "An exception is a bounded decision, not a new API contract",
+        "ru": "Исключение из правил — ограниченное решение, не новый API"
+      },
+      {
+        "en": "Illustrative governance record: EX-017 permits one reviewed internal read dependency",
+        "ru": "Учебная запись EX-017 разрешает одну проверенную внутреннюю зависимость чтения"
+      },
+      {
+        "en": "EX-017 / reviewable exception record",
+        "ru": "EX-017 / запись исключения для проверки"
+      },
+      {
+        "en": "Scope: adapter ZCL_LEGACY_READ, one read path",
+        "ru": "Область: ZCL_LEGACY_READ, один путь чтения"
+      },
+      {
+        "en": "Reason: required field absent from released query",
+        "ru": "Причина: released query не содержит поля"
+      },
+      {
+        "en": "Owner: application team + named risk approver",
+        "ru": "Владелец: команда и согласующий риск"
+      },
+      {
+        "en": "Evidence: denied-user and result-total tests",
+        "ru": "Проверки: отказ в доступе и суммы результата"
+      },
+      {
+        "en": "Review: next platform upgrade or API successor",
+        "ru": "Пересмотр: upgrade или API-преемник"
+      },
+      {
+        "en": "Exit: replace dependency; remove exemption",
+        "ru": "Выход: заменить зависимость, убрать exemption"
+      },
+      {
+        "en": "Status: approved scope, not unrestricted access",
+        "ru": "Статус: согласована область, не любой доступ"
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "ASSESS",
+        "ru": "ОЦЕНИТЬ"
+      },
+      {
+        "en": "Verify gap, scope, alternatives.",
+        "ru": "Проверить пробел и альтернативы."
+      },
+      {
+        "en": "2",
+        "ru": "2"
+      },
+      {
+        "en": "DECIDE",
+        "ru": "РЕШИТЬ"
+      },
+      {
+        "en": "Approve risk and required controls.",
+        "ru": "Согласовать риск и меры контроля."
+      },
+      {
+        "en": "3",
+        "ru": "3"
+      },
+      {
+        "en": "RECHECK",
+        "ru": "ПЕРЕПРОВЕРИТЬ"
+      },
+      {
+        "en": "Trigger: code, API, or release change.",
+        "ru": "Повод: изменение кода, API, релиза."
+      },
+      {
+        "en": "4",
+        "ru": "4"
+      },
+      {
+        "en": "CLOSE OR RENEW",
+        "ru": "ЗАКРЫТЬ / ПРОДЛИТЬ"
+      },
+      {
+        "en": "Show replacement or fresh evidence.",
+        "ru": "Показать замену или новые проверки."
+      },
+      {
+        "en": "A new write call is outside EX-017. It needs a new decision, not silent inheritance.",
+        "ru": "Новый вызов записи выходит за EX-017. Нужен новый разбор, а не автоматическое разрешение."
+      },
+      {
+        "en": "An exemption can change finding handling; it cannot legalize unsupported ABAP Cloud syntax, release a",
+        "ru": "Exemption может менять обработку findings, но не разрешает неподдержанный синтаксис ABAP Cloud,"
+      },
+      {
+        "en": "SAP object, or prove transaction correctness.",
+        "ru": "не делает SAP-объект released и не доказывает корректность транзакций."
+      }
+    ],
+    "description": {
+      "en": "EX-017 records one permitted internal read dependency through ZCL_LEGACY_READ, including the API gap, owner, risk approver, tests and exit conditions. The lifecycle moves from assessment to a scoped decision, then recheck on code, API or release change, and finally closure or renewal with evidence.\n\nA new write call is outside the original scope and requires a new decision. Replacing the dependency and removing the exemption demonstrates closure; hiding a finding does not. An exemption cannot authorize unsupported ABAP Cloud syntax, release a SAP object or establish transaction correctness. These fictional identifiers illustrate governance; actual approvals follow organizational and target-system rules.",
+      "ru": "EX-017 фиксирует одну разрешённую внутреннюю зависимость чтения через ZCL_LEGACY_READ: пробел API, владельца, согласующего риск, проверки и условия выхода. Цикл идёт от оценки к ограниченному решению, затем к пересмотру при изменении кода, API или релиза и к закрытию либо продлению с подтверждениями.\n\nНовый вызов записи выходит за исходные рамки и требует нового решения. Замена зависимости и удаление exemption подтверждают закрытие; скрытый finding — нет. Exemption не разрешает неподдержанный синтаксис ABAP Cloud, не делает SAP-объект released и не доказывает корректность транзакции. Идентификаторы учебные; реальные согласования подчиняются правилам организации и целевой системы."
+    }
+  },
+  {
+    "id": "rap-augmentation-additional-save",
+    "labels": [
+      {
+        "en": "Augmentation adapts the request; additional save adds work",
+        "ru": "Augmentation меняет запрос; additional save дополняет запись"
+      },
+      {
+        "en": "Two hooks at different boundaries, not interchangeable extension techniques",
+        "ru": "Разные точки расширения с разными обязанностями"
+      },
+      {
+        "en": "Projection request",
+        "ru": "Запрос к projection"
+      },
+      {
+        "en": "Convenience input arrives. Augmentation",
+        "ru": "Приходит удобный вход. Augmentation"
+      },
+      {
+        "en": "enriches supported underlying modifications.",
+        "ru": "дополняет допустимые изменения нижнего уровня."
+      },
+      {
+        "en": "Managed persistence",
+        "ru": "Managed persistence"
+      },
+      {
+        "en": "The framework saves owned data. Additional save",
+        "ru": "Framework сохраняет свои данные. Additional save"
+      },
+      {
+        "en": "performs supported supplementary work.",
+        "ru": "выполняет допустимую дополнительную работу."
+      },
+      {
+        "en": "Question",
+        "ru": "Вопрос"
+      },
+      {
+        "en": "Augmentation",
+        "ru": "Augmentation"
+      },
+      {
+        "en": "Additional save",
+        "ru": "Additional save"
+      },
+      {
+        "en": "Where?",
+        "ru": "Где?"
+      },
+      {
+        "en": "Projection interaction",
+        "ru": "Interaction в projection"
+      },
+      {
+        "en": "Save sequence",
+        "ru": "Save sequence"
+      },
+      {
+        "en": "Example",
+        "ru": "Пример"
+      },
+      {
+        "en": "Derive underlying request input",
+        "ru": "Дополнить вход нижнего запроса"
+      },
+      {
+        "en": "Write supported audit data",
+        "ru": "Записать допустимые данные аудита"
+      },
+      {
+        "en": "Neither hook authorizes an independent COMMIT. Choose by contract, not by an assumption that any hook",
+        "ru": "Ни один hook не разрешает независимый COMMIT. Выбирай по контракту: нельзя считать, что любой hook"
+      },
+      {
+        "en": "can change any data.",
+        "ru": "может менять любые данные."
+      }
+    ],
+    "description": {
+      "en": "The timeline separates projection interaction from persistence. Augmentation receives convenient projection input and enriches supported underlying modifications. Later, managed persistence saves the framework-owned data, while additional save performs supported supplementary work such as writing audit data.\n\nThe comparison therefore asks where the requirement belongs: adapting request input is different from adding persistence work. Writing an audit record does not make augmentation a save hook. Neither option permits an independent COMMIT or unrestricted changes to arbitrary data. The arrow is conceptual; supported fields, triggers and availability depend on the target RAP release and operation contract.",
+      "ru": "Схема разделяет interaction в projection и сохранение. Augmentation получает удобные входные данные projection и дополняет поддерживаемые изменения нижнего уровня. Позже managed persistence сохраняет данные под управлением framework, а additional save выполняет допустимую дополнительную работу, например запись аудита.\n\nВыбор зависит от того, где находится задача: преобразовать вход запроса — не то же самое, что дополнить сохранение. Потребность в записи аудита не превращает augmentation в save hook. Ни один вариант не разрешает независимый COMMIT или произвольное изменение любых данных. Стрелка условная; поля, triggers и доступность зависят от целевого релиза RAP и контракта операции."
+    }
+  },
+  {
+    "id": "rap-message-lifecycle",
+    "labels": [
+      {
+        "en": "State messages need an invalidation story",
+        "ru": "State messages нужно вовремя убирать"
+      },
+      {
+        "en": "Example: an invalid child date is corrected in a later draft request",
+        "ru": "Пример: неверную дату позиции исправляют в следующем draft-запросе"
+      },
+      {
+        "en": "Moment",
+        "ru": "Момент"
+      },
+      {
+        "en": "Business state",
+        "ru": "Бизнес-состояние"
+      },
+      {
+        "en": "Message decision",
+        "ru": "Что делать с сообщением"
+      },
+      {
+        "en": "Request 1",
+        "ru": "Запрос 1"
+      },
+      {
+        "en": "Child date inconsistent",
+        "ru": "Дата позиции неверна"
+      },
+      {
+        "en": "Report state error for that child",
+        "ru": "Вернуть state error для позиции"
+      },
+      {
+        "en": "Request 2",
+        "ru": "Запрос 2"
+      },
+      {
+        "en": "User corrects the date",
+        "ru": "Пользователь исправляет дату"
+      },
+      {
+        "en": "Invalidate relevant prior state message",
+        "ru": "Убрать прежнее state message"
+      },
+      {
+        "en": "Revalidation",
+        "ru": "Повторная проверка"
+      },
+      {
+        "en": "State is now consistent",
+        "ru": "Состояние согласовано"
+      },
+      {
+        "en": "Do not recreate the old error",
+        "ru": "Не создавать старую ошибку снова"
+      },
+      {
+        "en": "Transition failure",
+        "ru": "Transition failure"
+      },
+      {
+        "en": "Operation itself failed",
+        "ru": "Сама операция не удалась"
+      },
+      {
+        "en": "Return transition-related feedback",
+        "ru": "Вернуть отзыв об этой операции"
+      },
+      {
+        "en": "Trace instance identity, state area and element/path targeting. A correct text attached to the wrong",
+        "ru": "Проверь ID экземпляра, state area и element/path. Правильный текст у неправильной позиции всё равно"
+      },
+      {
+        "en": "child is still incorrect behavior.",
+        "ru": "означает ошибку поведения."
+      },
+      {
+        "en": "REPORTED carries messages; the supported FAILED response rejects instances. Message severity alone is",
+        "ru": "REPORTED передаёт сообщения; допустимый FAILED отклоняет экземпляры. Одна severity не служит общим"
+      },
+      {
+        "en": "not a general rejection mechanism.",
+        "ru": "механизмом отказа."
+      }
+    ],
+    "description": {
+      "en": "In the first draft request, a child has an inconsistent date and receives a state error. The next request corrects the date and invalidates the relevant previous state message. Revalidation finds consistent data and must not recreate the old error. A transition failure instead describes the operation that failed.\n\nTrace instance identity, state area and element or path targeting: even accurate text is wrong when attached to another child. REPORTED transports messages, while the supported FAILED response rejects instances. Severity alone is not a general rejection mechanism. Message lifetime and permitted state-message scenarios depend on active or draft context and the operation contract.",
+      "ru": "В первом draft-запросе у дочерней позиции неверная дата, поэтому возвращается state error. Следующий запрос исправляет дату и убирает соответствующее прежнее state message. Повторная проверка видит согласованные данные и не должна создавать старую ошибку снова. Transition failure, напротив, относится к неудавшейся операции.\n\nПроверь ID экземпляра, state area и привязку element/path: даже правильный текст ошибочен, если показан у другой позиции. REPORTED передаёт сообщения, а поддерживаемый ответ FAILED отклоняет экземпляры. Одна severity не является общим механизмом отказа. Время жизни сообщений и допустимые state messages зависят от active/draft-контекста и контракта операции."
+    }
+  },
+  {
+    "id": "deep-parameter-paths",
+    "labels": [
+      {
+        "en": "An exception separates reference and value-result paths",
+        "ru": "Исключение разделяет reference и value-result"
+      },
+      {
+        "en": "A plain CHANGING integer starts at 10; the method sets 20, then raises an exception",
+        "ru": "Целый CHANGING начинается с 10; метод записывает 20 и вызывает исключение"
+      },
+      {
+        "en": "By reference",
+        "ru": "По ссылке"
+      },
+      {
+        "en": "CALLER BEFORE",
+        "ru": "ДО ВЫЗОВА"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "METHOD WRITES",
+        "ru": "МЕТОД ПИШЕТ"
+      },
+      {
+        "en": "20",
+        "ru": "20"
+      },
+      {
+        "en": "CALLER AFTER",
+        "ru": "ПОСЛЕ ВЫЗОВА"
+      },
+      {
+        "en": "Caller: 20",
+        "ru": "Снаружи: 20"
+      },
+      {
+        "en": "exception",
+        "ru": "исключение"
+      },
+      {
+        "en": "CHANGING VALUE",
+        "ru": "CHANGING VALUE"
+      },
+      {
+        "en": "CALLER BEFORE",
+        "ru": "ДО ВЫЗОВА"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "METHOD WRITES",
+        "ru": "МЕТОД ПИШЕТ"
+      },
+      {
+        "en": "20",
+        "ru": "20"
+      },
+      {
+        "en": "CALLER AFTER",
+        "ru": "ПОСЛЕ ВЫЗОВА"
+      },
+      {
+        "en": "Caller: 10",
+        "ru": "Снаружи: 10"
+      },
+      {
+        "en": "exception",
+        "ru": "исключение"
+      },
+      {
+        "en": "Reference: caller data was already changed.",
+        "ru": "Reference: данные caller уже изменены."
+      },
+      {
+        "en": "Value-result: no normal copy-back occurred.",
+        "ru": "Value-result: обратного копирования не было."
+      },
+      {
+        "en": "The caller catches the exception. This is a scalar parameter example: database writes and mutations",
+        "ru": "Caller перехватывает исключение. Здесь скалярный параметр; запись в БД и изменения через ссылки"
+      },
+      {
+        "en": "through object references are separate side effects.",
+        "ru": "на объекты — отдельные побочные эффекты."
+      }
+    ],
+    "description": {
+      "en": "Both paths start with the caller's integer equal to 10. The method writes 20 and then raises an exception that the caller catches. With reference passing, the method has already changed the caller's data, so the caller sees 20. With CHANGING VALUE, the normal value-result copy-back does not occur, so the caller still sees 10.\n\nThe comparison relies on the exceptional exit and a plain integer. A normal return would allow copy-back. Do not generalize this scalar example into rollback of database writes or mutations through object references: those are separate side effects.",
+      "ru": "Оба пути начинаются с целого числа 10 у caller. Метод записывает 20, затем вызывает исключение, которое caller перехватывает. При передаче по ссылке метод уже изменил исходные данные, поэтому снаружи видно 20. При CHANGING VALUE обычное обратное копирование результата не выполняется, и снаружи остаётся 10.\n\nРазница показана для выхода по исключению и простого целого числа. Нормальный возврат позволил бы скопировать результат обратно. Нельзя переносить этот скалярный пример на откат записей в БД или изменений через ссылки на объекты: это отдельные побочные эффекты."
+    }
+  },
+  {
+    "id": "deep-stale-results",
+    "labels": [
+      {
+        "en": "A result belongs to the operation that produced it",
+        "ru": "Результат относится к операции, которая его создала"
+      },
+      {
+        "en": "Two sequential defects: stale field-symbol target and overwritten return code",
+        "ru": "Две ошибки: старая привязка field symbol и затёртый код возврата"
+      },
+      {
+        "en": "Step",
+        "ru": "Шаг"
+      },
+      {
+        "en": "Operation",
+        "ru": "Операция"
+      },
+      {
+        "en": "Result after this step",
+        "ru": "Результат после шага"
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "ASSIGN component PRICE",
+        "ru": "ASSIGN компонента PRICE"
+      },
+      {
+        "en": "<field> -> PRICE; sy-subrc = 0",
+        "ru": "<field> -> PRICE; sy-subrc = 0"
+      },
+      {
+        "en": "2",
+        "ru": "2"
+      },
+      {
+        "en": "ASSIGN component PRCIE fails",
+        "ru": "ASSIGN компонента PRCIE: отказ"
+      },
+      {
+        "en": "Old assignment may remain; result = 4",
+        "ru": "Старая привязка возможна; result = 4"
+      },
+      {
+        "en": "3",
+        "ru": "3"
+      },
+      {
+        "en": "Write through old alias",
+        "ru": "Запись через старую привязку"
+      },
+      {
+        "en": "PRICE can be changed accidentally",
+        "ru": "Можно случайно изменить PRICE"
+      },
+      {
+        "en": "Separate return-code trap",
+        "ru": "Ловушка кода возврата"
+      },
+      {
+        "en": "READ misses",
+        "ru": "READ не нашёл"
+      },
+      {
+        "en": "sy-subrc = 4",
+        "ru": "sy-subrc = 4"
+      },
+      {
+        "en": "FIND succeeds",
+        "ru": "FIND успешен"
+      },
+      {
+        "en": "sy-subrc = 0",
+        "ru": "sy-subrc = 0"
+      },
+      {
+        "en": "Later IF = 0",
+        "ru": "Поздний IF = 0"
+      },
+      {
+        "en": "Tests FIND",
+        "ru": "Проверяет FIND"
+      },
+      {
+        "en": "Consume or preserve the latest result immediately. Use ELSE UNASSIGN where supported, or unassign before",
+        "ru": "Сразу используй или сохрани результат. Применяй ELSE UNASSIGN, где доступно, либо снимай привязку до"
+      },
+      {
+        "en": "the dynamic assignment and handle failure.",
+        "ru": "динамического ASSIGN и обрабатывай отказ."
+      }
+    ],
+    "description": {
+      "en": "The first sequence successfully assigns PRICE, then attempts misspelled PRCIE. Depending on the exact ASSIGN form and additions, the old field-symbol target may remain after failure. A later write through that alias can accidentally change PRICE. Test success followed by failure to expose this stale state.\n\nThe second sequence has READ set sy-subrc to 4, followed by a successful FIND setting it to 0. A later IF tests FIND's result, not READ's. Consume or preserve return codes immediately. Use ELSE UNASSIGN where supported or unassign before dynamic assignment and handle failure. Only statements documented to set sy-subrc replace it.",
+      "ru": "В первой последовательности PRICE успешно назначается field symbol, затем выполняется попытка назначить PRCIE с опечаткой. В зависимости от формы ASSIGN и дополнений старая привязка может остаться после отказа. Последующая запись через неё случайно изменит PRICE. Для выявления ошибки проверь успешное назначение, за которым идёт неуспешное.\n\nВо второй последовательности READ устанавливает sy-subrc в 4, затем успешный FIND меняет его на 0. Поздний IF проверяет результат FIND, а не READ. Сразу используй или сохраняй код возврата. Применяй ELSE UNASSIGN, где поддерживается, либо снимай привязку перед динамическим ASSIGN и обрабатывай отказ. sy-subrc меняют только документированные для этого операторы."
+    }
+  },
+  {
+    "id": "deep-group-filter",
+    "labels": [
+      {
+        "en": "Grouping collects members; FILTER chooses a key path",
+        "ru": "GROUP BY собирает группы; FILTER выбирает путь по ключу"
+      },
+      {
+        "en": "Arrival order: A/10, B/20, A/30. No pre-sort is required for GROUP BY customer.",
+        "ru": "Порядок: A/10, B/20, A/30. Для GROUP BY customer предварительный SORT не нужен."
+      },
+      {
+        "en": "A / 10",
+        "ru": "A / 10"
+      },
+      {
+        "en": "B / 20",
+        "ru": "B / 20"
+      },
+      {
+        "en": "A / 30",
+        "ru": "A / 30"
+      },
+      {
+        "en": "Group A: two members",
+        "ru": "Группа A: две строки"
+      },
+      {
+        "en": "10 + 30 = 40",
+        "ru": "10 + 30 = 40"
+      },
+      {
+        "en": "Group B",
+        "ru": "Группа B"
+      },
+      {
+        "en": "20",
+        "ru": "20"
+      },
+      {
+        "en": "Standard table + empty primary key: basic FILTER needs more.",
+        "ru": "STANDARD TABLE с пустым primary key: этого мало для обычного FILTER."
+      },
+      {
+        "en": "A suitable sorted secondary key by customer can be selected with USING KEY.",
+        "ru": "Подходящий SORTED secondary key по customer выбирается через USING KEY."
+      },
+      {
+        "en": "Group body: once per group; member loop: once per member. FILTER predicates must satisfy the selected",
+        "ru": "Тело группы — один раз на группу; цикл участников — на строку. Условия FILTER должны соответствовать"
+      },
+      {
+        "en": "sorted/hash key rules.",
+        "ru": "правилам выбранного SORTED/HASHED key."
+      }
+    ],
+    "description": {
+      "en": "Rows arrive as A/10, B/20 and A/30. GROUP BY customer collects the separated A rows into one group without requiring a prior sort. Iterating that group's members computes 10 + 30 = 40; B has one member worth 20. The total is calculated from members, not inherited from a representative row.\n\nGrouping and FILTER solve different tasks. A standard table with an empty primary key needs a suitable additional key for basic FILTER, for example a sorted secondary customer key selected with USING KEY. Filter conditions must satisfy the selected sorted or hash key rules. The example makes no measured performance claim.",
+      "ru": "Строки поступают как A/10, B/20 и A/30. GROUP BY customer объединяет разделённые строки A без предварительной сортировки. Цикл по участникам группы рассчитывает 10 + 30 = 40; у B одна строка со значением 20. Итог вычисляется по участникам, а не берётся из строки-представителя.\n\nГруппировка и FILTER решают разные задачи. Для обычного FILTER у STANDARD TABLE с пустым primary key нужен подходящий дополнительный ключ: например, SORTED secondary key по customer, выбранный через USING KEY. Условия фильтра должны соответствовать правилам выбранного SORTED или HASHED key. Пример не доказывает преимущество по измеренной производительности."
+    }
+  },
+  {
+    "id": "deep-cleanup-cause",
+    "labels": [
+      {
+        "en": "CLEANUP is unwinding work, not a universal finally",
+        "ru": "CLEANUP работает при раскрутке, это не общий finally"
+      },
+      {
+        "en": "An application-owned resource has an explicit release obligation",
+        "ru": "Ресурс приложения нужно освобождать явно"
+      },
+      {
+        "en": "Exit path",
+        "ru": "Путь выхода"
+      },
+      {
+        "en": "CLEANUP in this TRY?",
+        "ru": "CLEANUP в этом TRY?"
+      },
+      {
+        "en": "Required design",
+        "ru": "Что предусмотреть"
+      },
+      {
+        "en": "Normal completion",
+        "ru": "Нормальное завершение"
+      },
+      {
+        "en": "No",
+        "ru": "Нет"
+      },
+      {
+        "en": "Explicit normal release",
+        "ru": "Явно освободить ресурс"
+      },
+      {
+        "en": "Handled by same TRY",
+        "ru": "Обработано в том же TRY"
+      },
+      {
+        "en": "Not merely for this catch",
+        "ru": "Не из-за самого CATCH"
+      },
+      {
+        "en": "Cover this handled path",
+        "ru": "Учесть этот путь отдельно"
+      },
+      {
+        "en": "Propagates to outer handler",
+        "ru": "Исключение уходит наружу"
+      },
+      {
+        "en": "Relevant unwinding path",
+        "ru": "Соответствующая раскрутка"
+      },
+      {
+        "en": "Restore local consistency",
+        "ru": "Восстановить согласованность"
+      },
+      {
+        "en": "Translate meaning; retain the diagnostic cause",
+        "ru": "Переведи смысл ошибки, сохрани её причину"
+      },
+      {
+        "en": "TECHNICAL EXCEPTION",
+        "ru": "ТЕХНИЧЕСКАЯ ОШИБКА"
+      },
+      {
+        "en": "Connection unavailable",
+        "ru": "Соединение недоступно"
+      },
+      {
+        "en": "SERVICE EXCEPTION",
+        "ru": "ОШИБКА СЕРВИСА"
+      },
+      {
+        "en": "Price service unavailable",
+        "ru": "Сервис цены недоступен"
+      },
+      {
+        "en": "previous",
+        "ru": "previous"
+      },
+      {
+        "en": "An empty price is not a safe default for a failed lookup. Release the resource you own, preserve the",
+        "ru": "Пустая цена не заменяет ошибку поиска. Освободи свой ресурс, сохрани причину и не маскируй"
+      },
+      {
+        "en": "cause, and do not hide technical failure as business absence.",
+        "ru": "технический сбой под отсутствие бизнес-данных."
+      }
+    ],
+    "description": {
+      "en": "The table separates normal completion, an exception handled by the same TRY, and propagation to an outer handler. CLEANUP is not a universal finally block: normal and locally handled exits need their own resource-release design, while the relevant unwinding path restores local consistency. Exact nesting and handlers determine execution.\n\nThe lower diagram translates a technical connection failure into a meaningful price-service exception while retaining the original cause in previous. Returning an empty price would hide the failure as missing business data. Release resources owned by the application and preserve diagnostic causes. The illustration simplifies non-resumable exceptions and does not define ownership for every resource.",
+      "ru": "Таблица разделяет нормальное завершение, обработку исключения в том же TRY и передачу наружу. CLEANUP не является универсальным finally: нормальный выход и локальный CATCH требуют собственного освобождения ресурсов, а соответствующий путь раскрутки восстанавливает локальную согласованность. Выполнение зависит от вложенности и обработчиков.\n\nНиже техническая ошибка соединения преобразуется в понятную ошибку сервиса цены, а исходная причина сохраняется в previous. Возврат пустой цены скрыл бы сбой под отсутствием бизнес-данных. Освобождай ресурсы, которыми владеет приложение, и сохраняй диагностическую причину. Схема упрощает non-resumable exceptions и не определяет владельца для каждого вида ресурсов."
+    }
+  },
+  {
+    "id": "patterns-strategy-template",
+    "labels": [
+      {
+        "en": "One variation: replace a rule or specialize a step?",
+        "ru": "Что менять: правило целиком или шаг процесса?"
+      },
+      {
+        "en": "Worked choice: approval policy varies by country; process ownership must stay stable",
+        "ru": "Правила согласования зависят от страны; владелец процесса остаётся прежним"
+      },
+      {
+        "en": "STRATEGY / composition",
+        "ru": "STRATEGY / композиция"
+      },
+      {
+        "en": "TEMPLATE METHOD / inheritance",
+        "ru": "TEMPLATE METHOD / наследование"
+      },
+      {
+        "en": "Approval coordinator -> rule interface",
+        "ru": "Координатор -> интерфейс правила"
+      },
+      {
+        "en": "Country A rule",
+        "ru": "Правило страны A"
+      },
+      {
+        "en": "Limit: 500 EUR",
+        "ru": "Лимит: 500 EUR"
+      },
+      {
+        "en": "Country B rule",
+        "ru": "Правило страны B"
+      },
+      {
+        "en": "Limit: 900 EUR",
+        "ru": "Лимит: 900 EUR"
+      },
+      {
+        "en": "700 EUR: A rejects; B accepts under this fixture.",
+        "ru": "700 EUR: A отклоняет, B принимает в примере."
+      },
+      {
+        "en": "1",
+        "ru": "1"
+      },
+      {
+        "en": "Read inputs",
+        "ru": "Прочитать вход"
+      },
+      {
+        "en": "2",
+        "ru": "2"
+      },
+      {
+        "en": "Calculate policy",
+        "ru": "Рассчитать правило"
+      },
+      {
+        "en": "3",
+        "ru": "3"
+      },
+      {
+        "en": "Return decision",
+        "ru": "Вернуть решение"
+      },
+      {
+        "en": "Stable skeleton; subclass supplies the chosen step.",
+        "ru": "Общий каркас; подкласс реализует выбранный шаг."
+      },
+      {
+        "en": "Assembly decision",
+        "ru": "Сборка объектов"
+      },
+      {
+        "en": "Boundary to keep",
+        "ru": "Что сохранить"
+      },
+      {
+        "en": "Factory selects policy",
+        "ru": "Factory выбирает правило"
+      },
+      {
+        "en": "Validate country and policy version",
+        "ru": "Проверить страну и версию правил"
+      },
+      {
+        "en": "Constructor receives rule",
+        "ru": "Constructor принимает правило"
+      },
+      {
+        "en": "Rule returns a decision; does not commit",
+        "ru": "Правило возвращает решение, без COMMIT"
+      },
+      {
+        "en": "The amounts are fictional policy fixtures. Choose a real variation point; a reusable calculation alone",
+        "ru": "Суммы учебные. Выбирай реальную точку изменений: один переиспользуемый расчёт сам по себе"
+      },
+      {
+        "en": "does not require an inheritance hierarchy.",
+        "ru": "не требует иерархии наследования."
+      }
+    ],
+    "description": {
+      "en": "Strategy composes an approval coordinator with a rule interface. A factory can select the country rule and inject it through the constructor. For the fictional EUR 700 request, country A's EUR 500 limit rejects it while country B's EUR 900 limit accepts it. The rule returns a decision without owning the commit.\n\nTemplate Method instead keeps a stable sequence: read input, calculate policy, return the decision. A subclass supplies a deliberate step. Choose between replacing a collaborating rule and specializing a fixed skeleton. Validate country and policy version; a reusable calculation alone does not justify inheritance. Framework construction may require a supported delegation seam.",
+      "ru": "Strategy связывает координатор согласования с интерфейсом правила через композицию. Factory может выбрать правило страны и передать его в constructor. Для учебного запроса на 700 EUR лимит страны A в 500 EUR даёт отказ, а лимит страны B в 900 EUR — согласование. Правило возвращает решение и не управляет COMMIT.\n\nTemplate Method сохраняет общий порядок: прочитать вход, рассчитать правило, вернуть решение. Подкласс реализует выбранный шаг. Выбирай между заменой отдельного правила и специализацией общего каркаса. Проверяй страну и версию правил; один переиспользуемый расчёт не требует наследования. При создании объектов framework может понадобиться поддерживаемая точка делегирования."
+    }
+  },
+  {
+    "id": "patterns-chain-command",
+    "labels": [
+      {
+        "en": "Route once; execute with a replay contract",
+        "ru": "Выбери маршрут и правила безопасного повтора"
+      },
+      {
+        "en": "Worked request: 700 EUR. The ordered rules choose the first applicable approver.",
+        "ru": "Запрос на 700 EUR. Правила по порядку выбирают первого подходящего согласующего."
+      },
+      {
+        "en": "Rule 1: team lead",
+        "ru": "Правило 1: team lead"
+      },
+      {
+        "en": "<= 500 EUR",
+        "ru": "<= 500 EUR"
+      },
+      {
+        "en": "Not applicable",
+        "ru": "Не подходит"
+      },
+      {
+        "en": "Rule 2: manager",
+        "ru": "Правило 2: manager"
+      },
+      {
+        "en": "<= 1,000 EUR",
+        "ru": "<= 1,000 EUR"
+      },
+      {
+        "en": "Handled: manager",
+        "ru": "Обработано: manager"
+      },
+      {
+        "en": "Rule 3: fallback",
+        "ru": "Правило 3: fallback"
+      },
+      {
+        "en": "Other supported cases",
+        "ru": "Другие допустимые случаи"
+      },
+      {
+        "en": "Not executed",
+        "ru": "Не выполняется"
+      },
+      {
+        "en": "A handler failure is not the same as \"not applicable\".",
+        "ru": "Ошибка handler не означает «правило не подходит»."
+      },
+      {
+        "en": "Command identity",
+        "ru": "ID команды"
+      },
+      {
+        "en": "Delivery",
+        "ru": "Доставка"
+      },
+      {
+        "en": "Effective result",
+        "ru": "Фактический итог"
+      },
+      {
+        "en": "SUBMIT-42",
+        "ru": "SUBMIT-42"
+      },
+      {
+        "en": "First execution",
+        "ru": "Первое выполнение"
+      },
+      {
+        "en": "One state transition recorded",
+        "ru": "Записан один переход состояния"
+      },
+      {
+        "en": "SUBMIT-42",
+        "ru": "SUBMIT-42"
+      },
+      {
+        "en": "Retry after lost response",
+        "ru": "Повтор после потери ответа"
+      },
+      {
+        "en": "Defined replay result; no second transition",
+        "ru": "Оговорённый ответ, без нового перехода"
+      },
+      {
+        "en": "Command packages the operation. Durable identity makes safe replay possible.",
+        "ru": "Command оформляет операцию. Сохранённый ID позволяет безопасный повтор."
+      },
+      {
+        "en": "First-match routing differs from execute-all validation. The Command pattern alone supplies neither",
+        "ru": "Первое совпадение отличается от проверки всех правил. Сам Command не даёт постоянной очереди,"
+      },
+      {
+        "en": "persistent queuing nor idempotency nor an undo operation.",
+        "ru": "идемпотентности или операции отмены."
+      }
+    ],
+    "description": {
+      "en": "The EUR 700 request enters ordered approval rules. It exceeds the team-lead limit of EUR 500, so processing continues. The manager rule accepts up to EUR 1,000 and handles the request; fallback is not executed. A handler failure must not be mistaken for a rule that is simply inapplicable.\n\nThe selected command uses SUBMIT-42 as durable identity. Its first delivery records one transition; a retry after a lost response returns the defined replay result without another transition. First-match routing differs from running every validation. Command packages an operation but does not itself supply a persistent queue, idempotency or undo behavior.",
+      "ru": "Запрос на 700 EUR проходит упорядоченные правила согласования. Он превышает лимит team lead в 500 EUR, поэтому проверка продолжается. Правило manager принимает суммы до 1 000 EUR и обрабатывает запрос; fallback уже не выполняется. Ошибку handler нельзя считать обычным неприменимым правилом.\n\nВыбранная команда использует сохранённый идентификатор SUBMIT-42. Первая доставка фиксирует один переход; повтор после потери ответа возвращает предусмотренный результат без второго перехода. Выбор первого совпадения отличается от выполнения всех проверок. Command оформляет операцию, но сам по себе не предоставляет постоянную очередь, идемпотентность или отмену."
+    }
+  },
+  {
+    "id": "hana-grain-review",
+    "labels": [
+      {
+        "en": "Correct grain before faster execution",
+        "ru": "Сначала правильная детализация, затем скорость"
+      },
+      {
+        "en": "Fictional Order 4711: two items; each accidentally joins to two language texts",
+        "ru": "Заказ 4711: две позиции ошибочно соединены с текстами на двух языках"
+      },
+      {
+        "en": "Item",
+        "ru": "Позиция"
+      },
+      {
+        "en": "Amount EUR",
+        "ru": "Сумма EUR"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "40",
+        "ru": "40"
+      },
+      {
+        "en": "20",
+        "ru": "20"
+      },
+      {
+        "en": "60",
+        "ru": "60"
+      },
+      {
+        "en": "Correct total: 100 EUR",
+        "ru": "Верный итог: 100 EUR"
+      },
+      {
+        "en": "join",
+        "ru": "join"
+      },
+      {
+        "en": "Item",
+        "ru": "Позиция"
+      },
+      {
+        "en": "Language",
+        "ru": "Язык"
+      },
+      {
+        "en": "Amount EUR",
+        "ru": "Сумма EUR"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "EN",
+        "ru": "EN"
+      },
+      {
+        "en": "40",
+        "ru": "40"
+      },
+      {
+        "en": "10",
+        "ru": "10"
+      },
+      {
+        "en": "DE",
+        "ru": "DE"
+      },
+      {
+        "en": "40",
+        "ru": "40"
+      },
+      {
+        "en": "20",
+        "ru": "20"
+      },
+      {
+        "en": "EN",
+        "ru": "EN"
+      },
+      {
+        "en": "60",
+        "ru": "60"
+      },
+      {
+        "en": "20",
+        "ru": "20"
+      },
+      {
+        "en": "DE",
+        "ru": "DE"
+      },
+      {
+        "en": "60",
+        "ru": "60"
+      },
+      {
+        "en": "Wrong total: 200 EUR",
+        "ru": "Ошибка: 200 EUR"
+      },
+      {
+        "en": "Review gates before comparing SQL/CDS and AMDP",
+        "ru": "Что проверить до сравнения SQL/CDS и AMDP"
+      },
+      {
+        "en": "1  Restore result grain, client isolation and business authorization.",
+        "ru": "1  Исправить детализацию, изоляцию клиентов и бизнес-права."
+      },
+      {
+        "en": "2  For a CDS table function, verify read-only and target-specific client safety.",
+        "ru": "2  Для CDS table function проверить read-only и безопасность клиентов."
+      },
+      {
+        "en": "3  Measure database work, returned rows and end-to-end time on equal results.",
+        "ru": "3  Сравнить работу БД, число строк и общее время на одинаковых результатах."
+      },
+      {
+        "en": "One million detail rows -> grouped results can reduce transfer; measure the actual plan.",
+        "ru": "Миллион строк -> группировка может уменьшить передачу; измерь реальный план."
+      },
+      {
+        "en": "A faster wrong aggregate is still wrong. General AMDP capabilities differ from the CDS table-function",
+        "ru": "Быстрый неверный итог всё ещё неверен. Общие возможности AMDP отличаются от контракта CDS table function;"
+      },
+      {
+        "en": "contract; eligible APIs and release support still apply.",
+        "ru": "допустимость API и поддержка релиза по-прежнему важны."
+      }
+    ],
+    "description": {
+      "en": "Order 4711 has two items worth EUR 40 and EUR 60, totaling EUR 100. Each item accidentally joins to both EN and DE text rows. The result duplicates both amounts and reports EUR 200. Repair the relationship and intended result grain before comparing performance.\n\nThen verify client isolation and business authorization. For the CDS table-function scenario, check its read-only contract and target-specific client safety. Compare database work, returned rows and end-to-end time on equal results. Grouping may reduce transfer, but the actual plan must be measured. This is not a benchmark, and general AMDP capabilities differ from CDS table-function restrictions.",
+      "ru": "У заказа 4711 две позиции на 40 и 60 EUR, всего 100 EUR. Каждая позиция ошибочно соединяется с текстами EN и DE. Обе суммы повторяются, и результат становится 200 EUR. До сравнения скорости нужно исправить связь и нужную детализацию результата.\n\nЗатем проверь изоляцию клиентов и бизнес-права. Для CDS table function проверь контракт read-only и правила безопасности клиентов в целевой системе. Сравни работу БД, число возвращённых строк и полное время на одинаковых результатах. Группировка может сократить передачу данных, но реальный план нужно измерить. Это не benchmark; общие возможности AMDP отличаются от ограничений CDS table function."
+    }
+  }
+]

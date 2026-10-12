@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="senior-remote-uncertainty-en-title" lang="en" class="selectable-diagram">
+	<title id="senior-remote-uncertainty-en-title">Remote commit and uncertain local outcome</title><desc>The local application durably records intent before separately owned delivery. The remote payment commits, but its reply is lost; recovery must identify the existing effect through REQ-42.</desc><clipPath id="senior-remote-uncertainty-en-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="senior-remote-uncertainty-en-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#senior-remote-uncertainty-en-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">A lost response leaves an unknown outcome</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Worked recovery: stable request key REQ-42; remote payment receipt PAY-900</text>
+			<rect x="38" y="160" width="347" height="292" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="492" y="160" width="347" height="292" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="55" y="424" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,848) scale(1,-1)" data-label-width="322.0">LOCAL REQUEST</text>
+			<text x="509" y="424" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(7%,39%,32%); stroke:none;font-weight:700;" transform="translate(0,848) scale(1,-1)" data-label-width="322.0">REMOTE PAYMENT</text>
+			<text x="55" y="389" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,778) scale(1,-1)" data-label-width="322.0">REQ-42</text>
+			<text x="55" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,732) scale(1,-1)" data-label-width="322.0">Commit durable Pending state.</text>
+			<text x="55" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="322.0">Delivery has an explicit retry owner.</text>
+			<text x="509" y="389" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,778) scale(1,-1)" data-label-width="322.0">REQ-42 received</text>
+			<text x="509" y="366" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,732) scale(1,-1)" data-label-width="322.0">Remote transaction commits payment.</text>
+			<text x="509" y="343" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,686) scale(1,-1)" data-label-width="322.0">Receipt: PAY-900</text>
+			<path d="M 389,350 L 486,350 Z" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="486 350, 476 345, 476 355" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="424.908" y="367" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,734) scale(1,-1)" data-label-width="447.09">send</text>
+			<path d="M 489,294 L 389,294 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 2; stroke-dasharray: 5, 4;" />
+			<path d="M 431,285 L 447,303 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3;" />
+			<path d="M 431,303 L 447,285 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 3;" />
+			<text x="403.318" y="269" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: rgb(74%,32%,12%); stroke:none;" transform="translate(0,538) scale(1,-1)" data-label-width="468.68">response lost</text>
+			<rect x="55" y="201" width="313" height="69" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="69" y="245" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(74%,32%,12%); stroke:none;font-weight:700;" transform="translate(0,490) scale(1,-1)" data-label-width="291.0">Timed out does not mean unpaid</text>
+			<text x="69" y="222" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,444) scale(1,-1)" data-label-width="291.0">Record Unknown; reconcile REQ-42.</text>
+			<polygon points="540 179, 540 297, 792 297, 792 179, 785 187, 778 179, 771 187, 764 179, 757 187, 750 179, 743 187, 736 179, 729 187, 722 179, 715 187, 708 179, 701 187, 694 179, 687 187, 680 179, 673 187, 666 179, 659 187, 652 179, 645 187, 638 179, 631 187, 624 179, 617 187, 610 179, 603 187, 596 179, 589 187, 582 179, 575 187, 568 179, 561 187, 554 179, 547 187, 540 179, 533 187, 540 179" style="stroke: rgb(7%,39%,32%); stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="558" y="270" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,540) scale(1,-1)" data-label-width="273.0">PAYMENT RECEIPT</text>
+			<text x="558" y="247" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,494) scale(1,-1)" data-label-width="273.0">REQ-42  /  PAY-900</text>
+			<text x="558" y="224" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,448) scale(1,-1)" data-label-width="273.0">Status: paid</text>
+			<text x="558" y="201" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,402) scale(1,-1)" data-label-width="273.0">One effect already exists.</text>
+			<text x="40" y="115" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,230) scale(1,-1)" data-label-width="832.0">Recover by correlation: query status or use the supported idempotency contract.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">A local rollback cannot erase PAY-900. Blindly resending a non-idempotent operation can create another</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">payment; compensation is a separate business operation.</text>
+		</g>
+	</g>
+</svg>

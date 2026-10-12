@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="deep-duplicates-ranges-ru-title" lang="ru" class="selectable-diagram">
+	<title id="deep-duplicates-ranges-ru-title">Дубликат INSERT и пустой список полномочий</title><desc>В указанной форме INSERT дубликат уникального ключа не заменяет исходную строку. Пустой selection range означает не то же самое, что отсутствие разрешённых значений.</desc><clipPath id="deep-duplicates-ranges-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="deep-duplicates-ranges-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#deep-duplicates-ranges-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Пустой набор прав — не пустой selection range</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #aabdc6; stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Две границы, для которых нужно явное бизнес-правило</text>
+			<text x="39" y="441" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,882) scale(1,-1)" data-label-width="833.0">INSERT С УНИКАЛЬНЫМ КЛЮЧОМ</text>
+			<rect x="39" y="385" width="116.0" height="40" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="49" y="398" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,796) scale(1,-1)" data-label-width="98.0">Ключ</text>
+			<rect x="157.0" y="385" width="234.0" height="40" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #e7eff2; fill-rule: evenodd;" />
+			<text x="167.0" y="398" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #192730; stroke:none;font-weight:700;" transform="translate(0,796) scale(1,-1)" data-label-width="216.0">Сохранённая сумма</text>
+			<rect x="39" y="343" width="116.0" height="40" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="49" y="356" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,712) scale(1,-1)" data-label-width="98.0">7</text>
+			<rect x="157.0" y="343" width="234.0" height="40" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="167.0" y="356" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,712) scale(1,-1)" data-label-width="216.0">10</text>
+			<text x="446" y="407" style="font-family:Arial,Helvetica,sans-serif; font-size: 19px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,814) scale(1,-1)" data-label-width="426.0">Вставить ключ 7 / сумму 20</text>
+			<path d="M 439,362 L 403,362 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="403 362, 413 367, 413 357" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;" />
+			<text x="446" y="351" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,702) scale(1,-1)" data-label-width="426.0">Дубликат не обновляет.</text>
+			<text x="446" y="320" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: #e7eff2; stroke:none;" transform="translate(0,640) scale(1,-1)" data-label-width="426.0">Прежняя сумма остаётся 10.</text>
+			<text x="39" y="261" style="font-family:Arial,Helvetica,sans-serif; font-size: 17px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,522) scale(1,-1)" data-label-width="833.0">НЕТ РАЗРЕШЁННЫХ ЗАВОДОВ</text>
+			<rect x="40" y="148" width="180" height="76" rx="8" ry="8" style="stroke: #435961; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="79.5265" y="181" style="font-family:Arial,Helvetica,sans-serif; font-size: 21px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,362) scale(1,-1)" data-label-width="132.47">range = [ ]</text>
+			<path d="M 232,188 L 310,188 Z" style="stroke: #efb384; stroke-linecap: butt; stroke-width: 2;" />
+			<polygon points="310 188, 300 183, 300 193" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #efb384; fill-rule: evenodd;" />
+			<rect x="323" y="139" width="513" height="91" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="342" y="202" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: #efb384; stroke:none;font-weight:700;" transform="translate(0,404) scale(1,-1)" data-label-width="486.0">IN initial_range не ограничивает выборку.</text>
+			<text x="342" y="173" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,346) scale(1,-1)" data-label-width="486.0">Нет прав — верните пустой результат или отказ</text>
+			<text x="342" y="151" style="font-family:Arial,Helvetica,sans-serif; font-size: 15px;fill: #e7eff2; stroke:none;" transform="translate(0,302) scale(1,-1)" data-label-width="486.0">до иначе неограниченного запроса.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #382c23; fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">Отказ от дубликата не задаёт слияние данных. Пустые права — не необязательный фильтр;</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #e7eff2; stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">решение о доступе должно быть явным.</text>
+		</g>
+	</g>
+</svg>

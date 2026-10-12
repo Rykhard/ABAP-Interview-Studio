@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="470" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 470" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="extensibility-decision-ru-title" lang="ru" class="selectable-diagram">
+	<title id="extensibility-decision-ru-title">Где разместить расширение</title><desc>Сначала определите бизнес-задачу и границу транзакции, затем выбирайте место расширения.</desc><clipPath id="extensibility-decision-ru-clip">
+		<rect x="0" y="0" width="880" height="470" />
+	</clipPath>
+	<g id="extensibility-decision-ru-group" transform="scale(1,-1) translate(0,-470)" style="clip-path: url(#extensibility-decision-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="470" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #10191f; fill-rule: evenodd;" />
+			<text x="30" y="430" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,860) scale(1,-1)" data-label-width="842.0">Как выбрать расширение</text>
+			<text x="30" y="403" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #aabdc6; stroke:none;" transform="translate(0,806) scale(1,-1)" data-label-width="842.0">Начните с задачи, доступных контрактов и границы транзакции</text>
+			<rect x="30" y="304" width="820" height="66" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="46" y="345" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,690) scale(1,-1)" data-label-width="118.0">Сначала</text>
+			<text x="170" y="345" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,690) scale(1,-1)" data-label-width="672.0">Хватает стандартных функций или настроек?</text>
+			<text x="170" y="322" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,644) scale(1,-1)" data-label-width="672.0">Используйте стандарт, если свой код не нужен.</text>
+			<rect x="30" y="227" width="820" height="66" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="46" y="268" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,536) scale(1,-1)" data-label-width="118.0">Key user</text>
+			<text x="170" y="268" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,536) scale(1,-1)" data-label-width="672.0">Есть подходящий бизнес-контекст для изменения?</text>
+			<text x="170" y="245" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,490) scale(1,-1)" data-label-width="672.0">Используйте поддерживаемые поля, логику или адаптацию UI.</text>
+			<rect x="30" y="150" width="820" height="66" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="46" y="191" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,382) scale(1,-1)" data-label-width="118.0">On-stack</text>
+			<text x="170" y="191" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,382) scale(1,-1)" data-label-width="672.0">Нужна согласованность в локальной транзакции?</text>
+			<text x="170" y="168" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,336) scale(1,-1)" data-label-width="672.0">Используйте released local contracts и ABAP Cloud extensibility.</text>
+			<rect x="30" y="73" width="820" height="66" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: #192730; fill-rule: evenodd;" />
+			<text x="46" y="114" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: #9bdac1; stroke:none;font-weight:700;" transform="translate(0,228) scale(1,-1)" data-label-width="118.0">Side-by-side</text>
+			<text x="170" y="114" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,228) scale(1,-1)" data-label-width="672.0">Нужно отдельное приложение или связь разных систем?</text>
+			<text x="170" y="91" style="font-family:Arial,Helvetica,sans-serif; font-size: 10.5px;fill: #aabdc6; stroke:none;" transform="translate(0,182) scale(1,-1)" data-label-width="672.0">Используйте remote API и события; продумайте повторы и согласованность.</text>
+			<text x="30" y="37" style="font-family:Arial,Helvetica,sans-serif; font-size: 12px;fill: #e7eff2; stroke:none;font-weight:700;" transform="translate(0,74) scale(1,-1)" data-label-width="842.0">Место расширения не определяет уровень Clean Core. Отдельно проверьте зависимости.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 560" version="1.0" fill-rule="evenodd" role="img" aria-labelledby="senior-response-channels-ru-title" lang="ru" class="selectable-diagram">
+	<title id="senior-response-channels-ru-title">FAILED, REPORTED и MAPPED при создании</title><desc>Для трёх входных ID отдельно показаны отказы, сообщения и ключи. Сообщение для C3 само по себе не отклоняет запись. Назначенный ключ ещё не доказывает сохранение в БД.</desc><clipPath id="senior-response-channels-ru-clip">
+		<rect x="0" y="0" width="880" height="560" />
+	</clipPath>
+	<g id="senior-response-channels-ru-group" transform="scale(1,-1) translate(0,-560)" style="clip-path: url(#senior-response-channels-ru-clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="560" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;" />
+			<text x="28" y="518" style="font-family:Arial,Helvetica,sans-serif; font-size: 25px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,1036) scale(1,-1)" data-label-width="844.0">Три канала ответа — три разных смысла</text>
+			<text x="28" y="490" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,980) scale(1,-1)" data-label-width="844.0">Пример create: C1 и C3 приняты в буфер, C2 отклонён</text>
+			<rect x="39" y="414" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="49" y="427" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,854) scale(1,-1)" data-label-width="134.42">Входной %cid</text>
+			<rect x="193.4230769230769" y="414" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="203.4230769230769" y="427" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,854) scale(1,-1)" data-label-width="134.42">Сумма</text>
+			<rect x="347.8461538461538" y="414" width="492.1538461538462" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="357.8461538461538" y="427" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,854) scale(1,-1)" data-label-width="474.15">Итог interaction</text>
+			<rect x="39" y="377" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="49" y="390" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,780) scale(1,-1)" data-label-width="134.42">C1</text>
+			<rect x="193.4230769230769" y="377" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="203.4230769230769" y="390" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,780) scale(1,-1)" data-label-width="134.42">100 EUR</text>
+			<rect x="347.8461538461538" y="377" width="492.1538461538462" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="357.8461538461538" y="390" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,780) scale(1,-1)" data-label-width="474.15">Принят; назначен ключ 4711</text>
+			<rect x="39" y="340" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="49" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="134.42">C2</text>
+			<rect x="193.4230769230769" y="340" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="203.4230769230769" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="134.42">-5 EUR</text>
+			<rect x="347.8461538461538" y="340" width="492.1538461538462" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;" />
+			<text x="357.8461538461538" y="353" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,706) scale(1,-1)" data-label-width="474.15">Отказ: сумма должна быть &gt; 0</text>
+			<rect x="39" y="303" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="49" y="316" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,632) scale(1,-1)" data-label-width="134.42">C3</text>
+			<rect x="193.4230769230769" y="303" width="152.4230769230769" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="203.4230769230769" y="316" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,632) scale(1,-1)" data-label-width="134.42">80 EUR</text>
+			<rect x="347.8461538461538" y="303" width="492.1538461538462" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<text x="357.8461538461538" y="316" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,632) scale(1,-1)" data-label-width="474.15">Принят; ключ 4712; информационное сообщение</text>
+			<rect x="38" y="135" width="236" height="145" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="38" y="238" width="236" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,32%,12%); fill-rule: evenodd;" />
+			<text x="52" y="252" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,504) scale(1,-1)" data-label-width="214.0">FAILED</text>
+			<rect x="322" y="135" width="236" height="145" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="322" y="238" width="236" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,16%,24%); fill-rule: evenodd;" />
+			<text x="336" y="252" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,504) scale(1,-1)" data-label-width="214.0">REPORTED</text>
+			<rect x="606" y="135" width="236" height="145" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;" />
+			<rect x="606" y="238" width="236" height="42" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(7%,39%,32%); fill-rule: evenodd;" />
+			<text x="620" y="252" style="font-family:Arial,Helvetica,sans-serif; font-size: 18px;fill: rgb(100%,100%,100%); stroke:none;font-weight:700;" transform="translate(0,504) scale(1,-1)" data-label-width="214.0">MAPPED</text>
+			<text x="52" y="212" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,424) scale(1,-1)" data-label-width="214.0">C2: create отклонён</text>
+			<text x="52" y="189" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,378) scale(1,-1)" data-label-width="214.0" />
+			<text x="52" y="166" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,332) scale(1,-1)" data-label-width="214.0" textLength="214.0" lengthAdjust="spacingAndGlyphs">Идентификатор + причина отказа</text>
+			<text x="336" y="212" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,424) scale(1,-1)" data-label-width="214.0">C2: ошибка суммы</text>
+			<text x="336" y="189" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,378) scale(1,-1)" data-label-width="214.0">C3: информация</text>
+			<text x="336" y="166" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,332) scale(1,-1)" data-label-width="214.0" textLength="214.0" lengthAdjust="spacingAndGlyphs">Сообщение + контекст экземпляра</text>
+			<text x="620" y="212" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,424) scale(1,-1)" data-label-width="214.0">C1 -&gt; 4711</text>
+			<text x="620" y="189" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,378) scale(1,-1)" data-label-width="214.0">C3 -&gt; 4712</text>
+			<text x="620" y="166" style="font-family:Arial,Helvetica,sans-serif; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,332) scale(1,-1)" data-label-width="214.0">Связь create с ключом</text>
+			<text x="40" y="105" style="font-family:Arial,Helvetica,sans-serif; font-size: 16px;fill: rgb(7%,16%,24%); stroke:none;font-weight:700;" transform="translate(0,210) scale(1,-1)" data-label-width="832.0">Ответ interaction ещё не подтверждает COMMIT. Проверь последующий результат save.</text>
+			<rect x="28" y="24" width="824" height="57" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,94%,88%); fill-rule: evenodd;" />
+			<text x="42" y="60" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,120) scale(1,-1)" data-label-width="802.0">REPORTED не всегда означает отказ; MAPPED — не общий список успехов. Атомарность задают consumer</text>
+			<text x="42" y="42" style="font-family:Arial,Helvetica,sans-serif; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,84) scale(1,-1)" data-label-width="802.0">и граница запроса.</text>
+		</g>
+	</g>
+</svg>
