@@ -1,0 +1,951 @@
+[
+  {
+    "id": "http-request-response",
+    "title": "Read a request from top to bottom",
+    "questions": [
+      "HTTP-01",
+      "HTTP-02",
+      "HTTP-05",
+      "HTTP-06"
+    ],
+    "intro": "The first line says what to do. Headers describe the message. The body carries the data.",
+    "language": "HTTP",
+    "context": "Illustrative HTTPS exchange with a fictional /orders endpoint. Authentication headers are omitted for readability; lengths count the ASCII body bytes without a trailing newline.",
+    "code": "POST /orders HTTP/1.1\nHost: api.example.com\nAccept: application/json\nContent-Type: application/json\nContent-Length: 32\n\n{\"customer\":\"C100\",\"quantity\":2}\n\nHTTP/1.1 201 Created\nLocation: /orders/4711\nContent-Type: application/json\nContent-Length: 29\n\n{\"id\":\"4711\",\"status\":\"Open\"}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3,
+          4,
+          7
+        ],
+        "label": "Send the order",
+        "explanation": "POST asks the server to create an order. Content-Type describes our JSON body; Accept asks for a JSON reply."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          14
+        ],
+        "label": "Read the result",
+        "explanation": "201 says a resource was created. Location points to it, and the response body gives its ID."
+      }
+    ],
+    "outcome": "The caller receives order 4711. A 202 response instead would mean accepted for processing, so the caller would still need the eventual result.",
+    "caveat": "HTTP does not make this endpoint OData. Its URL, payload and error rules belong to the particular API.",
+    "references": [
+      {
+        "title": "IETF: HTTP semantics",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html"
+      }
+    ]
+  },
+  {
+    "id": "http-idempotent-put",
+    "title": "Repeat a replacement, not an increment",
+    "questions": [
+      "HTTP-03",
+      "HTTP-04",
+      "HTTP-12"
+    ],
+    "intro": "Sending the same desired state twice should not add two more items.",
+    "language": "HTTP",
+    "context": "Fictional REST endpoint where PUT replaces the complete quantity resource. Two separate identical requests are shown.",
+    "code": "PUT /orders/4711/quantity HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\nContent-Length: 11\n\n{\"value\":2}\n\nPUT /orders/4711/quantity HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\nContent-Length: 11\n\n{\"value\":2}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          6
+        ],
+        "label": "Set the desired value",
+        "explanation": "The request says quantity is 2, not increase quantity by 2."
+      },
+      {
+        "lines": [
+          8,
+          13
+        ],
+        "label": "Retry the same request",
+        "explanation": "After either one or two accepted requests, the intended quantity is still 2."
+      }
+    ],
+    "outcome": "The operation is idempotent even if the first reply is 201 and the second is 200 or 204.",
+    "caveat": "A retry can still race with another user. Use the API concurrency rule where needed. POST and PATCH are not automatically safe to retry.",
+    "references": [
+      {
+        "title": "IETF: Idempotent methods",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2"
+      }
+    ]
+  },
+  {
+    "id": "odata-etag-conflict",
+    "title": "See a stale version get rejected",
+    "questions": [
+      "ODATA-06",
+      "OPS-05"
+    ],
+    "intro": "A version token lets the server notice that someone else changed the order.",
+    "language": "HTTP",
+    "context": "OData V4 example. Another user has already changed order 4711 from version v1 to v2. The client below still sends v1.",
+    "code": "PATCH /Orders(4711) HTTP/1.1\nHost: api.example.com\nIf-Match: W/\"v1\"\nContent-Type: application/json\nContent-Length: 28\n\n{\"Note\":\"Deliver on Friday\"}\n\nHTTP/1.1 412 Precondition Failed\nContent-Length: 0",
+    "highlights": [
+      {
+        "lines": [
+          3
+        ],
+        "label": "Send the version you read",
+        "explanation": "If-Match carries the earlier ETag returned by this OData service."
+      },
+      {
+        "lines": [
+          9
+        ],
+        "label": "Reject the stale update",
+        "explanation": "The service detects the mismatch. It must not overwrite the newer order with this stale request."
+      }
+    ],
+    "outcome": "The client reloads the order and lets the user reconcile changes before sending a new update.",
+    "caveat": "The weak ETag shown follows OData concurrency rules. Generic HTTP If-Match uses strong comparison. Do not replace the token with * merely to bypass a conflict.",
+    "references": [
+      {
+        "title": "OASIS: OData conditional requests",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Header_If-Match"
+      },
+      {
+        "title": "IETF: If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
+      }
+    ]
+  },
+  {
+    "id": "json-types-and-presence",
+    "title": "Keep a code, a number and null different",
+    "questions": [
+      "HTTP-07"
+    ],
+    "intro": "These values may look similar on screen, but they carry different information.",
+    "language": "JSON",
+    "context": "Original JSON fixture for a fictional order API. The API defines null as clear the note and an omitted note as leave it unchanged.",
+    "code": "{\n  \"customerId\": \"0000123\",\n  \"quantity\": 0,\n  \"approved\": false,\n  \"note\": null,\n  \"amount\": \"12.30\",\n  \"currency\": \"EUR\"\n}",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4
+        ],
+        "label": "Preserve the types",
+        "explanation": "The customer ID is text with leading zeros. Zero is a number and false is a boolean; neither means missing."
+      },
+      {
+        "lines": [
+          5
+        ],
+        "label": "Preserve field presence",
+        "explanation": "This message explicitly contains note: null. A mapper that drops presence cannot distinguish clearing the note from leaving it alone."
+      },
+      {
+        "lines": [
+          6,
+          7
+        ],
+        "label": "Follow the amount contract",
+        "explanation": "This API uses decimal text plus currency. Convert using the declared precision, not a binary floating-point guess."
+      }
+    ],
+    "outcome": "Your ABAP mapping can preserve both the typed value and whether the sender supplied it.",
+    "caveat": "JSON itself does not define update semantics or a decimal-money type. The clear/unchanged and amount rules above are fictional API rules, not universal JSON rules.",
+    "references": [
+      {
+        "title": "IETF: JSON data interchange format",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259.html"
+      }
+    ]
+  },
+  {
+    "id": "xml-namespace-and-escaping",
+    "title": "Read names, attributes and escaped text",
+    "questions": [
+      "HTTP-08"
+    ],
+    "intro": "The namespace identifies what an element means. Its prefix is only a short label.",
+    "language": "XML",
+    "context": "Well-formed fictional order document. It is an explanation of XML, not an SAP interface schema.",
+    "code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ord:Order xmlns:ord=\"urn:example:orders:v1\"\n           id=\"4711\">\n  <ord:Customer>0000123</ord:Customer>\n  <ord:Note>A &amp; B &lt;priority&gt;</ord:Note>\n  <ord:Amount currency=\"EUR\">12.30</ord:Amount>\n</ord:Order>",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          4
+        ],
+        "label": "Resolve the namespace",
+        "explanation": "ord:Customer belongs to urn:example:orders:v1. Changing ord to a different prefix does not change its meaning if the URI stays the same."
+      },
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Read text and attributes",
+        "explanation": "The note means A & B <priority>. Currency is an attribute on Amount, not part of its numeric text."
+      }
+    ],
+    "outcome": "A namespace-aware parser reads the intended customer, note and amount without confusing text with markup.",
+    "caveat": "Well-formed XML is not proof that it matches the business schema. Configure safe parsing and validate required fields separately.",
+    "references": [
+      {
+        "title": "W3C: Namespaces in XML",
+        "url": "https://www.w3.org/TR/xml-names/"
+      }
+    ]
+  },
+  {
+    "id": "abap-xml-roundtrip",
+    "title": "Serialize an ABAP value and read it back",
+    "questions": [
+      "HTTP-09"
+    ],
+    "intro": "Use a serializer when you need XML, instead of joining strings and escaping characters yourself.",
+    "language": "ABAP",
+    "context": "ABAP method-body excerpt using the built-in identity transformation. Local demonstration values; no custom objects. Target language-version support must be checked.",
+    "code": "CONSTANTS co_note TYPE string VALUE `A & B`.\nDATA note TYPE string VALUE co_note.\nDATA xml TYPE xstring.\nDATA restored_note TYPE string.\n\nCALL TRANSFORMATION id\n  SOURCE note = note\n  RESULT XML xml.\n\nCALL TRANSFORMATION id\n  SOURCE XML xml\n  RESULT note = restored_note.",
+    "highlights": [
+      {
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "label": "Serialize the value",
+        "explanation": "The transformation writes SAP canonical asXML and escapes the ampersand correctly."
+      },
+      {
+        "lines": [
+          10,
+          11,
+          12
+        ],
+        "label": "Read that format back",
+        "explanation": "The same root binding, note, restores the original text into restored_note."
+      }
+    ],
+    "outcome": "restored_note contains A & B. XML is the transport representation; it does not alter the note.",
+    "caveat": "Identity transformation produces asXML, not an arbitrary partner schema. Use a suitable transformation for the partner format and handle CX_TRANSFORMATION_ERROR at the caller. Illustrative, not SAP-executed.",
+    "references": [
+      {
+        "title": "SAP: CALL TRANSFORMATION",
+        "url": "https://help.sap.com/doc/abapdocu_750_index_htm/7.50/en-US/abapcall_transformation.htm"
+      }
+    ]
+  },
+  {
+    "id": "odata-query-options",
+    "title": "Ask for two fields and a small page",
+    "questions": [
+      "ODATA-03",
+      "OPS-07"
+    ],
+    "intro": "The URL tells the service which rows and fields the list needs.",
+    "language": "HTTP",
+    "context": "Fictional OData V4 Orders entity set with numeric key ID. Each request is separate; the second adds total count for comparison.",
+    "code": "GET /Orders?$select=ID,Total&$top=20 HTTP/1.1\nHost: api.example.com\nAccept: application/json\n\nGET /Orders?$select=ID,Total&$top=20&$count=true HTTP/1.1\nHost: api.example.com\nAccept: application/json",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Limit the list payload",
+        "explanation": "$select asks for ID and Total. $top asks for at most 20 rows, not every order."
+      },
+      {
+        "lines": [
+          5
+        ],
+        "label": "Notice the extra work",
+        "explanation": "The second request keeps the same fields and page limit, then adds the count of matching rows. Measuring that extra work can explain a slow list."
+      }
+    ],
+    "outcome": "You can compare response size and backend timings with and without count before blaming the network or Fiori.",
+    "caveat": "This short URL omits filters and ordering. A real paged list needs stable ordering, and the service must support the requested options. $top does not itself prove the database read is cheap.",
+    "references": [
+      {
+        "title": "OASIS: OData query options",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "odata-filter-order",
+    "title": "Filter by status and sort by a stable key",
+    "questions": [
+      "ODATA-03",
+      "ODATA-04"
+    ],
+    "intro": "A filter chooses rows. Ordering makes their sequence predictable.",
+    "language": "HTTP",
+    "context": "Fictional OData V4 Orders model: Status is text and ID is a unique numeric key. The request uses URI-encoded spaces.",
+    "code": "GET /Orders?$filter=Status%20eq%20%27Open%27 HTTP/1.1\nHost: api.example.com\nAccept: application/json\n\nGET /Orders?$orderby=ID&$skip=20&$top=20 HTTP/1.1\nHost: api.example.com\nAccept: application/json",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Select matching rows",
+        "explanation": "The decoded filter is Status eq 'Open'. This request asks the server for open orders."
+      },
+      {
+        "lines": [
+          5
+        ],
+        "label": "Request the next offset page",
+        "explanation": "The second, separate request sorts all orders by ID, skips 20, and asks for the next 20."
+      }
+    ],
+    "outcome": "You can explain which part changes the result set and which part changes the returned page.",
+    "caveat": "The two requests deliberately isolate two options; combine them for a filtered paged list. Offset paging can shift when data changes. Follow a supplied nextLink for server-driven paging.",
+    "references": [
+      {
+        "title": "OASIS: OData query options",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "odata-server-paging",
+    "title": "Follow nextLink instead of guessing a URL",
+    "questions": [
+      "ODATA-04"
+    ],
+    "intro": "A page can be smaller than the total result. The server may tell you exactly where to continue.",
+    "language": "JSON",
+    "context": "Illustrative OData V4 JSON response to a request that asked for count. The dataset has three matching orders and the server returned the first two.",
+    "code": "{\n  \"@odata.context\": \"$metadata#Orders\",\n  \"@odata.count\": 3,\n  \"value\": [\n    {\"ID\": 4711},\n    {\"ID\": 4712}\n  ],\n  \"@odata.nextLink\": \"Orders?$skiptoken=abc123\"\n}",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Separate total from page size",
+        "explanation": "The total is 3, but value contains only 2 orders."
+      },
+      {
+        "lines": [
+          8
+        ],
+        "label": "Continue using the supplied link",
+        "explanation": "Resolve this relative link against the service URL and follow it. Treat the skip token as opaque."
+      }
+    ],
+    "outcome": "The client obtains the remaining order without inventing the server paging token.",
+    "caveat": "V2 uses different count and next-link conventions. The nextLink is not a promise of a frozen snapshot while other users change data.",
+    "references": [
+      {
+        "title": "OASIS: OData server-driven paging",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "odata-json-batch-group",
+    "title": "Group two writes in one atomicity group",
+    "questions": [
+      "ODATA-07"
+    ],
+    "intro": "Being in one batch envelope is different from being in one all-or-nothing group.",
+    "language": "JSON",
+    "context": "OData 4.01 JSON batch request body for fictional Orders. Send it to $batch only if the SAP service explicitly supports JSON batch in this version.",
+    "code": "{\n  \"requests\": [\n    {\n      \"id\": \"1\", \"atomicityGroup\": \"g1\",\n      \"method\": \"PATCH\", \"url\": \"Orders(4711)\",\n      \"headers\": {\"content-type\": \"application/json\"},\n      \"body\": {\"Note\": \"First\"}\n    },\n    {\n      \"id\": \"2\", \"atomicityGroup\": \"g1\",\n      \"method\": \"PATCH\", \"url\": \"Orders(4712)\",\n      \"headers\": {\"content-type\": \"application/json\"},\n      \"body\": {\"Note\": \"Second\"}\n    }\n  ]\n}",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          10
+        ],
+        "label": "Share one group",
+        "explanation": "Both writes belong to g1. If one fails, this group must not leave the other write committed."
+      },
+      {
+        "lines": [
+          5,
+          11
+        ],
+        "label": "Keep the envelope separate",
+        "explanation": "The two URLs target different orders. Other requests in the batch need not share this transaction boundary."
+      }
+    ],
+    "outcome": "The client checks each batch response and the group outcome instead of reading only the outer HTTP status.",
+    "caveat": "Not a universal RAP wire format. Many SAP services use multipart batch change sets instead. Authentication, CSRF and required If-Match headers must be added according to the actual service.",
+    "references": [
+      {
+        "title": "OASIS: JSON batch requests",
+        "url": "https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html#sec_BatchRequests"
+      }
+    ]
+  },
+  {
+    "id": "odata-metadata-fields",
+    "title": "Read the model behind the payload",
+    "questions": [
+      "ODATA-02",
+      "ODATA-12"
+    ],
+    "intro": "Metadata tells a client the key and field types before it reads an order.",
+    "language": "XML",
+    "context": "Valid XML CSDL Schema excerpt from a fictional OData V4 $metadata document. The outer edmx document and EntityContainer are omitted.",
+    "code": "<Schema Namespace=\"Demo\"\n xmlns=\"http://docs.oasis-open.org/odata/ns/edm\">\n  <EntityType Name=\"Order\">\n    <Key><PropertyRef Name=\"ID\"/></Key>\n    <Property Name=\"ID\" Type=\"Edm.Int32\"\n              Nullable=\"false\"/>\n    <Property Name=\"Note\" Type=\"Edm.String\"\n              MaxLength=\"80\"/>\n  </EntityType>\n</Schema>",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          5,
+          6
+        ],
+        "label": "Find the identity",
+        "explanation": "ID is the key, is an integer, and cannot be null."
+      },
+      {
+        "lines": [
+          7,
+          8
+        ],
+        "label": "Read the field contract",
+        "explanation": "Note is text with a maximum length of 80. A client can use that limit when collecting input."
+      }
+    ],
+    "outcome": "Changing ID to a different type or reducing Note to 20 characters can break an existing client.",
+    "caveat": "This excerpt does not list permissions, behavior or every capability. Read the full metadata and annotations, then verify actual service behavior.",
+    "references": [
+      {
+        "title": "OASIS: OData CSDL",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part3-csdl/odata-v4.0-errata03-os-part3-csdl-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "odata-function-action",
+    "title": "Compare a read function with a write action",
+    "questions": [
+      "ODATA-05"
+    ],
+    "intro": "A function answers a question. An action can change business state.",
+    "language": "HTTP",
+    "context": "Two separate calls to a fictional OData V4 service. Its metadata declares bound function Demo.CalculateTax and action Demo.Submit.",
+    "code": "GET /Orders(4711)/Demo.CalculateTax() HTTP/1.1\nHost: api.example.com\nAccept: application/json\n\nPOST /Orders(4711)/Demo.Submit HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\nContent-Length: 2\n\n{}",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Read a calculation",
+        "explanation": "The function returns a tax calculation without changing business state."
+      },
+      {
+        "lines": [
+          5,
+          10
+        ],
+        "label": "Request a state change",
+        "explanation": "The action asks the service to submit the order. The empty object means this fictional action has no additional parameters."
+      }
+    ],
+    "outcome": "A client must treat the submit call as a business operation with possible validation, authorization and concurrency failures.",
+    "caveat": "These names are not SAP-delivered APIs. Use the actual service metadata, required headers and action parameters. GET must not be used for a hidden posting operation.",
+    "references": [
+      {
+        "title": "OASIS: Actions and functions",
+        "url": "https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "classic-rfc-call",
+    "title": "Separate transport failure from business data",
+    "questions": [
+      "RFC-01",
+      "RFC-03",
+      "RFC-12"
+    ],
+    "intro": "An RFC call can fail before you get a business result.",
+    "language": "ABAP",
+    "context": "Classic ABAP method-body excerpt. Custom remote-enabled Z_GET_ORDER imports IV_ID and exports ES_ORDER. destination, order_id and typed ls_order already exist. The custom FM has no application exceptions in this illustration.",
+    "code": "DATA rfc_message TYPE c LENGTH 255.\nCALL FUNCTION 'Z_GET_ORDER'\n  DESTINATION destination\n  EXPORTING iv_id = order_id\n  IMPORTING es_order = ls_order\n  EXCEPTIONS\n    system_failure = 1 MESSAGE rfc_message\n    communication_failure = 2 MESSAGE rfc_message.\nDATA(rfc_result) = sy-subrc.\nIF rfc_result <> 0.\n  RETURN.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "label": "Call a remote-enabled function",
+        "explanation": "The destination chooses the connection. Inputs go to the function; outputs come back to the caller."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9
+        ],
+        "label": "Capture transport failure immediately",
+        "explanation": "Preserve sy-subrc before another statement changes it. The caller cannot treat this branch as a valid order response."
+      }
+    ],
+    "outcome": "A successful transport call still needs the business-result checks defined by Z_GET_ORDER. Being RFC-enabled alone does not make it a released BAPI.",
+    "caveat": "RETURN only illustrates stopping the success path. Production code must report the captured failure and validate authorizations. Custom FM/types are prerequisites; classic RFC usage is not assumed released for ABAP Cloud. Not SAP-executed.",
+    "references": [
+      {
+        "title": "SAP: RFC variants",
+        "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/99b53cee2b73e7e10000000a42189b/content.htm"
+      },
+      {
+        "title": "SAP: BAPI transaction model",
+        "url": "https://help.sap.com/SAPHELP_SCM700_EHP02/helpdata/EN/4d/5b102ba1483d8fe10000000a42189e/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "classic-bapi-commit",
+    "title": "Let the outer BAPI caller decide the transaction",
+    "questions": [
+      "RFC-04",
+      "RFC-05"
+    ],
+    "intro": "Check the BAPI result first. Only its transaction owner decides whether to commit.",
+    "language": "ABAP",
+    "context": "Classic caller excerpt after a successful local BAPI call. has_business_error was derived from the BAPI-specific RETURN rules. The caller owns this LUW; it is not a RAP handler.",
+    "code": "CONSTANTS co_error_types TYPE c LENGTH 3 VALUE 'AEX'.\nDATA ls_commit_return TYPE bapiret2.\nIF has_business_error = abap_true.\n  CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.\n  RETURN.\nENDIF.\n\nCALL FUNCTION 'BAPI_TRANSACTION_COMMIT'\n  EXPORTING wait = abap_true\n  IMPORTING return = ls_commit_return.\n\nIF ls_commit_return-type CA co_error_types.\n  RETURN.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5
+        ],
+        "label": "Stop on the business error",
+        "explanation": "The caller rolls back instead of posting merely because the BAPI call returned normally."
+      },
+      {
+        "lines": [
+          8,
+          9,
+          10
+        ],
+        "label": "Commit and inspect its result",
+        "explanation": "WAIT requests synchronous completion of relevant update processing. The commit result is separate from the earlier BAPI result."
+      }
+    ],
+    "outcome": "The caller can distinguish a rejected business request from a failed commit, and report each correctly.",
+    "caveat": "Failure branches here stop only; add real error reporting. WAIT does not wait for every workflow or remote system. For remote BAPIs, commit must run in the same remote transaction context, not locally. Check API-specific exceptions. Classic API; not permission to commit in RAP. Not SAP-executed.",
+    "references": [
+      {
+        "title": "SAP: BAPI transaction model",
+        "url": "https://help.sap.com/SAPHELP_SCM700_EHP02/helpdata/EN/4d/5b102ba1483d8fe10000000a42189e/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "classic-arfc-callback",
+    "title": "Collect a worker result in its callback",
+    "questions": [
+      "RFC-06",
+      "RFC-07"
+    ],
+    "intro": "Starting the task and receiving its result happen at different times.",
+    "language": "ABAP",
+    "context": "Classic ABAP class excerpts. Custom remote FM Z_CALCULATE_PACKAGE exports EV_TOTAL. on_end has one importing character-like task_name parameter; task_id, callback_done, result_code and total are class attributes. The caller permits only a bounded number of active tasks.",
+    "code": "CALL FUNCTION 'Z_CALCULATE_PACKAGE'\n  STARTING NEW TASK task_id\n  DESTINATION IN GROUP DEFAULT\n  CALLING on_end ON END OF TASK\n  EXCEPTIONS\n    resource_failure = 1\n    communication_failure = 2\n    system_failure = 3.\nDATA(start_result) = sy-subrc.\n\nMETHOD on_end.\n  RECEIVE RESULTS FROM FUNCTION 'Z_CALCULATE_PACKAGE'\n    IMPORTING ev_total = total\n    EXCEPTIONS\n      communication_failure = 1\n      system_failure = 2.\n  result_code = sy-subrc.\n  callback_done = abap_true.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          6,
+          9
+        ],
+        "label": "Dispatch without assuming success",
+        "explanation": "A resource failure means the worker did not start. Use bounded retry/backoff rather than flooding the group with more tasks."
+      },
+      {
+        "lines": [
+          12,
+          17,
+          18
+        ],
+        "label": "Collect the completed task",
+        "explanation": "RECEIVE obtains the result or failure. Mark the callback received even on error, then use result_code to decide whether the work succeeded."
+      }
+    ],
+    "outcome": "The coordinator tracks start_result separately from result_code and matches each callback task_name to its package.",
+    "caveat": "Two excerpts, not a complete class. Production code needs per-task storage, start-error handling, timeout and safe retries. Callback completion is not proof of a committed business result. Classic ABAP; not assumed Cloud-released. Not SAP-executed.",
+    "references": [
+      {
+        "title": "SAP: Implementing parallel processing",
+        "url": "https://help.sap.com/saphelp_ewm900/helpdata/en/4d/909309eba36e73e10000000a15822b/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "classic-wait-boundary",
+    "title": "See why WAIT belongs outside unfinished writes",
+    "questions": [
+      "RFC-08"
+    ],
+    "intro": "A waiting coordinator must be designed around database boundaries.",
+    "language": "ABAP",
+    "context": "Classic method-body excerpt. No pending database writes or open cursor are allowed here. callbacks_received is maintained by aRFC callbacks; tasks_started counts only successfully dispatched tasks.",
+    "code": "CONSTANTS co_timeout_seconds TYPE i VALUE 10.\n\nWAIT UNTIL callbacks_received = tasks_started\n  UP TO co_timeout_seconds SECONDS.\nDATA(wait_result) = sy-subrc.\n\nIF callbacks_received < tasks_started.\n  RETURN.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5
+        ],
+        "label": "Use a bounded wait",
+        "explanation": "The caller gives callbacks time to arrive and keeps the wait result. It does not wait forever."
+      },
+      {
+        "lines": [
+          7,
+          8
+        ],
+        "label": "Treat missing callbacks explicitly",
+        "explanation": "Some tasks may still be running. This path needs recovery or an operator-visible incomplete result, not a success message."
+      }
+    ],
+    "outcome": "The coordinator checks each collected worker result after the wait; receiving every callback is different from every worker succeeding.",
+    "caveat": "Classic WAIT can trigger a database commit. It is not COMMIT WORK AND WAIT and does not prove all business work finished. RETURN stands for an incomplete-outcome handoff. Not a RAP-handler pattern; not SAP-executed.",
+    "references": [
+      {
+        "title": "SAP: WAIT UNTIL",
+        "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/9b958a1786062de10000000a42189d/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "classic-job-scheduling",
+    "title": "Open, add a step, then release a job",
+    "questions": [
+      "RFC-10"
+    ],
+    "intro": "Creating the job header alone does not schedule useful work.",
+    "language": "ABAP",
+    "context": "Classic method-body excerpt. job_name is TYPE tbtcjob-jobname, job_count is TYPE tbtcjob-jobcount, released is TYPE c LENGTH 1. Custom report Z_RECONCILE is a background-safe report with no mandatory selection parameters.",
+    "code": "CALL FUNCTION 'JOB_OPEN'\n  EXPORTING jobname = job_name\n  IMPORTING jobcount = job_count\n  EXCEPTIONS OTHERS = 1.\nIF sy-subrc <> 0.\n  RETURN.\nENDIF.\nSUBMIT z_reconcile\n  VIA JOB job_name NUMBER job_count AND RETURN.\nIF sy-subrc <> 0.\n  RETURN.\nENDIF.\nCALL FUNCTION 'JOB_CLOSE'\n  EXPORTING jobname = job_name\n            jobcount = job_count\n            strtimmed = abap_true\n  IMPORTING job_was_released = released\n  EXCEPTIONS OTHERS = 1.\nDATA(close_result) = sy-subrc.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3,
+          8,
+          9
+        ],
+        "label": "Create the header and step",
+        "explanation": "Keep both job name and job count. SUBMIT adds the report as a step of that specific job."
+      },
+      {
+        "lines": [
+          13,
+          16,
+          17,
+          19
+        ],
+        "label": "Request release and inspect it",
+        "explanation": "An immediate start request still depends on release authorization and available processing resources."
+      }
+    ],
+    "outcome": "Use close_result and released to report scheduling status, then use the same job identity to inspect SM37, the log and the business totals.",
+    "caveat": "Production code must report each error and handle a partially built job; the excerpt stops the failed path only. Finished job status does not prove every record posted. Classic scheduler APIs are not the ABAP Cloud application-job API. Not SAP-executed.",
+    "references": [
+      {
+        "title": "SAP: Background processing function modules",
+        "url": "https://help.sap.com/doc/saphelp_snc70/7.0/en-US/4d/906689eba36e73e10000000a15822b/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "idoc-control-and-segments",
+    "title": "Distinguish the envelope from the order data",
+    "questions": [
+      "INTF-01",
+      "INTF-02",
+      "INTF-03",
+      "RICEFW-02"
+    ],
+    "intro": "Control fields describe the interface. Segments carry the actual business values.",
+    "language": "XML",
+    "context": "Teaching-only reduced XML representation of a custom IDoc. ZORDERS01, ZORDER and Z1ORDER are fictional custom definitions; this is not a complete generated IDoc XML schema.",
+    "code": "<ZORDERS01>\n  <IDOC BEGIN=\"1\">\n    <EDI_DC40 SEGMENT=\"1\">\n      <IDOCTYP>ZORDERS01</IDOCTYP>\n      <MESTYP>ZORDER</MESTYP>\n      <SNDPRN>PARTNER_A</SNDPRN>\n      <RCVPRN>ERP_100</RCVPRN>\n    </EDI_DC40>\n    <Z1ORDER SEGMENT=\"1\">\n      <EXTERNAL_ID>PO-0071</EXTERNAL_ID>\n      <CUSTOMER>0000123</CUSTOMER>\n    </Z1ORDER>\n  </IDOC>\n</ZORDERS01>",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "label": "Read the control information",
+        "explanation": "The basic type describes the segment structure; message type describes the business message. Sender and receiver help select processing configuration."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11
+        ],
+        "label": "Read the business data",
+        "explanation": "The order segment supplies the external order ID and customer. These values must still pass application checks."
+      }
+    ],
+    "outcome": "A wrong receiver or missing partner profile is a routing/configuration problem; an unknown customer is a business-data problem.",
+    "caveat": "Real control records have additional required fields and generated schemas. Ports, partner profiles and process codes are configuration, not created by this payload. No live IDoc was generated.",
+    "references": [
+      {
+        "title": "SAP: IDoc control record and structure",
+        "url": "https://help.sap.com/saphelp_snc700_ehp01/helpdata/en/78/2177f051ce11d189570000e829fbbd/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "idoc-status-evidence",
+    "title": "Separate sent, failed and posted evidence",
+    "questions": [
+      "INTF-04",
+      "INTF-05",
+      "RICEFW-06"
+    ],
+    "intro": "An outbound success status does not tell you that the receiving system posted an order.",
+    "language": "JSON",
+    "context": "Original diagnostic note in JSON, not an SAP wire format or API. The source and receiver have different local IDoc numbers.",
+    "code": "{\n  \"businessKey\": \"PARTNER_A/PO-0071\",\n  \"outbound\": {\n    \"system\": \"SOURCE\", \"idoc\": \"0000000000000101\",\n    \"status\": \"03\"\n  },\n  \"inbound\": {\n    \"system\": \"ERP\", \"idoc\": \"0000000000000822\",\n    \"status\": \"51\", \"error\": \"Customer not found\"\n  },\n  \"applicationDocument\": null\n}",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5
+        ],
+        "label": "Check the sending side",
+        "explanation": "Status 03 says data passed to the port. It does not prove that ERP created an order."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          11
+        ],
+        "label": "Find the receiving business failure",
+        "explanation": "The receiver has status 51 and no confirmed application document. Investigate its detailed status messages before retrying."
+      }
+    ],
+    "outcome": "Support links both technical messages using the business reference and repairs the customer data or mapping before controlled reprocessing.",
+    "caveat": "These are common classic status meanings; use detailed messages and actual application evidence. An empty field in a support note is not proof that no document exists. No real customer or IDoc is represented.",
+    "references": [
+      {
+        "title": "SAP: IDoc communication status and application outcome",
+        "url": "https://help.sap.com/docs/ERP_HCM/d9cb82c153454334bee3e640fc0b311e/058ce0535e56424de10000000a174cb4.html"
+      }
+    ]
+  },
+  {
+    "id": "aif-mapping-fixture",
+    "title": "See structure mapping and value mapping separately",
+    "questions": [
+      "INTF-08",
+      "INTF-10"
+    ],
+    "intro": "One mapping moves a field. Another translates the value inside it.",
+    "language": "JSON",
+    "context": "Original input/expected-output test fixture for a fictional AIF interface. This is not AIF configuration syntax; configure the real interface engine and mappings separately.",
+    "code": "{\n  \"incoming\": {\n    \"company\": \"EXT01\",\n    \"orderRef\": \"PO-0071\"\n  },\n  \"expectedTarget\": {\n    \"companyCode\": \"1000\",\n    \"externalOrderId\": \"PO-0071\"\n  },\n  \"unmappedCompany\": \"EXT99\",\n  \"expectedOnUnmapped\": \"Reject before posting\"\n}",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          7
+        ],
+        "label": "Translate the company value",
+        "explanation": "The maintained mapping converts EXT01 to 1000. A missing EXT99 mapping must have a defined error path."
+      },
+      {
+        "lines": [
+          4,
+          8
+        ],
+        "label": "Move the reference field",
+        "explanation": "Structure mapping puts orderRef into externalOrderId without changing the reference itself."
+      },
+      {
+        "lines": [
+          10,
+          11
+        ],
+        "label": "Test the rejection path",
+        "explanation": "A failed mapping must not quietly post to a guessed default company code."
+      }
+    ],
+    "outcome": "The operator can identify the source value that needs a mapping fix, then reprocess according to the interface recovery rules.",
+    "caveat": "Actual AIF processing order depends on its configured engine. Posting still requires business authorization, duplicate protection and correct transaction ownership.",
+    "references": [
+      {
+        "title": "SAP: AIF interface creation",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/4db1676c3f114f119b500bd80ccd944d/f0d1b60ff43c45efad71398b1214db04.html"
+      }
+    ]
+  },
+  {
+    "id": "event-id-versus-business-id",
+    "title": "Keep delivery ID and business version separate",
+    "questions": [
+      "BTP-08",
+      "RICEFW-12",
+      "INTF-06",
+      "OPS-11"
+    ],
+    "intro": "A new delivery does not necessarily mean a new business command.",
+    "language": "JSON",
+    "context": "Original delivery fixture for a fictional approval integration. The same order version was delivered twice with different technical delivery IDs.",
+    "code": "[\n  {\n    \"deliveryId\": \"delivery-901\",\n    \"source\": \"ERP\", \"orderId\": \"4711\",\n    \"version\": 3, \"event\": \"Submitted\"\n  },\n  {\n    \"deliveryId\": \"delivery-902\",\n    \"source\": \"ERP\", \"orderId\": \"4711\",\n    \"version\": 3, \"event\": \"Submitted\"\n  }\n]",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          8
+        ],
+        "label": "Notice the two deliveries",
+        "explanation": "Technical delivery IDs differ. Deduplicating only by that ID would allow both to start an approval."
+      },
+      {
+        "lines": [
+          4,
+          5,
+          9,
+          10
+        ],
+        "label": "Match the business operation",
+        "explanation": "Source, order, version and event identify the same submission in this example. Store the accepted operation durably with its outcome."
+      }
+    ],
+    "outcome": "The consumer returns the known approval result for the repeated submission instead of creating a second approval.",
+    "caveat": "The example key is application-specific. The duplicate check and business effect need a concurrency-safe design; a check followed by an unprotected insert is not enough. For a timed-out remote call, query its known result before replaying.",
+    "references": [
+      {
+        "title": "SAP: RAP business-object contract",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract"
+      },
+      {
+        "title": "SAP: RFC quality-of-service scope",
+        "url": "https://help.sap.com/saphelp_em900/helpdata/en/48/99b53cee2b73e7e10000000a42189b/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "badi-filter-selection",
+    "title": "Let a BAdI select the implementation",
+    "questions": [
+      "RICEFW-03"
+    ],
+    "intro": "The application calls a defined extension point, rather than editing the standard implementation.",
+    "language": "ABAP",
+    "context": "Custom single-use, new-style BAdI illustration. ZBADI_ORDER_CHECK has a COUNTRY filter and interface method CHECK importing IS_ORDER and exporting EV_ALLOWED. order_check is typed REF TO zbadi_order_check; ls_order and allowed match that interface. A fallback implementation is configured.",
+    "code": "CONSTANTS co_country TYPE c LENGTH 2 VALUE 'PL'.\n\nGET BADI order_check\n  FILTERS country = co_country.\n\nCALL BADI order_check->check\n  EXPORTING is_order = ls_order\n  IMPORTING ev_allowed = allowed.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4
+        ],
+        "label": "Select through the extension definition",
+        "explanation": "GET BADI uses the filter value to resolve the configured implementation or its fallback."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "label": "Call the agreed method",
+        "explanation": "The host supplies an order and receives the decision through the BAdI interface, without knowing the implementation class."
+      }
+    ],
+    "outcome": "A different implementation can support another country while the caller continues to use the same interface.",
+    "caveat": "All Z objects and signatures above are fictional prerequisites. Production code needs the actual BAdI exception and multiplicity rules. A visible BAdI is not automatically released for ABAP Cloud or safe at every transaction point. Not SAP-executed.",
+    "references": [
+      {
+        "title": "SAP: Object plug-ins and BAdIs",
+        "url": "https://help.sap.com/docs/SAP_NETWEAVER_AS_ABAP_FOR_SOH_740/7bfe8cdcfbb040dcb6702dada8c3e2f0/a085408fd34b496798872ae307c0adb2.html"
+      },
+      {
+        "title": "SAP: Single-use and multiple-use BAdIs",
+        "url": "https://help.sap.com/saphelp_autoid2007/helpdata/en/e4/5c3642eca5033be10000000a1550b0/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "abap-http-client-status",
+    "title": "Execute a request and inspect the reply",
+    "questions": [
+      "HTTP-10",
+      "BTP-06"
+    ],
+    "intro": "A configured destination provides the connection. Your code still has to inspect the HTTP response.",
+    "language": "ABAP",
+    "context": "Method-body excerpt for a target supporting these released HTTP interfaces. destination is an already resolved IF_HTTP_DESTINATION from the target-supported communication/destination setup. The enclosing method declares CX_WEB_HTTP_CLIENT_ERROR and CX_WEB_MESSAGE_ERROR.",
+    "code": "DATA(client) =\n  cl_web_http_client_manager=>create_by_http_destination(\n    i_destination = destination ).\n\nDATA(response) = client->execute(\n  i_method = if_web_http_client=>get ).\nDATA(ls_status) = response->get_status( ).\nDATA(response_text) = response->get_text( ).\nclient->close( ).\n\nIF ls_status-code < 200 OR ls_status-code >= 300.\n  RETURN.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Use the configured destination",
+        "explanation": "The client uses the endpoint and connection setup already resolved by the application. Do not put passwords into the source."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Separate transport from HTTP outcome",
+        "explanation": "The call can raise a client exception. If it returns a response, inspect its status before treating the body as business data."
+      },
+      {
+        "lines": [
+          9,
+          11,
+          12
+        ],
+        "label": "Close and route the failure",
+        "explanation": "The successful execution path closes the connection. Non-2xx responses go to an error-handling path, not the JSON success parser."
+      }
+    ],
+    "outcome": "A received 401, 403 or 500 is handled as an HTTP result; a connection exception is handled by the enclosing boundary.",
+    "caveat": "RETURN is only the teaching stop point: add error mapping, timeouts and cleanup on exception paths. Verify release status and destination creation for the actual edition. A destination does not itself install Cloud Connector or grant business permission. Not SAP-executed.",
+    "references": [
+      {
+        "title": "SAP: HTTP client usage",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/setting-http-logon-popup-policy"
+      },
+      {
+        "title": "SAP: Integration and connectivity",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf"
+      },
+      {
+        "title": "SAP sample: HTTP response and message errors",
+        "url": "https://github.com/SAP-samples/abap-oo-basics/blob/main/src/zcl_obj_xml_test.clas.abap"
+      }
+    ]
+  }
+]

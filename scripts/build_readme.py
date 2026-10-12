@@ -21,6 +21,7 @@ For offline use, download this repository, keep its folders together and open `S
 ## Learn and practice
 
 - Browse subjects and subtopics with all difficulty levels together. Read plain-English answers followed by a concrete example in two short paragraphs, common mistakes, references and compact diagrams with an enlarged viewer.
+- Open a question's code example, select a step to highlight its lines, and read what happens. Use the larger code view or copy the excerpt. Process diagrams remain available beside code where useful. Teaching fragments state their prerequisites and link to primary sources.
 - Show all answers / Questions only has an explicit selected state and remembers your preference.
 - Search the whole library with Ctrl+K / Cmd+K. The separate text filter narrows the current view.
 - Interview practice covers every question: answer aloud, reveal the model and self-rate 0-3.
@@ -42,6 +43,7 @@ For offline use, download this repository, keep its folders together and open `S
 | [Senior Anki](flashcards/ABAP_Cloud_Senior_Anki.tsv) | Focused Cloud senior subset |
 | [Study plan](study/Study_Plan.md) | Daily and interview-deadline routes |
 | [Topic map](study/Topic_Map.md) | Question-by-question curriculum |
+| [Worked code examples](study/Code_Examples.md) | Code excerpts, explanations, outcomes and sources |
 
 Choose one full Anki edition; the senior deck is a subset rather than extra unique questions.
 

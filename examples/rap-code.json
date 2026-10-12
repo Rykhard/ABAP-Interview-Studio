@@ -1,0 +1,968 @@
+[
+  {
+    "id": "managed-order-behavior",
+    "title": "Let RAP save the order",
+    "questions": [
+      "RAP-01",
+      "RAP-02",
+      "RAP-11",
+      "RAP-14"
+    ],
+    "intro": "This behavior definition gives a custom order standard create and update operations.",
+    "language": "BDEF",
+    "context": "Base behavior definition for an existing custom root CDS entity ZI_Order and table zorder. OrderUUID is a RAW(16) key; Comment is its business field. The generated global authorization handler must implement the application permissions.",
+    "code": "managed implementation in class zbp_i_order unique;\nstrict ( 2 );\ndefine behavior for ZI_Order alias Order\npersistent table zorder\nlock master\nauthorization master ( global )\n{\n  create;\n  update;\n  field ( numbering : managed, readonly ) OrderUUID;\n  mapping for zorder\n  {\n    OrderUUID = order_uuid;\n    Comment = order_comment;\n  }\n}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          4
+        ],
+        "label": "RAP owns persistence",
+        "explanation": "Managed RAP buffers changes and writes them to zorder during a successful save. You do not write the CRUD SQL yourself."
+      },
+      {
+        "lines": [
+          10
+        ],
+        "label": "A technical key appears automatically",
+        "explanation": "RAP generates the UUID during create. This is managed early numbering, not a final business document number assigned by a posting API."
+      },
+      {
+        "lines": [
+          11,
+          13,
+          14
+        ],
+        "label": "Match CDS names to table columns",
+        "explanation": "Comment in the business object is stored in order_comment. Mapping connects the two names."
+      }
+    ],
+    "outcome": "Creating an order gives it a UUID; a successful save stores Comment in the mapped database column.",
+    "caveat": "Teaching BDEF fragment, not a deployable BO. Strict-mode requirements, complete field mapping, authorization and service exposure must be completed for the target release.",
+    "references": [
+      {
+        "title": "SAP sample: managed behavior, numbering and mapping",
+        "url": "https://github.com/SAP-samples/abap-platform-rap-opensap/blob/main/week3/unit2.md"
+      }
+    ]
+  },
+  {
+    "id": "read-unsaved-order",
+    "title": "Read the user's unsaved value",
+    "questions": [
+      "RAP-03",
+      "RAP-08",
+      "RAP-09",
+      "MODEL-13"
+    ],
+    "intro": "EML reads the order that RAP is currently working on, including buffered changes.",
+    "language": "ABAP",
+    "context": "Inside a handler of custom BO ZI_Order. Its generated keys parameter contains transactional keys; Order is the BDEF alias. This fragment reads data only.",
+    "code": "READ ENTITIES OF zi_order IN LOCAL MODE\n  ENTITY Order\n  FIELDS ( Comment )\n  WITH CORRESPONDING #( keys )\n  RESULT DATA(lt_orders)\n  FAILED DATA(ls_failed)\n  REPORTED DATA(ls_reported).",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3,
+          5
+        ],
+        "label": "Read the buffer",
+        "explanation": "If Comment was changed from Old to New in this transaction, this read can return New before the database is saved."
+      },
+      {
+        "lines": [
+          1,
+          4
+        ],
+        "label": "Keep the right instance",
+        "explanation": "The incoming transactional key keeps draft identity when present. Local mode is allowed here because the code belongs to this BO's own implementation."
+      },
+      {
+        "lines": [
+          6,
+          7
+        ],
+        "label": "Check failed reads",
+        "explanation": "Not every requested key must produce a result row. Use the failure and message responses when continuing the surrounding handler."
+      }
+    ],
+    "outcome": "The next business rule uses the newly entered comment instead of an older database value.",
+    "caveat": "Local mode bypasses specified BO access checks; it is not an authorization workaround for an external consumer. Response handling is outside this small read fragment.",
+    "references": [
+      {
+        "title": "SAP: EML READ",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/read"
+      }
+    ]
+  },
+  {
+    "id": "clear-comment-control",
+    "title": "An empty value can be an intentional update",
+    "questions": [
+      "SRAP-06",
+      "RAP-08"
+    ],
+    "intro": "The control flag tells RAP to clear Comment instead of leaving it unchanged.",
+    "language": "ABAP",
+    "context": "External EML consumer of non-draft custom BO ZI_Order, alias Order. order_uuid holds an existing UUID and Comment permits an empty value. The caller owns the later save decision.",
+    "code": "MODIFY ENTITIES OF zi_order\n  ENTITY Order\n  UPDATE FROM VALUE #(\n    ( OrderUUID = order_uuid\n      Comment = ''\n      %control-Comment = if_abap_behv=>mk-on ) )\n  FAILED DATA(ls_failed)\n  REPORTED DATA(ls_reported).",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Clear, do not ignore",
+        "explanation": "An empty Comment plus mk-on means replace the old text with an empty value. An initial field without its control flag means it was not supplied."
+      },
+      {
+        "lines": [
+          7,
+          8
+        ],
+        "label": "Modification is not a save",
+        "explanation": "First inspect failures and messages. A successful modify only updates the RAP transaction; the external caller still needs a save decision."
+      }
+    ],
+    "outcome": "If the update and later save succeed, the old comment disappears.",
+    "caveat": "Use the full transactional identity for draft or late-numbering scenarios. UPDATE FIELDS ( Comment ) WITH is another way to identify the intended field.",
+    "references": [
+      {
+        "title": "SAP samples: EML update fields and control",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/08_EML_ABAP_for_RAP.md"
+      }
+    ]
+  },
+  {
+    "id": "external-eml-save",
+    "title": "Save from the outer caller",
+    "questions": [
+      "RAP-04",
+      "RAP-05",
+      "SRAP-15",
+      "SRAP-20"
+    ],
+    "intro": "An external EML caller can save accepted changes; a RAP handler cannot commit them itself.",
+    "language": "ABAP",
+    "context": "An external ABAP method after modifying custom BO ZI_Order. ls_failed is the preceding modify response. This example chooses to abandon the whole local transaction if any modification failed.",
+    "code": "IF ls_failed IS NOT INITIAL.\n  ROLLBACK ENTITIES.\n  RETURN.\nENDIF.\nCOMMIT ENTITIES RESPONSE OF zi_order\n  FAILED DATA(ls_save_failed)\n  REPORTED DATA(ls_save_reported).\nDATA(save_subrc) = sy-subrc.\nIF save_subrc <> 0.\n  ROLLBACK ENTITIES.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Choose the batch policy",
+        "explanation": "This caller abandons all buffered changes after a failed modify. RAP does not make this the only possible policy for every mass operation."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Save has its own result",
+        "explanation": "A modify can succeed and the save can still fail. Keep the save return code and responses instead of reporting success too early."
+      },
+      {
+        "lines": [
+          9,
+          10
+        ],
+        "label": "This caller gives up after save failure",
+        "explanation": "Rollback clears the failed local transaction. For the supported late-save failure case with return code 8, rollback is required before continuing."
+      }
+    ],
+    "outcome": "Only a successful commit is treated as a completed local save; unsuccessful transactions are abandoned.",
+    "caveat": "Never paste this into a RAP handler or saver. Show the captured messages in the real caller. Rollback does not undo an independently committed remote request.",
+    "references": [
+      {
+        "title": "SAP: COMMIT ENTITIES response",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/commit-entities-response-of-long-form"
+      },
+      {
+        "title": "SAP: LUWs and late-save failure",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-concepts/luws-in-abap"
+      }
+    ]
+  },
+  {
+    "id": "create-order-and-item",
+    "title": "Connect a new item to its new order",
+    "questions": [
+      "RAP-10",
+      "SRAP-07",
+      "RAP-07"
+    ],
+    "intro": "A temporary request label links the child to its parent before the caller knows the generated key.",
+    "language": "ABAP",
+    "context": "External consumer of non-draft managed BO ZI_Order with alias Order and create-enabled composition _Items. Both order and item have managed UUID keys; only Comment and Quantity are required business fields in this small model.",
+    "code": "CONSTANTS co_order_cid TYPE abp_behv_cid VALUE 'O1'.\nCONSTANTS co_item_cid TYPE abp_behv_cid VALUE 'I1'.\nMODIFY ENTITIES OF zi_order\n  ENTITY Order\n  CREATE FIELDS ( Comment )\n  WITH VALUE #( ( %cid = co_order_cid Comment = '' ) )\n  CREATE BY \\_Items FIELDS ( Quantity )\n  WITH VALUE #(\n    ( %cid_ref = co_order_cid\n      %target = VALUE #(\n        ( %cid = co_item_cid Quantity = 2 ) ) ) )\n  MAPPED DATA(ls_mapped)\n  FAILED DATA(ls_failed)\n  REPORTED DATA(ls_reported).",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          6,
+          9
+        ],
+        "label": "O1 means this new parent",
+        "explanation": "The child's %cid_ref points to the parent's %cid within this request. O1 is not a database key."
+      },
+      {
+        "lines": [
+          7,
+          10,
+          11
+        ],
+        "label": "Create through the composition",
+        "explanation": "CREATE BY _Items creates an item under that order. The item gets its own request label I1."
+      },
+      {
+        "lines": [
+          12,
+          13,
+          14
+        ],
+        "label": "Map labels to returned keys",
+        "explanation": "MAPPED connects successful creates to their generated identities. FAILED identifies rejected operations and REPORTED carries messages."
+      }
+    ],
+    "outcome": "One request creates an order and its quantity-2 item in the RAP buffer with the correct parent-child relationship.",
+    "caveat": "Inspect all responses before deciding to save. Draft creates need draft identity; late numbering adds preliminary-key handling not shown here.",
+    "references": [
+      {
+        "title": "SAP samples: EML content IDs and create by association",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/08_EML_ABAP_for_RAP.md"
+      }
+    ]
+  },
+  {
+    "id": "validation-trigger",
+    "title": "Tell RAP when to check the dates",
+    "questions": [
+      "RAP-06",
+      "RAP-13",
+      "SRAP-03",
+      "SRAP-19"
+    ],
+    "intro": "A validation belongs in the behavior definition so every relevant save path runs the rule.",
+    "language": "BDEF",
+    "context": "Fragment inside the entity body of a managed, draft-enabled Order BDEF. BeginDate and EndDate exist. The generated validateDates handler implements the date check.",
+    "code": "validation validateDates on save\n{\n  create;\n  field BeginDate, EndDate;\n}\ndraft determine action Prepare\n{\n  validation validateDates;\n}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3,
+          4
+        ],
+        "label": "Cover creation and both inputs",
+        "explanation": "The rule is triggered for a newly created order and changes to either date. It is not just a check in one screen's button handler."
+      },
+      {
+        "lines": [
+          6,
+          8
+        ],
+        "label": "Include draft preparation",
+        "explanation": "Prepare includes the validation for draft preparation. The on-save rule still matters for applicable active-data save paths."
+      }
+    ],
+    "outcome": "An order with EndDate before BeginDate can be rejected by its validation before it is persisted.",
+    "caveat": "Merge into the existing Prepare declaration rather than adding a second one. Do not depend on a fixed execution order or on a rule running only once.",
+    "references": [
+      {
+        "title": "SAP sample: validation and draft Prepare",
+        "url": "https://github.com/SAP-samples/abap-platform-rap120/blob/main/exercises/ex04/README.md"
+      },
+      {
+        "title": "SAP: determination and validation modeling",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/determination-and-validation-modelling?locale=en-US"
+      }
+    ]
+  },
+  {
+    "id": "validation-failure-and-message",
+    "title": "Reject the order and explain the reason",
+    "questions": [
+      "RAP-06",
+      "RAP-07",
+      "ADV-08",
+      "SRAP-24"
+    ],
+    "intro": "FAILED stops the invalid instance; REPORTED tells the user what to fix.",
+    "language": "ABAP",
+    "context": "Inside Order's validateDates handler, after an EML read of BeginDate and EndDate into lt_orders. The named constants co_state_dates, co_message_id and co_bad_dates identify a state area and a translatable message-class error.",
+    "code": "LOOP AT lt_orders INTO DATA(ls_order).\n  APPEND VALUE #(\n    %tky = ls_order-%tky\n    %state_area = co_state_dates ) TO reported-order.\n  IF ls_order-EndDate < ls_order-BeginDate.\n    APPEND VALUE #( %tky = ls_order-%tky )\n      TO failed-order.\n    APPEND VALUE #(\n      %tky = ls_order-%tky\n      %state_area = co_state_dates\n      %element-EndDate = if_abap_behv=>mk-on\n      %msg = new_message(\n        id = co_message_id\n        number = co_bad_dates\n        severity = if_abap_behv_message=>severity-error ) )\n      TO reported-order.\n  ENDIF.\nENDLOOP.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4
+        ],
+        "label": "Clear the previous check result",
+        "explanation": "The empty state-area entry invalidates the old date message for this instance before the rule is evaluated again."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7
+        ],
+        "label": "Reject this instance",
+        "explanation": "When the end date is too early, the transactional key is added to FAILED. An error message alone is not the rejection."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11,
+          12,
+          16
+        ],
+        "label": "Point to the field to fix",
+        "explanation": "The reported error is attached to this order and its EndDate field. After correction, the old state message is cleared and no replacement error is added."
+      }
+    ],
+    "outcome": "The invalid order cannot be saved, and the user sees a date error on the correct order; correcting the dates clears it on revalidation.",
+    "caveat": "Draft-enabled root example. Include this validation in Prepare. Child errors also need the appropriate path to their parent; initial dates need a separate rule if they are forbidden.",
+    "references": [
+      {
+        "title": "SAP: implementing validations",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-validations"
+      },
+      {
+        "title": "SAP: generic message implementation",
+        "url": "https://help.sap.com/docs/ABAP_Cloud/abap-rap/generic-message-implementation"
+      }
+    ]
+  },
+  {
+    "id": "repeatable-total-determination",
+    "title": "Recalculate instead of adding twice",
+    "questions": [
+      "RAP-06",
+      "RAP-13",
+      "SRAP-11"
+    ],
+    "intro": "A determination should produce the same total when RAP runs it again with the same inputs.",
+    "language": "ABAP",
+    "context": "Inside an Order determination of custom managed BO ZI_Order. The BDEF triggers it on create and changes to Quantity or UnitPrice. Total is derived and read-only to external consumers; numeric fields use suitable decimal types.",
+    "code": "READ ENTITIES OF zi_order IN LOCAL MODE\n  ENTITY Order\n  FIELDS ( Quantity UnitPrice )\n  WITH CORRESPONDING #( keys )\n  RESULT DATA(lt_orders).\nMODIFY ENTITIES OF zi_order IN LOCAL MODE\n  ENTITY Order\n  UPDATE FIELDS ( Total )\n  WITH VALUE #( FOR ls_order IN lt_orders\n    ( %tky = ls_order-%tky\n      Total = ls_order-Quantity * ls_order-UnitPrice ) )\n  REPORTED DATA(ls_reported).\nAPPEND LINES OF ls_reported-order TO reported-order.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3,
+          5
+        ],
+        "label": "Read the current inputs",
+        "explanation": "Use the transaction's current quantity and price, including unsaved edits."
+      },
+      {
+        "lines": [
+          8,
+          10,
+          11
+        ],
+        "label": "Replace the total",
+        "explanation": "Quantity 3 and price 10 produce Total 30 every time. Adding 30 to the old total would incorrectly produce 60 on a second run."
+      }
+    ],
+    "outcome": "The buffered Total becomes 30 for quantity 3 and unit price 10, regardless of repeated execution with those inputs.",
+    "caveat": "Focused formula fragment; production code needs currency rounding and response handling appropriate to the actual BO. Determinations have no FAILED output and do not replace rejecting validations.",
+    "references": [
+      {
+        "title": "SAP: determination and validation modeling",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/determination-and-validation-modelling?locale=en-US"
+      }
+    ]
+  },
+  {
+    "id": "action-self-result",
+    "title": "Return the changed order from an action",
+    "questions": [
+      "ADV-04",
+      "ADV-05"
+    ],
+    "intro": "Changing an order and returning the action result are two separate steps.",
+    "language": "ABAP",
+    "context": "Tail of an instance action handler for Order with BDEF declaration action Approve result [1] $self. The preceding update has already succeeded for lt_successful_keys, a table of transactional keys; failures and messages have already been collected.",
+    "code": "READ ENTITIES OF zi_order IN LOCAL MODE\n  ENTITY Order\n  ALL FIELDS\n  WITH CORRESPONDING #( lt_successful_keys )\n  RESULT DATA(lt_orders)\n  FAILED DATA(ls_read_failed)\n  REPORTED DATA(ls_read_reported).\nresult = VALUE #( FOR ls_order IN lt_orders\n  ( %tky = ls_order-%tky\n    %param = ls_order ) ).",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5
+        ],
+        "label": "Read the changed data",
+        "explanation": "Read the successful instances from the transaction after changing their status. Do not return the old input rows as the result."
+      },
+      {
+        "lines": [
+          8,
+          9,
+          10
+        ],
+        "label": "Fill the declared result",
+        "explanation": "%tky identifies the action's instance and %param contains its returned order data for the declared $self result."
+      }
+    ],
+    "outcome": "A successful Approve result contains the newly approved order data instead of an empty response.",
+    "caveat": "Only the result-building step is shown; merge read failures/messages into the surrounding action responses. A copy or factory action needs its own declared create/result contract; this instance-action fragment does not implement CopyOrder.",
+    "references": [
+      {
+        "title": "SAP sample: instance actions and $self results",
+        "url": "https://github.com/SAP-samples/abap-platform-rap-opensap/blob/main/week3/unit6.md"
+      }
+    ]
+  },
+  {
+    "id": "projection-behavior",
+    "title": "Choose which operations the service exposes",
+    "questions": [
+      "RAP-01",
+      "ADV-09",
+      "CDS-05",
+      "MODEL-16"
+    ],
+    "intro": "A projection reuses selected behavior from the underlying business object.",
+    "language": "BDEF",
+    "context": "Projection behavior for custom CDS projection ZC_Order over ZI_Order. The underlying behavior already defines create, update and Approve; both behaviors use strict mode 2. This is a non-draft example.",
+    "code": "projection;\nstrict ( 2 );\ndefine behavior for ZC_Order alias Order\n{\n  use create;\n  use update;\n  use action Approve;\n}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3
+        ],
+        "label": "This is the consumer-facing layer",
+        "explanation": "ZC_Order projects the underlying order BO. It does not implement a second database save."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7
+        ],
+        "label": "Expose selected operations",
+        "explanation": "The consumer gets create, update and Approve from the base behavior. An operation missing from the underlying behavior cannot be invented by writing use here."
+      }
+    ],
+    "outcome": "The projected BO offers these selected operations to its consumers.",
+    "caveat": "A projection is not automatically a released SAP BO interface. Check the actual object's release contract before cross-component or SAP API consumption.",
+    "references": [
+      {
+        "title": "SAP: projection behavior definition",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/projecting-behavior?locale=en-US"
+      }
+    ]
+  },
+  {
+    "id": "service-definition",
+    "title": "Give the entity its service name",
+    "questions": [
+      "RAP-01",
+      "ADV-09"
+    ],
+    "intro": "The service definition selects entities; the service binding supplies the protocol.",
+    "language": "CDS",
+    "context": "Service definition ZUI_Order for an existing custom transactional projection ZC_Order. Create the appropriate service binding as a separate ADT repository object.",
+    "code": "@EndUserText.label: 'Order service'\ndefine service ZUI_Order\n{\n  expose ZC_Order as Orders;\n}",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          4
+        ],
+        "label": "Publish this entity shape",
+        "explanation": "The service includes ZC_Order under the external entity name Orders."
+      },
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "label": "No OData version appears here",
+        "explanation": "OData V4 UI or Web API is selected in a service binding, not in this definition. Activation of this source alone does not create a usable endpoint."
+      }
+    ],
+    "outcome": "A matching published binding can expose the Orders entity with its projected fields and supported behavior.",
+    "caveat": "Service access, binding publication, communication setup and UI annotations are separate tasks; available binding types depend on the target product and release.",
+    "references": [
+      {
+        "title": "SAP: service definition",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/cds-sdl-define-service"
+      },
+      {
+        "title": "SAP: service binding",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/service-binding"
+      }
+    ]
+  },
+  {
+    "id": "draft-and-two-etags",
+    "title": "Two timestamps protect two different checks",
+    "questions": [
+      "RAP-12",
+      "ADV-01",
+      "SRAP-09",
+      "SRAP-10"
+    ],
+    "intro": "The entity ETag checks stale updates; the total ETag protects draft transitions against active changes.",
+    "language": "BDEF",
+    "context": "Selected declarations from a managed draft Order BDEF. The full BDEF already has with draft, its persistent table, operations and readonly fields. zorder_d is a generated draft table; both timestamp fields have the proper CDS administrative annotations.",
+    "code": "draft table zorder_d\netag master LocalLastChangedAt\nlock master total etag LastChangedAt\n\n// Inside the Order entity body:\ndraft action Edit;\ndraft action Activate optimized;\ndraft action Discard;\ndraft action Resume;\ndraft determine action Prepare;",
+    "highlights": [
+      {
+        "lines": [
+          2
+        ],
+        "label": "Check this entity version",
+        "explanation": "LocalLastChangedAt supports the consumer's optimistic update check for the entity."
+      },
+      {
+        "lines": [
+          3
+        ],
+        "label": "Detect relevant active BO changes",
+        "explanation": "LastChangedAt is the total ETag. If the active BO changed while a draft lock was no longer protecting it, a stale draft must not silently replace that newer state."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "label": "Separate draft work from active data",
+        "explanation": "Edit starts draft editing, Activate attempts the active save, Discard drops draft work and Resume continues editing an existing draft."
+      }
+    ],
+    "outcome": "A stale client or stale draft can be rejected instead of overwriting a newer active change.",
+    "caveat": "Two insertion regions are shown, not a complete BDEF. Keep child lock dependencies and timestamp maintenance correct; include relevant validations in the existing Prepare declaration.",
+    "references": [
+      {
+        "title": "SAP: optimistic concurrency control",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/optimistic-concurrency-control"
+      },
+      {
+        "title": "SAP sample: draft and ETag declarations",
+        "url": "https://github.com/SAP-samples/abap-platform-rap120/blob/main/exercises/ex04/README.md"
+      }
+    ]
+  },
+  {
+    "id": "side-effects-refresh-total",
+    "title": "Tell the UI to reload Total",
+    "questions": [
+      "ADV-07",
+      "SRAP-21"
+    ],
+    "intro": "A side effect refreshes a value on the screen after another value changes.",
+    "language": "BDEF",
+    "context": "First block: inside the base Order BDEF entity body. Final line: inside its projection BDEF entity body. Quantity and Total exist; a backend determination already recalculates Total.",
+    "code": "// Base behavior: what must be reloaded?\nside effects\n{\n  field Quantity affects field Total;\n}\n\n// Projection behavior: expose that rule.\nuse side effects;",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          4
+        ],
+        "label": "A UI refresh dependency",
+        "explanation": "When the user changes Quantity, the UI is told that Total should be read again."
+      },
+      {
+        "lines": [
+          8
+        ],
+        "label": "Expose it to the consumer",
+        "explanation": "The projection reuses the base side-effect rules so a supporting consumer can receive them."
+      }
+    ],
+    "outcome": "After Quantity changes from 2 to 3, a supporting Fiori consumer reloads the backend Total and displays the new value.",
+    "caveat": "This does not calculate Total, save data or replace authorization. Verify RAP side-effect support and the generated metadata for the target binding and UI.",
+    "references": [
+      {
+        "title": "SAP: RAP side effect syntax",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/rap-side-effect?locale=en-US&state=PRODUCTION&version=latest"
+      }
+    ]
+  },
+  {
+    "id": "order-composition",
+    "title": "Items belong to the order's composition tree",
+    "questions": [
+      "RAP-01",
+      "SRAP-07",
+      "CDS-04"
+    ],
+    "intro": "A composition models the child entities that belong to one business object.",
+    "language": "CDS",
+    "context": "Root CDS entity for custom table zorder. ZI_OrderItem already declares an association to parent ZI_Order as _Order, with its parent UUID join. Activate the dependent CDS definitions together.",
+    "code": "define root view entity ZI_Order\n  as select from zorder\n  composition [0..*] of ZI_OrderItem as _Items\n{\n  key order_uuid as OrderUUID,\n      order_comment as Comment,\n      _Items\n}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3
+        ],
+        "label": "One root, several children",
+        "explanation": "An order can own zero or more item instances in its BO tree. The child needs a matching association back to the parent."
+      },
+      {
+        "lines": [
+          7
+        ],
+        "label": "Expose the navigation",
+        "explanation": "Including _Items in the element list makes the composition available in the CDS model. The BDEF separately enables create-by-association and defines lock and authorization dependencies."
+      }
+    ],
+    "outcome": "The model has an Order-to-Items composition that RAP behavior can use for parent-child operations.",
+    "caveat": "Composition syntax alone does not provide an entire transactional BO, cross-system atomicity or the required access-control design.",
+    "references": [
+      {
+        "title": "SAP sample: parent and child composition model",
+        "url": "https://github.com/SAP-samples/abap-platform-rap-opensap/blob/main/week2/unit3.md"
+      }
+    ]
+  },
+  {
+    "id": "global-update-authorization",
+    "title": "Return an authorization decision for Update",
+    "questions": [
+      "ADV-02"
+    ],
+    "intro": "The authorization handler decides whether the caller may request an operation.",
+    "language": "ABAP",
+    "context": "Inside Order's generated get_global_authorizations handler; its BDEF declares authorization master ( global ). update_allowed is an abap_bool already obtained from the application's real authorization check, not from a UI flag.",
+    "code": "IF requested_authorizations-%update =\n   if_abap_behv=>mk-on.\n  result-%update = COND #(\n    WHEN update_allowed = abap_true\n    THEN if_abap_behv=>auth-allowed\n    ELSE if_abap_behv=>auth-unauthorized ).\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2
+        ],
+        "label": "Answer the requested operation",
+        "explanation": "The framework asks for Update authorization. Only fill this decision when it was requested."
+      },
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Allow or deny explicitly",
+        "explanation": "The result uses RAP's authorization constants. A disabled button is not this server-side permission decision."
+      }
+    ],
+    "outcome": "A caller without update permission receives an unauthorized decision even if it bypasses the screen.",
+    "caveat": "The real authority check, draft Edit and other requested operations must be implemented too. An action declared authorization:none is not protected by simply filling this Update result.",
+    "references": [
+      {
+        "title": "SAP samples: RAP global and instance authorization",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md"
+      }
+    ]
+  },
+  {
+    "id": "query-count-and-page",
+    "title": "Return the total count before cutting the page",
+    "questions": [
+      "ADV-10",
+      "MODEL-03",
+      "MODEL-05"
+    ],
+    "intro": "The total count describes all matching rows, while the data response contains only the requested page.",
+    "language": "ABAP",
+    "context": "Inside IF_RAP_QUERY_PROVIDER~SELECT for a small in-memory demonstration. lt_all is a standard table of the query result type, already filtered, authorized and sorted exactly as requested, with a unique tie-breaker. lt_page has the same table type.",
+    "code": "IF io_request->is_total_numb_of_rec_requested( ).\n  io_response->set_total_number_of_records( lines( lt_all ) ).\nENDIF.\nIF io_request->is_data_requested( ).\n  DATA(paging) = io_request->get_paging( ).\n  DATA(page_size) = paging->get_page_size( ).\n  DATA(offset) = paging->get_offset( ).\n  CLEAR lt_page.\n  LOOP AT lt_all INTO DATA(ls_row).\n    IF sy-tabix <= offset.\n      CONTINUE.\n    ENDIF.\n    IF page_size <> if_rap_query_paging=>page_size_unlimited\n       AND lines( lt_page ) >= page_size.\n      EXIT.\n    ENDIF.\n    APPEND ls_row TO lt_page.\n  ENDLOOP.\n  io_response->set_data( lt_page ).\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2
+        ],
+        "label": "Count the full authorized result",
+        "explanation": "If 125 rows match, return 125 even when the client requests only 20 rows."
+      },
+      {
+        "lines": [
+          10,
+          11,
+          13,
+          14,
+          15
+        ],
+        "label": "Apply skip and top",
+        "explanation": "Skip the requested offset, then stop at the page size. Size zero returns no data; the unlimited constant does not impose a size limit."
+      },
+      {
+        "lines": [
+          19
+        ],
+        "label": "Send just this page",
+        "explanation": "For skip 20 and top 20, the data response holds rows 21 through 40 from the same filtered and consistently ordered result."
+      }
+    ],
+    "outcome": "A 20-row page can correctly report a total of 125 matching records.",
+    "caveat": "This teaches response shaping, not a complete query provider. Apply filters, authorization, requested sorting, search and supported aggregation before paging; push work to the data source for large result sets.",
+    "references": [
+      {
+        "title": "SAP: implementing an unmanaged query",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-unmanaged-query"
+      },
+      {
+        "title": "SAP: IF_RAP_QUERY_PAGING",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/c9e191cc92e54ca2bfec677037780c03.html?locale=en-us"
+      }
+    ]
+  },
+  {
+    "id": "extend-custom-order-projection",
+    "title": "Expose one new field through an allowed extension",
+    "questions": [
+      "ADV-12"
+    ],
+    "intro": "Adding a field to the consumer projection is one step of extending a business object.",
+    "language": "CDS",
+    "context": "A CDS view-entity extension for your own ZC_Order projection over ZI_Order. Your table and base entity already contain ApprovalReference, persistence mapping is maintained, and ZC_Order permits this extension in the target release. This is not an SAP standard BO.",
+    "code": "@EndUserText.label: 'Order approval reference'\nextend view entity ZC_Order with\n{\n  ApprovalReference\n}",
+    "highlights": [
+      {
+        "lines": [
+          2
+        ],
+        "label": "Extend the permitted layer",
+        "explanation": "The extension adds to the existing projection. Before writing it, verify that this exact entity is allowed to be extended."
+      },
+      {
+        "lines": [
+          4
+        ],
+        "label": "Expose an existing base field",
+        "explanation": "ApprovalReference already exists below the projection. This line makes it part of the projection's field list; it does not create a table column or implement a validation."
+      }
+    ],
+    "outcome": "After activating compatible objects, the projection includes ApprovalReference. Verify the field in service metadata, then test read, update and save through the real service.",
+    "caveat": "For an SAP BO, use only its released extension points and supported names. Also check persistence, BDEF extension support, field permissions, validation, UI metadata and old consumers; this snippet alone does not prove end-to-end extensibility.",
+    "references": [
+      {
+        "title": "SAP: RAP extensibility enablement",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/rap-extensibility-enablement"
+      },
+      {
+        "title": "SAP: extending CDS projection views",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/abap-cds-projection-views"
+      }
+    ]
+  },
+  {
+    "id": "late-numbering-marker",
+    "title": "A late number is assigned during save",
+    "questions": [
+      "RAP-11",
+      "SRAP-08"
+    ],
+    "intro": "Late numbering tells RAP that the final business key is not available during the initial create.",
+    "language": "BDEF",
+    "context": "Selected regions of a custom managed Order BDEF using business document number OrderNumber as its key, assigned by ADJUST_NUMBERS during save. The behavior implementation includes the required ADJUST_NUMBERS saver logic. This alternative model is separate from the UUID-numbered examples.",
+    "code": "// In the Order entity header:\nlate numbering\n\n// Inside the Order entity body:\ncreate;\nfield ( readonly ) OrderNumber;",
+    "highlights": [
+      {
+        "lines": [
+          2
+        ],
+        "label": "Declare the timing",
+        "explanation": "New instances use preliminary identity until the save sequence assigns their final key. The saver must map preliminary identity to the actual returned number."
+      },
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Do not ask the caller to invent the key",
+        "explanation": "The consumer creates an order without supplying OrderNumber. It must not treat a temporary label as the final posting number."
+      }
+    ],
+    "outcome": "The model can represent a newly created order before its final document number is known.",
+    "caveat": "Declaration only: it does not implement ADJUST_NUMBERS or make a self-committing API safe. Draft requires suitable preliminary-key modeling; BAPI integration and late-save failure support depend on the target release.",
+    "references": [
+      {
+        "title": "SAP sample: late-numbering declarations",
+        "url": "https://github.com/SAP-samples/abap-platform-rap110/blob/main/exercises/ex03/README.md"
+      },
+      {
+        "title": "SAP: BAPI numbering and save sequence",
+        "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US&state=PRODUCTION&version=sap_cross_product_abap"
+      }
+    ]
+  },
+  {
+    "id": "cds-currency-reference",
+    "title": "Keep an amount beside its currency",
+    "questions": [
+      "CDS-01",
+      "MODEL-07"
+    ],
+    "intro": "A number such as 100 is not a complete monetary amount until its currency is known.",
+    "language": "CDS",
+    "context": "Custom CDS view entity over zorder, with a suitable amount column total_amount and currency column currency_code. This is a data-model fragment, not an analytical query.",
+    "code": "define view entity ZI_OrderAmount\n  as select from zorder\n{\n  key order_uuid as OrderUUID,\n      currency_code as CurrencyCode,\n      @Semantics.amount.currencyCode: 'CurrencyCode'\n      total_amount as TotalAmount\n}",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6,
+          7
+        ],
+        "label": "Name the currency field",
+        "explanation": "The annotation links TotalAmount to CurrencyCode in the same entity. A consumer can distinguish 100 EUR from 100 USD."
+      },
+      {
+        "lines": [
+          6
+        ],
+        "label": "This is meaning, not conversion",
+        "explanation": "The annotation does not convert USD to EUR. Group by currency or perform an explicitly defined conversion before combining mixed-currency amounts."
+      }
+    ],
+    "outcome": "The service can describe an amount together with its currency instead of presenting an unexplained number.",
+    "caveat": "Do not assume a plain SQL SUM respects currency semantics automatically. Conversion requires the intended rate type, rate date, target currency and error policy.",
+    "references": [
+      {
+        "title": "SAP: amount and currency semantics in CDS",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/defining-data-model-in-cds-views"
+      }
+    ]
+  },
+  {
+    "id": "cds-one-language-text",
+    "title": "Join only the text language you need",
+    "questions": [
+      "CDS-03",
+      "CDS-11",
+      "MODEL-06",
+      "MODEL-10"
+    ],
+    "intro": "A complete text join avoids turning one order into several language rows.",
+    "language": "CDS",
+    "context": "Custom zorder has one row per order_uuid and a status column. ZI_StatusText has a genuine unique key of Status plus Language and a Description field; its Language uses the session language format.",
+    "code": "define view entity ZI_OrderText\n  as select from zorder as Orders\n  association [0..1] to ZI_StatusText as _Text\n    on Orders.status = _Text.Status\n    and _Text.Language = $session.system_language\n{\n  key Orders.order_uuid as OrderUUID,\n      Orders.status as Status,\n      _Text.Description as StatusText\n}",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          5
+        ],
+        "label": "Match both parts of the text key",
+        "explanation": "Matching only Status could find English, German and French rows. The language condition selects the current language."
+      },
+      {
+        "lines": [
+          3,
+          7,
+          9
+        ],
+        "label": "Cardinality must match real data",
+        "explanation": "With at most one text row per status and language, selecting StatusText preserves one row per order. Writing [0..1] or key does not remove duplicate data."
+      }
+    ],
+    "outcome": "An order with translations in three languages still appears once when its text is selected.",
+    "caveat": "Missing text can remain empty; fallback-language logic is separate. Verify all key dimensions and the actual source uniqueness rather than using DISTINCT to hide an incomplete join.",
+    "references": [
+      {
+        "title": "SAP sample: text association with session language",
+        "url": "https://github.com/SAP-samples/abap-partner-reference-application/blob/main/src/zpra_mf_service/zpra_mf_i_visit_status_vh.ddls.asddls"
+      }
+    ]
+  },
+  {
+    "id": "cds-ui-metadata-extension",
+    "title": "Put display hints in the metadata extension",
+    "questions": [
+      "CDS-08"
+    ],
+    "intro": "UI annotations describe how a field is displayed without changing how the order is saved.",
+    "language": "CDS",
+    "context": "Metadata extension for your own ZC_Order, which has @Metadata.allowExtensions: true. OrderNumber exists. This project uses CORE for its own base application metadata, not as a blanket layer choice for extending SAP applications.",
+    "code": "@Metadata.layer: #CORE\nannotate entity ZC_Order with\n{\n  @UI.lineItem: [ { position: 10 } ]\n  @UI.identification: [ { position: 10 } ]\n  OrderNumber;\n}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2
+        ],
+        "label": "Annotate the existing entity",
+        "explanation": "The metadata extension targets ZC_Order. It adds presentation information rather than creating another BO or table."
+      },
+      {
+        "lines": [
+          4,
+          5,
+          6
+        ],
+        "label": "Show the field in the UI",
+        "explanation": "LineItem describes list display and Identification describes an identification field. The position helps order these fields for a supporting Fiori elements consumer."
+      }
+    ],
+    "outcome": "A supporting UI can show OrderNumber in the list and identification area using the service metadata.",
+    "caveat": "Only annotations permitted in metadata extensions may be used there. The actual page layout also depends on facets and UI configuration; annotation layers control precedence, not authorization.",
+    "references": [
+      {
+        "title": "SAP: metadata extensions and allowed annotations",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-data-models/metadata-extensions"
+      }
+    ]
+  },
+  {
+    "id": "cds-explicit-read-inheritance",
+    "title": "Protect the entity that the consumer actually reads",
+    "questions": [
+      "CDS-07",
+      "MODEL-01",
+      "MODEL-14"
+    ],
+    "intro": "A higher CDS entity does not automatically inherit the lower entity's read restrictions.",
+    "language": "CDS",
+    "context": "DCL access control for custom ZC_Order over ZI_Order. ZI_Order already has the intended DCL; ZC_Order uses #CHECK and exposes all authorization-relevant fields under compatible names. No other role grants broader access in this example.",
+    "code": "@MappingRole: true\ndefine role ZC_Order\n{\n  grant select on ZC_Order\n    where inheriting conditions from entity ZI_Order;\n}",
+    "highlights": [
+      {
+        "lines": [
+          4
+        ],
+        "label": "Protect the consumed entity",
+        "explanation": "This rule names ZC_Order, which the consumer reads. A rule only on ZI_Order does not automatically protect reads of ZC_Order."
+      },
+      {
+        "lines": [
+          5
+        ],
+        "label": "Reuse the lower conditions explicitly",
+        "explanation": "The inheritance condition applies the existing ZI_Order restrictions to this compatible model. Renamed or changed field paths may require explicit replacement mappings."
+      }
+    ],
+    "outcome": "A normal DCL-protected read of ZC_Order applies the inherited row restrictions, rather than showing every order.",
+    "caveat": "Test with restricted business users through the actual consumer. CDS read checks do not replace RAP operation authorization, and privileged reads or broader DCL grants need separate review.",
+    "references": [
+      {
+        "title": "SAP: CDS access control and nonautomatic inheritance",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-data-models/cds-authorization-concept"
+      },
+      {
+        "title": "SAP: implementing inherited read protection",
+        "url": "https://help.sap.com/docs/btp/sap-business-technology-platform/implementing-read-protection"
+      }
+    ]
+  }
+]

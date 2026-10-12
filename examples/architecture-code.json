@@ -1,0 +1,38 @@
+[
+  {
+    "id": "cloud-small-business-rule",
+    "title": "Give the business rule business values",
+    "questions": ["CLOUD-15"],
+    "intro": "The eligibility calculation can run without an HTTP request, database row or RAP message object.",
+    "language": "ABAP",
+    "context": "Method body of your own policy class. amount and minimum are importing decfloat34 values; blocked is an importing abap_bool; result is the returning abap_bool. The caller supplies values and translates the result into its UI or service response.",
+    "code": "METHOD is_eligible.\n  result = xsdbool(\n    amount >= minimum\n    AND blocked = abap_false ).\nENDMETHOD.",
+    "highlights": [
+      {"lines": [2, 3, 4], "label": "Calculate one business decision", "explanation": "The method compares the amount and blocked flag. It does not read an HTTP request, issue SQL or build a framework message."},
+      {"lines": [2], "label": "Return a simple result", "explanation": "The caller receives abap_true or abap_false. A RAP adapter can report the decision without making the policy class depend on RAP response types."}
+    ],
+    "outcome": "For amount 500, minimum 300 and blocked = abap_false, the result is true. A unit test can check that rule without an HTTP server or a database.",
+    "caveat": "A deliberately small policy, not a complete approval process or authorization check. Keep permission checks, currency rules, meaningful rejection reasons and transaction ownership in the complete design. No SAP execution is claimed.",
+    "references": [
+      {"title": "SAP Clean ABAP: methods and testability", "url": "https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md"}
+    ]
+  },
+  {
+    "id": "clean-core-wrapper-dependency",
+    "title": "The wrapper still calls a dependency",
+    "questions": ["CORE-08", "GOV-03"],
+    "intro": "Renaming a call or converting its result does not change the release status of the API behind it.",
+    "language": "ABAP",
+    "context": "Method body of a custom wrapper in a classic component on a system that permits this design. dependency is a bound object with a declared read_order method; order_id and result use your custom public types. Assume the implementation behind dependency was checked and still uses an unreleased SAP object. No particular SAP API is invented here.",
+    "code": "METHOD read_order.\n  DATA(ls_order) = dependency->read_order(\n    order_id = order_id ).\n  result = CORRESPONDING #( ls_order ).\nENDMETHOD.",
+    "highlights": [
+      {"lines": [2, 3], "label": "Follow the actual call", "explanation": "This is the next dependency to inspect. Releasing the custom wrapper for its callers does not release the SAP object used underneath."},
+      {"lines": [4], "label": "Separate mapping from classification", "explanation": "Mapping into your own result type can protect callers from some interface changes. It cannot remove the implementation's original dependency or upgrade risk."}
+    ],
+    "outcome": "The caller sees a small custom interface, but the dependency still needs its real classification, an owner, tests and a replacement plan. The whole chain has not become Level A.",
+    "caveat": "Illustrative wrapper body with prerequisite types and methods, not a workaround for restricted ABAP Cloud or Public Edition. Inspect actual SAP calls and configured implementations; this fragment alone cannot establish a Clean Core level.",
+    "references": [
+      {"title": "SAP Learning: Clean Core checks and release contracts", "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad"}
+    ]
+  }
+]

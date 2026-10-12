@@ -1,0 +1,1046 @@
+[
+  {
+    "id": "abap-hashed-lookup",
+    "title": "One key, one order",
+    "questions": [
+      "ABAP-01",
+      "ABAP-02"
+    ],
+    "intro": "Choose a table that matches the lookup you need.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment. Fixture values describe an in-memory example, not database orders.",
+    "code": "TYPES: BEGIN OF ty_order,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE HASHED TABLE OF ty_order\n  WITH UNIQUE KEY order_id.\nlt_orders = VALUE #( ( order_id = 7 amount = 100 )\n                     ( order_id = 9 amount = 200 ) ).\nDATA(ls_order) = lt_orders[ order_id = 9 ].",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Define the lookup",
+        "explanation": "The complete unique key is order_id. The hashed table is designed for this exact-key access."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9
+        ],
+        "label": "Read order 9",
+        "explanation": "The result is the row with amount 200. No manual sorting or numeric row position is needed."
+      }
+    ],
+    "outcome": "Order 9 is found by its identity. A standard table with an empty key would express a different access choice.",
+    "caveat": "This example guarantees the row exists. Handle missing keys in real code; a hashed key is not a range-search index.",
+    "references": [
+      {
+        "title": "SAP: Internal tables",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-missing-row",
+    "title": "Missing row: expected or an error?",
+    "questions": [
+      "ABAP-03"
+    ],
+    "intro": "A lookup that may miss needs an explicit decision.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment. This example treats absence as expected and represents it as an unbound reference.",
+    "code": "TYPES: BEGIN OF ty_order,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE HASHED TABLE OF ty_order\n  WITH UNIQUE KEY order_id.\nINSERT VALUE #( order_id = 7 amount = 100 )\n  INTO TABLE lt_orders.\nDATA(order_ref) = REF #( lt_orders[ order_id = 9 ]\n                        OPTIONAL ).\nDATA(found) = xsdbool( order_ref IS BOUND ).",
+    "highlights": [
+      {
+        "lines": [
+          7,
+          8
+        ],
+        "label": "Only order 7 exists",
+        "explanation": "There is deliberately no order 9 in the table."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11
+        ],
+        "label": "Keep absence visible",
+        "explanation": "REF with OPTIONAL produces an unbound reference for the missing row. found is false."
+      }
+    ],
+    "outcome": "A plain lt_orders[ order_id = 9 ] would raise CX_SY_ITAB_LINE_NOT_FOUND. This form avoids confusing a missing row with a real row containing initial values.",
+    "caveat": "Use OPTIONAL only when absence is an allowed outcome. If the order is required, report or handle the missing-row error instead.",
+    "references": [
+      {
+        "title": "SAP: Internal tables",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      },
+      {
+        "title": "SAP: Default values for table expressions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/table-exp-default"
+      }
+    ]
+  },
+  {
+    "id": "abap-copy-or-alias",
+    "title": "A copy and a direct row change",
+    "questions": [
+      "ABAP-04",
+      "BASE-05"
+    ],
+    "intro": "Watch which assignment actually changes the table.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment. Both reads succeed because fixture row 1 exists.",
+    "code": "TYPES: BEGIN OF ty_order,\n         amount TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE STANDARD TABLE OF ty_order\n  WITH EMPTY KEY.\nlt_orders = VALUE #( ( amount = 100 ) ).\nREAD TABLE lt_orders INDEX 1 INTO DATA(ls_order).\nIF sy-subrc = 0.\n  ls_order-amount = 200.\nENDIF.\nREAD TABLE lt_orders INDEX 1\n  ASSIGNING FIELD-SYMBOL(<ls_order>).\nIF sy-subrc = 0.\n  <ls_order>-amount = 300.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Change the copy",
+        "explanation": "INTO copies the row. Setting ls_order to 200 leaves the table amount at 100."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "label": "Change the actual row",
+        "explanation": "ASSIGNING points to the row. The table amount becomes 300. Each sy-subrc is checked immediately after its read."
+      }
+    ],
+    "outcome": "The work area ends at 200, while the table row ends at 300. A later statement must not overwrite sy-subrc before its result is checked.",
+    "caveat": "Field symbols are aliases, not independent snapshots. Do not modify sorted or hashed primary key fields through them.",
+    "references": [
+      {
+        "title": "SAP: Internal tables",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-corresponding-base",
+    "title": "Keep an unmatched field during mapping",
+    "questions": [
+      "ABAP-11",
+      "BASE-08"
+    ],
+    "intro": "BASE decides whether the new structure starts with existing values.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment with small local structures. Text literals are fixture data.",
+    "code": "TYPES: BEGIN OF ty_request,\n         status TYPE string,\n         note   TYPE string,\n       END OF ty_request.\nTYPES: BEGIN OF ty_change,\n         note TYPE string,\n       END OF ty_change.\nDATA(ls_old) = VALUE ty_request(\n  status = `Approved` note = `Old note` ).\nDATA(ls_change) = VALUE ty_change( note = `New note` ).\nDATA(ls_plain) = CORRESPONDING ty_request( ls_change ).\nDATA(ls_kept) = CORRESPONDING ty_request(\n  BASE ( ls_old ) ls_change ).",
+    "highlights": [
+      {
+        "lines": [
+          8,
+          9,
+          10
+        ],
+        "label": "Start with approved data",
+        "explanation": "The input change has a note field but no status field."
+      },
+      {
+        "lines": [
+          11
+        ],
+        "label": "Build from initial values",
+        "explanation": "ls_plain gets the new note and an empty status."
+      },
+      {
+        "lines": [
+          12,
+          13
+        ],
+        "label": "Build from the old value",
+        "explanation": "ls_kept keeps Approved and receives the new note."
+      }
+    ],
+    "outcome": "The same source produces different status values. BASE preserves unmatched fields; it does not mean ignore initial source values.",
+    "caveat": "If the source type also contained status, that matching field would overwrite the old status even when blank. API PATCH needs explicit field-presence rules.",
+    "references": [
+      {
+        "title": "SAP: Constructor expressions",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-exact-conversion",
+    "title": "Reject lost characters at the input boundary",
+    "questions": [
+      "BASE-06"
+    ],
+    "intro": "An identifier must fit; silently cutting it changes its meaning.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment. The four-character string is intentional test input.",
+    "code": "TYPES ty_code TYPE c LENGTH 3.\nDATA(input) = `ABCD`.\nDATA(ordinary) = CONV ty_code( input ).\nDATA rejected TYPE abap_bool.\nTRY.\n    DATA(lossless) = EXACT ty_code( input ).\n  CATCH cx_sy_conversion_data_loss.\n    rejected = abap_true.\nENDTRY.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Normal conversion",
+        "explanation": "The target has room for three characters. Normal conversion keeps ABC."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "label": "Require an exact value",
+        "explanation": "EXACT rejects the nonblank character loss. The catch marks this input as rejected."
+      }
+    ],
+    "outcome": "The program can report invalid input instead of storing a different identifier. Technical exactness is checked before business validation.",
+    "caveat": "The sample records rejection only. A real import must return a useful field-level error and also validate permitted values.",
+    "references": [
+      {
+        "title": "SAP: Constructor expressions",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-changing-value",
+    "title": "A local change is copied back only on success",
+    "questions": [
+      "BASE-01"
+    ],
+    "intro": "The VALUE addition changes what an escaping exception leaves in the caller.",
+    "language": "ABAP",
+    "context": "Excerpts from one local class: first the public declaration, then its implementation method. Define lcx_rejected as a CX_STATIC_CHECK subclass. A caller starts amount at 10 and catches lcx_rejected.",
+    "code": "METHODS change_amount\n  CHANGING VALUE(amount) TYPE i\n  RAISING lcx_rejected.\n\nMETHOD change_amount.\n  amount = 20.\n  RAISE EXCEPTION TYPE lcx_rejected.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Declare value passing",
+        "explanation": "The method works on its own amount value. Without VALUE, CHANGING defaults to reference passing."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Exit with an exception",
+        "explanation": "The local amount becomes 20, but the method does not complete normally, so it is not copied back."
+      }
+    ],
+    "outcome": "The caller keeps 10 with this VALUE signature. With reference passing, the same assignment would already have changed the caller value to 20.",
+    "caveat": "This protects the plain value only. It does not undo database writes or changes to an object reached through a copied reference.",
+    "references": [
+      {
+        "title": "SAP: Method parameter passing",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/methods-parameters"
+      }
+    ]
+  },
+  {
+    "id": "abap-dynamic-assign",
+    "title": "Do not write through yesterday's field symbol",
+    "questions": [
+      "BASE-04"
+    ],
+    "intro": "A failed dynamic lookup must not leave a usable old target.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment. The misspelled component name is intentional test input. UNASSIGN avoids depending on newer ELSE UNASSIGN syntax.",
+    "code": "DATA: BEGIN OF ls_order,\n        amount TYPE i VALUE 100,\n      END OF ls_order.\nFIELD-SYMBOLS <amount> TYPE any.\nASSIGN COMPONENT 'AMOUNT' OF STRUCTURE ls_order\n  TO <amount>.\nUNASSIGN <amount>.\nASSIGN COMPONENT 'AMUONT' OF STRUCTURE ls_order\n  TO <amount>.\nIF sy-subrc = 0.\n  <amount> = 200.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6,
+          7
+        ],
+        "label": "Clear the earlier binding",
+        "explanation": "The first lookup succeeds. UNASSIGN deliberately removes that old target."
+      },
+      {
+        "lines": [
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "Check the new lookup",
+        "explanation": "AMUONT does not exist. sy-subrc is not zero, so the code cannot write through the old AMOUNT binding."
+      }
+    ],
+    "outcome": "ls_order-amount stays 100. Checking only IS ASSIGNED without clearing the old binding could update the wrong field after a failed lookup.",
+    "caveat": "The sample skips the invalid input to show the effect. A real mapper should report it or apply an explicitly documented skip rule.",
+    "references": [
+      {
+        "title": "SAP: Assignment failure and ELSE UNASSIGN",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/news-for-abap-release-7-89"
+      }
+    ]
+  },
+  {
+    "id": "abap-optional-limit",
+    "title": "Omitted is different from zero",
+    "questions": [
+      "BASE-14"
+    ],
+    "intro": "The caller may deliberately ask for no rows.",
+    "language": "ABAP",
+    "context": "Excerpts from one local class: public declaration and matching implementation. effective is a returning integer; this method only chooses a limit and does not execute a query.",
+    "code": "METHODS choose_limit\n  IMPORTING requested TYPE i OPTIONAL\n  RETURNING VALUE(effective) TYPE i.\n\nMETHOD choose_limit.\n  CONSTANTS co_default_limit TYPE i VALUE 20.\n  IF requested IS SUPPLIED.\n    effective = requested.\n  ELSE.\n    effective = co_default_limit.\n  ENDIF.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Allow omission",
+        "explanation": "OPTIONAL lets the caller omit requested."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "label": "Test presence, not value",
+        "explanation": "choose_limit( ) returns 20. choose_limit( requested = 0 ) returns 0 because the argument was supplied."
+      }
+    ],
+    "outcome": "The two calls keep their different meaning. Checking IS INITIAL would incorrectly treat an explicit zero as omission.",
+    "caveat": "A wrapper that always forwards requested loses omission information. Also handle zero before any query syntax where zero might mean unlimited rows; validate negative input separately.",
+    "references": [
+      {
+        "title": "SAP: Optional method parameters",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/methods-parameters"
+      },
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-duplicate-insert",
+    "title": "A duplicate INSERT is not an update",
+    "questions": [
+      "BASE-15"
+    ],
+    "intro": "The first order value does not silently become the second.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment. This is single-row INSERT into an internal table with a unique primary key.",
+    "code": "TYPES: BEGIN OF ty_order,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE HASHED TABLE OF ty_order\n  WITH UNIQUE KEY order_id.\nINSERT VALUE #( order_id = 7 amount = 100 )\n  INTO TABLE lt_orders.\nINSERT VALUE #( order_id = 7 amount = 200 )\n  INTO TABLE lt_orders.\nDATA(duplicate) = xsdbool( sy-subrc = 4 ).\nDATA(ls_kept) = lt_orders[ order_id = 7 ].",
+    "highlights": [
+      {
+        "lines": [
+          7,
+          8
+        ],
+        "label": "Insert the first row",
+        "explanation": "Order 7 gets amount 100."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "Try the same key again",
+        "explanation": "The second INSERT fails with sy-subrc 4. The existing row still contains 100; duplicate is true."
+      }
+    ],
+    "outcome": "The unique key prevents two rows, but it does not choose whether conflicting import values should be rejected or replaced.",
+    "caveat": "This return-code behavior describes this single-row primary-key case. Other insertion forms and secondary-key violations can raise exceptions.",
+    "references": [
+      {
+        "title": "SAP: Internal tables",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-group-members",
+    "title": "Group rows even when they are apart",
+    "questions": [
+      "BASE-09"
+    ],
+    "intro": "Customer 1 appears twice, with customer 2 between its orders.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment. The grouped loop calculates a per-customer total in memory; inspect total during each outer-loop iteration.",
+    "code": "TYPES: BEGIN OF ty_order,\n         customer TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE STANDARD TABLE OF ty_order\n  WITH EMPTY KEY.\nlt_orders = VALUE #( ( customer = 1 amount = 10 )\n                     ( customer = 2 amount = 20 )\n                     ( customer = 1 amount = 30 ) ).\nLOOP AT lt_orders INTO DATA(ls_order)\n  GROUP BY ls_order-customer INTO DATA(customer).\n  DATA(total) = 0.\n  LOOP AT GROUP customer INTO DATA(ls_member).\n    total += ls_member-amount.\n  ENDLOOP.\nENDLOOP.",
+    "highlights": [
+      {
+        "lines": [
+          7,
+          8,
+          9
+        ],
+        "label": "Notice the unsorted input",
+        "explanation": "The customer sequence is 1, 2, 1. Related rows are not adjacent."
+      },
+      {
+        "lines": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "label": "Visit each group and its members",
+        "explanation": "The outer loop runs twice. The member loop totals 40 for customer 1 and 20 for customer 2."
+      }
+    ],
+    "outcome": "GROUP BY finds both customer 1 rows without a preceding SORT. This is different from relying on adjacent control-level groups.",
+    "caveat": "This is ABAP memory processing. If only database totals are required, consider a supported SQL aggregation instead. Define output order separately.",
+    "references": [
+      {
+        "title": "SAP: Internal tables",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "sql-guard-fae",
+    "title": "An empty driver must not become a full read",
+    "questions": [
+      "SQL-02",
+      "SQL-03"
+    ],
+    "intro": "The guard is part of correctness, not just a speed trick.",
+    "language": "ABAP",
+    "context": "Method-body fragment. Own fixture table zt_demo_order has key order_id and amount. lt_ids is an already-populated internal table whose row structure has order_id with the same type as the database field. lt_orders is a compatible result table.",
+    "code": "CLEAR lt_orders.\nIF lt_ids IS NOT INITIAL.\n  SELECT order_id, amount\n    FROM zt_demo_order\n    FOR ALL ENTRIES IN @lt_ids\n    WHERE order_id = @lt_ids-order_id\n    INTO TABLE @lt_orders.\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2
+        ],
+        "label": "Handle no requested IDs",
+        "explanation": "The output is empty and the database statement is skipped when lt_ids is empty."
+      },
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "label": "Read the requested orders",
+        "explanation": "For a nonempty driver, the query matches order_id against its values."
+      }
+    ],
+    "outcome": "An empty request returns no orders. Without the guard, FOR ALL ENTRIES ignores its WHERE condition for an empty driver and can read all rows in scope.",
+    "caveat": "FOR ALL ENTRIES removes duplicate result rows. Keep the identity columns needed by the result and compare a join using actual result and performance requirements. Fixture tables are not SAP APIs.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      },
+      {
+        "title": "SAP: FOR ALL ENTRIES behavior",
+        "url": "https://help.sap.com/docs/SUPPORT_CONTENT/abap/3353526117.html"
+      }
+    ]
+  },
+  {
+    "id": "sql-outer-join-filter",
+    "title": "Keep an order even without an English text",
+    "questions": [
+      "SQL-04",
+      "SQL-05",
+      "SQL-07"
+    ],
+    "intro": "Put the language rule where text rows are matched.",
+    "language": "ABAP",
+    "context": "Method-body fragment. Own fixture tables: zt_demo_order has unique order_id; zt_demo_text has unique (order_id, language), plus description. language is CHAR 1. No extra business authorization is shown.",
+    "code": "CONSTANTS co_english TYPE c LENGTH 1 VALUE 'E'.\nSELECT o~order_id, t~description\n  FROM zt_demo_order AS o\n  LEFT OUTER JOIN zt_demo_text AS t\n    ON t~order_id = o~order_id\n   AND t~language = @co_english\n  INTO TABLE @DATA(lt_orders).",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Choose right-side matches",
+        "explanation": "An English text matches if it exists. Its language condition belongs to ON here."
+      },
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "label": "Keep every left-side row",
+        "explanation": "An order without an English text still appears. A WHERE t~language = co_english would remove it."
+      }
+    ],
+    "outcome": "Orders stay visible even without translated text. The stated unique text key also prevents several English rows from multiplying each order.",
+    "caveat": "The missing description is SQL NULL before transfer. Without null indicators, its ABAP target becomes initial, so this result alone cannot distinguish missing text from a stored empty description.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      },
+      {
+        "title": "SAP: Left outer join",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/left-outer-join"
+      }
+    ]
+  },
+  {
+    "id": "sql-group-totals",
+    "title": "Send totals instead of every item",
+    "questions": [
+      "SQL-06",
+      "SQL-09",
+      "SQLX-02"
+    ],
+    "intro": "Filter first, sum matching rows, then keep the required groups.",
+    "language": "ABAP",
+    "context": "Method-body fragment. Own fixture table zt_demo_item contains company, currency, amount and is_cancelled. amount is an exact decimal type; amounts within each currency use the same unit convention. minimum_total is deliberately zero for the example.",
+    "code": "DATA minimum_total TYPE decfloat34 VALUE 0.\nSELECT company, currency, SUM( amount ) AS total\n  FROM zt_demo_item\n  WHERE is_cancelled = @abap_false\n  GROUP BY company, currency\n  HAVING SUM( amount ) > @minimum_total\n  INTO TABLE @DATA(lt_totals).",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4
+        ],
+        "label": "Remove cancelled items",
+        "explanation": "WHERE acts on individual rows before they enter the totals."
+      },
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "label": "Keep currency groups separate",
+        "explanation": "The database calculates one total per company and currency instead of sending every item."
+      },
+      {
+        "lines": [
+          6,
+          7
+        ],
+        "label": "Filter the totals",
+        "explanation": "HAVING keeps only groups whose calculated total is positive."
+      }
+    ],
+    "outcome": "The output contains summarized rows with their currencies. There is no text join here that could multiply an item before summing it.",
+    "caveat": "Currency grouping prevents mixing unlike currencies; it does not perform conversion. Real authorization, numeric range, decimal handling and measured query cost still need validation.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      }
+    ]
+  },
+  {
+    "id": "sql-ordered-first",
+    "title": "Latest requires an explicit order",
+    "questions": [
+      "SQL-08"
+    ],
+    "intro": "A one-row limit does not choose what latest means.",
+    "language": "ABAP",
+    "context": "Method-body fragment. Own fixture table zt_demo_order has unique numeric order_id, customer_id and changed_at timestamp. customer_id is the method input. No matching row leaves lt_latest empty.",
+    "code": "SELECT order_id, changed_at\n  FROM zt_demo_order\n  WHERE customer_id = @customer_id\n  ORDER BY changed_at DESCENDING, order_id DESCENDING\n  INTO TABLE @DATA(lt_latest)\n  UP TO 1 ROWS.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Choose the relevant customer",
+        "explanation": "The conditions may match many orders, so SELECT SINGLE would not express the latest one."
+      },
+      {
+        "lines": [
+          4,
+          5,
+          6
+        ],
+        "label": "Define the winning row",
+        "explanation": "Sort by newest timestamp, then by order_id to break ties, and return at most one row."
+      }
+    ],
+    "outcome": "The latest timestamp wins. If two timestamps are equal, the larger order ID wins according to this explicit example rule.",
+    "caveat": "The tie-breaker is a chosen business rule, not a property of SELECT SINGLE. Validate authorization and an appropriate query plan for the real source.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-empty-authorization-range",
+    "title": "No allowed plants means no data",
+    "questions": [
+      "BASE-16",
+      "TEST-06"
+    ],
+    "intro": "Do not let an empty permission result become an unrestricted filter.",
+    "language": "ABAP",
+    "context": "Method-body fragment. A trusted authorization helper already supplied lt_allowed_plants as positive include-EQ range rows. lt_orders is the output. Own fixture table zt_demo_order contains order_id and plant.",
+    "code": "CLEAR lt_orders.\nIF lt_allowed_plants IS INITIAL.\n  RETURN.\nENDIF.\nSELECT order_id, plant\n  FROM zt_demo_order\n  WHERE plant IN @lt_allowed_plants\n  INTO TABLE @lt_orders.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Stop when permission is empty",
+        "explanation": "The method returns an empty result before running SQL."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Apply mandatory permission",
+        "explanation": "Only a nonempty set of allowed plants reaches the query. Optional user filters must not replace this restriction."
+      }
+    ],
+    "outcome": "A user with no allowed plants receives no rows. Directly using an initial range in IN would instead impose no restriction.",
+    "caveat": "This is a guard, not a complete authorization implementation. The helper must return actual permitted values; test denied API access as well as UI behavior. Exclusion-only ranges require their own policy.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-approval-strategy",
+    "title": "Call the rule through one interface",
+    "questions": [
+      "OO-01",
+      "OO-02",
+      "OO-09",
+      "PAT-01"
+    ],
+    "intro": "The coordinator asks what the rule decides, without choosing its calculation.",
+    "language": "ABAP",
+    "context": "Local-interface declaration followed by an excerpt inside a coordinator method. strategy is a bound reference to an implementing class, and amount is an input. Each implementation decides its own rule without committing or sending messages.",
+    "code": "INTERFACE lif_approval.\n  METHODS needs_manager\n    IMPORTING amount TYPE decfloat34\n    RETURNING VALUE(required) TYPE abap_bool.\nENDINTERFACE.\n\nDATA rule TYPE REF TO lif_approval.\nrule = strategy.\nDATA(requires_manager) = rule->needs_manager(\n  amount = amount ).",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "label": "Agree on one operation",
+        "explanation": "Every strategy accepts an amount and returns whether a manager is required."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Use the selected implementation",
+        "explanation": "The same call reaches the actual strategy object. The coordinator does not branch on country here."
+      }
+    ],
+    "outcome": "Changing the rule object changes the decision logic while the coordinator call stays the same. That is Strategy through interface polymorphism.",
+    "caveat": "The snippet defines the interface and call, not complete country rules. Test each implementation against the shared promises and keep workflow side effects in the coordinator.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-constructor-injection",
+    "title": "Require the helper when creating the service",
+    "questions": [
+      "OO-06",
+      "OO-07",
+      "TEST-02",
+      "PAT-10",
+      "OODEEP-07"
+    ],
+    "intro": "Give the service its dependency once, then use that exact object.",
+    "language": "ABAP",
+    "context": "Constructor implementation excerpt. The class declares constructor IMPORTING repository TYPE REF TO lif_repository RAISING lcx_configuration, and a private repository attribute of that interface type. lcx_configuration is an application CX_STATIC_CHECK subclass.",
+    "code": "METHOD constructor.\n  IF repository IS NOT BOUND.\n    RAISE EXCEPTION TYPE lcx_configuration.\n  ENDIF.\n  me->repository = repository.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Reject missing setup early",
+        "explanation": "A typed reference can still be initial. This check prevents creating a service that fails much later."
+      },
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Keep the supplied helper",
+        "explanation": "Production supplies a real repository; tests supply a controlled implementation of the same interface."
+      }
+    ],
+    "outcome": "The constructor makes the dependency visible and valid. The service no longer needs a hidden global factory lookup in each business method.",
+    "caveat": "This is an application-owned class. Do not add unsupported constructor parameters to framework-created RAP handlers; delegate to a suitable service or use supported seams.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      },
+      {
+        "title": "SAP: ABAP Unit tests",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/14_ABAP_Unit_Tests.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-known-strategy-factory",
+    "title": "Configuration chooses from known rules",
+    "questions": [
+      "OO-09",
+      "PAT-12"
+    ],
+    "intro": "An unknown country must not fall back to approval.",
+    "language": "ABAP",
+    "context": "Factory method excerpt. get_rule imports a two-character country value through a named character type, returns rule TYPE REF TO lif_approval, and raises lcx_configuration. Both local rule classes implement lif_approval and have no required constructor parameters.",
+    "code": "METHOD get_rule.\n  CONSTANTS co_poland TYPE c LENGTH 2 VALUE 'PL'.\n  CONSTANTS co_germany TYPE c LENGTH 2 VALUE 'DE'.\n  CASE country.\n    WHEN co_poland.\n      rule = NEW lcl_polish_rule( ).\n    WHEN co_germany.\n      rule = NEW lcl_german_rule( ).\n    WHEN OTHERS.\n      RAISE EXCEPTION TYPE lcx_configuration.\n  ENDCASE.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Map supported choices",
+        "explanation": "The factory creates one of two known implementations of the same interface."
+      },
+      {
+        "lines": [
+          9,
+          10
+        ],
+        "label": "Fail unsupported setup",
+        "explanation": "Blank or unknown configuration produces an error instead of silently picking a permissive rule."
+      }
+    ],
+    "outcome": "Test PL, DE and an unknown value separately from the approval calculations. This is a simple factory; it is not automatically the formal Factory Method pattern.",
+    "caveat": "Class and exception names are local teaching fixtures, not SAP APIs. Real configuration may also need a policy version and an audit record of the chosen rule.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-adapter-mapping",
+    "title": "Translate one interface into another",
+    "questions": [
+      "OO-10",
+      "PAT-03"
+    ],
+    "intro": "The caller uses business-friendly fields; the adapter handles the old format.",
+    "language": "ABAP",
+    "context": "Implementation of lif_payment~post. Its inputs are amount TYPE decfloat34 and a three-character currency value declared through a named character type; returning result is TYPE i. Bound legacy has execute IMPORTING ls_request TYPE ty_legacy_request RETURNING VALUE(result) TYPE i. ty_legacy_request has gross_value and curr_key matching those inputs.",
+    "code": "METHOD lif_payment~post.\n  DATA(ls_request) = VALUE ty_legacy_request(\n    gross_value = amount\n    curr_key = currency ).\n  result = legacy->execute( ls_request = ls_request ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Translate the request",
+        "explanation": "The public amount and currency become the names expected by the legacy dependency. An explicit zero is copied too."
+      },
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Delegate one operation",
+        "explanation": "The adapter calls the dependency and returns its result. The application caller need not know gross_value or curr_key."
+      }
+    ],
+    "outcome": "This illustrates Adapter field mapping. A Facade would separately coordinate a larger prepare/check/post sequence.",
+    "caveat": "legacy is a local illustrative interface, not a named SAP API. Real wrappers must also translate errors and preserve authorization and transaction ownership; wrapping cannot remove an internal commit or release an API.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-counting-decorator",
+    "title": "Add one behavior around the same call",
+    "questions": [
+      "PAT-04",
+      "OO-06"
+    ],
+    "intro": "A decorator forwards the real call while adding a small behavior of its own.",
+    "language": "ABAP",
+    "context": "Implementation excerpt. This class implements lif_sender with send IMPORTING payload TYPE string RETURNING VALUE(response) TYPE string. inner is a required, bound lif_sender reference supplied through its constructor. attempts is a private integer attribute initialized to zero. The class also declares METHODS get_attempts RETURNING VALUE(count) TYPE i.",
+    "code": "METHOD lif_sender~send.\n  attempts += 1.\n  response = inner->send( payload = payload ).\nENDMETHOD.\n\nMETHOD get_attempts.\n  count = attempts.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Wrap without replacing",
+        "explanation": "The decorator counts the attempt and forwards exactly once. The inner result and escaping exception are not turned into fake success."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "label": "Observe the added behavior",
+        "explanation": "get_attempts returns count TYPE i. The counter includes failed calls because it increments before delegation."
+      }
+    ],
+    "outcome": "One wrapper invocation adds one attempt. Placing this inside or outside a retry wrapper would count attempts or logical operations differently.",
+    "caveat": "The counter lives only in this object. It is neither durable logging nor a retry policy. Retrying a remote write needs explicit duplicate and unknown-outcome handling.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-exception-previous",
+    "title": "Keep the original failure when translating it",
+    "questions": [
+      "ABAP-10",
+      "OODEEP-09"
+    ],
+    "intro": "Unavailable data must not become a successful empty result.",
+    "language": "ABAP",
+    "context": "Method excerpt. repository is a bound local interface reference whose read_price( ) returns decfloat34 and raises lcx_repository. This get_price method returns price TYPE decfloat34 and declares RAISING lcx_price_unavailable. Both exceptions are application CX_STATIC_CHECK subclasses with the inherited PREVIOUS constructor parameter.",
+    "code": "METHOD get_price.\n  TRY.\n      price = repository->read_price( ).\n    CATCH lcx_repository INTO DATA(cause).\n      RAISE EXCEPTION TYPE lcx_price_unavailable\n        EXPORTING previous = cause.\n  ENDTRY.\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4
+        ],
+        "label": "Catch the failure you understand",
+        "explanation": "Only the declared repository failure is translated here. It is not a successful no-price result."
+      },
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Preserve the cause",
+        "explanation": "The business-facing exception keeps the original exception in PREVIOUS for diagnosis."
+      }
+    ],
+    "outcome": "The caller receives a clear unavailable failure instead of a zero price. Support can inspect why the repository failed.",
+    "caveat": "The custom exception classes and signatures are prerequisites, not delivered SAP objects. Real user-facing messages should be translatable and must not expose sensitive technical details.",
+    "references": [
+      {
+        "title": "SAP: ABAP Objects",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-real-calculation-test",
+    "title": "Test the rule itself at its boundary",
+    "questions": [
+      "TEST-01",
+      "OO-14",
+      "OODEEP-12",
+      "PAT-11"
+    ],
+    "intro": "A threshold test must call the real calculation.",
+    "language": "ABAP",
+    "context": "Two method excerpts in separate class implementations. lcl_discount declares CLASS-METHODS percent IMPORTING quantity TYPE i RETURNING VALUE(result) TYPE i. The local test class declares METHODS threshold FOR TESTING. The teaching rule is 10 percent from quantity 10, otherwise zero.",
+    "code": "METHOD percent.\n  result = COND #( WHEN quantity >= 10\n                   THEN 10 ELSE 0 ).\nENDMETHOD.\n\nMETHOD threshold.\n  cl_abap_unit_assert=>assert_equals(\n    act = lcl_discount=>percent( quantity = 9 )\n    exp = 0 ).\n  cl_abap_unit_assert=>assert_equals(\n    act = lcl_discount=>percent( quantity = 10 )\n    exp = 10 ).\n  cl_abap_unit_assert=>assert_equals(\n    act = lcl_discount=>percent( quantity = 11 )\n    exp = 10 ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Keep production behavior real",
+        "explanation": "The discount decision uses the actual quantity comparison. No mock replaces it."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "label": "Check both sides and the boundary",
+        "explanation": "Quantities 9, 10 and 11 check below, exactly at and above the threshold with independently chosen expectations."
+      }
+    ],
+    "outcome": "Changing >= to > would fail the quantity-10 assertion. A mocked percent result would not detect that bug.",
+    "caveat": "This illustrates test source, not an executed SAP test. Add the class definitions and required ABAP Unit attributes; validate invalid-input rules separately. No coverage percentage is claimed.",
+    "references": [
+      {
+        "title": "SAP: ABAP Unit tests",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/14_ABAP_Unit_Tests.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-filter-key",
+    "title": "FILTER needs an appropriate access key",
+    "questions": [
+      "BASE-10",
+      "ABAP-02"
+    ],
+    "intro": "A standard table can keep arrival order and offer a sorted secondary key.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment. The key customer_key is explicit and matches the equality condition.",
+    "code": "TYPES: BEGIN OF ty_order,\n         customer TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nTYPES ty_orders TYPE STANDARD TABLE OF ty_order\n  WITH EMPTY KEY\n  WITH NON-UNIQUE SORTED KEY customer_key\n    COMPONENTS customer.\nDATA(lt_orders) = VALUE ty_orders(\n  ( customer = 2 amount = 10 )\n  ( customer = 1 amount = 20 )\n  ( customer = 2 amount = 30 ) ).\nDATA(lt_selected) = FILTER #(\n  lt_orders USING KEY customer_key WHERE customer = 2 ).",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Provide the key",
+        "explanation": "EMPTY KEY does not support this basic FILTER access by itself. The secondary sorted key does."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Choose that key explicitly",
+        "explanation": "USING KEY customer_key selects both customer 2 rows, with amounts 10 and 30."
+      }
+    ],
+    "outcome": "The result contains the two matching rows. A suitable secondary key enables this FILTER form on a standard table.",
+    "caveat": "Keys consume memory and maintenance work. For a condition that does not fit the key rules, prefer a clear loop or FOR expression. Check syntax support on the target release.",
+    "references": [
+      {
+        "title": "SAP: Internal tables",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      },
+      {
+        "title": "SAP: Constructor expressions",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-reduce-negative-maximum",
+    "title": "Do not invent zero as the maximum",
+    "questions": [
+      "BASE-11",
+      "ABAP-11"
+    ],
+    "intro": "An all-negative input exposes the wrong starting value.",
+    "language": "ABAP",
+    "context": "Self-contained method-body fragment. The fixture has at least one row. has_maximum explicitly represents whether any result exists.",
+    "code": "TYPES ty_values TYPE STANDARD TABLE OF i\n  WITH EMPTY KEY.\nDATA(lt_values) = VALUE ty_values( ( -8 ) ( -3 ) ).\nDATA maximum TYPE i.\nDATA(has_maximum) = xsdbool( lt_values IS NOT INITIAL ).\nIF has_maximum = abap_true.\n  maximum = REDUCE i(\n    INIT best = lt_values[ 1 ]\n    FOR number IN lt_values\n    NEXT best = COND #(\n      WHEN number > best THEN number ELSE best ) ).\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Handle no result separately",
+        "explanation": "The guard prevents reading row 1 of an empty table. has_maximum distinguishes no value from an actual zero."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "label": "Start with a real candidate",
+        "explanation": "The accumulator starts at -8, then becomes -3. Starting at zero would incorrectly keep zero."
+      }
+    ],
+    "outcome": "The maximum is -3. The syntax is concise, but the initial value and empty-input policy still determine correctness.",
+    "caveat": "Test empty, single-row, all-negative and mixed data. If the caller requires a value, reject empty input instead of relying on a separate presence flag.",
+    "references": [
+      {
+        "title": "SAP: Constructor expressions",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md"
+      }
+    ]
+  }
+]

@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import unquote
 import pymupdf as fitz
 from study_topics import topic_catalog
+from code_examples import load_examples
 from study_catalog import ordered_modules, is_cloud, catalog, track_key
 
 root=Path(__file__).resolve().parents[1]
@@ -58,6 +59,12 @@ def check_flashcard_content(deck, label):
 
 check_flashcard_content(rows,'Anki')
 html=(root/'START_HERE.html').read_text(encoding='utf-8')
+examples=load_examples(root,set(ids))
+code_match=re.search(r'<script id="code-data" type="application/json">(.*?)</script>',html,re.S)
+if not code_match or json.loads(code_match.group(1))!=examples:errors.append('Code example payload mismatch')
+if any(token in html for token in ['__CODE_DATA__','__CODE_CSS__','__CODE_APP__']):errors.append('Unresolved code example template')
+for example in examples:
+    if example['code'] not in (root/'study/Code_Examples.md').read_text(encoding='utf-8'):errors.append('Code guide missing excerpt '+example['id'])
 match=re.search(r'<script id="study-data" type="application/json">(.*?)</script>',html,re.S)
 if not match or json.loads(match.group(1))!=modules:errors.append('HTML data does not match content')
 track_match=re.search(r'<script id="track-data" type="application/json">(.*?)</script>',html,re.S)
@@ -130,5 +137,7 @@ for path in sorted((root/'pdf').glob('*.pdf')):
         if missing:errors.append('Missing handbook question IDs '+str(missing))
     pdf_results.append(dict(file=path.name,pages=len(doc),bytes=path.stat().st_size,characters=len(text)))
 summary=dict(study_topics=len(topics),study_subtopics=len(sections),quiz_questions=len(quiz_items),questions_with_references=sum(bool(q.get('references')) for q in questions),track_counts=track_counts,senior_questions=sum(q['level']=='Senior' for q in questions),cloud_questions=sum(len(m['questions']) for m in modules if is_cloud(m)),senior_flashcards=len(senior_rows),modules=len(modules),questions=len(questions),flashcards=len(rows),illustrated_flashcards=len(illustrated),visuals=len(catalog),questions_with_visuals=len(visual_questions),pdfs=pdf_results,errors=errors)
+summary['code_examples']=len(examples)
+summary['questions_with_code']=len({qid for example in examples for qid in example['questions']})
 print(json.dumps(summary,indent=2))
 raise SystemExit(bool(errors))
