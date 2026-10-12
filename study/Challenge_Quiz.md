@@ -47,12 +47,12 @@ Quiz recognition does not establish senior readiness. Oral scores are your own 0
 | Deeper foundations, BASE | 16 |
 | OO contracts, OODEEP | 12 |
 | Design patterns, PAT | 12 |
-| RAP, CDS, security and Clean Core | 40 |
+| RAP, CDS, security and Clean Core | 41 |
 | Existing ABAP/OO/SQL/HTTP/RFC/IDoc decisions | 20 |
 | HANA and delivery decisions | 3 |
-| Total | 103 |
+| Total | 104 |
 
-The complete library contains 329 questions; 103 have authored multiple-choice challenges. All 329 remain available in Learn and Interview practice. RAP has 52 study questions, of which 24 have multiple-choice challenges; the other 28 can be practiced aloud. The sidebar counts study questions, not quizzes or subtopics. Selecting Multiple-choice quiz shows its smaller coverage explicitly and offers a direct switch to Interview practice for the complete selection.
+The complete library contains 329 questions; 104 have authored multiple-choice challenges. All 329 remain available in Learn and Interview practice. RAP has 52 study questions, of which 25 have multiple-choice challenges; the other 27 can be practiced aloud. The sidebar counts study questions, not quizzes or subtopics. Selecting Multiple-choice quiz shows its smaller coverage explicitly and offers a direct switch to Interview practice for the complete selection.
 
 If a selection has no authored quiz questions, change the filters or use Interview practice. No question content is removed by switching formats. The 43 questions from the foundations and integration expansion have challenges, references and linked visuals.
 

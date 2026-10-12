@@ -147,46 +147,60 @@ During modification, the transactional view can show 120 EUR while saved data st
 
 </details>
 
-## RAP-05 How do you explain the RAP save sequence?
+## RAP-05 What are the steps of the RAP save sequence, and where is the point of no return?
 
 **Level:** Advanced
 
-**Short answer:** RAP first collects changes, then tries to save them together. During early save processing, it finishes calculations and checks whether the changes are valid. Later, it performs configured numbering and writes the data. Normal late-save processing expects business checks to have passed. Some documented BAPI integration variants can report late failures, but their release support and rules must be checked.
+**Short answer:** RAP saves changes in this order: FINALIZE finishes calculations, CHECK_BEFORE_SAVE checks the data, ADJUST_NUMBERS assigns final keys when late numbering is used, SAVE writes the data, and CLEANUP clears the buffer. The point of no return comes after CHECK_BEFORE_SAVE has passed for every involved business object. Remember it as: calculate, check, number, write, clear.
 
-**Reasoning and example:** Think of saving an order with several items. A known invalid delivery date should be caught while RAP can still reject the change normally. Final document numbering and database writes happen later. This keeps avoidable business errors away from the stage intended to complete a consistent transaction.
+**Reasoning and example:** 1. FINALIZE - finish the data. For an order, calculate the total from its items. In a managed BO, relevant on-save determinations do this work; in an unmanaged BO, use the corresponding saver method. This is the last phase for permitted changes to the transactional buffer. Ordinary EML MODIFY requests after FINALIZE cause runtime errors; the ban does not start at the beginning of FINALIZE.
 
-When a legacy API is involved, check which parts only validate and which parts actually write. Do not assume all RAP implementations use the same saver methods, or that every business object has additional save. If the API can still fail during persistence, verify whether a documented failure-capable saver fits this exact scenario and release. Do not invent your own late error-handling contract.
+2. CHECK_BEFORE_SAVE - make the final business checks. For example, reject an order whose delivery date is invalid. Managed BOs use validations; unmanaged BOs implement the corresponding saver check. Only when every involved BO passes do we cross the point of no return. A failed check stops the save before late numbering and persistence.
 
-**Avoid this mistake:** Do not present a memorized list of saver methods as universally identical for managed and unmanaged BOs.
+3. ADJUST_NUMBERS - assign final keys for late numbering. Our new order now receives document number 4711. Early numbering has already assigned the key, so it does not need this late assignment. Receiving a number does not yet prove that the database commit succeeded.
+
+4. SAVE - write the changes. With normal managed save, RAP writes the BO data. With additional save, RAP still writes it, and your save_modified method adds work such as an audit row. With managed interaction plus with unmanaged save, your save_modified method replaces managed persistence. A fully unmanaged BO instead implements save in its local saver class. SAVE is the phase name; it does not mean every scenario uses a method named save.
+
+5. CLEANUP - clear transaction-local buffers when the LUW finishes, including after rollback. This prevents old working data from leaking into the next transaction. CLEANUP_FINALIZE is a separate early-failure hook when FINALIZE or CHECK_BEFORE_SAVE fails in an involved BO; it can undo work done during finalization. It is not the last step of a successful save, and you should not assume every rejected save automatically discards all user input.
+
+Example: two order items cost 40 and 60. FINALIZE calculates 100. CHECK_BEFORE_SAVE detects a bad delivery date, so the save stops: no late document number and no persisted order. With a valid date, late numbering can assign 4711 and persistence writes the order and items. The transaction owner completes the commit; cleanup then removes the working data. A handler or saver must not issue its own commit.
+
+Senior detail: the point of no return means ordinary business checks must already have passed. It does not mean a database outage is impossible. SAP also documents a special failure-capable saver, CL_ABAP_BEHAVIOR_SAVER_FAILED, for supported cases such as BAPI integration. Check the exact scenario and release rather than treating that exception as permission to move normal validation into late save.
+
+**Avoid this mistake:** Do not ban all EML changes inside FINALIZE, put normal validation after the point of no return, or confuse save_modified in a managed BO with the save method of a fully unmanaged BO. CLEANUP_FINALIZE belongs to the early-failure path.
 
 **Read and verify this answer:**
 
-- [SAP RAP BO contract](https://help.sap.com/docs/abap-cloud/abap-rap/rap-business-object-contract) - Check the RAP implementation type and what is allowed at this point in the transaction.
-- [SAP BAPI consumption in RAP: late numbering and save sequence](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US) - Check the RAP implementation type and what is allowed at this point in the transaction.
+- [SAP: Save Sequence Runtime](https://help.sap.com/docs/abap-cloud/abap-rap/save-sequence-runtime) - Phase order, the last buffer-change phase, the point of no return and early failure handling.
+- [SAP: Save options](https://help.sap.com/docs/abap-cloud/abap-rap/save) - Managed persistence, additional save and replacement persistence are different choices.
+- [SAP: Implementing Additional Save](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-additional-save) - The save_modified hook supplements managed persistence and receives change information.
+- [SAP: TYPE REQUEST FOR](https://help.sap.com/docs/abap-cloud/abap-keyword/type-request-for) - Both managed BO save extensions use save_modified with create, update and delete inputs.
+- [SAP: CLEANUP_FINALIZE](https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/f030096abe1d41f9ac7549f0290b9c09.html?locale=en-US) - CLEANUP_FINALIZE is an early-failure hook; the buffer lifecycle differs from normal end-of-LUW cleanup.
+- [SAP: BAPI integration and late numbering](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US&state=PRODUCTION&version=sap_cross_product_abap) - Special BAPI integration can need a failure-capable saver. Verify product and release support.
 
 <details>
-<summary>Visual: RAP transaction and workflow boundary</summary>
+<summary>Visual: RAP save sequence and early failure path</summary>
 
-![RAP transaction and workflow boundary](../visuals/rap-transaction.svg)
+![RAP save sequence and early failure path](../visuals/rap-save-sequence.svg)
 
-Separate the local transaction from event delivery and the later workflow callback.
+Follow one order from total calculation to buffer cleanup. The orange branch stops a rejected save before late numbering and persistence.
 
-**Explain it:** What is lost if a handler calls a committing legacy API?
+**Explain it:** Where is the last buffer-change phase, and when is the point of no return reached?
 
-**Limit:** Exact RAP save methods and supported event infrastructure depend on scenario and release.
+**Limit:** Simplified phase flow, not a trace of every runtime call. Managed and unmanaged implementation hooks differ; special late-failure support is scenario- and release-dependent.
 
 </details>
 
 <details>
-<summary>Visual: RAP buffer with a concrete value change</summary>
+<summary>Visual: Save options: who writes the data and which method runs?</summary>
 
-![RAP buffer with a concrete value change](../visuals/rap-buffer-example.svg)
+![Save options: who writes the data and which method runs?](../visuals/rap-save-methods.svg)
 
-During modification, the transactional view can show 120 EUR while saved data still shows 100 EUR.
+Compare four persistence choices. Both save extensions of managed BOs use save_modified; a fully unmanaged BO uses save.
 
-**Explain it:** Why can a direct SQL read be the wrong way to read the BO during modification?
+**Explain it:** Why is with unmanaged save not the same implementation as a fully unmanaged BO?
 
-**Limit:** Simplified single-record example, not a promise about a particular SQL isolation level.
+**Limit:** Conceptual ownership comparison. The complete BDEF, change-image options and saver signatures depend on the scenario and release.
 
 </details>
 

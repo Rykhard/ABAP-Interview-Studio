@@ -1,8 +1,8 @@
 # Visual provenance and reuse
 
-Reviewed 11 October 2026. All 68 teaching visuals were created for this preparation pack. No external screenshots, stock artwork or SAP documentation figures were copied.
+Reviewed 12 October 2026. All 70 teaching visuals were created for this preparation pack. No external screenshots, stock artwork or SAP documentation figures were copied.
 
-- 66 vector diagrams and worked examples: authored in Python with ReportLab; source files are `scripts/build.py`, `scripts/visual_classic.py` `scripts/visual_modern.py` `scripts/visual_integration.py` `scripts/visual_senior.py`, `scripts/visual_rap_recall.py`, `scripts/visual_foundations_deep.py`, `scripts/visual_patterns.py` and `scripts/visual_delivery_hana.py`. Supplied as SVG and PNG.
+- 68 vector diagrams and worked examples: authored in Python with ReportLab; source files are `scripts/build.py`, `scripts/visual_classic.py` `scripts/visual_modern.py` `scripts/visual_integration.py` `scripts/visual_senior.py`, `scripts/visual_rap_recall.py`, `scripts/visual_foundations_deep.py`, `scripts/visual_patterns.py` `scripts/visual_delivery_hana.py` and `scripts/visual_save_sequence.py`. Supplied as SVG and PNG.
 - 2 raster illustrations: created with the built-in image_gen tool, inspected for the required story and labels, and copied into this repository. They illustrate analogies, not literal SAP architecture. Supplied as PNG.
 - Technical source references are attached to the relevant question modules and visual atlas pages. These original visuals summarize teaching concepts; they are not official SAP diagrams.
 - The catalog maps every visual to existing question IDs. An image may support several questions; that does not replace the full answer.
@@ -41,3 +41,7 @@ The accepted image correctly shows both initial version 7 copies, Alice's result
 ## Foundations and quiz revision
 
 Twenty-eight new editable teaching plates were added: twelve foundations/OO, six pattern comparisons, eight RAP recall examples and two HANA/delivery reviews. Their purpose is to expose a specific mechanism or decision with observable inputs/outcomes. All 43 new questions have linked visual support. The complete catalog links 68 visuals to 270 unique questions; multiple relevant questions can share the same plate. Captions distinguish concrete mechanisms from simplified analogies.
+
+## Save sequence diagrams, 12 October 2026
+
+Two original vector teaching diagrams were added for RAP-05: the save phases with the point of no return and early-failure branch, and the four persistence ownership choices. SAP documentation supplies the technical concepts; the layout and order example were authored for this pack. The atlas contains both, and their PNGs are included in the illustrated flashcard media.

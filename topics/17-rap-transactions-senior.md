@@ -89,6 +89,19 @@ Test order creation, update, deletion, and a rejected save. The business audit s
 - [SAP: Save options](https://help.sap.com/docs/btp/fc4c71aa50014fd1b43721701471913d/11e2c9d9a2c8420f88d1cf2d6c015c2b.html?version=202310.002) - Read what this operation is allowed to do in this RAP phase, and check support on the target release.
 
 <details>
+<summary>Visual: Save options: who writes the data and which method runs?</summary>
+
+![Save options: who writes the data and which method runs?](../visuals/rap-save-methods.svg)
+
+Compare four persistence choices. Both save extensions of managed BOs use save_modified; a fully unmanaged BO uses save.
+
+**Explain it:** Why is with unmanaged save not the same implementation as a fully unmanaged BO?
+
+**Limit:** Conceptual ownership comparison. The complete BDEF, change-image options and saver signatures depend on the scenario and release.
+
+</details>
+
+<details>
 <summary>Visual: RAP transaction and workflow boundary</summary>
 
 ![RAP transaction and workflow boundary](../visuals/rap-transaction.svg)
@@ -169,6 +182,19 @@ A database outage is a different technical failure and needs its supported recov
 
 - [SAP: General RAP BO implementation contract](https://help.sap.com/docs/abap-cloud/abap-rap/general-rap-bo-implementation-contract) - Read what this operation is allowed to do in this RAP phase, and check support on the target release.
 - [SAP: BAPI consumption, late numbering and save sequence](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US&state=PRODUCTION&version=sap_cross_product_abap) - Read what this operation is allowed to do in this RAP phase, and check support on the target release.
+
+<details>
+<summary>Visual: RAP save sequence and early failure path</summary>
+
+![RAP save sequence and early failure path](../visuals/rap-save-sequence.svg)
+
+Follow one order from total calculation to buffer cleanup. The orange branch stops a rejected save before late numbering and persistence.
+
+**Explain it:** Where is the last buffer-change phase, and when is the point of no return reached?
+
+**Limit:** Simplified phase flow, not a trace of every runtime call. Managed and unmanaged implementation hooks differ; special late-failure support is scenario- and release-dependent.
+
+</details>
 
 <details>
 <summary>Visual: RAP transaction and workflow boundary</summary>

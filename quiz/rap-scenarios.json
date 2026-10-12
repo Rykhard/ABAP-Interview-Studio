@@ -1118,5 +1118,33 @@
       }
     ],
     "correctOption": "d"
+  },
+  {
+    "id": "QUIZ-RAP-41",
+    "questionId": "RAP-05",
+    "prompt": "An order uses late numbering. Which sequence correctly places the point of no return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "FINALIZE -> CHECK_BEFORE_SAVE -> point of no return -> ADJUST_NUMBERS -> persistence -> CLEANUP.",
+        "explanation": "Finish the data and pass all final checks first. Then assign late keys and write the data. The transaction owner completes the commit; cleanup clears the working buffer."
+      },
+      {
+        "id": "b",
+        "text": "FINALIZE -> point of no return -> CHECK_BEFORE_SAVE -> ADJUST_NUMBERS -> persistence -> CLEANUP.",
+        "explanation": "Finishing calculations is not enough. Every involved BO must pass CHECK_BEFORE_SAVE before the point of no return is reached."
+      },
+      {
+        "id": "c",
+        "text": "FINALIZE -> ADJUST_NUMBERS -> CHECK_BEFORE_SAVE -> point of no return -> persistence -> CLEANUP.",
+        "explanation": "Late numbering belongs after the successful final checks, not before them. Do not confuse it with early numbering in the interaction phase."
+      },
+      {
+        "id": "d",
+        "text": "FINALIZE -> CHECK_BEFORE_SAVE -> point of no return -> ADJUST_NUMBERS -> persistence -> CLEANUP_FINALIZE.",
+        "explanation": "CLEANUP_FINALIZE is for a failure in FINALIZE or CHECK_BEFORE_SAVE. Normal end-of-transaction cleanup uses CLEANUP."
+      }
+    ],
+    "correctOption": "a"
   }
 ]

@@ -18,7 +18,7 @@ Use Search all topics and questions, or Ctrl+K / Cmd+K, to search all 329 questi
 
 Practice uses one session builder and defaults to Interview practice across all questions and levels. Choose a subject, All questions / New questions / Retry mistakes, and a session of 5, 10, 20 or all available questions. More settings contains optional difficulty and search filters. New means no attempt in the selected format; retry uses the latest incorrect quiz attempt or spoken self-rating of 0 or 1.
 
-Interview practice covers all 329 questions: explain the answer aloud, reveal the model answer, then give yourself a score of 0-3. Multiple-choice quiz covers the 103 questions with authored choices and explains all four options after you submit. For RAP, the coverage is 52 interview questions and 24 multiple-choice questions. The format cards make this distinction visible before you start. Quiz XP and spoken readiness are tracked separately; no microphone recording or automatic spoken grading is used.
+Interview practice covers all 329 questions: explain the answer aloud, reveal the model answer, then give yourself a score of 0-3. Multiple-choice quiz covers the 104 questions with authored choices and explains all four options after you submit. For RAP, the coverage is 52 interview questions and 25 multiple-choice questions. The format cards make this distinction visible before you start. Quiz XP and spoken readiness are tracked separately; no microphone recording or automatic spoken grading is used.
 
 During a session, global search and opening a question preserve the session in memory. Resume practice returns to the same fixed question list and current position. This works within the same page; reload does not preserve an unfinished session.
 

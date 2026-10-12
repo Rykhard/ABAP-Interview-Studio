@@ -1,5 +1,29 @@
 [
   {
+    "id": "rap-save-sequence",
+    "title": "RAP save sequence and early failure path",
+    "questions": [
+      "RAP-05",
+      "SRAP-03"
+    ],
+    "caption": "Follow one order from total calculation to buffer cleanup. The orange branch stops a rejected save before late numbering and persistence.",
+    "recall": "Where is the last buffer-change phase, and when is the point of no return reached?",
+    "limit": "Simplified phase flow, not a trace of every runtime call. Managed and unmanaged implementation hooks differ; special late-failure support is scenario- and release-dependent.",
+    "image": "visuals/rap-save-sequence.svg"
+  },
+  {
+    "id": "rap-save-methods",
+    "title": "Save options: who writes the data and which method runs?",
+    "questions": [
+      "RAP-05",
+      "SRAP-02"
+    ],
+    "caption": "Compare four persistence choices. Both save extensions of managed BOs use save_modified; a fully unmanaged BO uses save.",
+    "recall": "Why is with unmanaged save not the same implementation as a fully unmanaged BO?",
+    "limit": "Conceptual ownership comparison. The complete BDEF, change-image options and saver signatures depend on the scenario and release.",
+    "image": "visuals/rap-save-methods.svg"
+  },
+  {
     "id": "clean-core-levels",
     "title": "Clean Core levels A-D",
     "questions": [
@@ -31,7 +55,6 @@
     "title": "RAP transaction and workflow boundary",
     "questions": [
       "RAP-04",
-      "RAP-05",
       "RAP-15",
       "RICEFW-11",
       "RICEFW-12",
@@ -211,7 +234,6 @@
     "questions": [
       "RAP-03",
       "RAP-04",
-      "RAP-05",
       "RAP-08",
       "RAP-15",
       "SRAP-01",

@@ -26,6 +26,7 @@ from visual_rap_recall import build_rap_recall_visuals
 from visual_foundations_deep import build_foundations_deep_visuals
 from visual_patterns import build_pattern_visuals
 from visual_delivery_hana import build_delivery_hana_visuals
+from visual_save_sequence import build_save_sequence_visuals
 from study_catalog import ordered_modules, is_cloud, catalog
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,9 +46,9 @@ assert len(lookup)==len(questions), 'Question IDs must be unique'
 assert len(modules)>=23
 assert sum(q["level"] == "Senior" for q in questions) >= 96
 
-visual_items = [
+visual_items = build_save_sequence_visuals() + [
     dict(id='clean-core-levels',title='Clean Core levels A-D',questions=['CORE-01','CORE-02','CORE-03','CORE-04','CORE-05','CORE-06','CORE-09','CORE-13','CORE-16','CORE-18'],caption='Read each level as a classification of the actual SAP dependency or extension technology.',recall='Which configured Clean Core finding priority corresponds to levels B, C and D?',limit='This mapping is specific to Clean Core usage checks; it does not classify every ATC finding.'),
-    dict(id='rap-transaction',title='RAP transaction and workflow boundary',questions=['RAP-04','RAP-05','RAP-15','RICEFW-11','RICEFW-12','RICEFW-14'],caption='Separate the local transaction from event delivery and the later workflow callback.',recall='What is lost if a handler calls a committing legacy API?',limit='Exact RAP save methods and supported event infrastructure depend on scenario and release.'),
+    dict(id='rap-transaction',title='RAP transaction and workflow boundary',questions=['RAP-04','RAP-15','RICEFW-11','RICEFW-12','RICEFW-14'],caption='Separate the local transaction from event delivery and the later workflow callback.',recall='What is lost if a handler calls a committing legacy API?',limit='Exact RAP save methods and supported event infrastructure depend on scenario and release.'),
     dict(id='extensibility-decision',title='Extension placement decision',questions=['CORE-10','CORE-11','CORE-15','CORE-18','BTP-01'],caption='Start from the business need and transaction boundary before choosing an extension location.',recall='When would local transactional consistency favor an on-stack extension?',limit='Placement does not establish Clean Core level or availability in a specific edition.'),
 ] + build_classic_visuals() + build_modern_visuals() + build_integration_visuals() + build_senior_visuals() + build_rap_recall_visuals() + build_foundations_deep_visuals() + build_pattern_visuals() + build_delivery_hana_visuals() + [
     dict(id='draft-storage-illustration',title='Three storage lifetimes: an illustrated analogy',questions=['RAP-03','RAP-12'],caption='The desk represents the current transactional buffer; the draft cabinet represents persistent work across requests; the shared archive represents saved active data.',recall='Which of the three can survive several HTTP requests without becoming active business data?',limit='An analogy, not literal SAP storage architecture or a mandatory three-stage pipeline. A new draft may have no active instance. Active business records may still be updated.',raster=True),

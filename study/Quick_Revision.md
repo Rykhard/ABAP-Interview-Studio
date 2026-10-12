@@ -270,6 +270,19 @@ A database outage is a different technical failure and needs its supported recov
 - [SAP: BAPI consumption, late numbering and save sequence](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence?locale=en-US&state=PRODUCTION&version=sap_cross_product_abap) - Read what this operation is allowed to do in this RAP phase, and check support on the target release.
 
 <details>
+<summary>Visual: RAP save sequence and early failure path</summary>
+
+![RAP save sequence and early failure path](../visuals/rap-save-sequence.svg)
+
+Follow one order from total calculation to buffer cleanup. The orange branch stops a rejected save before late numbering and persistence.
+
+**Explain it:** Where is the last buffer-change phase, and when is the point of no return reached?
+
+**Limit:** Simplified phase flow, not a trace of every runtime call. Managed and unmanaged implementation hooks differ; special late-failure support is scenario- and release-dependent.
+
+</details>
+
+<details>
 <summary>Visual: RAP transaction and workflow boundary</summary>
 
 ![RAP transaction and workflow boundary](../visuals/rap-transaction.svg)

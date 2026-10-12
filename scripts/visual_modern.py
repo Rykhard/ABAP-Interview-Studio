@@ -74,7 +74,7 @@ def build_modern_visuals():
     panel(d,43,123,340,112,'Transactional read','Use EML for BO semantics and the current transactional view.')
     panel(d,493,123,340,112,'Completion owner','Framework or external EML consumer requests transaction completion.')
     note(d,'Behavior handlers and savers must not issue COMMIT WORK or COMMIT ENTITIES themselves.')
-    out.append(make('rap-buffer-example','RAP buffer with a concrete value change','RAP-03 RAP-04 RAP-05 RAP-08 RAP-15','During modification, the transactional view can show 120 EUR while saved data still shows 100 EUR.','Why can a direct SQL read be the wrong way to read the BO during modification?','Simplified single-record example, not a promise about a particular SQL isolation level.',d))
+    out.append(make('rap-buffer-example','RAP buffer with a concrete value change','RAP-03 RAP-04 RAP-08 RAP-15','During modification, the transactional view can show 120 EUR while saved data still shows 100 EUR.','Why can a direct SQL read be the wrong way to read the BO during modification?','Simplified single-record example, not a promise about a particular SQL isolation level.',d))
 
     d=base('Four hooks answer four different questions','Choose by responsibility and supported trigger, not by an assumed method order')
     panel(d,38,282,386,166,'Precheck: accept this request?','Check incoming changes before they are applied to the transactional buffer. Example: reject an invalid requested transition.')

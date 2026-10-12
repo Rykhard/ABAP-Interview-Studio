@@ -68,7 +68,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | --- | --- |
 | [RAP-03 - What is the transactional buffer?](../topics/05-rap-foundations.md#rap-03-what-is-the-transactional-buffer) | Core |
 | [RAP-04 - Where may COMMIT ENTITIES be called?](../topics/05-rap-foundations.md#rap-04-where-may-commit-entities-be-called) | Core |
-| [RAP-05 - How do you explain the RAP save sequence?](../topics/05-rap-foundations.md#rap-05-how-do-you-explain-the-rap-save-sequence) | Advanced |
+| [RAP-05 - What are the steps of the RAP save sequence, and where is the point of no return?](../topics/05-rap-foundations.md#rap-05-what-are-the-steps-of-the-rap-save-sequence-and-where-is-the-point-of-no-return) | Advanced |
 | [RAP-15 - What should be checked before wrapping a BAPI in RAP?](../topics/05-rap-foundations.md#rap-15-what-should-be-checked-before-wrapping-a-bapi-in-rap) | Advanced |
 | [SRAP-02 - An audit record must be saved with every managed order change. Should you use a determination, additional save, or unmanaged save?](../topics/17-rap-transactions-senior.md#srap-02-an-audit-record-must-be-saved-with-every-managed-order-change-should-you-use-a-determination-additional-save-or-unmanaged-save) | Senior |
 | [SRAP-03 - A developer puts ordinary business validation in SAVE because the final data is available there. What would you change?](../topics/17-rap-transactions-senior.md#srap-03-a-developer-puts-ordinary-business-validation-in-save-because-the-final-data-is-available-there-what-would-you-change) | Senior |

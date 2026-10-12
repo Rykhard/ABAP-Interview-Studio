@@ -75,4 +75,9 @@
  #globalSearchForm button { padding: 7px 10px; }
 }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior: auto; } }
+.explanation-steps { padding-left: 1.6em; margin: 0; }
+.explanation-steps > li { padding-left: .3em; margin-bottom: 1.35em; }
+.explanation-steps > li::marker { font-weight: 700; color: var(--teal, #126554); }
+.explanation-steps > li > strong { color: var(--teal, #126554); }
+.explanation-steps > li > p { margin-top: .35em; }
 @media print { .app-bar,.answer-toolbar,.answer-state,.question-links,.skip-link,#searchDialog { display:none; } }

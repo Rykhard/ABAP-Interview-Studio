@@ -2,6 +2,34 @@
 
 Use these original teaching visuals alongside the full answers. Cover the explanation and answer the recall prompt aloud. Illustrations are analogies; diagrams are simplified models with explicit limits. [Download the printable atlas](../pdf/ABAP_Visual_Atlas.pdf).
 
+## RAP save sequence and early failure path
+
+![RAP save sequence and early failure path](rap-save-sequence.png)
+
+Follow one order from total calculation to buffer cleanup. The orange branch stops a rejected save before late numbering and persistence.
+
+**Explain it:** Where is the last buffer-change phase, and when is the point of no return reached?
+
+**Limit:** Simplified phase flow, not a trace of every runtime call. Managed and unmanaged implementation hooks differ; special late-failure support is scenario- and release-dependent.
+
+**Questions:** RAP-05, SRAP-03
+
+[Full-size PNG](rap-save-sequence.png) | [Editable SVG](rap-save-sequence.svg)
+
+## Save options: who writes the data and which method runs?
+
+![Save options: who writes the data and which method runs?](rap-save-methods.png)
+
+Compare four persistence choices. Both save extensions of managed BOs use save_modified; a fully unmanaged BO uses save.
+
+**Explain it:** Why is with unmanaged save not the same implementation as a fully unmanaged BO?
+
+**Limit:** Conceptual ownership comparison. The complete BDEF, change-image options and saver signatures depend on the scenario and release.
+
+**Questions:** RAP-05, SRAP-02
+
+[Full-size PNG](rap-save-methods.png) | [Editable SVG](rap-save-methods.svg)
+
 ## Clean Core levels A-D
 
 ![Clean Core levels A-D](clean-core-levels.png)
@@ -26,7 +54,7 @@ Separate the local transaction from event delivery and the later workflow callba
 
 **Limit:** Exact RAP save methods and supported event infrastructure depend on scenario and release.
 
-**Questions:** RAP-04, RAP-05, RAP-15, RICEFW-11, RICEFW-12, RICEFW-14, SRAP-02, SRAP-03, SRAP-15, SRAP-18
+**Questions:** RAP-04, RAP-15, RICEFW-11, RICEFW-12, RICEFW-14, SRAP-02, SRAP-03, SRAP-15, SRAP-18
 
 [Full-size PNG](rap-transaction.png) | [Editable SVG](rap-transaction.svg)
 
@@ -180,7 +208,7 @@ During modification, the transactional view can show 120 EUR while saved data st
 
 **Limit:** Simplified single-record example, not a promise about a particular SQL isolation level.
 
-**Questions:** RAP-03, RAP-04, RAP-05, RAP-08, RAP-15, SRAP-01, SRAP-17, SRAP-19
+**Questions:** RAP-03, RAP-04, RAP-08, RAP-15, SRAP-01, SRAP-17, SRAP-19
 
 [Full-size PNG](rap-buffer-example.png) | [Editable SVG](rap-buffer-example.svg)
 

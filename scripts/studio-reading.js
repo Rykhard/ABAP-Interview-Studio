@@ -13,12 +13,20 @@ function diagramPanel(q,related){
 function visualPanel(q){
  const related=visuals.filter(v=>v.questions.includes(q.id)),examples=codeExamples.filter(example=>example.questions.includes(q.id));
  if(!related.length&&!examples.length)return '';
- const showCode=examples.length&&(!related.length||explanationModes.get(q.id)!=='diagram');
+ const showCode=examples.length&&(!related.length||(explanationModes.get(q.id)||q.defaultExplanation)!=='diagram');
  const picker=examples.length&&related.length?`<div class="explanation-picker" role="group" aria-label="Explanation format"><button data-explanation-mode="code" data-question="${q.id}" aria-pressed="${!!showCode}">Code example</button><button data-explanation-mode="diagram" data-question="${q.id}" aria-pressed="${!showCode}">Diagram</button></div>`:'';
  return `<div class="visual-panel" data-visual-panel="${q.id}">${picker}${showCode?codePanel(q,examples):diagramPanel(q,related)}</div>`;
 }
 $('view').addEventListener('click',event=>{const button=event.target.closest('[data-explanation-mode]');if(!button)return;const q=byId.get(button.dataset.question);explanationModes.set(q.id,button.dataset.explanationMode);button.closest('[data-visual-panel]').outerHTML=visualPanel(q);document.querySelector(`[data-visual-panel="${q.id}"] [data-explanation-mode="${button.dataset.explanationMode}"]`).focus({preventScroll:true});});
-function readingParagraphs(text){return text.split(/\n\s*\n/).filter(part=>part.trim()).map(part=>`<p>${esc(part.trim())}</p>`).join('');}
+function readingParagraphs(text){
+ let output='',steps=[];
+ const flush=()=>{if(steps.length){output+=`<ol class="explanation-steps">${steps.map(step=>`<li value="${Number(step[1])}"><strong>${esc(step[2])}</strong><p>${esc(step[3])}</p></li>`).join('')}</ol>`;steps=[];}};
+ for(const part of text.split(/\n\s*\n/).map(part=>part.trim()).filter(Boolean)){
+  const step=part.match(/^(\d+)\. ([A-Z][A-Z0-9_]+) - ([\s\S]+)$/);
+  if(step)steps.push(step);else{flush();output+=`<p>${esc(part)}</p>`;}
+ }
+ flush();return output;
+}
 function answer(q){const panel=visualPanel(q);return `<div class="answer reading-layout ${panel?'has-visual':''}"><div class="answer-summary"><div class="label">Short spoken answer</div>${readingParagraphs(q.answer)}</div>${panel}<div class="answer-reasoning"><div class="label">Reasoning and example</div>${readingParagraphs(q.detail)}<div class="trap"><strong>Avoid this mistake</strong><br>${esc(q.pitfall)}</div>${seniorRubric(q)}</div></div>`;}
 let visualZoom=1,visualOpener=null;
 function sizeVisual(){const img=$('visualImage'),stage=$('visualStage');if(!img.naturalWidth||!stage.clientWidth)return;const fit=Math.min(stage.clientWidth/img.naturalWidth,stage.clientHeight/img.naturalHeight,1);img.style.width=Math.round(img.naturalWidth*fit*visualZoom)+'px';img.style.height=Math.round(img.naturalHeight*fit*visualZoom)+'px';$('visualZoomLabel').textContent=visualZoom===1?'Fit':Math.round(visualZoom*100)+'% of fit';$('visualZoomOut').disabled=visualZoom===1;$('visualZoomIn').disabled=visualZoom===4;}

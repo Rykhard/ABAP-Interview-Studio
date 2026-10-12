@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="880" height="740" preserveAspectRatio="xMinYMin meet" viewBox="0 0 880 740" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="880" height="740"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-740)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="880" height="740" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;"/>
+			<text x="28" y="704" style="font-family: Helvetica-Bold; font-size: 23px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1408) scale(1,-1)">RAP save sequence: one order, step by step</text>
+			<text x="28" y="680" style="font-family: Helvetica; font-size: 14px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,1360) scale(1,-1)">Prepare and check first. Then assign the final number and write.</text>
+			<rect x="28" y="582" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="42" y="639" style="font-family: Helvetica-Bold; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,1278) scale(1,-1)">1  FINALIZE</text>
+			<text x="42" y="616" style="font-family: Helvetica; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1232) scale(1,-1)">Calculate the order total.</text>
+			<text x="42" y="595" style="font-family: Helvetica; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,1190) scale(1,-1)">Last phase for allowed buffer changes.</text>
+			<rect x="28" y="482" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="42" y="539" style="font-family: Helvetica-Bold; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,1078) scale(1,-1)">2  CHECK_BEFORE_SAVE</text>
+			<text x="42" y="516" style="font-family: Helvetica; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1032) scale(1,-1)">Check that the delivery date is valid.</text>
+			<text x="42" y="495" style="font-family: Helvetica; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,990) scale(1,-1)">All involved BOs must pass the checks.</text>
+			<rect x="28" y="336" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="42" y="393" style="font-family: Helvetica-Bold; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,786) scale(1,-1)">3  ADJUST_NUMBERS  (late numbering)</text>
+			<text x="42" y="370" style="font-family: Helvetica; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,740) scale(1,-1)">Assign final document number 4711.</text>
+			<text x="42" y="349" style="font-family: Helvetica; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,698) scale(1,-1)">Skip this assignment when using early numbering.</text>
+			<rect x="28" y="236" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="42" y="293" style="font-family: Helvetica-Bold; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,586) scale(1,-1)">4  SAVE  (persistence phase)</text>
+			<text x="42" y="270" style="font-family: Helvetica; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,540) scale(1,-1)">Write the order and its items.</text>
+			<text x="42" y="249" style="font-family: Helvetica; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,498) scale(1,-1)">The implementation depends on the save option.</text>
+			<rect x="28" y="86" width="530" height="80" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="42" y="143" style="font-family: Helvetica-Bold; font-size: 16px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,286) scale(1,-1)">5  CLEANUP</text>
+			<text x="42" y="120" style="font-family: Helvetica; font-size: 14px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,240) scale(1,-1)">Clear transaction-local working data.</text>
+			<text x="42" y="99" style="font-family: Helvetica; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,198) scale(1,-1)">The next LUW must not inherit old buffer entries.</text>
+			<path d="M 290,579 L 290,565 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="290 565, 285 575, 295 575" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<path d="M 290,479 L 290,419 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="290 419, 285 429, 295 429" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<path d="M 290,333 L 290,319 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="290 319, 285 329, 295 329" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<path d="M 290,233 L 290,169 Z" style="stroke: rgb(32%,41%,48%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="290 169, 285 179, 295 179" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,41%,48%); fill-rule: evenodd;"/>
+			<rect x="30" y="434" width="526" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="43" y="446" style="font-family: Helvetica-Bold; font-size: 14px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,892) scale(1,-1)">POINT OF NO RETURN: after all checks pass</text>
+			<rect x="30" y="187" width="526" height="35" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,94%,92%); fill-rule: evenodd;"/>
+			<text x="43" y="199" style="font-family: Helvetica-Bold; font-size: 13px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,398) scale(1,-1)">Transaction owner completes the database commit</text>
+			<rect x="606" y="460" width="246" height="196" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="620" y="630" style="font-family: Helvetica-Bold; font-size: 17px;fill: rgb(74%,32%,12%); stroke:none;" transform="translate(0,1260) scale(1,-1)">Early failure path</text>
+			<text x="620" y="601" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1202) scale(1,-1)">FINALIZE or CHECK_BEFORE_SAVE</text>
+			<text x="620" y="583" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1166) scale(1,-1)">fails in any involved BO.</text>
+			<text x="620" y="539" style="font-family: Helvetica-Bold; font-size: 16px;fill: rgb(74%,32%,12%); stroke:none;" transform="translate(0,1078) scale(1,-1)">CLEANUP_FINALIZE</text>
+			<text x="620" y="513" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,1026) scale(1,-1)">Run early-failure cleanup;</text>
+			<text x="620" y="495" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,990) scale(1,-1)">do not continue to late</text>
+			<text x="620" y="477" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,954) scale(1,-1)">saving.</text>
+			<path d="M 560,623 L 602,623 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="602 623, 592 618, 592 628" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,32%,12%); fill-rule: evenodd;"/>
+			<path d="M 560,524 L 602,524 Z" style="stroke: rgb(74%,32%,12%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="602 524, 592 519, 592 529" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,32%,12%); fill-rule: evenodd;"/>
+			<rect x="606" y="238" width="246" height="186" rx="8" ry="8" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="620" y="397" style="font-family: Helvetica-Bold; font-size: 17px;fill: rgb(7%,39%,32%); stroke:none;" transform="translate(0,794) scale(1,-1)">Late save</text>
+			<text x="620" y="371" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,742) scale(1,-1)">Ordinary business checks must</text>
+			<text x="620" y="353" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,706) scale(1,-1)">already have passed. A</text>
+			<text x="620" y="335" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,670) scale(1,-1)">technical failure is not</text>
+			<text x="620" y="317" style="font-family: Helvetica; font-size: 13px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,634) scale(1,-1)">impossible.</text>
+			<text x="620" y="287" style="font-family: Helvetica; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,574) scale(1,-1)">Special BAPI failure handling</text>
+			<text x="620" y="270" style="font-family: Helvetica; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,540) scale(1,-1)">needs the documented saver</text>
+			<text x="620" y="253" style="font-family: Helvetica; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,506) scale(1,-1)">and release support.</text>
+			<text x="28" y="48" style="font-family: Helvetica-Bold; font-size: 17px;fill: rgb(7%,16%,24%); stroke:none;" transform="translate(0,96) scale(1,-1)">Remember: calculate -&gt; check -&gt; number -&gt; write -&gt; clear.</text>
+			<text x="28" y="24" style="font-family: Helvetica; font-size: 12px;fill: rgb(32%,41%,48%); stroke:none;" transform="translate(0,48) scale(1,-1)">Runtime phases, not five methods you must implement in every BO. No commit inside a handler or saver.</text>
+		</g>
+	</g>
+</svg>

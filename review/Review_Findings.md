@@ -1,6 +1,6 @@
 # Content review
 
-The current curriculum contains 329 study questions, 103 multiple-choice challenges and 68 teaching visuals. ABAP Cloud, RAP and Clean Core form the largest curriculum track, with 154 questions including 96 senior scenarios. The web topic tree brings all difficulty levels together within each subject.
+The current curriculum contains 329 study questions, 104 multiple-choice challenges and 70 teaching visuals. ABAP Cloud, RAP and Clean Core form the largest curriculum track, with 154 questions including 96 senior scenarios. The web topic tree brings all difficulty levels together within each subject.
 
 The October 2026 review covered every question and quiz. Corrections clarified classic commit/update outcomes, tRFC registration, XML namespaces, OData batching, CDS association cardinality, RAP query-provider contracts and BAPI authorization integration. Feature references and three quiz items were refined. Existing question IDs and quiz answer keys were preserved.
 
@@ -9,3 +9,7 @@ Technical answers include primary references with release and scenario notes. Si
 The site tracks self-assessed spoken readiness separately from multiple-choice results. Reading an answer or recognizing a quiz choice does not establish independent interview readiness. No SAP runtime, ATC, ABAP Unit or production performance execution is claimed.
 
 See the [source register](Sources.md), [market research](Market_Research.md) and [visual provenance](Visual_Provenance.md).
+
+## RAP save sequence clarification, 12 October 2026
+
+RAP-05 now names all five phases, separates early-failure cleanup from normal cleanup, and explains the final-check boundary using one order example. Two original diagrams distinguish phase flow from persistence ownership. The question defaults to its process diagram; the external-caller code remains available. A linked four-option challenge brings RAP quiz coverage to 25 of 52 study questions. The stable question ID preserves existing learner readiness.
