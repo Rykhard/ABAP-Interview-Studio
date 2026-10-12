@@ -6,7 +6,9 @@ The Russian pack covers the interface, topic tree, questions, answers, examples,
 
 Existing diagram artwork retains its English labels. Its accompanying explanation and recall prompt are localized. Printable PDFs, Markdown handbooks and Anki exports remain English. Original documentation links open the publisher's pages, whose language depends on the publisher.
 
-Changing language keeps the current question, filters, selected study format, lesson/code step, saved questions and ongoing practice session. Scores and progress share stable IDs across languages. The switch saves an in-page snapshot before reloading the same URL; this does not add general session recovery after closing a tab. Search accepts English and Russian question text in either interface language.
+Changing language keeps the current question, filters, selected study format, diagram selection, lesson/code step, saved questions and ongoing practice session. Scores and progress share stable IDs across languages. The switch saves an in-page snapshot before reloading the same URL; this does not add general session recovery after closing a tab. Search accepts English and Russian question text in either interface language.
+
+Reading preferences provide a global Explanation/Code default. Questions without code use Explanation; a question-specific Step by step choice is retained. Selecting a new global default clears older Explanation/Code overrides. Diagram previews open in the existing zoomable viewer.
 
 ## Maintaining translations
 

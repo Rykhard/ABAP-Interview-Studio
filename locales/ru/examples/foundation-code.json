@@ -21,7 +21,7 @@
           6
         ],
         "label": "Определить поиск",
-        "explanation": "Полный уникальный ключ — order_id. Hashed table рассчитана на такой exact-key access."
+        "explanation": "Полный уникальный ключ — order_id. HASHED TABLE рассчитана на поиск по всему этому ключу."
       },
       {
         "lines": [
@@ -30,14 +30,14 @@
           9
         ],
         "label": "Прочитать заказ 9",
-        "explanation": "Найдена строка с amount 200. Не нужны ручная сортировка и числовая позиция строки.",
+        "explanation": "Найдена строка со значением amount 200. Ручная сортировка и числовая позиция строки не нужны.",
         "questions": [
           "ABAP-02"
         ]
       }
     ],
-    "outcome": "Заказ 9 найден по ID. Standard table с empty key означала бы другой выбор доступа.",
-    "caveat": "Здесь наличие строки гарантировано. В настоящем коде обработайте отсутствие ключа; hashed key не является индексом поиска диапазонов.",
+    "outcome": "Заказ 9 найден по ID. STANDARD TABLE с EMPTY KEY означала бы другой выбор доступа.",
+    "caveat": "Здесь наличие строки гарантировано. В настоящем коде обработайте отсутствие ключа; хешированный ключ не предназначен для быстрого поиска диапазонов.",
     "references": [
       {
         "title": "SAP: внутренние таблицы",
@@ -107,7 +107,7 @@
           10
         ],
         "label": "Изменить копию",
-        "explanation": "INTO копирует строку. Значение 200 в ls_order оставляет amount таблицы равным 100."
+        "explanation": "INTO копирует строку. Значение 200 в ls_order не меняет amount исходной строки: в таблице остаётся 100."
       },
       {
         "lines": [
@@ -118,14 +118,14 @@
           15
         ],
         "label": "Изменить настоящую строку",
-        "explanation": "ASSIGNING указывает на строку. Amount таблицы становится 300. Каждый sy-subrc проверяется сразу после чтения.",
+        "explanation": "ASSIGNING указывает на саму строку. Её amount становится равен 300. Каждый sy-subrc проверяется сразу после чтения.",
         "questions": [
           "BASE-05"
         ]
       }
     ],
     "outcome": "В рабочей структуре остаётся 200, а в строке таблицы — 300. Проверяйте sy-subrc сразу после чтения, пока другая инструкция его не перезаписала.",
-    "caveat": "Field symbol указывает на исходные данные, а не на независимую копию. Не меняйте через него поля первичного ключа sorted или hashed table.",
+    "caveat": "Field symbol указывает на исходные данные, а не на независимую копию. Не меняйте через него поля первичного ключа SORTED TABLE или HASHED TABLE.",
     "references": [
       {
         "title": "SAP: внутренние таблицы",
@@ -211,7 +211,7 @@
           9
         ],
         "label": "Потребовать точное значение",
-        "explanation": "EXACT отклоняет потерю непустого символа. CATCH отмечает этот input как отклонённый."
+        "explanation": "EXACT отклоняет потерю непустого символа. CATCH отмечает входное значение как недопустимое."
       }
     ],
     "outcome": "Программа отклоняет неверный ввод вместо сохранения другого ID. Сначала проверяется возможность точного преобразования, затем — бизнес-правила.",
@@ -281,7 +281,7 @@
           7
         ],
         "label": "Очистить прежнюю привязку",
-        "explanation": "Первый поиск успешен. UNASSIGN намеренно убирает старый target."
+        "explanation": "Первый поиск успешен. UNASSIGN намеренно убирает прежнюю привязку."
       },
       {
         "lines": [
@@ -292,7 +292,7 @@
           12
         ],
         "label": "Проверить новый поиск",
-        "explanation": "AMUONT не существует. sy-subrc ненулевой, поэтому запись через прежнюю привязку AMOUNT не выполняется."
+        "explanation": "Компонента AMUONT не существует. sy-subrc ненулевой, поэтому запись через прежнюю привязку к AMOUNT не выполняется."
       }
     ],
     "outcome": "ls_order-amount остаётся 100. Проверка только IS ASSIGNED без очистки прежней привязки могла бы после неудачного поиска изменить не то поле.",
@@ -464,7 +464,7 @@
           7
         ],
         "label": "Прочитать запрошенные заказы",
-        "explanation": "Для непустого driver запрос сопоставляет order_id с его значениями.",
+        "explanation": "Для непустой входной таблицы запрос сопоставляет order_id с её значениями.",
         "questions": [
           "SQL-02"
         ]
@@ -493,7 +493,7 @@
     ],
     "intro": "Условие языка нужно разместить там, где сопоставляются тексты.",
     "language": "ABAP",
-    "context": "Фрагмент метода. Собственные fixture tables: zt_demo_order с unique order_id; zt_demo_text с unique (order_id, language) и description. language имеет CHAR 1. Дополнительная business authorization не показана.",
+    "context": "Фрагмент метода. Собственные учебные таблицы: zt_demo_order с уникальным order_id и zt_demo_text с уникальной парой (order_id, language) и полем description. Тип language — CHAR 1. Дополнительная проверка бизнес-полномочий не показана.",
     "code": "CONSTANTS co_english TYPE c LENGTH 1 VALUE 'E'.\nSELECT o~order_id, t~description\n  FROM zt_demo_order AS o\n  LEFT OUTER JOIN zt_demo_text AS t\n    ON t~order_id = o~order_id\n   AND t~language = @co_english\n  INTO TABLE @DATA(lt_orders).",
     "highlights": [
       {
@@ -519,8 +519,8 @@
         "explanation": "Заказ без английского текста остаётся. WHERE t~language = co_english удалил бы его."
       }
     ],
-    "outcome": "Заказы остаются видимыми без перевода. Указанный unique text key также не позволяет нескольким английским строкам размножить заказ.",
-    "caveat": "Отсутствующий description до передачи равен SQL NULL. Без null indicators ABAP target станет initial, поэтому один этот результат не отличает отсутствующий текст от сохранённого пустого description.",
+    "outcome": "Заказы остаются видимыми без перевода. Уникальный ключ таблицы текстов не позволяет нескольким английским строкам размножить один заказ.",
+    "caveat": "Отсутствующий description до передачи в ABAP равен SQL NULL. Без null indicators целевое поле ABAP получит начальное значение, поэтому один этот результат не отличает отсутствие текста от сохранённого пустого description.",
     "references": [
       {
         "title": "SAP: ABAP SQL",
@@ -578,7 +578,7 @@
         ]
       }
     ],
-    "outcome": "Результат содержит итоговые строки с валютами. Здесь нет text JOIN, который мог бы размножить позицию до суммы.",
+    "outcome": "Результат содержит итоговые строки с валютами. Здесь нет JOIN с текстами, который мог бы размножить позицию до суммирования.",
     "caveat": "Группировка по currency разделяет валюты, но не конвертирует их. В настоящем запросе также проверьте полномочия, диапазон чисел, десятичную точность и измеренное время выполнения.",
     "references": [
       {
@@ -614,7 +614,7 @@
           6
         ],
         "label": "Определить победившую строку",
-        "explanation": "Сортировка по новому timestamp, затем по order_id разрешает равенство; возвращается максимум одна строка."
+        "explanation": "Сортировка сначала по убыванию времени, затем по order_id разрешает равенство временных меток. Возвращается максимум одна строка."
       }
     ],
     "outcome": "Выбирается самая новая временная метка. При равенстве побеждает больший order_id — это явно заданное правило примера.",
@@ -656,11 +656,11 @@
           8
         ],
         "label": "Применить обязательное ограничение",
-        "explanation": "До query доходит только непустой набор разрешённых plants. Необязательные фильтры пользователя не должны заменять это ограничение."
+        "explanation": "До запроса доходит только непустой набор разрешённых заводов. Необязательные пользовательские фильтры не должны заменять это ограничение."
       }
     ],
-    "outcome": "Пользователь без разрешённых заводов получает ноль строк. Пустой range в условии IN сам по себе не ограничил бы выборку.",
-    "caveat": "Это только защитная проверка, а не полная реализация полномочий. Метод должен вернуть настоящие разрешённые значения. Проверяйте запрет прямого API-вызова, а не только поведение UI. Для ranges только с исключениями нужны отдельные правила.",
+    "outcome": "Пользователь без разрешённых заводов получает ноль строк. Пустая таблица диапазонов в условии IN сама по себе не ограничила бы выборку.",
+    "caveat": "Это только защитная проверка, а не полная реализация полномочий. Метод должен вернуть настоящие разрешённые значения. Проверяйте запрет прямого API-вызова, а не только поведение UI. Для диапазонов только с исключениями нужны отдельные правила.",
     "references": [
       {
         "title": "SAP: ABAP SQL",
@@ -691,7 +691,7 @@
           5
         ],
         "label": "Договориться об одной операции",
-        "explanation": "Каждая Strategy принимает сумму и сообщает, нужен ли manager."
+        "explanation": "Каждая реализация Strategy принимает сумму и сообщает, нужен ли руководитель."
       },
       {
         "lines": [
@@ -701,7 +701,7 @@
           10
         ],
         "label": "Использовать выбранную реализацию",
-        "explanation": "Один вызов обращается к реальному strategy object. Здесь координатор не ветвится по стране."
+        "explanation": "Один вызов обращается к переданному объекту стратегии. Координатор не выбирает ветку по стране."
       }
     ],
     "outcome": "Замена объекта меняет правило, а вызов координатора остаётся прежним. Это Strategy с полиморфизмом через интерфейс.",
@@ -725,7 +725,7 @@
     ],
     "intro": "Передайте зависимость один раз и используйте именно полученный объект.",
     "language": "ABAP",
-    "context": "Фрагмент constructor implementation. Класс объявляет constructor IMPORTING repository TYPE REF TO lif_repository RAISING lcx_configuration и private attribute repository того же interface type. lcx_configuration — прикладной подкласс CX_STATIC_CHECK.",
+    "context": "Фрагмент реализации конструктора. Класс объявляет constructor IMPORTING repository TYPE REF TO lif_repository RAISING lcx_configuration и закрытый атрибут repository того же интерфейсного типа. lcx_configuration — прикладной подкласс CX_STATIC_CHECK.",
     "code": "METHOD constructor.\n  IF repository IS NOT BOUND.\n    RAISE EXCEPTION TYPE lcx_configuration.\n  ENDIF.\n  me->repository = repository.\nENDMETHOD.",
     "highlights": [
       {
@@ -744,11 +744,11 @@
           6
         ],
         "label": "Сохранить переданный helper",
-        "explanation": "Production передаёт настоящий repository, тест — контролируемую реализацию того же интерфейса."
+        "explanation": "Рабочее приложение передаёт настоящий репозиторий, а тест — управляемую реализацию того же интерфейса."
       }
     ],
     "outcome": "Конструктор делает зависимость явной и проверяет её наличие. Бизнес-методам больше не нужен скрытый поиск через глобальную фабрику.",
-    "caveat": "Это обычный класс приложения. Нельзя добавлять неподдерживаемые параметры конструктора в RAP handlers, создаваемые framework. Делегируйте работу отдельному сервису или используйте разрешённые точки подмены.",
+    "caveat": "Это обычный класс приложения. Нельзя добавлять неподдерживаемые параметры конструктора в обработчики RAP, которые создаёт среда выполнения. Делегируйте работу отдельному сервису или используйте разрешённые точки подмены.",
     "references": [
       {
         "title": "SAP: ABAP Objects",
@@ -772,7 +772,7 @@
     ],
     "intro": "Неизвестная страна не должна автоматически приводить к согласованию.",
     "language": "ABAP",
-    "context": "Фрагмент factory method. get_rule принимает двухсимвольный country именованного character type, возвращает rule TYPE REF TO lif_approval и выбрасывает lcx_configuration. Оба local rule classes реализуют lif_approval без обязательных constructor parameters.",
+    "context": "Фрагмент метода простой фабрики. get_rule принимает country именованного символьного типа длиной 2, возвращает rule TYPE REF TO lif_approval и выбрасывает lcx_configuration. Оба локальных класса правил реализуют lif_approval; у их конструкторов нет обязательных параметров.",
     "code": "METHOD get_rule.\n  CONSTANTS co_poland TYPE c LENGTH 2 VALUE 'PL'.\n  CONSTANTS co_germany TYPE c LENGTH 2 VALUE 'DE'.\n  CASE country.\n    WHEN co_poland.\n      rule = NEW lcl_polish_rule( ).\n    WHEN co_germany.\n      rule = NEW lcl_german_rule( ).\n    WHEN OTHERS.\n      RAISE EXCEPTION TYPE lcx_configuration.\n  ENDCASE.\nENDMETHOD.",
     "highlights": [
       {
@@ -786,7 +786,7 @@
           8
         ],
         "label": "Сопоставить поддерживаемые варианты",
-        "explanation": "Factory создаёт одну из двух известных реализаций общего интерфейса."
+        "explanation": "Фабрика создаёт одну из двух известных реализаций общего интерфейса."
       },
       {
         "lines": [
@@ -818,7 +818,7 @@
     ],
     "intro": "Клиент работает с понятными бизнес-полями, Adapter — со старым форматом.",
     "language": "ABAP",
-    "context": "Реализация lif_payment~post: amount TYPE decfloat34 и трёхсимвольный currency именованного character type; returning result TYPE i. Связанный legacy имеет execute IMPORTING ls_request TYPE ty_legacy_request RETURNING VALUE(result) TYPE i. ty_legacy_request содержит соответствующие gross_value и curr_key.",
+    "context": "Реализация lif_payment~post: amount TYPE decfloat34, currency именованного символьного типа длиной 3, возвращаемый result TYPE i. Связанная ссылка legacy предоставляет execute IMPORTING ls_request TYPE ty_legacy_request RETURNING VALUE(result) TYPE i. Структура ty_legacy_request содержит соответствующие поля gross_value и curr_key.",
     "code": "METHOD lif_payment~post.\n  DATA(ls_request) = VALUE ty_legacy_request(\n    gross_value = amount\n    curr_key = currency ).\n  result = legacy->execute( ls_request = ls_request ).\nENDMETHOD.",
     "highlights": [
       {
@@ -829,7 +829,7 @@
           4
         ],
         "label": "Преобразовать запрос",
-        "explanation": "Public amount и currency становятся полями, ожидаемыми legacy dependency. Явный ноль тоже копируется."
+        "explanation": "Входные amount и currency становятся полями, которые ожидает старый интерфейс. Явный ноль тоже копируется."
       },
       {
         "lines": [
@@ -837,11 +837,11 @@
           6
         ],
         "label": "Делегировать одну операцию",
-        "explanation": "Adapter вызывает dependency и возвращает результат. Прикладному клиенту не нужно знать gross_value и curr_key."
+        "explanation": "Adapter вызывает зависимость и возвращает результат. Прикладному коду не нужно знать поля gross_value и curr_key."
       }
     ],
     "outcome": "Adapter преобразует поля между интерфейсами. Facade решает другую задачу: организует несколько действий, например подготовку, проверку и проведение.",
-    "caveat": "legacy — учебный локальный интерфейс, а не SAP API. Настоящая обёртка также преобразует ошибки, сохраняет проверки полномочий и правила транзакции. Она не убирает внутренний COMMIT и не делает API released.",
+    "caveat": "legacy — учебный локальный интерфейс, а не SAP API. Настоящая обёртка также преобразует ошибки, сохраняет проверки полномочий и правила транзакции. Она не убирает внутренний COMMIT и не делает API выпущенным для использования.",
     "references": [
       {
         "title": "SAP: ABAP Objects",
@@ -858,7 +858,7 @@
     ],
     "intro": "Decorator передаёт настоящий вызов дальше, добавляя своё небольшое поведение.",
     "language": "ABAP",
-    "context": "Фрагмент implementation. Класс реализует lif_sender: send IMPORTING payload TYPE string RETURNING VALUE(response) TYPE string. inner — обязательная связанная ссылка lif_sender из constructor. attempts — private integer с начальным нулём. Также объявлен METHODS get_attempts RETURNING VALUE(count) TYPE i.",
+    "context": "Фрагмент реализации. Класс реализует lif_sender: send IMPORTING payload TYPE string RETURNING VALUE(response) TYPE string. inner — обязательная связанная ссылка lif_sender, полученная через конструктор. attempts — закрытый целочисленный атрибут с начальным нулём. Также объявлен METHODS get_attempts RETURNING VALUE(count) TYPE i.",
     "code": "METHOD lif_sender~send.\n  attempts += 1.\n  response = inner->send( payload = payload ).\nENDMETHOD.\n\nMETHOD get_attempts.\n  count = attempts.\nENDMETHOD.",
     "highlights": [
       {
@@ -869,7 +869,7 @@
           4
         ],
         "label": "Обернуть без подмены",
-        "explanation": "Decorator считает попытку и передаёт вызов ровно один раз. Результат inner и выходящее исключение не превращаются в ложный успех."
+        "explanation": "Decorator считает попытку и передаёт вызов ровно один раз. Результат inner и вышедшее из него исключение не превращаются в ложный успех."
       },
       {
         "lines": [
@@ -881,7 +881,7 @@
         "explanation": "get_attempts возвращает count TYPE i. Счётчик включает неудачные вызовы, поскольку увеличивается до делегирования."
       }
     ],
-    "outcome": "Один вызов обёртки добавляет одну попытку. Внутри или снаружи Retry Decorator счётчик будет по-разному считать попытки и общие операции.",
+    "outcome": "Один вызов обёртки добавляет одну попытку. Если поставить её внутри механизма повторов, она посчитает каждую попытку; если снаружи — общий вызов.",
     "caveat": "Счётчик живёт только в объекте. Это не сохраняемый журнал и не правило повторов. Для повторной удалённой записи нужны защита от дубликатов и обработка неизвестного результата.",
     "references": [
       {
@@ -899,7 +899,7 @@
     ],
     "intro": "Недоступные данные не должны становиться успешным пустым результатом.",
     "language": "ABAP",
-    "context": "Фрагмент метода. repository — связанная local interface reference; read_price( ) возвращает decfloat34 и выбрасывает lcx_repository. get_price возвращает price TYPE decfloat34 и объявляет RAISING lcx_price_unavailable. Оба исключения — прикладные подклассы CX_STATIC_CHECK с унаследованным PREVIOUS.",
+    "context": "Фрагмент метода. repository — связанная ссылка на локальный интерфейс; read_price( ) возвращает decfloat34 и выбрасывает lcx_repository. get_price возвращает price TYPE decfloat34 и объявляет RAISING lcx_price_unavailable. Оба исключения — прикладные подклассы CX_STATIC_CHECK с унаследованным параметром PREVIOUS.",
     "code": "METHOD get_price.\n  TRY.\n      price = repository->read_price( ).\n    CATCH lcx_repository INTO DATA(cause).\n      RAISE EXCEPTION TYPE lcx_price_unavailable\n        EXPORTING previous = cause.\n  ENDTRY.\nENDMETHOD.",
     "highlights": [
       {
@@ -909,7 +909,7 @@
           4
         ],
         "label": "Перехватить понятную ошибку",
-        "explanation": "Здесь преобразуется только объявленная ошибка repository. Это не успешный результат «цены нет»."
+        "explanation": "Здесь преобразуется только объявленная ошибка репозитория. Это не успешный результат «цены нет»."
       },
       {
         "lines": [
@@ -917,7 +917,7 @@
           6
         ],
         "label": "Сохранить причину",
-        "explanation": "Business-facing exception хранит исходное исключение в PREVIOUS для диагностики."
+        "explanation": "Прикладное исключение сохраняет исходное исключение в PREVIOUS для диагностики."
       }
     ],
     "outcome": "Клиент получает понятную ошибку «цена недоступна», а не нулевую цену. Исходное исключение позволяет поддержке найти причину.",
@@ -951,7 +951,7 @@
           4
         ],
         "label": "Оставить production behavior настоящим",
-        "explanation": "Решение скидки использует реальное сравнение quantity. Mock его не заменяет."
+        "explanation": "Решение о скидке использует настоящее сравнение quantity. Тестовая подмена его не заменяет."
       },
       {
         "lines": [
@@ -967,7 +967,7 @@
           15
         ],
         "label": "Проверить ниже, на границе и выше",
-        "explanation": "Quantity 9, 10 и 11 проверяют обе стороны и сам порог с независимо выбранными ожиданиями."
+        "explanation": "Значения quantity 9, 10 и 11 проверяют обе стороны порога и сам порог. Ожидаемые результаты заданы независимо от реализации."
       }
     ],
     "outcome": "Замена >= на > нарушит проверку для quantity 10. Подмена результата percent через mock не обнаружила бы ошибку.",
@@ -986,7 +986,7 @@
       "BASE-10",
       "ABAP-02"
     ],
-    "intro": "Standard table может сохранять порядок добавления строк и иметь сортированный вторичный ключ.",
+    "intro": "STANDARD TABLE может сохранять порядок добавления строк и иметь сортированный вторичный ключ.",
     "language": "ABAP",
     "context": "Самодостаточный фрагмент метода. customer_key задан явно и соответствует условию равенства.",
     "code": "TYPES: BEGIN OF ty_order,\n         customer TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nTYPES ty_orders TYPE STANDARD TABLE OF ty_order\n  WITH EMPTY KEY\n  WITH NON-UNIQUE SORTED KEY customer_key\n    COMPONENTS customer.\nDATA(lt_orders) = VALUE ty_orders(\n  ( customer = 2 amount = 10 )\n  ( customer = 1 amount = 20 )\n  ( customer = 2 amount = 30 ) ).\nDATA(lt_selected) = FILTER #(\n  lt_orders USING KEY customer_key WHERE customer = 2 ).",
@@ -999,7 +999,7 @@
           8
         ],
         "label": "Предоставить ключ",
-        "explanation": "Один EMPTY KEY не поддерживает этот обычный FILTER. Secondary sorted key поддерживает."
+        "explanation": "Одного EMPTY KEY для этой формы FILTER недостаточно. Нужный доступ обеспечивает сортированный вторичный ключ."
       },
       {
         "lines": [
@@ -1011,10 +1011,10 @@
           14
         ],
         "label": "Явно выбрать ключ",
-        "explanation": "USING KEY customer_key выбирает обе строки customer 2 с amount 10 и 30."
+        "explanation": "USING KEY customer_key выбирает обе строки customer 2 со значениями amount 10 и 30."
       }
     ],
-    "outcome": "Результат содержит две подходящие строки. Нужный вторичный ключ позволяет использовать эту форму FILTER для standard table.",
+    "outcome": "Результат содержит две подходящие строки. Вторичный ключ позволяет использовать эту форму FILTER для STANDARD TABLE.",
     "caveat": "Ключи требуют памяти и обновления при изменении строк. Если условие не подходит правилам ключа, используйте понятный LOOP или FOR. Проверьте синтаксис целевой версии.",
     "references": [
       {
@@ -1047,7 +1047,7 @@
           6
         ],
         "label": "Отдельно обработать отсутствие результата",
-        "explanation": "Guard не позволяет читать строку 1 пустой таблицы. has_maximum отличает отсутствие значения от настоящего нуля."
+        "explanation": "Проверка не позволяет читать строку 1 пустой таблицы. has_maximum отличает отсутствие значения от настоящего нуля."
       },
       {
         "lines": [
@@ -1058,7 +1058,7 @@
           11
         ],
         "label": "Начать с реального кандидата",
-        "explanation": "Accumulator начинается с -8 и становится -3. Начальный ноль ошибочно сохранился бы как максимум."
+        "explanation": "Накопленный результат начинается с -8 и становится равен -3. Начальный ноль ошибочно остался бы максимумом."
       }
     ],
     "outcome": "Максимум равен -3. Краткий синтаксис не отменяет необходимости правильно выбрать начальное значение и обработать пустую таблицу.",

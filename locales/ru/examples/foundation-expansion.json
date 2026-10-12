@@ -1,0 +1,282 @@
+[
+  {
+    "id": "abap-standard-order",
+    "questions": [
+      "ABAP-01",
+      "ABAP-02"
+    ],
+    "language": "ABAP",
+    "code": "TYPES: BEGIN OF ty_order,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE STANDARD TABLE OF ty_order\n  WITH EMPTY KEY.\nAPPEND VALUE #( order_id = 9 amount = 200 ) TO lt_orders.\nAPPEND VALUE #( order_id = 7 amount = 100 ) TO lt_orders.\nDATA(ls_first) = lt_orders[ 1 ].\nDATA lt_processed_ids TYPE STANDARD TABLE OF i WITH EMPTY KEY.\nLOOP AT lt_orders INTO DATA(ls_order).\n  APPEND ls_order-order_id TO lt_processed_ids.\nENDLOOP.",
+    "title": "STANDARD: сохранить порядок добавления",
+    "intro": "Подходит, когда важны порядок строк или доступ по позиции.",
+    "context": "Самодостаточный фрагмент метода. Числа — учебные данные в памяти. lt_processed_ids сохраняет фактический порядок обработки.",
+    "outcome": "В ls_first находится заказ 9. При последовательной обработке порядок остаётся таким же, как при добавлении: 9, затем 7.",
+    "caveat": "Первичный индекс — не индекс по order_id. Поиск по произвольному полю обычно просматривает строки; подходящий вторичный ключ может дать другой способ доступа. Здесь индекс 1 безопасен, поскольку две строки уже добавлены.",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "Последовательность без уникального бизнес-ключа",
+        "explanation": "EMPTY KEY не требует уникальности бизнес-полей."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "label": "Позиция следует порядку добавления",
+        "explanation": "Первым будет заказ 9, хотя число 7 меньше."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: внутренние таблицы",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-sorted-customer",
+    "questions": [
+      "ABAP-01",
+      "ABAP-02"
+    ],
+    "language": "ABAP",
+    "code": "TYPES: BEGIN OF ty_order,\n         customer TYPE i,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE SORTED TABLE OF ty_order\n  WITH UNIQUE KEY customer order_id.\nINSERT VALUE #( customer = 2 order_id = 9 amount = 200 )\n  INTO TABLE lt_orders.\nINSERT VALUE #( customer = 1 order_id = 7 amount = 100 )\n  INTO TABLE lt_orders.\nINSERT VALUE #( customer = 2 order_id = 8 amount = 50 )\n  INTO TABLE lt_orders.\nDATA(total) = 0.\nLOOP AT lt_orders INTO DATA(ls_order) WHERE customer = 2.\n  total = total + ls_order-amount.\nENDLOOP.",
+    "title": "SORTED: обработать заказы одного клиента",
+    "intro": "Начало ключа объединяет строки, которые нужны этому поиску.",
+    "context": "Самодостаточный фрагмент метода. Каждая пара (customer, order_id) уникальна. Суммы — условные учебные числа без валюты.",
+    "outcome": "Для клиента 2 строки обрабатываются по order_id: сначала 8, затем 9; total равен 250. Вся таблица упорядочена так: (1,7), (2,8), (2,9).",
+    "caveat": "Оптимизированный отбор использует равенство по первому компоненту ключа customer. Поиск только по order_id — другой способ доступа. Для настоящих входных данных обработайте вставку повторного ключа.",
+    "highlights": [
+      {
+        "lines": [
+          6,
+          7
+        ],
+        "label": "Порядок задан типом таблицы",
+        "explanation": "INSERT помещает строку по customer и order_id; отдельный SORT не нужен."
+      },
+      {
+        "lines": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "label": "Обработать подходящую группу ключа",
+        "explanation": "Учитывается только клиент 2: 50 + 200 = 250."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: внутренние таблицы",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-two-constructor-lifetimes",
+    "questions": [
+      "OO-17",
+      "OO-05"
+    ],
+    "language": "ABAP",
+    "code": "CLASS lcl_order_helper DEFINITION FINAL.\n  PUBLIC SECTION.\n    CLASS-DATA class_starts TYPE i READ-ONLY.\n    CLASS-DATA created TYPE i READ-ONLY.\n    DATA order_id TYPE i READ-ONLY.\n    CLASS-METHODS class_constructor.\n    METHODS constructor IMPORTING order_id TYPE i.\nENDCLASS.\nCLASS lcl_order_helper IMPLEMENTATION.\n  METHOD class_constructor.\n    class_starts = class_starts + 1.\n  ENDMETHOD.\n  METHOD constructor.\n    me->order_id = order_id.\n    created = created + 1.\n  ENDMETHOD.\nENDCLASS.\n\"Caller, for example inside a separate main method:\nDATA(first) = NEW lcl_order_helper( order_id = 7 ).\nDATA(second) = NEW lcl_order_helper( order_id = 9 ).\nASSERT lcl_order_helper=>class_starts = 1.\nASSERT lcl_order_helper=>created = 2.\nASSERT first->order_id = 7.\nASSERT second->order_id = 9.",
+    "title": "Одна инициализация класса, две инициализации объектов",
+    "intro": "Счётчики показывают разницу во времени жизни.",
+    "context": "Определение и реализация локального класса, затем отдельный вызывающий фрагмент. Выполните его один раз в новой внутренней сессии. Счётчики и ASSERT служат для обучения, а не предлагают архитектуру приложения.",
+    "outcome": "У каждого объекта свой ID заказа. Счётчик инициализации класса равен 1, а счётчик созданных объектов — 2.",
+    "caveat": "Если в этой внутренней сессии уже создавались объекты, created будет другим. Статический метод или атрибут может инициализировать класс до NEW. Наследования здесь нет; его правила нужно рассматривать отдельно.",
+    "highlights": [
+      {
+        "lines": [
+          10,
+          11,
+          12
+        ],
+        "label": "Один раз для класса",
+        "explanation": "Среда выполнения вызывает class_constructor один раз в этой внутренней сессии."
+      },
+      {
+        "lines": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "label": "Один раз для каждого нового объекта",
+        "explanation": "me->order_id принадлежит конкретному объекту, а created — классу."
+      },
+      {
+        "lines": [
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "label": "Проверить результат",
+        "explanation": "Два успешных вызова NEW выполняют два конструктора экземпляра."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: конструкторы",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "amdp-procedure-contract",
+    "questions": [
+      "SQL-15",
+      "SQL-14"
+    ],
+    "language": "ABAP",
+    "code": "CLASS zcl_study_sum DEFINITION PUBLIC FINAL CREATE PUBLIC.\n  PUBLIC SECTION.\n    INTERFACES if_amdp_marker_hdb.\n    TYPES: BEGIN OF ty_item,\n             quantity TYPE i,\n           END OF ty_item,\n           ty_items TYPE STANDARD TABLE OF ty_item WITH EMPTY KEY.\n    CLASS-METHODS sum_quantities\n      IMPORTING VALUE(lt_items) TYPE ty_items\n      EXPORTING VALUE(total) TYPE i.\nENDCLASS.\nCLASS zcl_study_sum IMPLEMENTATION.\n  METHOD sum_quantities BY DATABASE PROCEDURE\n    FOR HDB LANGUAGE SQLSCRIPT OPTIONS READ-ONLY.\n    SELECT COALESCE(SUM(quantity), 0) INTO total FROM :lt_items;\n  ENDMETHOD.\nENDCLASS.\n\"Separate ABAP caller fragment:\nDATA lt_items TYPE zcl_study_sum=>ty_items.\nlt_items = VALUE #( ( quantity = 40 ) ( quantity = 60 ) ).\nzcl_study_sum=>sum_quantities(\n  EXPORTING lt_items = lt_items\n  IMPORTING total = DATA(total) ).",
+    "title": "AMDP procedure: вызов метода",
+    "intro": "Входные и выходные параметры передают данные между ABAP и HANA.",
+    "context": "Две части: новый глобальный класс AMDP zcl_study_sum и вызывающий код внутри ABAP-метода. Предполагается Standard ABAP на HANA с поддержкой AMDP. Это не локальный класс. Таблица базы не нужна.",
+    "outcome": "Ожидаемый total равен 100; пустой вход даёт 0. У процедуры есть EXPORTING total, а не RETURNING.",
+    "caveat": "Сумма намеренно простая и не оправдывает применение AMDP: её лучше считать обычным ABAP или SQL. Для настоящего расчёта нужны обработка переполнения, исключений и проверка полномочий. Перед применением в ABAP Cloud проверьте дополнительные объявления для безопасной обработки манданта в целевом релизе.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          8,
+          9,
+          10
+        ],
+        "label": "Объявить интерфейс процедуры",
+        "explanation": "Маркер обозначает класс AMDP. Оба параметра передаются через VALUE."
+      },
+      {
+        "lines": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "label": "Выполнить SQLScript на HANA",
+        "explanation": "COALESCE заменяет NULL пустой суммы на ноль."
+      },
+      {
+        "lines": [
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "label": "Вызвать из ABAP",
+        "explanation": "Вызывающий код получает выходной параметр через IMPORTING."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: AMDP",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/12_AMDP.md"
+      }
+    ]
+  },
+  {
+    "id": "cds-table-function-contract",
+    "questions": [
+      "SQL-15",
+      "SQLX-01"
+    ],
+    "language": "CDS",
+    "code": "@EndUserText.label: 'Study order amounts'\n@ClientHandling.type: #CLIENT_INDEPENDENT\ndefine table function ZTF_Study_Amounts\n  with parameters p_minimum : abap.int4\n  returns {\n    order_id : abap.int4;\n    amount   : abap.int4;\n  }\n  implemented by method zcl_study_amounts=>read_amounts;",
+    "title": "CDS table function: объявить форму результата",
+    "intro": "CDS задаёт параметр и колонки результата, а AMDP-метод возвращает строки.",
+    "context": "Отдельное определение CDS ZTF_Study_Amounts для учебной среды Standard ABAP/HANA с поддержкой CDS table functions. Связанный глобальный класс показан в следующем примере. Учебные данные намеренно не зависят от манданта и не содержат настоящих бизнес-записей.",
+    "outcome": "Потребителю доступны p_minimum и ровно две колонки результата. Реализация должна вернуть совместимые типы и колонки в объявленном порядке.",
+    "caveat": "Классическая аннотация показана для указанной среды Standard ABAP. Для ABAP Cloud проверьте актуальные аннотации безопасной работы с мандантом. Нельзя переносить независимость от манданта на реальные зависимые данные или считать это определение проверкой полномочий.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Контракт запроса",
+        "explanation": "Результат — таблица ID заказов и сумм с отбором по входному порогу."
+      },
+      {
+        "lines": [
+          9
+        ],
+        "label": "Связать с реализацией",
+        "explanation": "Метод объявляется с FOR TABLE FUNCTION; список параметров вручную не повторяется."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: CDS table functions",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html"
+      }
+    ]
+  },
+  {
+    "id": "cds-table-function-implementation",
+    "questions": [
+      "SQL-15",
+      "SQLX-01"
+    ],
+    "language": "ABAP",
+    "code": "CLASS zcl_study_amounts DEFINITION PUBLIC FINAL CREATE PUBLIC.\n  PUBLIC SECTION.\n    INTERFACES if_amdp_marker_hdb.\n    CLASS-METHODS read_amounts FOR TABLE FUNCTION ztf_study_amounts.\nENDCLASS.\nCLASS zcl_study_amounts IMPLEMENTATION.\n  METHOD read_amounts BY DATABASE FUNCTION\n    FOR HDB LANGUAGE SQLSCRIPT OPTIONS READ-ONLY\n    USING zt_study_amount.\n    RETURN SELECT order_id, amount FROM zt_study_amount\n      WHERE amount >= :p_minimum;\n  ENDMETHOD.\nENDCLASS.\n\"Separate ABAP consumer fragment:\nSELECT FROM ztf_study_amounts( p_minimum = 50 )\n  FIELDS order_id, amount\n  ORDER BY order_id\n  INTO TABLE @DATA(lt_amounts).",
+    "title": "Читать CDS-сущность, а не вызывать метод реализации",
+    "intro": "FOR TABLE FUNCTION получает интерфейс метода из определения CDS.",
+    "context": "Новый глобальный класс и отдельный вызывающий ABAP-код. Нужны предыдущее определение CDS и собственная таблица базы zt_study_amount: уникальный order_id типа INT4, amount типа INT4, без колонки манданта. Учебные строки: (7,40), (9,60), (11,10). Только учебная среда Standard ABAP/HANA; это условные объекты, а не готовые API SAP.",
+    "outcome": "SELECT возвращает одну строку: order_id 9, amount 60. Прямого ABAP-вызова read_amounts здесь нет.",
+    "caveat": "Простой фильтр можно написать сразу на ABAP SQL; здесь он лишь показывает интерфейс. Для бизнес-данных нужны безопасная обработка манданта, полномочия, допустимые зависимости и проверка числовых типов. READ-ONLY запрещает запись, но не выполняет эти проверки.",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          7,
+          8,
+          9
+        ],
+        "label": "Реализовать функцию базы",
+        "explanation": "Функция работает только на чтение и объявляет используемую таблицу."
+      },
+      {
+        "lines": [
+          10,
+          11
+        ],
+        "label": "Вернуть подходящие строки",
+        "explanation": "Параметр p_minimum задан контрактом CDS."
+      },
+      {
+        "lines": [
+          15,
+          16,
+          17,
+          18
+        ],
+        "label": "Прочитать через SELECT",
+        "explanation": "CDS-сущность служит источником запроса. Если важен порядок строк, ORDER BY задают в запросе потребителя."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: CDS table functions",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html"
+      }
+    ]
+  }
+]

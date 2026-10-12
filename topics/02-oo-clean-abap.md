@@ -375,6 +375,25 @@ Start with ordinary classes. Add a Factory when creation logic repeats, a Facade
 - [SAP Learning: Factory Methods](https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/implementing-factory-methods_ff885b1e-5e7c-4d73-b9df-b4be5112e1fa) - Read the documented mechanism, then try the small example in your own development system.
 - [SAP examples: OO design patterns](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/34_OO_Design_Patterns.md) - Read the documented mechanism, then try the small example in your own development system.
 
+## OO-17 Two NEW calls create two objects. How often do constructor and class_constructor run, and in what order?
+
+**Level:** Core
+
+**Short answer:** constructor prepares each new object, so two successful NEW calls run it twice. class_constructor prepares the class once in an internal session, before its first relevant use. If the first use is creating an object, class initialization happens before instance initialization. Use constructor for each object’s required data and dependencies. Keep class_constructor small: its work happens implicitly.
+
+**Reasoning and example:** Imagine creating one order helper for order 7 and another for order 9. Each constructor stores its own order ID. A class-level counter is shared within this internal session and reaches 2. class_constructor runs once; it is not repeated for the second object or for every COMMIT. A separate internal session has its own class state.
+
+Calling a static method or accessing a static attribute can initialize the class before any object is created. Merely referring to a type or a constant does not trigger class_constructor. It has no parameters and is called by the runtime, not explicitly by application code.
+
+With inheritance, static constructors initialize the hierarchy from the superclass down. An explicitly implemented subclass constructor calls super->constructor( ) before using the new object’s instance components, passing any required parent parameters. The subclass constructor is not a redefinition. If it is not declared, the inherited constructor interface and implicit parent initialization rules apply. Do not hide remote calls or a large data load in this automatic startup path.
+
+**Avoid this mistake:** Once per internal session does not mean once per SAP system, once per user forever, or once per SAP LUW. A static constructor is not a substitute for passing request-specific data to an object.
+
+**Read and verify this answer:**
+
+- [SAP: instance and static constructors](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md) - See constructors and inheritance. The example uses local classes and makes no assumptions about how an HTTP framework manages sessions.
+- [SAP Learning: encapsulation and initialization](https://learning.sap.com/courses/basic-abap-programming/using-encapsulation-to-ensure-consistency_e3780ce0-2ba3-4d03-a09f-15ac109b0c03) - Practice the difference between initializing each object and initializing shared class state.
+
 ## Official references
 
 - [SAP Clean ABAP style guide](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md)

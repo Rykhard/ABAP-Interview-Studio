@@ -46,7 +46,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 
 ## RAP business objects
 
-54 questions. Model behavior and reason through transactional state, consumer contracts and failure.
+56 questions. Model behavior and reason through transactional state, consumer contracts and failure.
 
 ### Model, implementation & exposure
 
@@ -101,6 +101,8 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | [RAP-16 - How do you group a multi-select Fiori action into one changeset with InvocationGrouping?](../topics/05-rap-foundations.md#rap-16-how-do-you-group-a-multi-select-fiori-action-into-one-changeset-with-invocationgrouping) | Advanced |
 | [ADV-05 - How do action parameters and results work?](../topics/06-rap-advanced.md#adv-05-how-do-action-parameters-and-results-work) | Advanced |
 | [ADV-06 - What is augmentation and how does it differ from additional save?](../topics/06-rap-advanced.md#adv-06-what-is-augmentation-and-how-does-it-differ-from-additional-save) | Advanced |
+| [ADV-14 - What is a normal RAP function, and when should you use it instead of an action?](../topics/06-rap-advanced.md#adv-14-what-is-a-normal-rap-function-and-when-should-you-use-it-instead-of-an-action) | Advanced |
+| [ADV-15 - How does a default function suggest values for RAP action parameters?](../topics/06-rap-advanced.md#adv-15-how-does-a-default-function-suggest-values-for-rap-action-parameters) | Advanced |
 | [SRAP-11 - Two determinations calculate discount and total. Production results depend on which one executes first. How would you redesign them?](../topics/17-rap-transactions-senior.md#srap-11-two-determinations-calculate-discount-and-total-production-results-depend-on-which-one-executes-first-how-would-you-redesign-them) | Senior |
 | [SRAP-13 - A CopyOrder action creates an order, but the UI stays on the source and the consumer cannot identify the copy. How do you review the action contract?](../topics/17-rap-transactions-senior.md#srap-13-a-copyorder-action-creates-an-order-but-the-ui-stays-on-the-source-and-the-consumer-cannot-identify-the-copy-how-do-you-review-the-action-contract) | Senior |
 | [SRAP-14 - A projection accepts a convenience field that must enrich an underlying create. Why might augmentation fit, and what are its boundaries?](../topics/17-rap-transactions-senior.md#srap-14-a-projection-accepts-a-convenience-field-that-must-enrich-an-underlying-create-why-might-augmentation-fit-and-what-are-its-boundaries) | Senior |
@@ -258,7 +260,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 
 ## ABAP, OO & patterns
 
-70 questions. Predict language behavior and design clear contracts, lifetimes and replaceable collaborators.
+71 questions. Predict language behavior and design clear contracts, lifetimes and replaceable collaborators.
 
 ### Language & values
 
@@ -313,6 +315,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | [OO-07 - How do dependency injection and dependency inversion differ?](../topics/02-oo-clean-abap.md#oo-07-how-do-dependency-injection-and-dependency-inversion-differ) | Core |
 | [OO-13 - What would you change first in a difficult legacy ABAP method?](../topics/02-oo-clean-abap.md#oo-13-what-would-you-change-first-in-a-difficult-legacy-abap-method) | Core |
 | [OO-14 - How do you make an OO design testable, and what should ABAP Unit assert?](../topics/02-oo-clean-abap.md#oo-14-how-do-you-make-an-oo-design-testable-and-what-should-abap-unit-assert) | Core |
+| [OO-17 - Two NEW calls create two objects. How often do constructor and class_constructor run, and in what order?](../topics/02-oo-clean-abap.md#oo-17-two-new-calls-create-two-objects-how-often-do-constructor-and-class_constructor-run-and-in-what-order) | Core |
 | [OO-08 - How would you apply SOLID without overengineering?](../topics/02-oo-clean-abap.md#oo-08-how-would-you-apply-solid-without-overengineering) | Advanced |
 | [OODEEP-04 - A subclass needs a different implementation and an extra mandatory input for an inherited method. Can REDEFINITION add it?](../topics/22-oo-contracts-deep.md#oodeep-04-a-subclass-needs-a-different-implementation-and-an-extra-mandatory-input-for-an-inherited-method-can-redefinition-add-it) | Advanced |
 | [OODEEP-05 - A local test class needs access to private state. What does granting friendship expose, and what does it not imply?](../topics/22-oo-contracts-deep.md#oodeep-05-a-local-test-class-needs-access-to-private-state-what-does-granting-friendship-expose-and-what-does-it-not-imply) | Advanced |
@@ -352,7 +355,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 
 ## SQL & HANA performance
 
-16 questions. Preserve result semantics, select a database implementation and measure actual cost.
+17 questions. Preserve result semantics, select a database implementation and measure actual cost.
 
 ### Selection, joins & result semantics
 
@@ -382,12 +385,13 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | --- | --- |
 | [SQL-01 - How do ABAP SQL, Native SQL, CDS, and AMDP differ?](../topics/03-sql-performance.md#sql-01-how-do-abap-sql-native-sql-cds-and-amdp-differ) | Core |
 | [SQL-14 - When is AMDP justified, and what risks must you address?](../topics/03-sql-performance.md#sql-14-when-is-amdp-justified-and-what-risks-must-you-address) | Advanced |
+| [SQL-15 - AMDP procedure or CDS table function: what is the difference, and when would you use each?](../topics/03-sql-performance.md#sql-15-amdp-procedure-or-cds-table-function-what-is-the-difference-and-when-would-you-use-each) | Advanced |
 | [SQLX-01 - A CDS table function joins client-dependent purchasing data in SQLScript, writes a helper table, and assumes the outer CDS DCL protects every internal read. Would you approve it?](../topics/24-delivery-and-hana-decisions.md#sqlx-01-a-cds-table-function-joins-client-dependent-purchasing-data-in-sqlscript-writes-a-helper-table-and-assumes-the-outer-cds-dcl-protects-every-internal-read-would-you-approve-it) | Senior |
 | [SQLX-02 - A report transfers one million item rows to ABAP to calculate totals. A rewrite uses AMDP but doubles amounts after a text join. Which implementation would you recommend?](../topics/24-delivery-and-hana-decisions.md#sqlx-02-a-report-transfers-one-million-item-rows-to-abap-to-calculate-totals-a-rewrite-uses-amdp-but-doubles-amounts-after-a-text-join-which-implementation-would-you-recommend) | Senior |
 
 ## Protocols & integration
 
-58 questions. Connect systems with explicit payload, security, transaction and recovery contracts.
+60 questions. Connect systems with explicit payload, security, transaction and recovery contracts.
 
 ### HTTP, REST & formats
 
@@ -405,6 +409,8 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | [HTTP-09 - How do you choose ABAP JSON and XML processing tools?](../topics/13-http-rest-formats.md#http-09-how-do-you-choose-abap-json-and-xml-processing-tools) | Advanced |
 | [HTTP-10 - How would you implement and troubleshoot an outbound HTTP call in ABAP?](../topics/13-http-rest-formats.md#http-10-how-would-you-implement-and-troubleshoot-an-outbound-http-call-in-abap) | Advanced |
 | [HTTP-12 - How would you test an HTTP integration contract?](../topics/13-http-rest-formats.md#http-12-how-would-you-test-an-http-integration-contract) | Advanced |
+| [HTTP-13 - How do you send a GET request with released ABAP HTTP APIs?](../topics/13-http-rest-formats.md#http-13-how-do-you-send-a-get-request-with-released-abap-http-apis) | Advanced |
+| [HTTP-14 - How do you change remote data safely with PATCH or POST from ABAP?](../topics/13-http-rest-formats.md#http-14-how-do-you-change-remote-data-safely-with-patch-or-post-from-abap) | Advanced |
 
 ### OData & Fiori
 

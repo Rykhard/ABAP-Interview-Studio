@@ -1,0 +1,195 @@
+[
+  {
+    "id": "rap-function-declaration",
+    "questions": [
+      "ADV-14"
+    ],
+    "title": "Объявить расчёт без изменения данных",
+    "intro": "PreviewTotal возвращает небольшой результат, не меняя бизнес-объект.",
+    "language": "BDEF",
+    "context": "Внутри объявления сущности существующего BDEF ZI_Order с псевдонимом Order. Сначала создайте абстрактную сущность результата ZA_OrderPreview: Amount типа abap.dec(15,2) и CurrencyCode типа abap.cuky. Для доступа через сервис добавьте в projection объявление use function PreviewTotal;",
+    "code": "function PreviewTotal\n  result [1] ZA_OrderPreview;",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Выбрать function",
+        "explanation": "Это instance function: вызывающий код передаёт выбранные заказы. Реализация должна только читать и рассчитывать."
+      },
+      {
+        "lines": [
+          2
+        ],
+        "label": "Один результат на успешный вход",
+        "explanation": "Результат содержит Amount и CurrencyCode. [1] задаёт кардинальность результата. Для отсутствующего или отклонённого заказа всё равно нужен ответ об ошибке."
+      }
+    ],
+    "outcome": "В BDEF объявлены операция и её результат. Сгенерированный обработчик ещё нужно реализовать.",
+    "caveat": "Фрагмент BDEF, а не полный BO. Проверьте сущность результата, полномочия, projection, service binding и поддержку function в целевом релизе. Function не превращается автоматически в кнопку action.",
+    "references": [
+      {
+        "title": "SAP: определение function",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/function-definition"
+      }
+    ]
+  },
+  {
+    "id": "rap-function-preview-total",
+    "questions": [
+      "ADV-14"
+    ],
+    "startFor": [
+      "ADV-14"
+    ],
+    "title": "Вернуть 30, не меняя заказ",
+    "intro": "Прочитать Quantity 3 и UnitPrice 10 из текущей транзакции и вернуть их произведение.",
+    "language": "ABAP",
+    "context": "Обработчик function PreviewTotal result [1] ZA_OrderPreview для своего BO ZI_Order, псевдоним Order. ADT генерирует METHODS PreviewTotal FOR READ IMPORTING keys FOR FUNCTION Order~PreviewTotal RESULT result. Quantity и UnitPrice — десятичные поля, CurrencyCode — CUKY; ZA_OrderPreview содержит Amount DEC(15,2) и CurrencyCode CUKY. Полномочия на публичный вызов настраиваются отдельно.",
+    "code": "METHOD PreviewTotal.\n  READ ENTITIES OF zi_order IN LOCAL MODE\n    ENTITY Order\n    FIELDS ( Quantity UnitPrice CurrencyCode )\n    WITH CORRESPONDING #( keys )\n    RESULT DATA(lt_orders)\n    FAILED DATA(ls_failed)\n    REPORTED DATA(ls_reported).\n  failed = CORRESPONDING #( DEEP ls_failed ).\n  reported = CORRESPONDING #( DEEP ls_reported ).\n  result = VALUE #( FOR ls_order IN lt_orders\n    ( %tky = ls_order-%tky\n      %param-Amount = ls_order-Quantity * ls_order-UnitPrice\n      %param-CurrencyCode = ls_order-CurrencyCode ) ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          4,
+          5,
+          6
+        ],
+        "label": "Прочитать ещё не сохранённые значения",
+        "explanation": "EML читает состояние текущей транзакции BO, включая несохранённые изменения. Local mode используется внутри собственной реализации, а не для обхода полномочий внешним клиентом."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Сохранить сведения об ошибках",
+        "explanation": "Передайте ошибки чтения и сообщения. Отсутствие строки по запрошенному ключу не должно выглядеть как успешный расчёт."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Вернуть расчёт вместо изменения",
+        "explanation": "%tky связывает результат с заказом. При Quantity 3 и UnitPrice 10 Amount равен 30. Здесь нет MODIFY, INSERT или COMMIT."
+      }
+    ],
+    "outcome": "Вызывающий код получает Amount 30 и валюту. Буфер заказа и база не изменяются.",
+    "caveat": "Учебный обработчик с указанными пользовательскими типами, а не активированное приложение. Для реальных сумм нужны допустимые диапазоны и правила округления валют. Проверьте несколько ключей, отказ в доступе и отсутствующие экземпляры. Чтение не должно запускать удалённые бизнес-изменения.",
+    "references": [
+      {
+        "title": "SAP: параметры обработчика FOR READ",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/for-read-rap-handler-method"
+      },
+      {
+        "title": "SAP: определение function и проверки доступа",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/function-definition"
+      }
+    ]
+  },
+  {
+    "id": "rap-action-default-declaration",
+    "questions": [
+      "ADV-15"
+    ],
+    "title": "Связать default function с action",
+    "intro": "Action получает DiscountPercent, а default function предлагает начальное значение.",
+    "language": "BDEF",
+    "context": "Внутри сущности Order пользовательского BDEF ZI_Order. ZA_Discount — существующая абстрактная сущность параметров с DiscountPercent типа abap.int1. В используемом projection нужны оба объявления: use action ApplyDiscount; и use function GetDefaultsForApplyDiscount;",
+    "code": "action ApplyDiscount parameter ZA_Discount\n{\n  default function GetDefaultsForApplyDiscount;\n}",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Объявить настоящий вход операции",
+        "explanation": "ApplyDiscount получит процент, который действительно передал клиент. Action обязан проверить это значение."
+      },
+      {
+        "lines": [
+          3
+        ],
+        "label": "Подключить подсказку для ввода",
+        "explanation": "Default function связана с этим action. RAP выводит её параметры и результат; префикс GetDefaultsFor — правило фреймворка."
+      }
+    ],
+    "outcome": "Поддерживающий эту возможность клиент может запросить подсказки до вызова ApplyDiscount.",
+    "caveat": "Объявлена связь, а не логика action или кнопка интерфейса. Сгенерируйте нужные методы в ADT и проверьте поддержку в backend, binding и Fiori elements. Прямой клиент может пропустить получение подсказки.",
+    "references": [
+      {
+        "title": "SAP: начальные значения параметров",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations"
+      },
+      {
+        "title": "SAP: публикация default function в projection",
+        "url": "https://github.com/SAP-samples/abap-platform-fiori-feature-showcase/blob/main/01_general_features.md#default-values-function"
+      }
+    ]
+  },
+  {
+    "id": "rap-action-default-values",
+    "questions": [
+      "ADV-15"
+    ],
+    "startFor": [
+      "ADV-15"
+    ],
+    "title": "Предложить 10 или 5 процентов без применения скидки",
+    "intro": "Подсказка зависит от выбранного заказа, поэтому здесь функция полезнее одного постоянного значения.",
+    "language": "ABAP",
+    "context": "Тело сгенерированного в ADT обработчика GetDefaultsForApplyDiscount в своём ZI_Order, псевдоним Order. Instance action использует ZA_Discount с DiscountPercent INT1. Метод имеет FOR READ IMPORTING keys FOR FUNCTION Order~GetDefaultsForApplyDiscount RESULT result. Все учебные заказы в EUR, Total — десятичное число; 1000 EUR — условный порог примера, а не правило ценообразования SAP.",
+    "code": "METHOD GetDefaultsForApplyDiscount.\n  CONSTANTS co_large_order TYPE decfloat34 VALUE 1000.\n  CONSTANTS co_large_discount TYPE i VALUE 10.\n  CONSTANTS co_small_discount TYPE i VALUE 5.\n  READ ENTITIES OF zi_order IN LOCAL MODE\n    ENTITY Order\n    FIELDS ( Total ) WITH CORRESPONDING #( keys )\n    RESULT DATA(lt_orders)\n    FAILED DATA(ls_failed)\n    REPORTED DATA(ls_reported).\n  failed = CORRESPONDING #( DEEP ls_failed ).\n  reported = CORRESPONDING #( DEEP ls_reported ).\n  result = VALUE #( FOR ls_order IN lt_orders\n    ( %tky = ls_order-%tky\n      %param-DiscountPercent = COND #(\n        WHEN ls_order-Total >= co_large_order\n        THEN co_large_discount ELSE co_small_discount ) ) ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5,
+          7,
+          8
+        ],
+        "label": "Прочитать данные для подсказки",
+        "explanation": "Используйте текущую сумму каждого выбранного заказа. Для 1200 EUR и 200 EUR предлагаются разные значения."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "Передать ошибки чтения",
+        "explanation": "Сохраните сведения об отсутствующих или ошибочных экземплярах вместо выдуманного процента для любого входного ключа."
+      },
+      {
+        "lines": [
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "label": "Заполнить только значения диалога",
+        "explanation": "%param содержит 10 для большого заказа и 5 для маленького. Скидка не применяется до настоящего вызова action и проверки его входных данных."
+      }
+    ],
+    "outcome": "Клиент получает подсказку для каждого успешно прочитанного заказа. Отмена диалога не меняет бизнес-данные.",
+    "caveat": "Условное правило, а не полная реализация ценообразования. В реальном приложении учитывайте валюты, округление и изменение правил. Action повторно проверяет полномочия и вход: подсказку можно изменить, пропустить, или она может устареть. Поведение при выборе нескольких заказов проверяйте в реальном клиенте.",
+    "references": [
+      {
+        "title": "SAP: реализация default values function",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations"
+      },
+      {
+        "title": "SAP: обработчик FOR READ",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/for-read-rap-handler-method"
+      }
+    ]
+  }
+]

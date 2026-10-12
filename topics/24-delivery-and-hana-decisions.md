@@ -14,7 +14,7 @@ Three focused senior code-review decisions complement the main ABAP Cloud track:
 
 I separately test users with different purchasing permissions through the real supported read path. SQLScript does not automatically reproduce ABAP SQL or CDS access checks. I also review return types, intended rows and USING dependencies. If supported CDS or ABAP SQL already solves the task, it may be simpler. General AMDP capabilities are broader than this read-only table-function case.
 
-**Avoid this mistake:** The read-only rule here applies to the CDS table function, not every AMDP method. It also does not grant permission to read any SAP table.
+**Avoid this mistake:** The CDS table function is read-only. ABAP Cloud also restricts AMDP procedures to reads; Standard ABAP procedure capabilities are broader. None of these options grants permission to read any SAP table.
 
 **Interviewer follow-ups:**
 

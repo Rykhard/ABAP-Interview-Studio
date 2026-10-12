@@ -765,7 +765,7 @@ An unknown country must not fall back to approval.
 
 Questions: [OO-09](https://abap-interview-studio.pages.dev/#q-OO-09), [PAT-12](https://abap-interview-studio.pages.dev/#q-PAT-12)
 
-**Where this belongs:** Factory method excerpt. get_rule imports a two-character country value through a named character type, returns rule TYPE REF TO lif_approval, and raises lcx_configuration. Both local rule classes implement lif_approval and have no required constructor parameters.
+**Where this belongs:** Simple-factory method excerpt. get_rule accepts a two-character country of a named character type, returns rule TYPE REF TO lif_approval and raises lcx_configuration. Both local rule classes implement lif_approval without required constructor parameters.
 
 ```abap
 METHOD get_rule.
@@ -1003,6 +1003,420 @@ ENDIF.
 **Primary references:**
 
 - [SAP: Constructor expressions](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/05_Constructor_Expressions.md)
+
+## STANDARD: preserve arrival order
+
+Choose this when row order or position is the useful property.
+
+Questions: [ABAP-01](https://abap-interview-studio.pages.dev/#q-ABAP-01), [ABAP-02](https://abap-interview-studio.pages.dev/#q-ABAP-02)
+
+**Where this belongs:** Self-contained method-body fragment. Numeric values are local fixtures. lt_processed_ids records the actual processing order.
+
+```abap
+TYPES: BEGIN OF ty_order,
+         order_id TYPE i,
+         amount   TYPE i,
+       END OF ty_order.
+DATA lt_orders TYPE STANDARD TABLE OF ty_order
+  WITH EMPTY KEY.
+APPEND VALUE #( order_id = 9 amount = 200 ) TO lt_orders.
+APPEND VALUE #( order_id = 7 amount = 100 ) TO lt_orders.
+DATA(ls_first) = lt_orders[ 1 ].
+DATA lt_processed_ids TYPE STANDARD TABLE OF i WITH EMPTY KEY.
+LOOP AT lt_orders INTO DATA(ls_order).
+  APPEND ls_order-order_id TO lt_processed_ids.
+ENDLOOP.
+```
+
+**Read it step by step:**
+
+1. **A sequence, not a unique lookup** (lines 5, 6): EMPTY KEY imposes no business-key uniqueness.
+2. **Position follows insertion** (lines 7, 8, 9, 10, 11, 12, 13): The first row is order 9, even though 7 is numerically smaller.
+
+**What happens:** ls_first contains order 9. Sequential processing keeps the append order: 9, then 7.
+
+**Scope:** The primary index is not an order_id index. A free-key search normally scans this table; a suitable secondary key can offer another access path. Index 1 is safe here because two rows were appended.
+
+**Primary references:**
+
+- [SAP: Internal tables](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md)
+
+## SORTED: process one customer’s orders
+
+The leading key groups the rows needed by this lookup.
+
+Questions: [ABAP-01](https://abap-interview-studio.pages.dev/#q-ABAP-01), [ABAP-02](https://abap-interview-studio.pages.dev/#q-ABAP-02)
+
+**Where this belongs:** Self-contained method-body fragment. Every (customer, order_id) pair is unique. All amounts are unitless fixture values.
+
+```abap
+TYPES: BEGIN OF ty_order,
+         customer TYPE i,
+         order_id TYPE i,
+         amount   TYPE i,
+       END OF ty_order.
+DATA lt_orders TYPE SORTED TABLE OF ty_order
+  WITH UNIQUE KEY customer order_id.
+INSERT VALUE #( customer = 2 order_id = 9 amount = 200 )
+  INTO TABLE lt_orders.
+INSERT VALUE #( customer = 1 order_id = 7 amount = 100 )
+  INTO TABLE lt_orders.
+INSERT VALUE #( customer = 2 order_id = 8 amount = 50 )
+  INTO TABLE lt_orders.
+DATA(total) = 0.
+LOOP AT lt_orders INTO DATA(ls_order) WHERE customer = 2.
+  total = total + ls_order-amount.
+ENDLOOP.
+```
+
+**Read it step by step:**
+
+1. **Order belongs to the table type** (lines 6, 7): INSERT places each row according to customer and order_id; no separate SORT is needed.
+2. **Process the matching key group** (lines 14, 15, 16, 17): Only customer 2 contributes: 50 + 200 = 250.
+
+**What happens:** Customer 2 is processed in order_id order: 8, then 9; total is 250. The complete table key order is (1,7), (2,8), (2,9).
+
+**Scope:** The optimized selection uses equality on the leading key component customer. Searching by order_id alone is a different access pattern. Handle duplicate-key inserts in real input.
+
+**Primary references:**
+
+- [SAP: Internal tables](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md)
+
+## One class initialization, two object initializations
+
+The counters make the different lifetimes visible.
+
+Questions: [OO-17](https://abap-interview-studio.pages.dev/#q-OO-17), [OO-05](https://abap-interview-studio.pages.dev/#q-OO-05)
+
+**Where this belongs:** Local class definition and implementation, followed by a separate caller fragment. Run the caller once in a fresh internal session. Counters and ASSERT statements are teaching instrumentation, not a recommended application design.
+
+```abap
+CLASS lcl_order_helper DEFINITION FINAL.
+  PUBLIC SECTION.
+    CLASS-DATA class_starts TYPE i READ-ONLY.
+    CLASS-DATA created TYPE i READ-ONLY.
+    DATA order_id TYPE i READ-ONLY.
+    CLASS-METHODS class_constructor.
+    METHODS constructor IMPORTING order_id TYPE i.
+ENDCLASS.
+CLASS lcl_order_helper IMPLEMENTATION.
+  METHOD class_constructor.
+    class_starts = class_starts + 1.
+  ENDMETHOD.
+  METHOD constructor.
+    me->order_id = order_id.
+    created = created + 1.
+  ENDMETHOD.
+ENDCLASS.
+"Caller, for example inside a separate main method:
+DATA(first) = NEW lcl_order_helper( order_id = 7 ).
+DATA(second) = NEW lcl_order_helper( order_id = 9 ).
+ASSERT lcl_order_helper=>class_starts = 1.
+ASSERT lcl_order_helper=>created = 2.
+ASSERT first->order_id = 7.
+ASSERT second->order_id = 9.
+```
+
+**Read it step by step:**
+
+1. **Once for the class** (lines 10, 11, 12): The runtime calls class_constructor once in this internal session.
+2. **Once for each new object** (lines 13, 14, 15, 16): me->order_id belongs to this object; created belongs to the class.
+3. **Observe the result** (lines 19, 20, 21, 22, 23, 24): Two successful NEW calls run two instance constructors.
+
+**What happens:** Both objects keep their own order ID. The class initialization counter is 1 and the object counter is 2.
+
+**Scope:** Earlier object creation in the same internal session changes created. A static method or attribute access may initialize the class before NEW. This example has no inheritance; do not infer superclass constructor rules from it.
+
+**Primary references:**
+
+- [SAP: Constructors](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md)
+
+## AMDP procedure: call a method
+
+Input and output parameters carry data across the ABAP/HANA boundary.
+
+Questions: [SQL-15](https://abap-interview-studio.pages.dev/#q-SQL-15), [SQL-14](https://abap-interview-studio.pages.dev/#q-SQL-14)
+
+**Where this belongs:** Two placements: a new global AMDP class zcl_study_sum, then a caller inside an ABAP method. Standard ABAP on HANA with AMDP support is assumed. This is not a local class. No database table is required.
+
+```abap
+CLASS zcl_study_sum DEFINITION PUBLIC FINAL CREATE PUBLIC.
+  PUBLIC SECTION.
+    INTERFACES if_amdp_marker_hdb.
+    TYPES: BEGIN OF ty_item,
+             quantity TYPE i,
+           END OF ty_item,
+           ty_items TYPE STANDARD TABLE OF ty_item WITH EMPTY KEY.
+    CLASS-METHODS sum_quantities
+      IMPORTING VALUE(lt_items) TYPE ty_items
+      EXPORTING VALUE(total) TYPE i.
+ENDCLASS.
+CLASS zcl_study_sum IMPLEMENTATION.
+  METHOD sum_quantities BY DATABASE PROCEDURE
+    FOR HDB LANGUAGE SQLSCRIPT OPTIONS READ-ONLY.
+    SELECT COALESCE(SUM(quantity), 0) INTO total FROM :lt_items;
+  ENDMETHOD.
+ENDCLASS.
+"Separate ABAP caller fragment:
+DATA lt_items TYPE zcl_study_sum=>ty_items.
+lt_items = VALUE #( ( quantity = 40 ) ( quantity = 60 ) ).
+zcl_study_sum=>sum_quantities(
+  EXPORTING lt_items = lt_items
+  IMPORTING total = DATA(total) ).
+```
+
+**Read it step by step:**
+
+1. **Declare the procedure contract** (lines 3, 8, 9, 10): The marker identifies an AMDP class. Both parameters are passed by VALUE.
+2. **Execute SQLScript on HANA** (lines 13, 14, 15, 16): COALESCE converts the empty aggregate’s NULL to zero.
+3. **Call from ABAP** (lines 19, 20, 21, 22, 23): The caller receives the output through IMPORTING.
+
+**What happens:** The expected total is 100; empty input produces 0. The procedure has EXPORTING total, not RETURNING.
+
+**Scope:** This sum is intentionally trivial and does not justify AMDP. Use ordinary ABAP or SQL for it. Integer overflow, exceptions and real authorization need handling in a real calculation. Check the target release’s additional client-safety declarations before using this in ABAP Cloud.
+
+**Primary references:**
+
+- [SAP: AMDP](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/12_AMDP.md)
+
+## CDS table function: declare the query shape
+
+CDS defines the parameter and result columns; an AMDP method provides the rows.
+
+Questions: [SQL-15](https://abap-interview-studio.pages.dev/#q-SQL-15), [SQLX-01](https://abap-interview-studio.pages.dev/#q-SQLX-01)
+
+**Where this belongs:** Separate CDS data definition ZTF_Study_Amounts for a Standard ABAP/HANA sandbox with CDS table-function support. Its associated global class is shown in the next example. The deliberately client-independent fixture contains no real business data.
+
+```sql
+@EndUserText.label: 'Study order amounts'
+@ClientHandling.type: #CLIENT_INDEPENDENT
+define table function ZTF_Study_Amounts
+  with parameters p_minimum : abap.int4
+  returns {
+    order_id : abap.int4;
+    amount   : abap.int4;
+  }
+  implemented by method zcl_study_amounts=>read_amounts;
+```
+
+**Read it step by step:**
+
+1. **A query contract** (lines 3, 4, 5, 6, 7, 8): The result is a table of order IDs and amounts, filtered by an input threshold.
+2. **Connect the implementation** (lines 9): This method will be declared FOR TABLE FUNCTION, without manually repeating its parameter list.
+
+**What happens:** Consumers see p_minimum and exactly two result columns. The implementation must return compatible types and columns in this declared order.
+
+**Scope:** This classic annotation is shown for the stated Standard ABAP context. Check current client-safety annotations for ABAP Cloud. Do not copy client independence to real client-dependent business data, and do not treat this definition as an authorization check.
+
+**Primary references:**
+
+- [SAP: CDS table functions](https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html)
+
+## Read a CDS entity, not its implementation method
+
+FOR TABLE FUNCTION obtains the method contract from the CDS definition.
+
+Questions: [SQL-15](https://abap-interview-studio.pages.dev/#q-SQL-15), [SQLX-01](https://abap-interview-studio.pages.dev/#q-SQLX-01)
+
+**Where this belongs:** New global class plus a separate ABAP caller. Requires the previous CDS definition and an own client-independent database table zt_study_amount with unique order_id INT4 and amount INT4, no client column. Fixture rows are (7,40), (9,60), (11,10). Standard ABAP/HANA sandbox only; objects are illustrative, not delivered SAP APIs.
+
+```abap
+CLASS zcl_study_amounts DEFINITION PUBLIC FINAL CREATE PUBLIC.
+  PUBLIC SECTION.
+    INTERFACES if_amdp_marker_hdb.
+    CLASS-METHODS read_amounts FOR TABLE FUNCTION ztf_study_amounts.
+ENDCLASS.
+CLASS zcl_study_amounts IMPLEMENTATION.
+  METHOD read_amounts BY DATABASE FUNCTION
+    FOR HDB LANGUAGE SQLSCRIPT OPTIONS READ-ONLY
+    USING zt_study_amount.
+    RETURN SELECT order_id, amount FROM zt_study_amount
+      WHERE amount >= :p_minimum;
+  ENDMETHOD.
+ENDCLASS.
+"Separate ABAP consumer fragment:
+SELECT FROM ztf_study_amounts( p_minimum = 50 )
+  FIELDS order_id, amount
+  ORDER BY order_id
+  INTO TABLE @DATA(lt_amounts).
+```
+
+**Read it step by step:**
+
+1. **Implement a database function** (lines 4, 7, 8, 9): The function is read-only and declares its database dependency.
+2. **Return matching rows** (lines 10, 11): The parameter p_minimum comes from the CDS contract.
+3. **Consume through SELECT** (lines 15, 16, 17, 18): The CDS entity can be a query source. ORDER BY belongs in the consuming query when order matters.
+
+**What happens:** SELECT returns one row: order_id 9, amount 60. No direct ABAP call to read_amounts is made.
+
+**Scope:** The simple filter could be written directly in ABAP SQL; it only demonstrates the contract. Real business sources require client safety, authorization, released dependencies and numeric-type checks. READ-ONLY prevents writes; it does not supply those controls.
+
+**Primary references:**
+
+- [SAP: CDS table functions](https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html)
+
+## 1. Resolve an approved outbound destination
+
+The endpoint and credentials belong in communication management, not in ABAP source.
+
+Questions: [HTTP-13](https://abap-interview-studio.pages.dev/#q-HTTP-13), [HTTP-14](https://abap-interview-studio.pages.dev/#q-HTTP-14), [HTTP-10](https://abap-interview-studio.pages.dev/#q-HTTP-10), [BTP-06](https://abap-interview-studio.pages.dev/#q-BTP-06)
+
+**Where this belongs:** Destination setup excerpt. The enclosing method declares CX_HTTP_DEST_PROVIDER_ERROR, so a configuration failure reaches its caller before any HTTP client is opened. Example IDs must be replaced by your own configured objects.
+
+```abap
+CONSTANTS co_scenario TYPE c LENGTH 30
+  VALUE 'Z_ORDER_API'.
+CONSTANTS co_service TYPE c LENGTH 40
+  VALUE 'Z_ORDER_API_REST'.
+CONSTANTS co_system TYPE c LENGTH 60
+  VALUE 'ORDER_PROVIDER'.
+
+DATA(destination) =
+  cl_http_destination_provider=>create_by_comm_arrangement(
+    comm_scenario  = co_scenario
+    service_id     = co_service
+    comm_system_id = co_system ).
+```
+
+**Read it step by step:**
+
+1. **Use configured object IDs** (lines 1, 2, 3, 4, 5, 6): Create and publish a custom communication scenario containing an HTTP outbound service. An administrator creates the communication system and arrangement with the endpoint and authentication.
+2. **Resolve one destination** (lines 8, 9, 10, 11, 12): The custom scenario, outbound service and communication system identify the required arrangement. No password is embedded in the source.
+
+**What happens:** destination is an IF_HTTP_DESTINATION reference. Pass it to either request example.
+
+**Scope:** This API supports developed custom scenarios, not arbitrary SAP-delivered scenarios. SAP now recommends communication targets where the target supports them; this is the documented arrangement-based alternative. The following examples assume an empty destination path prefix and set the full application path. Check released status and signatures in your own edition. No SAP activation or remote call was performed.
+
+**Primary references:**
+
+- [SAP: Outbound HTTP, destinations and client methods](https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161)
+- [IETF: Conditional requests and If-Match](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1)
+
+## 2. GET: read, inspect, and always close
+
+A returned response still needs its HTTP status checked. A connection exception is a different outcome.
+
+Questions: [HTTP-13](https://abap-interview-studio.pages.dev/#q-HTTP-13)
+
+**Where this belongs:** Method-body excerpt using destination from card 1. The fictional API returns order 4711 as JSON with HTTP 200; /api/orders/4711 is an example path, not an SAP standard endpoint. The enclosing adapter returns the captured outcomes to its caller.
+
+```abap
+CONSTANTS co_path TYPE string VALUE '/api/orders/4711'.
+CONSTANTS co_accept TYPE string VALUE 'Accept'.
+CONSTANTS co_json TYPE string VALUE 'application/json'.
+CONSTANTS co_timeout TYPE i VALUE 30.
+CONSTANTS co_etag TYPE string VALUE 'ETag'.
+DATA client TYPE REF TO if_web_http_client.
+DATA failure TYPE REF TO cx_root.
+DATA cleanup_failure TYPE REF TO cx_root.
+DATA status_code TYPE i.
+DATA response_text TYPE string.
+
+TRY.
+    client = cl_web_http_client_manager=>create_by_http_destination(
+      i_destination = destination ).
+    DATA(request) = client->get_http_request( ).
+    request->set_uri_path( co_path ).
+    request->set_header_field( i_name = co_accept i_value = co_json ).
+    DATA(response) = client->execute(
+      i_method = if_web_http_client=>get i_timeout = co_timeout ).
+    DATA(ls_status) = response->get_status( ).
+    status_code = ls_status-code.
+    response_text = response->get_text( ).
+    DATA(etag) = response->get_header_field( co_etag ).
+  CATCH cx_web_http_client_error cx_web_message_error INTO failure.
+ENDTRY.
+
+IF client IS BOUND.
+  TRY.
+      client->close( ).
+    CATCH cx_web_http_client_error INTO cleanup_failure.
+  ENDTRY.
+ENDIF.
+DATA(read_succeeded) = xsdbool(
+  failure IS NOT BOUND AND status_code = 200 ).
+```
+
+**Read it step by step:**
+
+1. **Prepare one read** (lines 13, 14, 15, 16, 17): Create the released client, select the resource path and request JSON.
+2. **Keep response and failure separate** (lines 18, 19, 20, 21, 22, 23, 24): Capture status and body if available. Capture client/message exceptions without pretending that an HTTP 404 or 500 is a connection exception. Keep the exact ETag for a later update if the server supplies one.
+3. **Close on both paths** (lines 27, 28, 29, 30, 31, 32, 33, 34): Close after success or failure. Preserve a separate cleanup error; it must not erase the primary error or change a known server result.
+
+**What happens:** Only HTTP 200 with no client/message exception sets read_succeeded. The caller must still validate Content-Type and payload before using the order.
+
+**Scope:** These local outcome variables are a teaching adapter boundary, not a silent error policy: return or map them into your application result and log redacted diagnostics. A cleanup failure is reported separately. The timeout controls this execute call, not every proxy or backend time limit. No automatic retry or SAP execution is shown.
+
+**Primary references:**
+
+- [SAP: Outbound HTTP, destinations and client methods](https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161)
+- [IETF: Conditional requests and If-Match](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1)
+
+## 3. PATCH: CSRF token, ETag, and a checked result
+
+CSRF protects the request session; If-Match protects the version being changed. They solve different problems.
+
+Questions: [HTTP-14](https://abap-interview-studio.pages.dev/#q-HTTP-14)
+
+**Where this belongs:** Method-body excerpt using destination from card 1. etag is a non-empty string copied exactly from the earlier GET of order 4711. The fictional API supports JSON Merge Patch, a HEAD-based SAP-style CSRF handshake at this resource, cookies, and HTTP 200/204 for a completed change.
+
+```abap
+CONSTANTS co_path TYPE string VALUE '/api/orders/4711'.
+CONSTANTS co_if_match TYPE string VALUE 'If-Match'.
+CONSTANTS co_content_type TYPE string VALUE 'Content-Type'.
+CONSTANTS co_patch_type TYPE string VALUE 'application/merge-patch+json'.
+CONSTANTS co_patch TYPE string VALUE '{"note":"Deliver on Friday"}'.
+CONSTANTS co_timeout TYPE i VALUE 30.
+DATA client TYPE REF TO if_web_http_client.
+DATA failure TYPE REF TO cx_root.
+DATA cleanup_failure TYPE REF TO cx_root.
+DATA status_code TYPE i.
+DATA response_text TYPE string.
+
+TRY.
+    client = cl_web_http_client_manager=>create_by_http_destination(
+      i_destination = destination ).
+    client->accept_cookies( i_allow = abap_true ).
+    DATA(request) = client->get_http_request( ).
+    request->set_uri_path( co_path ).
+    client->set_csrf_token( ).
+    request->set_header_field( i_name = co_if_match i_value = etag ).
+    request->set_header_field(
+      i_name = co_content_type i_value = co_patch_type ).
+    request->set_text( co_patch ).
+    DATA(response) = client->execute(
+      i_method = if_web_http_client=>patch i_timeout = co_timeout ).
+    DATA(ls_status) = response->get_status( ).
+    status_code = ls_status-code.
+    response_text = response->get_text( ).
+  CATCH cx_web_http_client_error cx_web_message_error INTO failure.
+ENDTRY.
+
+IF client IS BOUND.
+  TRY.
+      client->close( ).
+    CATCH cx_web_http_client_error INTO cleanup_failure.
+  ENDTRY.
+ENDIF.
+DATA(change_confirmed) = xsdbool(
+  failure IS NOT BOUND AND ( status_code = 200 OR status_code = 204 ) ).
+```
+
+**Read it step by step:**
+
+1. **Prepare the CSRF session** (lines 16, 17, 18, 19): Keep cookies on the same client. SET_CSRF_TOKEN sends HEAD and stores the token; this endpoint must support that handshake. Set the modifying body afterward.
+2. **Protect the version and describe the change** (lines 20, 21, 22, 23): Forward the actual ETag in If-Match. This API changes only note; its JSON Merge Patch media type explicitly defines that meaning.
+3. **Inspect the server outcome** (lines 24, 25, 26, 27, 28, 29): 200/204 confirm this API operation. 412 means the version is stale; read again and resolve the conflict. A timeout leaves the business result uncertain.
+4. **Close without hiding the first error** (lines 32, 33, 34, 35, 36, 37, 38, 39): Both normal and exceptional paths close the client. Return status/body, the primary failure and any cleanup failure to the surrounding adapter.
+
+**What happens:** change_confirmed is true only for the API's documented completed-change statuses. Do not parse an empty 204 response as JSON.
+
+**Scope:** This is not a universal OData payload: use the real service media type and field names. An OData ETag can be weak under OData concurrency rules; preserve its exact value. Do not use If-Match * to hide conflicts. If HEAD/token handling differs, follow that service's supported flow. SET_CSRF_TOKEN performs another request; configure its applicable connection limits separately. A failed close or local ROLLBACK cannot undo a remote change. No automatic PATCH replay.
+
+**Primary references:**
+
+- [SAP: Outbound HTTP, destinations and client methods](https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161)
+- [IETF: Conditional requests and If-Match](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1)
 
 ## Read a request from top to bottom
 
@@ -1792,45 +2206,65 @@ CALL BADI order_check->check
 - [SAP: Object plug-ins and BAdIs](https://help.sap.com/docs/SAP_NETWEAVER_AS_ABAP_FOR_SOH_740/7bfe8cdcfbb040dcb6702dada8c3e2f0/a085408fd34b496798872ae307c0adb2.html)
 - [SAP: Single-use and multiple-use BAdIs](https://help.sap.com/saphelp_autoid2007/helpdata/en/e4/5c3642eca5033be10000000a1550b0/content.htm)
 
-## Execute a request and inspect the reply
+## Read an HTTP response and close on every path
 
-A configured destination provides the connection. Your code still has to inspect the HTTP response.
+A returned response still needs its HTTP status checked. A connection exception is a different outcome.
 
 Questions: [HTTP-10](https://abap-interview-studio.pages.dev/#q-HTTP-10), [BTP-06](https://abap-interview-studio.pages.dev/#q-BTP-06)
 
-**Where this belongs:** Method-body excerpt for a target supporting these released HTTP interfaces. destination is an already resolved IF_HTTP_DESTINATION from the target-supported communication/destination setup. The enclosing method declares CX_WEB_HTTP_CLIENT_ERROR and CX_WEB_MESSAGE_ERROR.
+**Where this belongs:** Method-body excerpt with destination already resolved as an IF_HTTP_DESTINATION reference. The fictional API returns order 4711 as JSON with HTTP 200; /api/orders/4711 is an example path, not an SAP standard endpoint. The enclosing adapter returns the captured outcomes to its caller.
 
 ```abap
-DATA(client) =
-  cl_web_http_client_manager=>create_by_http_destination(
-    i_destination = destination ).
+CONSTANTS co_path TYPE string VALUE '/api/orders/4711'.
+CONSTANTS co_accept TYPE string VALUE 'Accept'.
+CONSTANTS co_json TYPE string VALUE 'application/json'.
+CONSTANTS co_timeout TYPE i VALUE 30.
+CONSTANTS co_etag TYPE string VALUE 'ETag'.
+DATA client TYPE REF TO if_web_http_client.
+DATA failure TYPE REF TO cx_root.
+DATA cleanup_failure TYPE REF TO cx_root.
+DATA status_code TYPE i.
+DATA response_text TYPE string.
 
-DATA(response) = client->execute(
-  i_method = if_web_http_client=>get ).
-DATA(ls_status) = response->get_status( ).
-DATA(response_text) = response->get_text( ).
-client->close( ).
+TRY.
+    client = cl_web_http_client_manager=>create_by_http_destination(
+      i_destination = destination ).
+    DATA(request) = client->get_http_request( ).
+    request->set_uri_path( co_path ).
+    request->set_header_field( i_name = co_accept i_value = co_json ).
+    DATA(response) = client->execute(
+      i_method = if_web_http_client=>get i_timeout = co_timeout ).
+    DATA(ls_status) = response->get_status( ).
+    status_code = ls_status-code.
+    response_text = response->get_text( ).
+    DATA(etag) = response->get_header_field( co_etag ).
+  CATCH cx_web_http_client_error cx_web_message_error INTO failure.
+ENDTRY.
 
-IF ls_status-code < 200 OR ls_status-code >= 300.
-  RETURN.
+IF client IS BOUND.
+  TRY.
+      client->close( ).
+    CATCH cx_web_http_client_error INTO cleanup_failure.
+  ENDTRY.
 ENDIF.
+DATA(read_succeeded) = xsdbool(
+  failure IS NOT BOUND AND status_code = 200 ).
 ```
 
 **Read it step by step:**
 
-1. **Use the configured destination** (lines 1, 2, 3): The client uses the endpoint and connection setup already resolved by the application. Do not put passwords into the source.
-2. **Separate transport from HTTP outcome** (lines 5, 6, 7, 8): The call can raise a client exception. If it returns a response, inspect its status before treating the body as business data.
-3. **Close and route the failure** (lines 9, 11, 12): The successful execution path closes the connection. Non-2xx responses go to an error-handling path, not the JSON success parser.
+1. **Prepare one read** (lines 13, 14, 15, 16, 17): Create the released client, select the resource path and request JSON.
+2. **Keep response and failure separate** (lines 18, 19, 20, 21, 22, 23, 24): Capture status and body if available. Capture client/message exceptions without pretending that an HTTP 404 or 500 is a connection exception. Keep the exact ETag for a later update if the server supplies one.
+3. **Close on both paths** (lines 27, 28, 29, 30, 31, 32, 33, 34): Close after success or failure. Preserve a separate cleanup error; it must not erase the primary error or change a known server result.
 
-**What happens:** A received 401, 403 or 500 is handled as an HTTP result; a connection exception is handled by the enclosing boundary.
+**What happens:** Only HTTP 200 with no client/message exception sets read_succeeded. The caller must still validate Content-Type and payload before using the order.
 
-**Scope:** RETURN is only the teaching stop point: add error mapping, timeouts and cleanup on exception paths. Verify release status and destination creation for the actual edition. A destination does not itself install Cloud Connector or grant business permission. Not SAP-executed.
+**Scope:** These local outcome variables are a teaching adapter boundary, not a silent error policy: return or map them into your application result and log redacted diagnostics. A cleanup failure is reported separately. The timeout controls this execute call, not every proxy or backend time limit. No automatic retry or SAP execution is shown.
 
 **Primary references:**
 
-- [SAP: HTTP client usage](https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/setting-http-logon-popup-policy)
-- [SAP: Integration and connectivity](https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf)
-- [SAP sample: HTTP response and message errors](https://github.com/SAP-samples/abap-oo-basics/blob/main/src/zcl_obj_xml_test.clas.abap)
+- [SAP: Outbound HTTP, destinations and client methods](https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161)
+- [IETF: Conditional requests and If-Match](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1)
 
 ## Let RAP save the order
 
@@ -1877,7 +2311,7 @@ authorization master ( global )
 
 EML reads the order that RAP is currently working on, including buffered changes.
 
-Questions: [RAP-03](https://abap-interview-studio.pages.dev/#q-RAP-03), [RAP-08](https://abap-interview-studio.pages.dev/#q-RAP-08), [RAP-09](https://abap-interview-studio.pages.dev/#q-RAP-09), [MODEL-13](https://abap-interview-studio.pages.dev/#q-MODEL-13)
+Questions: [RAP-03](https://abap-interview-studio.pages.dev/#q-RAP-03), [RAP-08](https://abap-interview-studio.pages.dev/#q-RAP-08), [RAP-09](https://abap-interview-studio.pages.dev/#q-RAP-09)
 
 **Where this belongs:** Inside a handler of custom BO ZI_Order. Its generated keys parameter contains transactional keys; Order is the BDEF alias. This fragment reads data only.
 
@@ -2095,7 +2529,7 @@ ENDLOOP.
 
 A determination should produce the same total when RAP runs it again with the same inputs.
 
-Questions: [RAP-06](https://abap-interview-studio.pages.dev/#q-RAP-06), [RAP-13](https://abap-interview-studio.pages.dev/#q-RAP-13), [SRAP-11](https://abap-interview-studio.pages.dev/#q-SRAP-11)
+Questions: [RAP-06](https://abap-interview-studio.pages.dev/#q-RAP-06), [RAP-13](https://abap-interview-studio.pages.dev/#q-RAP-13), [SRAP-11](https://abap-interview-studio.pages.dev/#q-SRAP-11), [MODEL-13](https://abap-interview-studio.pages.dev/#q-MODEL-13)
 
 **Where this belongs:** Inside an Order determination of custom managed BO ZI_Order. The BDEF triggers it on create and changes to Quantity or UnitPrice. Total is derived and read-only to external consumers; numeric fields use suitable decimal types.
 
@@ -2119,6 +2553,7 @@ APPEND LINES OF ls_reported-order TO reported-order.
 
 1. **Read the current inputs** (lines 1, 3, 5): Use the transaction's current quantity and price, including unsaved edits.
 2. **Replace the total** (lines 8, 10, 11): Quantity 3 and price 10 produce Total 30 every time. Adding 30 to the old total would incorrectly produce 60 on a second run.
+3. **Only trusted derived input** (lines 6, 8, 11): Local mode updates readonly Total from Quantity and UnitPrice. A public action that instead passes an arbitrary caller-supplied Total can create an indirect write bypass. Check input and permissions at the public operation boundary.
 
 **What happens:** The buffered Total becomes 30 for quantity 3 and unit price 10, regardless of repeated execution with those inputs.
 
@@ -2410,16 +2845,16 @@ Questions: [ADV-12](https://abap-interview-studio.pages.dev/#q-ADV-12)
 **Where this belongs:** A CDS view-entity extension for your own ZC_Order projection over ZI_Order. Your table and base entity already contain ApprovalReference, persistence mapping is maintained, and ZC_Order permits this extension in the target release. This is not an SAP standard BO.
 
 ```sql
-@EndUserText.label: 'Order approval reference'
 extend view entity ZC_Order with
 {
+  @EndUserText.label: 'Order approval reference'
   ApprovalReference
 }
 ```
 
 **Read it step by step:**
 
-1. **Extend the permitted layer** (lines 2): The extension adds to the existing projection. Before writing it, verify that this exact entity is allowed to be extended.
+1. **Extend the permitted layer** (lines 1): The extension adds to the existing projection. Before writing it, verify that this exact entity is allowed to be extended.
 2. **Expose an existing base field** (lines 4): ApprovalReference already exists below the projection. This line makes it part of the projection's field list; it does not create a table column or implement a validation.
 
 **What happens:** After activating compatible objects, the projection includes ApprovalReference. Verify the field in service metadata, then test read, update and save through the real service.
@@ -2589,3 +3024,143 @@ define role ZC_Order
 
 - [SAP: CDS access control and nonautomatic inheritance](https://help.sap.com/docs/abap-cloud/abap-data-models/cds-authorization-concept)
 - [SAP: implementing inherited read protection](https://help.sap.com/docs/btp/sap-business-technology-platform/implementing-read-protection)
+
+## Declare a read-only calculation
+
+PreviewTotal returns a small result without adding a business change.
+
+Questions: [ADV-14](https://abap-interview-studio.pages.dev/#q-ADV-14)
+
+**Where this belongs:** Inside the entity body of the existing custom ZI_Order BDEF with alias Order. Create the abstract result entity ZA_OrderPreview first, with Amount of type abap.dec(15,2) and CurrencyCode of type abap.cuky. The projection requires use function PreviewTotal; if this function is exposed through the service.
+
+```abap
+function PreviewTotal
+  result [1] ZA_OrderPreview;
+```
+
+**Read it step by step:**
+
+1. **Choose a function** (lines 1): This declares an instance function: the caller selects existing orders. The implementation must only read and calculate.
+2. **Return one preview per successful input** (lines 2): The result has Amount and CurrencyCode. The [1] cardinality describes the declared result; a missing or rejected order still needs a failure response.
+
+**What happens:** The behavior contract now names the operation and its result. The generated handler still needs an implementation.
+
+**Scope:** A BDEF fragment, not a complete BO. Verify the result entity, authorization, projection, service binding and function support on the target release. A function is not automatically rendered as an action button.
+
+**Primary references:**
+
+- [SAP: function definition](https://help.sap.com/docs/abap-cloud/abap-rap/function-definition)
+
+## Return 30 without changing the order
+
+Read Quantity 3 and UnitPrice 10 from the current transaction, then return their product.
+
+Questions: [ADV-14](https://abap-interview-studio.pages.dev/#q-ADV-14)
+
+**Where this belongs:** Handler method for function PreviewTotal result [1] ZA_OrderPreview in custom BO ZI_Order, alias Order. ADT generates METHODS PreviewTotal FOR READ IMPORTING keys FOR FUNCTION Order~PreviewTotal RESULT result. Quantity and UnitPrice are decimal fields, CurrencyCode is CUKY, and ZA_OrderPreview contains Amount DEC(15,2) and CurrencyCode CUKY. The public function authorization is configured separately.
+
+```abap
+METHOD PreviewTotal.
+  READ ENTITIES OF zi_order IN LOCAL MODE
+    ENTITY Order
+    FIELDS ( Quantity UnitPrice CurrencyCode )
+    WITH CORRESPONDING #( keys )
+    RESULT DATA(lt_orders)
+    FAILED DATA(ls_failed)
+    REPORTED DATA(ls_reported).
+  failed = CORRESPONDING #( DEEP ls_failed ).
+  reported = CORRESPONDING #( DEEP ls_reported ).
+  result = VALUE #( FOR ls_order IN lt_orders
+    ( %tky = ls_order-%tky
+      %param-Amount = ls_order-Quantity * ls_order-UnitPrice
+      %param-CurrencyCode = ls_order-CurrencyCode ) ).
+ENDMETHOD.
+```
+
+**Read it step by step:**
+
+1. **Read the pending values** (lines 2, 4, 5, 6): EML reads this BO transaction, including unsaved changes. Local mode is used inside its own implementation, not as an external authorization bypass.
+2. **Keep failed inputs visible** (lines 7, 8, 9, 10): Forward the read failures and messages. A key that produced no row must not silently be presented as a successful preview.
+3. **Return a calculation, not an update** (lines 11, 12, 13, 14): %tky links each result to its order. Amount becomes 30 for Quantity 3 and UnitPrice 10. No MODIFY, INSERT or COMMIT occurs.
+
+**What happens:** The caller receives Amount 30 with its currency. The order buffer and database remain unchanged.
+
+**Scope:** Teaching handler body with stated custom types, not an activated application. Production amounts need agreed decimal ranges and currency rounding. Test multiple keys, denied execution and missing instances. A read-only implementation must not trigger remote business changes.
+
+**Primary references:**
+
+- [SAP: FOR READ handler contract](https://help.sap.com/docs/abap-cloud/abap-keyword/for-read-rap-handler-method)
+- [SAP: function definition and controls](https://help.sap.com/docs/abap-cloud/abap-rap/function-definition)
+
+## Connect a default function to an action
+
+The action receives DiscountPercent; its default function proposes the initial value.
+
+Questions: [ADV-15](https://abap-interview-studio.pages.dev/#q-ADV-15)
+
+**Where this belongs:** Inside the Order entity body of custom BDEF ZI_Order. ZA_Discount is an existing abstract parameter entity with DiscountPercent of type abap.int1. Expose both use action ApplyDiscount; and use function GetDefaultsForApplyDiscount; in the consuming projection.
+
+```abap
+action ApplyDiscount parameter ZA_Discount
+{
+  default function GetDefaultsForApplyDiscount;
+}
+```
+
+**Read it step by step:**
+
+1. **Declare the real input** (lines 1): ApplyDiscount will receive the percentage the caller actually submits. The action must validate that value.
+2. **Attach the input suggestion** (lines 3): The default function is associated with this action. RAP derives its parameters and result; the GetDefaultsFor name is a framework convention.
+
+**What happens:** A supporting consumer can request suggested values before it executes ApplyDiscount.
+
+**Scope:** This declares the link, not the action logic or UI button. Generate the required methods in ADT and verify backend, binding and Fiori elements support. A direct caller can skip defaulting.
+
+**Primary references:**
+
+- [SAP: defaulting input parameters](https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations)
+- [SAP sample: default function projection exposure](https://github.com/SAP-samples/abap-platform-fiori-feature-showcase/blob/main/01_general_features.md#default-values-function)
+
+## Suggest 10 or 5 percent without applying it
+
+The suggestion depends on the selected order, so a function is more useful here than one fixed default.
+
+Questions: [ADV-15](https://abap-interview-studio.pages.dev/#q-ADV-15)
+
+**Where this belongs:** Body of the ADT-generated handler for GetDefaultsForApplyDiscount in custom ZI_Order, alias Order. The instance action uses ZA_Discount with DiscountPercent INT1. The generated method is FOR READ IMPORTING keys FOR FUNCTION Order~GetDefaultsForApplyDiscount RESULT result. All teaching orders use EUR and Total is decimal; 1000 EUR is an illustrative threshold, not a SAP pricing rule.
+
+```abap
+METHOD GetDefaultsForApplyDiscount.
+  CONSTANTS co_large_order TYPE decfloat34 VALUE 1000.
+  CONSTANTS co_large_discount TYPE i VALUE 10.
+  CONSTANTS co_small_discount TYPE i VALUE 5.
+  READ ENTITIES OF zi_order IN LOCAL MODE
+    ENTITY Order
+    FIELDS ( Total ) WITH CORRESPONDING #( keys )
+    RESULT DATA(lt_orders)
+    FAILED DATA(ls_failed)
+    REPORTED DATA(ls_reported).
+  failed = CORRESPONDING #( DEEP ls_failed ).
+  reported = CORRESPONDING #( DEEP ls_reported ).
+  result = VALUE #( FOR ls_order IN lt_orders
+    ( %tky = ls_order-%tky
+      %param-DiscountPercent = COND #(
+        WHEN ls_order-Total >= co_large_order
+        THEN co_large_discount ELSE co_small_discount ) ) ).
+ENDMETHOD.
+```
+
+**Read it step by step:**
+
+1. **Read the inputs for the suggestion** (lines 2, 3, 4, 5, 7, 8): Use each selected order's current total. Orders of 1200 EUR and 200 EUR qualify for different suggestions.
+2. **Forward read failures** (lines 9, 10, 11, 12): Keep missing or failed instances identifiable instead of returning a made-up percentage for every input key.
+3. **Fill the dialog values only** (lines 13, 14, 15, 16, 17): %param contains 10 for the large order and 5 for the small one. No discount is applied until the actual action executes and validates its own input.
+
+**What happens:** The consumer receives one suggestion per successfully read order. Cancelling the dialog changes no business data.
+
+**Scope:** An illustrative rule, not a complete pricing implementation. Handle currencies, rounding and policy changes in a real app. The action must recheck permission and input; default values can be edited, skipped or become outdated. Verify multi-selection behavior in the actual client.
+
+**Primary references:**
+
+- [SAP: default values function implementation](https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations)
+- [SAP: FOR READ handler](https://help.sap.com/docs/abap-cloud/abap-keyword/for-read-rap-handler-method)

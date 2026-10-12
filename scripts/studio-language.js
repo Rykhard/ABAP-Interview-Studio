@@ -15,7 +15,7 @@ languagePicker.querySelectorAll('button').forEach(button=>{
   storeFilters();
   const snapshot={version:1,path:location.pathname,hash:location.hash,mode,prefs,libraryList,savedOnly,lessonLibrary,practiceKind,activeSession,questionReturn,questionFromSearch,searchQuery,searchLimit,sessionLength:$('sessionLength').value,scrollY:window.scrollY,
    state,ratings,quizProgress,bookmarks:[...savedQuestions],answerDefault,answerOverrides:[...answerOverrides],
-   maps:{lessonPositions:[...lessonPositions],lessonChoices:[...lessonChoices],studyViewChoices:[...studyViewChoices],exampleChoices:[...exampleChoices],codeSteps:[...codeSteps],guidedPositions:[...guidedPositions]}};
+   maps:{lessonPositions:[...lessonPositions],lessonChoices:[...lessonChoices],studyViewChoices:[...studyViewChoices],exampleChoices:[...exampleChoices],codeSteps:[...codeSteps],guidedPositions:[...guidedPositions],visualChoices:[...visualChoices]}};
   const url=new URL(location.href);url.searchParams.set('lang',next);
   try{localStorage.setItem('abap-studio-language-v1',next);}catch{/* The explicit URL also retains the chosen language. */}
   try{history.replaceState({...history.state,languageSnapshot:snapshot},'',url);location.reload();}
@@ -34,7 +34,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
    savedQuestions.clear();s.bookmarks.filter(id=>byId.has(id)).forEach(id=>savedQuestions.add(id));
    questionReturn=s.questionReturn;questionFromSearch=!!s.questionFromSearch;searchQuery=s.searchQuery||'';searchLimit=s.searchLimit||20;
    answerDefault=s.answerDefault==='answers'?'answers':'questions';answerOverrides.clear();s.answerOverrides.forEach(([key,value])=>answerOverrides.set(key,value));
-   for(const [name,map] of Object.entries({lessonPositions,lessonChoices,studyViewChoices,exampleChoices,codeSteps,guidedPositions})){map.clear();(s.maps[name]||[]).forEach(([key,value])=>map.set(key,value));}
+   for(const [name,map] of Object.entries({lessonPositions,lessonChoices,studyViewChoices,exampleChoices,codeSteps,guidedPositions,visualChoices})){map.clear();(s.maps[name]||[]).forEach(([key,value])=>map.set(key,value));}
    restoreFilters();$('sessionLength').value=s.sessionLength;
    if(activeSession)activeSession.title=practiceContext();render();
    requestAnimationFrame(()=>window.scrollTo({top:s.scrollY||0,behavior:'instant'}));

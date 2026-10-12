@@ -111,6 +111,8 @@
           "RAP-16",
           "ADV-05",
           "ADV-06",
+          "ADV-14",
+          "ADV-15",
           "SRAP-11",
           "SRAP-13",
           "SRAP-14",
@@ -350,6 +352,7 @@
           "OO-07",
           "OO-13",
           "OO-14",
+          "OO-17",
           "OO-08",
           "OODEEP-04",
           "OODEEP-05",
@@ -427,6 +430,7 @@
         "questionIds": [
           "SQL-01",
           "SQL-14",
+          "SQL-15",
           "SQLX-01",
           "SQLX-02"
         ]
@@ -454,7 +458,9 @@
           "HTTP-04",
           "HTTP-09",
           "HTTP-10",
-          "HTTP-12"
+          "HTTP-12",
+          "HTTP-13",
+          "HTTP-14"
         ]
       },
       {

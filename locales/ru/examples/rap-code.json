@@ -56,8 +56,7 @@
     "questions": [
       "RAP-03",
       "RAP-08",
-      "RAP-09",
-      "MODEL-13"
+      "RAP-09"
     ],
     "intro": "EML читает текущий заказ RAP, включая buffered changes.",
     "language": "ABAP",
@@ -73,8 +72,7 @@
         "label": "Прочитать буфер",
         "explanation": "Если Comment изменён с Old на New в этой транзакции, чтение может вернуть New до save БД.",
         "questions": [
-          "RAP-03",
-          "MODEL-13"
+          "RAP-03"
         ]
       },
       {
@@ -385,7 +383,8 @@
     "questions": [
       "RAP-06",
       "RAP-13",
-      "SRAP-11"
+      "SRAP-11",
+      "MODEL-13"
     ],
     "intro": "Повтор determination с теми же inputs должен дать тот же total.",
     "language": "ABAP",
@@ -413,6 +412,18 @@
           "RAP-13",
           "SRAP-11"
         ]
+      },
+      {
+        "lines": [
+          6,
+          8,
+          11
+        ],
+        "questions": [
+          "MODEL-13"
+        ],
+        "label": "Только доверенный расчёт",
+        "explanation": "Local mode обновляет readonly-поле Total из Quantity и UnitPrice. Если публичный action вместо этого принимает произвольный Total от пользователя, он может открыть обход запрета на изменение поля. Проверяйте вход и полномочия публичной операции."
       }
     ],
     "outcome": "Buffered Total становится 30 при quantity 3 и unit price 10 независимо от повторных запусков на этих данных.",
@@ -424,7 +435,8 @@
       }
     ],
     "startFor": [
-      "RAP-13"
+      "RAP-13",
+      "MODEL-13"
     ]
   },
   {
@@ -807,11 +819,11 @@
     "intro": "Добавление поля в consumer projection — один из шагов расширения BO.",
     "language": "CDS",
     "context": "CDS view-entity extension собственной ZC_Order над ZI_Order. В table и base entity уже есть ApprovalReference, persistence mapping настроен, а ZC_Order разрешает extension на target release. Это не SAP standard BO.",
-    "code": "@EndUserText.label: 'Order approval reference'\nextend view entity ZC_Order with\n{\n  ApprovalReference\n}",
+    "code": "extend view entity ZC_Order with\n{\n  @EndUserText.label: 'Order approval reference'\n  ApprovalReference\n}",
     "highlights": [
       {
         "lines": [
-          2
+          1
         ],
         "label": "Расширить разрешённый слой",
         "explanation": "Extension дополняет существующую projection. Сначала убедитесь, что именно эту entity разрешено расширять."

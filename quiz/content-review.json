@@ -1,0 +1,170 @@
+[
+  {
+    "id": "QUIZ-REVIEW-OO-17",
+    "questionId": "OO-17",
+    "prompt": "A program creates two objects of the same class in one internal session. Where should each object receive its own customer ID?",
+    "correctOption": "a",
+    "options": [
+      {
+        "id": "a",
+        "text": "In constructor, using an instance parameter.",
+        "explanation": "constructor initializes each newly created instance. Different objects can receive different IDs."
+      },
+      {
+        "id": "b",
+        "text": "In class_constructor, which runs for each NEW.",
+        "explanation": "class_constructor performs class initialization once in the internal session, not once per object."
+      },
+      {
+        "id": "c",
+        "text": "In a shared CLASS-DATA customer field.",
+        "explanation": "A static field would share the value between the objects rather than hold their individual identity."
+      },
+      {
+        "id": "d",
+        "text": "By explicitly calling class_constructor with the ID.",
+        "explanation": "The runtime invokes class_constructor; it is not an ordinary parameterized initialization method."
+      }
+    ]
+  },
+  {
+    "id": "QUIZ-REVIEW-SQL-15",
+    "questionId": "SQL-15",
+    "prompt": "A CDS query needs a tabular result calculated with SQLScript. Which AMDP variant can implement that CDS data source?",
+    "correctOption": "a",
+    "options": [
+      {
+        "id": "a",
+        "text": "A CDS table function implemented by an AMDP database function.",
+        "explanation": "The declared CDS table function provides the tabular query contract; its AMDP method implements that database function."
+      },
+      {
+        "id": "b",
+        "text": "Any ABAP instance method that returns an internal table.",
+        "explanation": "Returning a table from ABAP does not make a method a CDS query source."
+      },
+      {
+        "id": "c",
+        "text": "An AMDP procedure called directly from the CDS FROM clause.",
+        "explanation": "A procedure call and a CDS table-function source have different contracts."
+      },
+      {
+        "id": "d",
+        "text": "A RAP action that commits its result.",
+        "explanation": "An action is a business operation, not the database-function implementation of a CDS source."
+      }
+    ]
+  },
+  {
+    "id": "QUIZ-REVIEW-ADV-14",
+    "questionId": "ADV-14",
+    "prompt": "The app must show an estimated discount without changing the order. Which RAP operation fits?",
+    "correctOption": "a",
+    "options": [
+      {
+        "id": "a",
+        "text": "A read-only function that returns the estimate.",
+        "explanation": "A function can read or calculate a result without changing BO state. The later operation that applies a discount must validate it."
+      },
+      {
+        "id": "b",
+        "text": "A function that updates the order and rolls back afterward.",
+        "explanation": "A function is not a temporary write transaction. Rollback does not make a modifying implementation read-only."
+      },
+      {
+        "id": "c",
+        "text": "A determination triggered solely by opening the preview.",
+        "explanation": "Determinations are tied to their modeled triggers. Opening a preview is not a general determination trigger."
+      },
+      {
+        "id": "d",
+        "text": "An action with an internal COMMIT WORK.",
+        "explanation": "A provider cannot take over RAP commit ownership, and saving is unnecessary for a read-only estimate."
+      }
+    ]
+  },
+  {
+    "id": "QUIZ-REVIEW-ADV-15",
+    "questionId": "ADV-15",
+    "prompt": "An action dialog suggests a discount of 5%. The user changes it to 90%. What must happen when the action executes?",
+    "correctOption": "a",
+    "options": [
+      {
+        "id": "a",
+        "text": "Validate the submitted 90% against the business rules.",
+        "explanation": "A default values function only suggests input. The consumer can change or omit it, so the action validates actual input."
+      },
+      {
+        "id": "b",
+        "text": "Trust it because the default function ran earlier.",
+        "explanation": "Calculating a suggestion is not validation of the later request."
+      },
+      {
+        "id": "c",
+        "text": "Assume the suggested 5% was already saved.",
+        "explanation": "Returning defaults does not apply the action or persist the proposed business change."
+      },
+      {
+        "id": "d",
+        "text": "Skip validation when the UI supplied the value.",
+        "explanation": "UI input is still external input; direct service calls must follow the same business rules."
+      }
+    ]
+  },
+  {
+    "id": "QUIZ-REVIEW-HTTP-13",
+    "questionId": "HTTP-13",
+    "prompt": "An outbound HTTP call returns a response object with status 404. Has the requested business read succeeded?",
+    "correctOption": "a",
+    "options": [
+      {
+        "id": "a",
+        "text": "No. Inspect the status and handle the missing resource before parsing the expected success payload.",
+        "explanation": "A response object means an HTTP response arrived. The status and service contract determine how to interpret its body."
+      },
+      {
+        "id": "b",
+        "text": "Yes. A response object always means a successful read.",
+        "explanation": "Error responses also have response objects and may contain a different payload shape."
+      },
+      {
+        "id": "c",
+        "text": "Yes, if the body happens to be valid JSON.",
+        "explanation": "JSON syntax does not establish business success. An error message can also be JSON."
+      },
+      {
+        "id": "d",
+        "text": "Retry forever without checking the destination or path.",
+        "explanation": "An incorrect resource path is not repaired by endless retries. Diagnose the service-specific failure."
+      }
+    ]
+  },
+  {
+    "id": "QUIZ-REVIEW-HTTP-14",
+    "questionId": "HTTP-14",
+    "prompt": "A PATCH with If-Match receives HTTP 412. What is the useful next step?",
+    "correctOption": "a",
+    "options": [
+      {
+        "id": "a",
+        "text": "Read the current state and resolve the version conflict before deciding whether to retry.",
+        "explanation": "The precondition failed. Blindly overwriting the newer state would defeat optimistic concurrency."
+      },
+      {
+        "id": "b",
+        "text": "Replace the ETag with * and always overwrite.",
+        "explanation": "A wildcard can discard the intended version check. It is not a general conflict-resolution policy."
+      },
+      {
+        "id": "c",
+        "text": "Keep sending the unchanged stale request.",
+        "explanation": "Repeating the same invalid precondition does not resolve the conflict."
+      },
+      {
+        "id": "d",
+        "text": "Call local COMMIT WORK to force the remote update.",
+        "explanation": "A local commit cannot override a remote HTTP precondition or complete its transaction."
+      }
+    ]
+  }
+]

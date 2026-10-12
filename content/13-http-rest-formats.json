@@ -259,6 +259,51 @@
           "note": "Check the protocol or format rules here, separately from how the ABAP code implements them."
         }
       ]
+    },
+    {
+      "id": "HTTP-13",
+      "question": "How do you send a GET request with released ABAP HTTP APIs?",
+      "answer": "First configure an approved connection. Resolve an IF_HTTP_DESTINATION, create a client with CL_WEB_HTTP_CLIENT_MANAGER, set the path and headers, then execute GET. Check the status before using the response body. Close the client after success or failure, and keep connection errors separate from HTTP error responses.",
+      "detail": "For example, read order 4711 from a partner API. A custom communication scenario contains the HTTP outbound service. An administrator configures the communication system and arrangement with the host and authentication. CL_HTTP_DESTINATION_PROVIDER=>CREATE_BY_COMM_ARRANGEMENT resolves that setup; passwords stay out of the program. This method is for your developed scenario, not an arbitrary SAP-delivered scenario. Newer supported systems also offer communication targets, which SAP now recommends.\n\nThe code cards separate connection setup from the GET operation. This example expects HTTP 200 and JSON. A received 404 means the resource was not found; a client exception means the call itself failed. After a 200, verify the content type and required fields rather than assuming every body is valid order data. Close the client in either case and report any cleanup failure separately. Adapt the path, timeout and success contract to the real endpoint.",
+      "pitfall": "A configured destination does not prove that the remote business user has permission. A returned HTTP response does not prove that the request succeeded.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP: Outbound HTTP and released client APIs",
+          "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161",
+          "note": "Communication setup, arrangement-based destination creation, HTTP client methods and cleanup. Verify release availability in your target."
+        },
+        {
+          "title": "IETF: HTTP conditional requests and If-Match",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1",
+          "note": "Explains version preconditions; the actual API defines the allowed methods and success statuses."
+        }
+      ]
+    },
+    {
+      "id": "HTTP-14",
+      "question": "How do you change remote data safely with PATCH or POST from ABAP?",
+      "answer": "Follow the API contract: choose the method and body format, use its authentication, and fetch a CSRF token if required. For a versioned update, send the ETag you actually read in If-Match. Inspect the response, close the client on every path, and treat a timeout as an unknown outcome. Do not automatically repeat a business change.",
+      "detail": "Suppose order 4711 has an ETag from a successful GET. The PATCH example changes only its note. This fictional endpoint accepts JSON Merge Patch, fetches a CSRF token with HEAD, and uses cookies. Keep the same HTTP client for the token and the modifying request. SET_CSRF_TOKEN fetches and sets the token; If-Match separately prevents changing an obsolete version. A 412 response requires a fresh read and conflict handling, not replacing the ETag with *.\n\nFor this API, 200 or 204 confirms the completed update; 204 has no body to parse. A 202 response, if the real API supports it, means work was accepted and still needs tracking. A POST to create an order instead needs its documented create payload and success result, often a 201 with Location. A lost response does not prove that either operation failed: reconcile by a stable business reference or use the API's documented duplicate protection. Local ROLLBACK cannot undo a completed remote save.\n\nCSRF is not required by every API, and HEAD-based token fetching is not universal. Follow the service's documented flow. Raw JSON Merge Patch rules are not automatically OData PATCH rules; use the real media type, entity metadata and ETag contract.",
+      "pitfall": "CSRF token, ETag and an idempotency key are not interchangeable: they address request-session protection, concurrent updates and duplicate attempts respectively.",
+      "level": "Advanced",
+      "references": [
+        {
+          "title": "SAP: Outbound HTTP and released client APIs",
+          "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161",
+          "note": "Communication setup, arrangement-based destination creation, HTTP client methods and cleanup. Verify release availability in your target."
+        },
+        {
+          "title": "IETF: HTTP conditional requests and If-Match",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1",
+          "note": "Explains version preconditions; the actual API defines the allowed methods and success statuses."
+        },
+        {
+          "title": "IETF: JSON Merge Patch",
+          "url": "https://www.rfc-editor.org/rfc/rfc7396.html#section-2",
+          "note": "The modifying code example deliberately uses this specific patch format; do not assume the same null rules for all APIs."
+        }
+      ]
     }
   ]
 }

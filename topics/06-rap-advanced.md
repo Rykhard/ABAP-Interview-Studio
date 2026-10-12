@@ -422,6 +422,44 @@ Treat identity, business permission and contextual availability as separate chec
 
 </details>
 
+## ADV-14 What is a normal RAP function, and when should you use it instead of an action?
+
+**Level:** Advanced
+
+**Short answer:** A RAP function returns data or a calculation without changing the business object. Use it to preview an order total, for example. It runs in a FOR READ handler and returns the value in result. It must not update the buffer, save data or trigger a business side effect. Use an action when the operation should change business state.
+
+**Reasoning and example:** Suppose an order has Quantity 3 and UnitPrice 10. A PreviewTotal function reads the current values through EML and returns Amount 30. The caller sees the calculation, but the order is not changed or saved. If the user changes Quantity to 4 in the same transaction, a new preview can return 40. Read the transactional state rather than assuming the database already contains that edit.
+
+A normal instance function receives the selected instance keys. Its result links each input %tky to the calculated %param. Return a result for each successful input and a FAILED response for a rejected one. A static function is the variant that does not require an existing instance; it uses request correlation such as %cid. Static does not mean background processing.
+
+Declare the function in the BDEF and expose it with use function in the projection when the service needs it. Read-only does not mean public: configure and test the applicable authorization and feature controls. A function must not send an approval email, call a remote posting operation or create new state messages. Check result types, cardinalities, binding and client support on the target release. This RAP function is not an ABAP function module.
+
+**Avoid this mistake:** Do not implement a preview by changing the BO and then trying to undo it. A function returns a result; a determination changes derived BO data, and an action can perform a business change.
+
+**Read and verify this answer:**
+
+- [SAP: RAP function definition](https://help.sap.com/docs/abap-cloud/abap-rap/function-definition) - Read-only behavior, instance versus static, authorization and result support.
+- [SAP: FOR READ handler method](https://help.sap.com/docs/abap-cloud/abap-keyword/for-read-rap-handler-method) - FOR FUNCTION input, result and FAILED/REPORTED response contracts.
+
+## ADV-15 How does a default function suggest values for RAP action parameters?
+
+**Level:** Advanced
+
+**Short answer:** A default values function proposes initial input for an action dialog. It does not execute the action. For example, opening ApplyDiscount can suggest 10 percent for a large order and 5 percent for a small one. The user can edit the suggestion. When the action is finally called, validate the submitted value again.
+
+**Reasoning and example:** Attach a default function to the action declaration, for example GetDefaultsForApplyDiscount. Its name follows the GetDefaultsFor convention. RAP derives its input and result types from the operation; generate the handler in ADT rather than inventing a separate parameter contract. For an instance action, preserve each input %tky and fill the suggested parameter fields in %param. If a projection exposes the action, expose the default function there too.
+
+Example: order A totals 1200 EUR and order B totals 200 EUR. A simple teaching rule suggests DiscountPercent 10 for A and 5 for B. The default function reads both orders and returns those suggestions; it does not change either order. A user then enters 80 instead of 10. The action must check its allowed discount range and permissions and reject 80 if the rule forbids it.
+
+The supporting UI requests the default values before execution. A direct API caller can supply different input or skip the default request, so defaults are not an enforcement mechanism. A default can also become outdated before the action runs. Test multiple selected instances, missing keys, a cancelled dialog and invalid submitted values. Check backend release, OData binding and Fiori elements support rather than assuming every client opens the same dialog.
+
+**Avoid this mistake:** Do not confuse an input suggestion with a saved field value, determination or validation. Opening or cancelling the dialog must not perform the action.
+
+**Read and verify this answer:**
+
+- [SAP: defaulting input parameters for operations](https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations) - Default function declaration and handler. Check availability in the target release.
+- [SAP sample: default values functions for Fiori elements](https://github.com/SAP-samples/abap-platform-fiori-feature-showcase/blob/main/01_general_features.md#default-values-function) - Shows BDEF, projection exposure and filling %param.
+
 ## Official references
 
 - [SAP Learning on authorization](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks)

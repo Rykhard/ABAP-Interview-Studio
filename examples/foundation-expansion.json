@@ -1,0 +1,282 @@
+[
+  {
+    "id": "abap-standard-order",
+    "questions": [
+      "ABAP-01",
+      "ABAP-02"
+    ],
+    "language": "ABAP",
+    "code": "TYPES: BEGIN OF ty_order,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE STANDARD TABLE OF ty_order\n  WITH EMPTY KEY.\nAPPEND VALUE #( order_id = 9 amount = 200 ) TO lt_orders.\nAPPEND VALUE #( order_id = 7 amount = 100 ) TO lt_orders.\nDATA(ls_first) = lt_orders[ 1 ].\nDATA lt_processed_ids TYPE STANDARD TABLE OF i WITH EMPTY KEY.\nLOOP AT lt_orders INTO DATA(ls_order).\n  APPEND ls_order-order_id TO lt_processed_ids.\nENDLOOP.",
+    "title": "STANDARD: preserve arrival order",
+    "intro": "Choose this when row order or position is the useful property.",
+    "context": "Self-contained method-body fragment. Numeric values are local fixtures. lt_processed_ids records the actual processing order.",
+    "outcome": "ls_first contains order 9. Sequential processing keeps the append order: 9, then 7.",
+    "caveat": "The primary index is not an order_id index. A free-key search normally scans this table; a suitable secondary key can offer another access path. Index 1 is safe here because two rows were appended.",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6
+        ],
+        "label": "A sequence, not a unique lookup",
+        "explanation": "EMPTY KEY imposes no business-key uniqueness."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "label": "Position follows insertion",
+        "explanation": "The first row is order 9, even though 7 is numerically smaller."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: Internal tables",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "abap-sorted-customer",
+    "questions": [
+      "ABAP-01",
+      "ABAP-02"
+    ],
+    "language": "ABAP",
+    "code": "TYPES: BEGIN OF ty_order,\n         customer TYPE i,\n         order_id TYPE i,\n         amount   TYPE i,\n       END OF ty_order.\nDATA lt_orders TYPE SORTED TABLE OF ty_order\n  WITH UNIQUE KEY customer order_id.\nINSERT VALUE #( customer = 2 order_id = 9 amount = 200 )\n  INTO TABLE lt_orders.\nINSERT VALUE #( customer = 1 order_id = 7 amount = 100 )\n  INTO TABLE lt_orders.\nINSERT VALUE #( customer = 2 order_id = 8 amount = 50 )\n  INTO TABLE lt_orders.\nDATA(total) = 0.\nLOOP AT lt_orders INTO DATA(ls_order) WHERE customer = 2.\n  total = total + ls_order-amount.\nENDLOOP.",
+    "title": "SORTED: process one customer’s orders",
+    "intro": "The leading key groups the rows needed by this lookup.",
+    "context": "Self-contained method-body fragment. Every (customer, order_id) pair is unique. All amounts are unitless fixture values.",
+    "outcome": "Customer 2 is processed in order_id order: 8, then 9; total is 250. The complete table key order is (1,7), (2,8), (2,9).",
+    "caveat": "The optimized selection uses equality on the leading key component customer. Searching by order_id alone is a different access pattern. Handle duplicate-key inserts in real input.",
+    "highlights": [
+      {
+        "lines": [
+          6,
+          7
+        ],
+        "label": "Order belongs to the table type",
+        "explanation": "INSERT places each row according to customer and order_id; no separate SORT is needed."
+      },
+      {
+        "lines": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "label": "Process the matching key group",
+        "explanation": "Only customer 2 contributes: 50 + 200 = 250."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: Internal tables",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  },
+  {
+    "id": "oo-two-constructor-lifetimes",
+    "questions": [
+      "OO-17",
+      "OO-05"
+    ],
+    "language": "ABAP",
+    "code": "CLASS lcl_order_helper DEFINITION FINAL.\n  PUBLIC SECTION.\n    CLASS-DATA class_starts TYPE i READ-ONLY.\n    CLASS-DATA created TYPE i READ-ONLY.\n    DATA order_id TYPE i READ-ONLY.\n    CLASS-METHODS class_constructor.\n    METHODS constructor IMPORTING order_id TYPE i.\nENDCLASS.\nCLASS lcl_order_helper IMPLEMENTATION.\n  METHOD class_constructor.\n    class_starts = class_starts + 1.\n  ENDMETHOD.\n  METHOD constructor.\n    me->order_id = order_id.\n    created = created + 1.\n  ENDMETHOD.\nENDCLASS.\n\"Caller, for example inside a separate main method:\nDATA(first) = NEW lcl_order_helper( order_id = 7 ).\nDATA(second) = NEW lcl_order_helper( order_id = 9 ).\nASSERT lcl_order_helper=>class_starts = 1.\nASSERT lcl_order_helper=>created = 2.\nASSERT first->order_id = 7.\nASSERT second->order_id = 9.",
+    "title": "One class initialization, two object initializations",
+    "intro": "The counters make the different lifetimes visible.",
+    "context": "Local class definition and implementation, followed by a separate caller fragment. Run the caller once in a fresh internal session. Counters and ASSERT statements are teaching instrumentation, not a recommended application design.",
+    "outcome": "Both objects keep their own order ID. The class initialization counter is 1 and the object counter is 2.",
+    "caveat": "Earlier object creation in the same internal session changes created. A static method or attribute access may initialize the class before NEW. This example has no inheritance; do not infer superclass constructor rules from it.",
+    "highlights": [
+      {
+        "lines": [
+          10,
+          11,
+          12
+        ],
+        "label": "Once for the class",
+        "explanation": "The runtime calls class_constructor once in this internal session."
+      },
+      {
+        "lines": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "label": "Once for each new object",
+        "explanation": "me->order_id belongs to this object; created belongs to the class."
+      },
+      {
+        "lines": [
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "label": "Observe the result",
+        "explanation": "Two successful NEW calls run two instance constructors."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: Constructors",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/04_ABAP_Object_Orientation.md"
+      }
+    ]
+  },
+  {
+    "id": "amdp-procedure-contract",
+    "questions": [
+      "SQL-15",
+      "SQL-14"
+    ],
+    "language": "ABAP",
+    "code": "CLASS zcl_study_sum DEFINITION PUBLIC FINAL CREATE PUBLIC.\n  PUBLIC SECTION.\n    INTERFACES if_amdp_marker_hdb.\n    TYPES: BEGIN OF ty_item,\n             quantity TYPE i,\n           END OF ty_item,\n           ty_items TYPE STANDARD TABLE OF ty_item WITH EMPTY KEY.\n    CLASS-METHODS sum_quantities\n      IMPORTING VALUE(lt_items) TYPE ty_items\n      EXPORTING VALUE(total) TYPE i.\nENDCLASS.\nCLASS zcl_study_sum IMPLEMENTATION.\n  METHOD sum_quantities BY DATABASE PROCEDURE\n    FOR HDB LANGUAGE SQLSCRIPT OPTIONS READ-ONLY.\n    SELECT COALESCE(SUM(quantity), 0) INTO total FROM :lt_items;\n  ENDMETHOD.\nENDCLASS.\n\"Separate ABAP caller fragment:\nDATA lt_items TYPE zcl_study_sum=>ty_items.\nlt_items = VALUE #( ( quantity = 40 ) ( quantity = 60 ) ).\nzcl_study_sum=>sum_quantities(\n  EXPORTING lt_items = lt_items\n  IMPORTING total = DATA(total) ).",
+    "title": "AMDP procedure: call a method",
+    "intro": "Input and output parameters carry data across the ABAP/HANA boundary.",
+    "context": "Two placements: a new global AMDP class zcl_study_sum, then a caller inside an ABAP method. Standard ABAP on HANA with AMDP support is assumed. This is not a local class. No database table is required.",
+    "outcome": "The expected total is 100; empty input produces 0. The procedure has EXPORTING total, not RETURNING.",
+    "caveat": "This sum is intentionally trivial and does not justify AMDP. Use ordinary ABAP or SQL for it. Integer overflow, exceptions and real authorization need handling in a real calculation. Check the target release’s additional client-safety declarations before using this in ABAP Cloud.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          8,
+          9,
+          10
+        ],
+        "label": "Declare the procedure contract",
+        "explanation": "The marker identifies an AMDP class. Both parameters are passed by VALUE."
+      },
+      {
+        "lines": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "label": "Execute SQLScript on HANA",
+        "explanation": "COALESCE converts the empty aggregate’s NULL to zero."
+      },
+      {
+        "lines": [
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "label": "Call from ABAP",
+        "explanation": "The caller receives the output through IMPORTING."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: AMDP",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/12_AMDP.md"
+      }
+    ]
+  },
+  {
+    "id": "cds-table-function-contract",
+    "questions": [
+      "SQL-15",
+      "SQLX-01"
+    ],
+    "language": "CDS",
+    "code": "@EndUserText.label: 'Study order amounts'\n@ClientHandling.type: #CLIENT_INDEPENDENT\ndefine table function ZTF_Study_Amounts\n  with parameters p_minimum : abap.int4\n  returns {\n    order_id : abap.int4;\n    amount   : abap.int4;\n  }\n  implemented by method zcl_study_amounts=>read_amounts;",
+    "title": "CDS table function: declare the query shape",
+    "intro": "CDS defines the parameter and result columns; an AMDP method provides the rows.",
+    "context": "Separate CDS data definition ZTF_Study_Amounts for a Standard ABAP/HANA sandbox with CDS table-function support. Its associated global class is shown in the next example. The deliberately client-independent fixture contains no real business data.",
+    "outcome": "Consumers see p_minimum and exactly two result columns. The implementation must return compatible types and columns in this declared order.",
+    "caveat": "This classic annotation is shown for the stated Standard ABAP context. Check current client-safety annotations for ABAP Cloud. Do not copy client independence to real client-dependent business data, and do not treat this definition as an authorization check.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "A query contract",
+        "explanation": "The result is a table of order IDs and amounts, filtered by an input threshold."
+      },
+      {
+        "lines": [
+          9
+        ],
+        "label": "Connect the implementation",
+        "explanation": "This method will be declared FOR TABLE FUNCTION, without manually repeating its parameter list."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: CDS table functions",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html"
+      }
+    ]
+  },
+  {
+    "id": "cds-table-function-implementation",
+    "questions": [
+      "SQL-15",
+      "SQLX-01"
+    ],
+    "language": "ABAP",
+    "code": "CLASS zcl_study_amounts DEFINITION PUBLIC FINAL CREATE PUBLIC.\n  PUBLIC SECTION.\n    INTERFACES if_amdp_marker_hdb.\n    CLASS-METHODS read_amounts FOR TABLE FUNCTION ztf_study_amounts.\nENDCLASS.\nCLASS zcl_study_amounts IMPLEMENTATION.\n  METHOD read_amounts BY DATABASE FUNCTION\n    FOR HDB LANGUAGE SQLSCRIPT OPTIONS READ-ONLY\n    USING zt_study_amount.\n    RETURN SELECT order_id, amount FROM zt_study_amount\n      WHERE amount >= :p_minimum;\n  ENDMETHOD.\nENDCLASS.\n\"Separate ABAP consumer fragment:\nSELECT FROM ztf_study_amounts( p_minimum = 50 )\n  FIELDS order_id, amount\n  ORDER BY order_id\n  INTO TABLE @DATA(lt_amounts).",
+    "title": "Read a CDS entity, not its implementation method",
+    "intro": "FOR TABLE FUNCTION obtains the method contract from the CDS definition.",
+    "context": "New global class plus a separate ABAP caller. Requires the previous CDS definition and an own client-independent database table zt_study_amount with unique order_id INT4 and amount INT4, no client column. Fixture rows are (7,40), (9,60), (11,10). Standard ABAP/HANA sandbox only; objects are illustrative, not delivered SAP APIs.",
+    "outcome": "SELECT returns one row: order_id 9, amount 60. No direct ABAP call to read_amounts is made.",
+    "caveat": "The simple filter could be written directly in ABAP SQL; it only demonstrates the contract. Real business sources require client safety, authorization, released dependencies and numeric-type checks. READ-ONLY prevents writes; it does not supply those controls.",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          7,
+          8,
+          9
+        ],
+        "label": "Implement a database function",
+        "explanation": "The function is read-only and declares its database dependency."
+      },
+      {
+        "lines": [
+          10,
+          11
+        ],
+        "label": "Return matching rows",
+        "explanation": "The parameter p_minimum comes from the CDS contract."
+      },
+      {
+        "lines": [
+          15,
+          16,
+          17,
+          18
+        ],
+        "label": "Consume through SELECT",
+        "explanation": "The CDS entity can be a query source. ORDER BY belongs in the consuming query when order matters."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: CDS table functions",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html"
+      }
+    ]
+  }
+]

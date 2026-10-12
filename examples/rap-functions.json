@@ -1,0 +1,195 @@
+[
+  {
+    "id": "rap-function-declaration",
+    "questions": [
+      "ADV-14"
+    ],
+    "title": "Declare a read-only calculation",
+    "intro": "PreviewTotal returns a small result without adding a business change.",
+    "language": "BDEF",
+    "context": "Inside the entity body of the existing custom ZI_Order BDEF with alias Order. Create the abstract result entity ZA_OrderPreview first, with Amount of type abap.dec(15,2) and CurrencyCode of type abap.cuky. The projection requires use function PreviewTotal; if this function is exposed through the service.",
+    "code": "function PreviewTotal\n  result [1] ZA_OrderPreview;",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Choose a function",
+        "explanation": "This declares an instance function: the caller selects existing orders. The implementation must only read and calculate."
+      },
+      {
+        "lines": [
+          2
+        ],
+        "label": "Return one preview per successful input",
+        "explanation": "The result has Amount and CurrencyCode. The [1] cardinality describes the declared result; a missing or rejected order still needs a failure response."
+      }
+    ],
+    "outcome": "The behavior contract now names the operation and its result. The generated handler still needs an implementation.",
+    "caveat": "A BDEF fragment, not a complete BO. Verify the result entity, authorization, projection, service binding and function support on the target release. A function is not automatically rendered as an action button.",
+    "references": [
+      {
+        "title": "SAP: function definition",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/function-definition"
+      }
+    ]
+  },
+  {
+    "id": "rap-function-preview-total",
+    "questions": [
+      "ADV-14"
+    ],
+    "startFor": [
+      "ADV-14"
+    ],
+    "title": "Return 30 without changing the order",
+    "intro": "Read Quantity 3 and UnitPrice 10 from the current transaction, then return their product.",
+    "language": "ABAP",
+    "context": "Handler method for function PreviewTotal result [1] ZA_OrderPreview in custom BO ZI_Order, alias Order. ADT generates METHODS PreviewTotal FOR READ IMPORTING keys FOR FUNCTION Order~PreviewTotal RESULT result. Quantity and UnitPrice are decimal fields, CurrencyCode is CUKY, and ZA_OrderPreview contains Amount DEC(15,2) and CurrencyCode CUKY. The public function authorization is configured separately.",
+    "code": "METHOD PreviewTotal.\n  READ ENTITIES OF zi_order IN LOCAL MODE\n    ENTITY Order\n    FIELDS ( Quantity UnitPrice CurrencyCode )\n    WITH CORRESPONDING #( keys )\n    RESULT DATA(lt_orders)\n    FAILED DATA(ls_failed)\n    REPORTED DATA(ls_reported).\n  failed = CORRESPONDING #( DEEP ls_failed ).\n  reported = CORRESPONDING #( DEEP ls_reported ).\n  result = VALUE #( FOR ls_order IN lt_orders\n    ( %tky = ls_order-%tky\n      %param-Amount = ls_order-Quantity * ls_order-UnitPrice\n      %param-CurrencyCode = ls_order-CurrencyCode ) ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          4,
+          5,
+          6
+        ],
+        "label": "Read the pending values",
+        "explanation": "EML reads this BO transaction, including unsaved changes. Local mode is used inside its own implementation, not as an external authorization bypass."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Keep failed inputs visible",
+        "explanation": "Forward the read failures and messages. A key that produced no row must not silently be presented as a successful preview."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Return a calculation, not an update",
+        "explanation": "%tky links each result to its order. Amount becomes 30 for Quantity 3 and UnitPrice 10. No MODIFY, INSERT or COMMIT occurs."
+      }
+    ],
+    "outcome": "The caller receives Amount 30 with its currency. The order buffer and database remain unchanged.",
+    "caveat": "Teaching handler body with stated custom types, not an activated application. Production amounts need agreed decimal ranges and currency rounding. Test multiple keys, denied execution and missing instances. A read-only implementation must not trigger remote business changes.",
+    "references": [
+      {
+        "title": "SAP: FOR READ handler contract",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/for-read-rap-handler-method"
+      },
+      {
+        "title": "SAP: function definition and controls",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/function-definition"
+      }
+    ]
+  },
+  {
+    "id": "rap-action-default-declaration",
+    "questions": [
+      "ADV-15"
+    ],
+    "title": "Connect a default function to an action",
+    "intro": "The action receives DiscountPercent; its default function proposes the initial value.",
+    "language": "BDEF",
+    "context": "Inside the Order entity body of custom BDEF ZI_Order. ZA_Discount is an existing abstract parameter entity with DiscountPercent of type abap.int1. Expose both use action ApplyDiscount; and use function GetDefaultsForApplyDiscount; in the consuming projection.",
+    "code": "action ApplyDiscount parameter ZA_Discount\n{\n  default function GetDefaultsForApplyDiscount;\n}",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Declare the real input",
+        "explanation": "ApplyDiscount will receive the percentage the caller actually submits. The action must validate that value."
+      },
+      {
+        "lines": [
+          3
+        ],
+        "label": "Attach the input suggestion",
+        "explanation": "The default function is associated with this action. RAP derives its parameters and result; the GetDefaultsFor name is a framework convention."
+      }
+    ],
+    "outcome": "A supporting consumer can request suggested values before it executes ApplyDiscount.",
+    "caveat": "This declares the link, not the action logic or UI button. Generate the required methods in ADT and verify backend, binding and Fiori elements support. A direct caller can skip defaulting.",
+    "references": [
+      {
+        "title": "SAP: defaulting input parameters",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations"
+      },
+      {
+        "title": "SAP sample: default function projection exposure",
+        "url": "https://github.com/SAP-samples/abap-platform-fiori-feature-showcase/blob/main/01_general_features.md#default-values-function"
+      }
+    ]
+  },
+  {
+    "id": "rap-action-default-values",
+    "questions": [
+      "ADV-15"
+    ],
+    "startFor": [
+      "ADV-15"
+    ],
+    "title": "Suggest 10 or 5 percent without applying it",
+    "intro": "The suggestion depends on the selected order, so a function is more useful here than one fixed default.",
+    "language": "ABAP",
+    "context": "Body of the ADT-generated handler for GetDefaultsForApplyDiscount in custom ZI_Order, alias Order. The instance action uses ZA_Discount with DiscountPercent INT1. The generated method is FOR READ IMPORTING keys FOR FUNCTION Order~GetDefaultsForApplyDiscount RESULT result. All teaching orders use EUR and Total is decimal; 1000 EUR is an illustrative threshold, not a SAP pricing rule.",
+    "code": "METHOD GetDefaultsForApplyDiscount.\n  CONSTANTS co_large_order TYPE decfloat34 VALUE 1000.\n  CONSTANTS co_large_discount TYPE i VALUE 10.\n  CONSTANTS co_small_discount TYPE i VALUE 5.\n  READ ENTITIES OF zi_order IN LOCAL MODE\n    ENTITY Order\n    FIELDS ( Total ) WITH CORRESPONDING #( keys )\n    RESULT DATA(lt_orders)\n    FAILED DATA(ls_failed)\n    REPORTED DATA(ls_reported).\n  failed = CORRESPONDING #( DEEP ls_failed ).\n  reported = CORRESPONDING #( DEEP ls_reported ).\n  result = VALUE #( FOR ls_order IN lt_orders\n    ( %tky = ls_order-%tky\n      %param-DiscountPercent = COND #(\n        WHEN ls_order-Total >= co_large_order\n        THEN co_large_discount ELSE co_small_discount ) ) ).\nENDMETHOD.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4,
+          5,
+          7,
+          8
+        ],
+        "label": "Read the inputs for the suggestion",
+        "explanation": "Use each selected order's current total. Orders of 1200 EUR and 200 EUR qualify for different suggestions."
+      },
+      {
+        "lines": [
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "Forward read failures",
+        "explanation": "Keep missing or failed instances identifiable instead of returning a made-up percentage for every input key."
+      },
+      {
+        "lines": [
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "label": "Fill the dialog values only",
+        "explanation": "%param contains 10 for the large order and 5 for the small one. No discount is applied until the actual action executes and validates its own input."
+      }
+    ],
+    "outcome": "The consumer receives one suggestion per successfully read order. Cancelling the dialog changes no business data.",
+    "caveat": "An illustrative rule, not a complete pricing implementation. Handle currencies, rounding and policy changes in a real app. The action must recheck permission and input; default values can be edited, skipped or become outdated. Verify multi-selection behavior in the actual client.",
+    "references": [
+      {
+        "title": "SAP: default values function implementation",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations"
+      },
+      {
+        "title": "SAP: FOR READ handler",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/for-read-rap-handler-method"
+      }
+    ]
+  }
+]

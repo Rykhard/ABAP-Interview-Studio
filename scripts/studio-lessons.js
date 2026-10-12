@@ -12,7 +12,7 @@ function availableStudyViews(q){
  return views;
 }
 function selectedStudyView(q){
- const requested=studyViewChoices.get(q.id)||'calm';
+ const requested=studyViewChoices.get(q.id)||readingPreference.format||'calm';
  return availableStudyViews(q).some(([key])=>key===requested)?requested:'calm';
 }
 function studyViewToolbar(q,selected){

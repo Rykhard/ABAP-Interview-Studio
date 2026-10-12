@@ -772,7 +772,7 @@
     ],
     "intro": "An unknown country must not fall back to approval.",
     "language": "ABAP",
-    "context": "Factory method excerpt. get_rule imports a two-character country value through a named character type, returns rule TYPE REF TO lif_approval, and raises lcx_configuration. Both local rule classes implement lif_approval and have no required constructor parameters.",
+    "context": "Simple-factory method excerpt. get_rule accepts a two-character country of a named character type, returns rule TYPE REF TO lif_approval and raises lcx_configuration. Both local rule classes implement lif_approval without required constructor parameters.",
     "code": "METHOD get_rule.\n  CONSTANTS co_poland TYPE c LENGTH 2 VALUE 'PL'.\n  CONSTANTS co_germany TYPE c LENGTH 2 VALUE 'DE'.\n  CASE country.\n    WHEN co_poland.\n      rule = NEW lcl_polish_rule( ).\n    WHEN co_germany.\n      rule = NEW lcl_german_rule( ).\n    WHEN OTHERS.\n      RAISE EXCEPTION TYPE lcx_configuration.\n  ENDCASE.\nENDMETHOD.",
     "highlights": [
       {

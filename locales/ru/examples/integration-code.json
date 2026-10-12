@@ -925,59 +925,65 @@
   },
   {
     "id": "abap-http-client-status",
-    "title": "Выполнить запрос и проверить ответ",
+    "title": "Прочитать HTTP-ответ и закрыть соединение на любом пути",
     "questions": [
       "HTTP-10",
       "BTP-06"
     ],
-    "intro": "Destination задаёт соединение, но приложение всё равно должно проверить HTTP-ответ.",
+    "intro": "Полученный ответ ещё нужно проверить по HTTP status. Ошибка соединения — другой результат.",
+    "context": "Фрагмент тела метода. destination — уже полученная ссылка IF_HTTP_DESTINATION. Учебный API возвращает заказ 4711 в JSON со статусом HTTP 200; /api/orders/4711 — пример пути, а не стандартный endpoint SAP. Обёртка должна передать полученные результаты вызывающему коду.",
     "language": "ABAP",
-    "context": "Фрагмент метода для системы с этими released HTTP interfaces. destination — уже разрешённый IF_HTTP_DESTINATION из поддерживаемой communication/destination setup. Внешний метод объявляет CX_WEB_HTTP_CLIENT_ERROR и CX_WEB_MESSAGE_ERROR.",
-    "code": "DATA(client) =\n  cl_web_http_client_manager=>create_by_http_destination(\n    i_destination = destination ).\n\nDATA(response) = client->execute(\n  i_method = if_web_http_client=>get ).\nDATA(ls_status) = response->get_status( ).\nDATA(response_text) = response->get_text( ).\nclient->close( ).\n\nIF ls_status-code < 200 OR ls_status-code >= 300.\n  RETURN.\nENDIF.",
+    "code": "CONSTANTS co_path TYPE string VALUE '/api/orders/4711'.\nCONSTANTS co_accept TYPE string VALUE 'Accept'.\nCONSTANTS co_json TYPE string VALUE 'application/json'.\nCONSTANTS co_timeout TYPE i VALUE 30.\nCONSTANTS co_etag TYPE string VALUE 'ETag'.\nDATA client TYPE REF TO if_web_http_client.\nDATA failure TYPE REF TO cx_root.\nDATA cleanup_failure TYPE REF TO cx_root.\nDATA status_code TYPE i.\nDATA response_text TYPE string.\n\nTRY.\n    client = cl_web_http_client_manager=>create_by_http_destination(\n      i_destination = destination ).\n    DATA(request) = client->get_http_request( ).\n    request->set_uri_path( co_path ).\n    request->set_header_field( i_name = co_accept i_value = co_json ).\n    DATA(response) = client->execute(\n      i_method = if_web_http_client=>get i_timeout = co_timeout ).\n    DATA(ls_status) = response->get_status( ).\n    status_code = ls_status-code.\n    response_text = response->get_text( ).\n    DATA(etag) = response->get_header_field( co_etag ).\n  CATCH cx_web_http_client_error cx_web_message_error INTO failure.\nENDTRY.\n\nIF client IS BOUND.\n  TRY.\n      client->close( ).\n    CATCH cx_web_http_client_error INTO cleanup_failure.\n  ENDTRY.\nENDIF.\nDATA(read_succeeded) = xsdbool(\n  failure IS NOT BOUND AND status_code = 200 ).",
     "highlights": [
       {
         "lines": [
-          1,
-          2,
-          3
+          13,
+          14,
+          15,
+          16,
+          17
         ],
-        "label": "Использовать настроенную destination",
-        "explanation": "Client использует endpoint и connection setup, разрешённые приложением. Не храните пароли в исходнике."
+        "label": "Подготовить чтение",
+        "explanation": "Создаём released HTTP-клиент, задаём путь ресурса и запрашиваем JSON."
       },
       {
         "lines": [
-          5,
-          6,
-          7,
-          8
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
         ],
-        "label": "Отделить transport от HTTP result",
-        "explanation": "Вызов может выбросить client exception. Если response получен, сначала проверьте status, потом считайте body бизнес-данными."
+        "label": "Разделить ответ и исключение",
+        "explanation": "Сохраняем доступные status и body. Исключения клиента и обработки сообщения сохраняем отдельно: полученные 404 и 500 сами по себе не являются ошибкой соединения. Сохраняем точный ETag для следующего изменения, если сервер его вернул."
       },
       {
         "lines": [
-          9,
-          11,
-          12
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34
         ],
-        "label": "Закрыть соединение и направить ошибку",
-        "explanation": "Успешный путь закрывает соединение. Non-2xx responses идут в обработку ошибок, а не JSON parser успеха."
+        "label": "Закрыть в обоих случаях",
+        "explanation": "Закрываем соединение после успеха и после ошибки. Ошибка закрытия хранится отдельно: она не должна скрывать исходную ошибку или менять уже известный результат сервера."
       }
     ],
-    "outcome": "Полученные 401, 403 и 500 — HTTP-ответы. Исключение установления соединения обрабатывается на внешнем уровне.",
-    "caveat": "RETURN — учебная точка остановки. Добавьте преобразование ошибок, тайм-ауты и освобождение ресурсов при исключениях. Проверьте статус API и создание destination для целевой редакции. Destination сама не подтверждает бизнес-полномочия.",
+    "outcome": "read_succeeded устанавливается только при HTTP 200 и отсутствии исключения. Прежде чем использовать заказ, вызывающий код ещё проверяет Content-Type и содержимое ответа.",
+    "caveat": "Переменные результата показывают границу учебного адаптера, а не предлагают молча игнорировать ошибки: верните их вызывающему коду или преобразуйте в результат приложения; в журнал пишите только безопасные диагностические данные. Ошибку закрытия сообщайте отдельно. Тайм-аут относится к execute и не отменяет ограничения прокси и сервера. Автоматические повторы и запуск в SAP не показаны.",
     "references": [
       {
-        "title": "SAP: использование HTTP client",
-        "url": "https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/setting-http-logon-popup-policy"
+        "title": "SAP: outbound HTTP, destinations и методы клиента",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161"
       },
       {
-        "title": "SAP: интеграция и connectivity",
-        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf"
-      },
-      {
-        "title": "SAP sample: HTTP response и message errors",
-        "url": "https://github.com/SAP-samples/abap-oo-basics/blob/main/src/zcl_obj_xml_test.clas.abap"
+        "title": "IETF: условные запросы и If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
       }
     ]
   }

@@ -1,13 +1,13 @@
 // Appearance and reading preferences are independent of study/practice progress.
 const themeMedia=matchMedia('(prefers-color-scheme: dark)');
 const savedQuestions=new Set();
-let lastQuestion='',readingPreference={size:'17',focus:false,layout:'balanced'};
+let lastQuestion='',readingPreference={size:'17',focus:false,layout:'balanced',format:'calm'};
 try{
  const saved=JSON.parse(localStorage.getItem('abap-studio-bookmarks-v1')||'[]');
  if(Array.isArray(saved))saved.filter(id=>byId.has(id)).forEach(id=>savedQuestions.add(id));
  lastQuestion=localStorage.getItem('abap-studio-last-question-v1')||'';
  const options=JSON.parse(localStorage.getItem('abap-studio-reading-v1')||'{}');
- if(options&&typeof options==='object'){if(['17','19','21'].includes(options.size))readingPreference.size=options.size;readingPreference.focus=options.focus===true;if(options.layout==='workspace')readingPreference.layout='workspace';}
+ if(options&&typeof options==='object'){if(['17','19','21'].includes(options.size))readingPreference.size=options.size;readingPreference.focus=options.focus===true;if(options.layout==='workspace')readingPreference.layout='workspace';if(options.format==='developer')readingPreference.format='developer';}
 }catch{/* Use defaults when optional local preferences are unavailable. */}
 function saveOptional(key,value){try{localStorage.setItem(key,value);}catch{$('notice').textContent='This preference is active for this visit. Browser storage is unavailable.';}}
 function saveBookmarks(){saveOptional('abap-studio-bookmarks-v1',JSON.stringify([...savedQuestions]));}
@@ -30,6 +30,7 @@ function applyReading(saveChoice=false){
  document.body.classList.toggle('focus-reading',readingPreference.focus);
  // The format belongs to a question; reading settings only control readability.
  $('readingSize').value=readingPreference.size;$('focusReading').checked=readingPreference.focus;
+ document.querySelectorAll('[data-default-format]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.defaultFormat===readingPreference.format)));
  document.querySelectorAll('[data-reading-layout]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.readingLayout===readingPreference.layout)));
  if(saveChoice)saveOptional('abap-studio-reading-v1',JSON.stringify(readingPreference));
 }
@@ -81,6 +82,7 @@ const home=document.createElement('button');home.className='focus-home';home.tex
 $('readingOptions').onclick=()=>$('readingDialog').showModal();$('closeReading').onclick=()=>$('readingDialog').close();
 $('readingDialog').addEventListener('close',()=>$('readingOptions').focus({preventScroll:true}));
 $('readingSize').onchange=()=>{readingPreference.size=$('readingSize').value;applyReading(true);};
+document.querySelectorAll('[data-default-format]').forEach(button=>button.onclick=()=>{readingPreference.format=button.dataset.defaultFormat;for(const [id,view] of studyViewChoices)if(view!=='guided')studyViewChoices.delete(id);saveOptional('abap-studio-study-views-v1',JSON.stringify(Object.fromEntries(studyViewChoices)));applyReading(true);render();});
 $('focusReading').onchange=()=>{readingPreference.focus=$('focusReading').checked;applyReading(true);};
 $('systemTheme').onchange=()=>applyTheme($('systemTheme').checked?'system':document.documentElement.dataset.theme,true,true);
 document.querySelectorAll('[data-reading-layout]').forEach(button=>button.onclick=()=>{readingPreference.layout=button.dataset.readingLayout;studyViewChoices.clear();saveOptional('abap-studio-study-views-v1','{}');applyReading(true);render();});

@@ -1,8 +1,8 @@
 # Guided process lessons
 
-In the app, choose Guided Lesson below a supported question. Each step updates the highlighted process stage and the example state. Values illustrate a scenario; this is not a live SAP execution.
+In the app, choose Step by step below a supported question. Each step updates the highlighted process stage and the example state. Values illustrate a scenario; this is not a live SAP execution.
 
-Calm Study keeps the reading view. Developer Workspace makes code and diagrams larger. These views share the same question, sources and saved progress.
+Explanation keeps the reading view with a compact diagram preview. Code shows a worked excerpt beside the explanation. Set your default in Reading preferences; Step by step remains a local choice. These views share the same question, sources and saved progress.
 
 ## Three orders: compare Isolated and ChangeSet
 
@@ -1437,11 +1437,11 @@ Joining a to-many target can repeat the source measure.
 
 ### 3. Reject a cosmetic cardinality fix
 
-Declaring the association to-one would not remove the second matching text. DISTINCT also cannot collapse these two rows while their language or text values differ.
+Declaring to-one does not repair the two matching texts. A false cardinality can mislead the optimizer, so the returned rows and total are no longer a reliable prediction. DISTINCT also cannot merge rows whose selected language or text differs. Fix the relationship first.
 
-- **Order rows:** Still 2
+- **Order rows:** Not reliable
 - **Cause:** Language omitted from match
-- **Report amount:** Still 200 EUR
+- **Report amount:** Not reliable
 - **Proposed shortcut:** Rejected
 
 Cardinality describes the data; it does not enforce uniqueness.
@@ -1464,6 +1464,7 @@ Fix the join condition and verify the actual target uniqueness.
 **Sources:**
 
 - [SAP: CDS cardinality](https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/ABENCDS_CARDINALITY_V2.html)
+- [SAP: CDS cardinality and incorrect declarations](https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/ABENCDS_CARDINALITY_V2.html)
 
 ## Protect the entity the user actually reads
 
@@ -1683,3 +1684,79 @@ Design and test deduplication; do not assume exactly-once delivery.
 - [SAP: RAP business events](https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/0b925bc556d4491aad395b21ec2566ff.html)
 - [SAP: Raising and handling business events](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/raising-and-handling-business-events)
 - [SAP: Expose a RAP business event](https://developers.sap.com/tutorials/abap-environment-expose-rap-business-events)
+
+## From a suggested discount to a checked action
+
+Order 4720 totals 1200 EUR. The UI supports action parameter defaults. This example suggests 10 percent and allows actual discounts from 0 to 20 percent.
+
+**Learn:** See when a suggestion is returned, when input is checked and when business data actually changes.
+
+Questions: [ADV-15](https://abap-interview-studio.pages.dev/#q-ADV-15)
+
+### 1. Open ApplyDiscount
+
+The user opens the action dialog. The supporting UI requests GetDefaultsForApplyDiscount; it has not executed ApplyDiscount.
+
+- **Dialog input:** Waiting for defaults
+- **Order in buffer:** 1200 EUR
+- **Saved order:** 1200 EUR
+
+Opening a dialog must not apply the discount.
+
+### 2. Return the suggested 10 percent
+
+The default function reads 1200 EUR and returns DiscountPercent 10. Only the dialog receives a value.
+
+- **Dialog input:** 10 percent suggested
+- **Order in buffer:** 1200 EUR
+- **Saved order:** 1200 EUR
+
+The business object remains unchanged.
+
+### 3. Replace the suggestion with 80
+
+The user enters 80. The earlier suggestion does not prevent different input. A direct API caller could submit the same value without asking for defaults.
+
+- **Dialog input:** 80 percent entered
+- **Order in buffer:** 1200 EUR
+- **Saved order:** 1200 EUR
+
+A suggestion is not a validation rule.
+
+### 4. Reject the actual action input
+
+ApplyDiscount receives 80 and checks the example policy of 0 to 20 percent. It rejects the input with a message and makes no order change.
+
+- **Dialog input:** 80 rejected; message shown
+- **Order in buffer:** 1200 EUR
+- **Saved order:** 1200 EUR
+
+The action protects its own input, independently of defaulting.
+
+### 5. Submit a valid 10 percent
+
+The user enters 10 and executes the action again. After its permission and business checks pass, the action applies the discount in the transactional buffer.
+
+- **Dialog input:** 10 accepted
+- **Order in buffer:** 1080 EUR pending save
+- **Saved order:** 1200 EUR
+
+Successful interaction is not yet a committed result.
+
+### 6. Complete the save
+
+The save sequence succeeds and the framework or external transaction owner completes the transaction. The saved amount is now 1080 EUR.
+
+- **Dialog input:** Dialog completed
+- **Order in buffer:** Transaction completed
+- **Saved order:** 1080 EUR
+
+The default function did not save anything; the later action and save did.
+
+**Remember:** A default function suggests. The action checks and changes. A successful save makes the change permanent.
+
+**Scope:** Illustrative supported Fiori elements flow, not a live SAP trace. Real discount policy, currency rounding, authorization, concurrency and client support must be verified. A direct caller can skip defaulting.
+
+**Sources:**
+
+- [SAP: defaulting action input parameters](https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations)

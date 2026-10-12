@@ -41,8 +41,8 @@ def load_lessons(root, question_ids):
 
 def write_lesson_guide(root, lessons):
     lines = ['# Guided process lessons', '',
-             'In the app, choose Guided Lesson below a supported question. Each step updates the highlighted process stage and the example state. Values illustrate a scenario; this is not a live SAP execution.', '',
-             'Calm Study keeps the reading view. Developer Workspace makes code and diagrams larger. These views share the same question, sources and saved progress.', '']
+             'In the app, choose Step by step below a supported question. Each step updates the highlighted process stage and the example state. Values illustrate a scenario; this is not a live SAP execution.', '',
+             'Explanation keeps the reading view with a compact diagram preview. Code shows a worked excerpt beside the explanation. Set your default in Reading preferences; Step by step remains a local choice. These views share the same question, sources and saved progress.', '']
     for lesson in lessons:
         lines.extend(['## ' + lesson['title'], '', lesson['scenario'], '', '**Learn:** ' + lesson['goal'], '',
                       'Questions: ' + ', '.join(f'[{qid}](https://abap-interview-studio.pages.dev/#q-{qid})' for qid in lesson['questions']), ''])

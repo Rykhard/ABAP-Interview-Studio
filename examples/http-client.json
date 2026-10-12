@@ -1,0 +1,187 @@
+[
+  {
+    "id": "http-released-destination",
+    "title": "1. Resolve an approved outbound destination",
+    "questions": [
+      "HTTP-13",
+      "HTTP-14",
+      "HTTP-10",
+      "BTP-06"
+    ],
+    "intro": "The endpoint and credentials belong in communication management, not in ABAP source.",
+    "context": "Destination setup excerpt. The enclosing method declares CX_HTTP_DEST_PROVIDER_ERROR, so a configuration failure reaches its caller before any HTTP client is opened. Example IDs must be replaced by your own configured objects.",
+    "language": "ABAP",
+    "code": "CONSTANTS co_scenario TYPE c LENGTH 30\n  VALUE 'Z_ORDER_API'.\nCONSTANTS co_service TYPE c LENGTH 40\n  VALUE 'Z_ORDER_API_REST'.\nCONSTANTS co_system TYPE c LENGTH 60\n  VALUE 'ORDER_PROVIDER'.\n\nDATA(destination) =\n  cl_http_destination_provider=>create_by_comm_arrangement(\n    comm_scenario  = co_scenario\n    service_id     = co_service\n    comm_system_id = co_system ).",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Use configured object IDs",
+        "explanation": "Create and publish a custom communication scenario containing an HTTP outbound service. An administrator creates the communication system and arrangement with the endpoint and authentication."
+      },
+      {
+        "lines": [
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "Resolve one destination",
+        "explanation": "The custom scenario, outbound service and communication system identify the required arrangement. No password is embedded in the source."
+      }
+    ],
+    "outcome": "destination is an IF_HTTP_DESTINATION reference. Pass it to either request example.",
+    "caveat": "This API supports developed custom scenarios, not arbitrary SAP-delivered scenarios. SAP now recommends communication targets where the target supports them; this is the documented arrangement-based alternative. The following examples assume an empty destination path prefix and set the full application path. Check released status and signatures in your own edition. No SAP activation or remote call was performed.",
+    "references": [
+      {
+        "title": "SAP: Outbound HTTP, destinations and client methods",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161"
+      },
+      {
+        "title": "IETF: Conditional requests and If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
+      }
+    ]
+  },
+  {
+    "id": "http-released-get",
+    "title": "2. GET: read, inspect, and always close",
+    "questions": [
+      "HTTP-13"
+    ],
+    "intro": "A returned response still needs its HTTP status checked. A connection exception is a different outcome.",
+    "context": "Method-body excerpt using destination from card 1. The fictional API returns order 4711 as JSON with HTTP 200; /api/orders/4711 is an example path, not an SAP standard endpoint. The enclosing adapter returns the captured outcomes to its caller.",
+    "language": "ABAP",
+    "code": "CONSTANTS co_path TYPE string VALUE '/api/orders/4711'.\nCONSTANTS co_accept TYPE string VALUE 'Accept'.\nCONSTANTS co_json TYPE string VALUE 'application/json'.\nCONSTANTS co_timeout TYPE i VALUE 30.\nCONSTANTS co_etag TYPE string VALUE 'ETag'.\nDATA client TYPE REF TO if_web_http_client.\nDATA failure TYPE REF TO cx_root.\nDATA cleanup_failure TYPE REF TO cx_root.\nDATA status_code TYPE i.\nDATA response_text TYPE string.\n\nTRY.\n    client = cl_web_http_client_manager=>create_by_http_destination(\n      i_destination = destination ).\n    DATA(request) = client->get_http_request( ).\n    request->set_uri_path( co_path ).\n    request->set_header_field( i_name = co_accept i_value = co_json ).\n    DATA(response) = client->execute(\n      i_method = if_web_http_client=>get i_timeout = co_timeout ).\n    DATA(ls_status) = response->get_status( ).\n    status_code = ls_status-code.\n    response_text = response->get_text( ).\n    DATA(etag) = response->get_header_field( co_etag ).\n  CATCH cx_web_http_client_error cx_web_message_error INTO failure.\nENDTRY.\n\nIF client IS BOUND.\n  TRY.\n      client->close( ).\n    CATCH cx_web_http_client_error INTO cleanup_failure.\n  ENDTRY.\nENDIF.\nDATA(read_succeeded) = xsdbool(\n  failure IS NOT BOUND AND status_code = 200 ).",
+    "highlights": [
+      {
+        "lines": [
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "label": "Prepare one read",
+        "explanation": "Create the released client, select the resource path and request JSON."
+      },
+      {
+        "lines": [
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "label": "Keep response and failure separate",
+        "explanation": "Capture status and body if available. Capture client/message exceptions without pretending that an HTTP 404 or 500 is a connection exception. Keep the exact ETag for a later update if the server supplies one."
+      },
+      {
+        "lines": [
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34
+        ],
+        "label": "Close on both paths",
+        "explanation": "Close after success or failure. Preserve a separate cleanup error; it must not erase the primary error or change a known server result."
+      }
+    ],
+    "outcome": "Only HTTP 200 with no client/message exception sets read_succeeded. The caller must still validate Content-Type and payload before using the order.",
+    "caveat": "These local outcome variables are a teaching adapter boundary, not a silent error policy: return or map them into your application result and log redacted diagnostics. A cleanup failure is reported separately. The timeout controls this execute call, not every proxy or backend time limit. No automatic retry or SAP execution is shown.",
+    "references": [
+      {
+        "title": "SAP: Outbound HTTP, destinations and client methods",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161"
+      },
+      {
+        "title": "IETF: Conditional requests and If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
+      }
+    ]
+  },
+  {
+    "id": "http-released-patch",
+    "title": "3. PATCH: CSRF token, ETag, and a checked result",
+    "questions": [
+      "HTTP-14"
+    ],
+    "intro": "CSRF protects the request session; If-Match protects the version being changed. They solve different problems.",
+    "context": "Method-body excerpt using destination from card 1. etag is a non-empty string copied exactly from the earlier GET of order 4711. The fictional API supports JSON Merge Patch, a HEAD-based SAP-style CSRF handshake at this resource, cookies, and HTTP 200/204 for a completed change.",
+    "language": "ABAP",
+    "code": "CONSTANTS co_path TYPE string VALUE '/api/orders/4711'.\nCONSTANTS co_if_match TYPE string VALUE 'If-Match'.\nCONSTANTS co_content_type TYPE string VALUE 'Content-Type'.\nCONSTANTS co_patch_type TYPE string VALUE 'application/merge-patch+json'.\nCONSTANTS co_patch TYPE string VALUE '{\"note\":\"Deliver on Friday\"}'.\nCONSTANTS co_timeout TYPE i VALUE 30.\nDATA client TYPE REF TO if_web_http_client.\nDATA failure TYPE REF TO cx_root.\nDATA cleanup_failure TYPE REF TO cx_root.\nDATA status_code TYPE i.\nDATA response_text TYPE string.\n\nTRY.\n    client = cl_web_http_client_manager=>create_by_http_destination(\n      i_destination = destination ).\n    client->accept_cookies( i_allow = abap_true ).\n    DATA(request) = client->get_http_request( ).\n    request->set_uri_path( co_path ).\n    client->set_csrf_token( ).\n    request->set_header_field( i_name = co_if_match i_value = etag ).\n    request->set_header_field(\n      i_name = co_content_type i_value = co_patch_type ).\n    request->set_text( co_patch ).\n    DATA(response) = client->execute(\n      i_method = if_web_http_client=>patch i_timeout = co_timeout ).\n    DATA(ls_status) = response->get_status( ).\n    status_code = ls_status-code.\n    response_text = response->get_text( ).\n  CATCH cx_web_http_client_error cx_web_message_error INTO failure.\nENDTRY.\n\nIF client IS BOUND.\n  TRY.\n      client->close( ).\n    CATCH cx_web_http_client_error INTO cleanup_failure.\n  ENDTRY.\nENDIF.\nDATA(change_confirmed) = xsdbool(\n  failure IS NOT BOUND AND ( status_code = 200 OR status_code = 204 ) ).",
+    "highlights": [
+      {
+        "lines": [
+          16,
+          17,
+          18,
+          19
+        ],
+        "label": "Prepare the CSRF session",
+        "explanation": "Keep cookies on the same client. SET_CSRF_TOKEN sends HEAD and stores the token; this endpoint must support that handshake. Set the modifying body afterward."
+      },
+      {
+        "lines": [
+          20,
+          21,
+          22,
+          23
+        ],
+        "label": "Protect the version and describe the change",
+        "explanation": "Forward the actual ETag in If-Match. This API changes only note; its JSON Merge Patch media type explicitly defines that meaning."
+      },
+      {
+        "lines": [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "label": "Inspect the server outcome",
+        "explanation": "200/204 confirm this API operation. 412 means the version is stale; read again and resolve the conflict. A timeout leaves the business result uncertain."
+      },
+      {
+        "lines": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "label": "Close without hiding the first error",
+        "explanation": "Both normal and exceptional paths close the client. Return status/body, the primary failure and any cleanup failure to the surrounding adapter."
+      }
+    ],
+    "outcome": "change_confirmed is true only for the API's documented completed-change statuses. Do not parse an empty 204 response as JSON.",
+    "caveat": "This is not a universal OData payload: use the real service media type and field names. An OData ETag can be weak under OData concurrency rules; preserve its exact value. Do not use If-Match * to hide conflicts. If HEAD/token handling differs, follow that service's supported flow. SET_CSRF_TOKEN performs another request; configure its applicable connection limits separately. A failed close or local ROLLBACK cannot undo a remote change. No automatic PATCH replay.",
+    "references": [
+      {
+        "title": "SAP: Outbound HTTP, destinations and client methods",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161"
+      },
+      {
+        "title": "IETF: Conditional requests and If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
+      }
+    ]
+  }
+]

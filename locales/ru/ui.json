@@ -239,5 +239,8 @@
   "Questions": "Вопросы",
   "Language": "Язык",
   "Language switching is unavailable in this browser context. Open the hosted app or enable local file navigation.": "Браузер не разрешает переключение здесь. Откройте сайт или разрешите навигацию для локальных файлов.",
-  "Diagram artwork keeps English labels; the explanation below is in Russian.": "Надписи на схеме — на английском. Пояснение и вопросы для самопроверки — на русском."
+  "Diagram artwork keeps English labels; the explanation below is in Russian.": "Надписи на схеме — на английском. Пояснение и вопросы для самопроверки — на русском.",
+  "Default answer format": "Формат ответа по умолчанию",
+  "Choose a diagram": "Выберите схему",
+  "Questions without code open an explanation. Step by step stays specific to each question.": "Если примера кода нет, откроется объяснение. Пошаговый разбор выбирается отдельно для каждого вопроса."
 }

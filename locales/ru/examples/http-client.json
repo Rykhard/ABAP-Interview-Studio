@@ -1,0 +1,187 @@
+[
+  {
+    "id": "http-released-destination",
+    "title": "1. Получить настроенный outbound destination",
+    "questions": [
+      "HTTP-13",
+      "HTTP-14",
+      "HTTP-10",
+      "BTP-06"
+    ],
+    "intro": "Адрес сервера и учётные данные задаются в communication management, а не в исходном коде ABAP.",
+    "context": "Фрагмент настройки destination. Внешний метод объявляет CX_HTTP_DEST_PROVIDER_ERROR: ошибка конфигурации передаётся вызывающему коду до открытия HTTP-клиента. Учебные ID нужно заменить реальными настроенными объектами.",
+    "language": "ABAP",
+    "code": "CONSTANTS co_scenario TYPE c LENGTH 30\n  VALUE 'Z_ORDER_API'.\nCONSTANTS co_service TYPE c LENGTH 40\n  VALUE 'Z_ORDER_API_REST'.\nCONSTANTS co_system TYPE c LENGTH 60\n  VALUE 'ORDER_PROVIDER'.\n\nDATA(destination) =\n  cl_http_destination_provider=>create_by_comm_arrangement(\n    comm_scenario  = co_scenario\n    service_id     = co_service\n    comm_system_id = co_system ).",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "ID настроенных объектов",
+        "explanation": "Создайте и опубликуйте собственный communication scenario с HTTP outbound service. Администратор создаёт communication system и arrangement, задаёт адрес и способ аутентификации."
+      },
+      {
+        "lines": [
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "Выбрать нужное соединение",
+        "explanation": "Собственный scenario, outbound service и communication system определяют нужный arrangement. Пароля в коде нет."
+      }
+    ],
+    "outcome": "destination — ссылка IF_HTTP_DESTINATION. Передайте её одному из следующих примеров запросов.",
+    "caveat": "Этот API работает с разработанными вами сценариями, а не с произвольными стандартными сценариями SAP. В новых поддерживаемых версиях SAP рекомендует communication targets; здесь показан документированный вариант через arrangement. Далее предполагается пустой префикс пути в destination: код задаёт полный путь приложения. Проверьте released status и сигнатуры в своей редакции SAP. Активация и сетевые вызовы в SAP не выполнялись.",
+    "references": [
+      {
+        "title": "SAP: outbound HTTP, destinations и методы клиента",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161"
+      },
+      {
+        "title": "IETF: условные запросы и If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
+      }
+    ]
+  },
+  {
+    "id": "http-released-get",
+    "title": "2. GET: прочитать ответ, проверить и закрыть соединение",
+    "questions": [
+      "HTTP-13"
+    ],
+    "intro": "Полученный ответ ещё нужно проверить по HTTP status. Ошибка соединения — другой результат.",
+    "context": "Фрагмент тела метода: destination получен в примере 1. Учебный API возвращает заказ 4711 в JSON со статусом 200. /api/orders/4711 — пример пути, а не стандартный endpoint SAP. Внешний адаптер возвращает собранные результаты вызывающему коду.",
+    "language": "ABAP",
+    "code": "CONSTANTS co_path TYPE string VALUE '/api/orders/4711'.\nCONSTANTS co_accept TYPE string VALUE 'Accept'.\nCONSTANTS co_json TYPE string VALUE 'application/json'.\nCONSTANTS co_timeout TYPE i VALUE 30.\nCONSTANTS co_etag TYPE string VALUE 'ETag'.\nDATA client TYPE REF TO if_web_http_client.\nDATA failure TYPE REF TO cx_root.\nDATA cleanup_failure TYPE REF TO cx_root.\nDATA status_code TYPE i.\nDATA response_text TYPE string.\n\nTRY.\n    client = cl_web_http_client_manager=>create_by_http_destination(\n      i_destination = destination ).\n    DATA(request) = client->get_http_request( ).\n    request->set_uri_path( co_path ).\n    request->set_header_field( i_name = co_accept i_value = co_json ).\n    DATA(response) = client->execute(\n      i_method = if_web_http_client=>get i_timeout = co_timeout ).\n    DATA(ls_status) = response->get_status( ).\n    status_code = ls_status-code.\n    response_text = response->get_text( ).\n    DATA(etag) = response->get_header_field( co_etag ).\n  CATCH cx_web_http_client_error cx_web_message_error INTO failure.\nENDTRY.\n\nIF client IS BOUND.\n  TRY.\n      client->close( ).\n    CATCH cx_web_http_client_error INTO cleanup_failure.\n  ENDTRY.\nENDIF.\nDATA(read_succeeded) = xsdbool(\n  failure IS NOT BOUND AND status_code = 200 ).",
+    "highlights": [
+      {
+        "lines": [
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "label": "Подготовить чтение",
+        "explanation": "Создаём released HTTP-клиент, задаём путь ресурса и запрашиваем JSON."
+      },
+      {
+        "lines": [
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "label": "Разделить ответ и исключение",
+        "explanation": "Сохраняем доступные status и body. Исключения клиента и обработки сообщения сохраняем отдельно: полученные 404 и 500 сами по себе не являются ошибкой соединения. Сохраняем точный ETag для следующего изменения, если сервер его вернул."
+      },
+      {
+        "lines": [
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34
+        ],
+        "label": "Закрыть в обоих случаях",
+        "explanation": "Закрываем соединение после успеха и после ошибки. Ошибка закрытия хранится отдельно: она не должна скрывать исходную ошибку или менять уже известный результат сервера."
+      }
+    ],
+    "outcome": "read_succeeded устанавливается только при HTTP 200 и отсутствии исключения. Прежде чем использовать заказ, вызывающий код ещё проверяет Content-Type и содержимое ответа.",
+    "caveat": "Переменные результата показывают границу учебного адаптера, а не предлагают молча игнорировать ошибки: верните их вызывающему коду или преобразуйте в результат приложения; в журнал пишите только безопасные диагностические данные. Ошибку закрытия сообщайте отдельно. Тайм-аут относится к execute и не отменяет ограничения прокси и сервера. Автоматические повторы и запуск в SAP не показаны.",
+    "references": [
+      {
+        "title": "SAP: outbound HTTP, destinations и методы клиента",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161"
+      },
+      {
+        "title": "IETF: условные запросы и If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
+      }
+    ]
+  },
+  {
+    "id": "http-released-patch",
+    "title": "3. PATCH: CSRF token, ETag и проверенный результат",
+    "questions": [
+      "HTTP-14"
+    ],
+    "intro": "CSRF защищает запрос в контексте сессии, а If-Match — версию изменяемых данных. Это разные проверки.",
+    "context": "Фрагмент тела метода: destination получен в примере 1. etag — непустая строка, точно скопированная из предыдущего GET заказа 4711. Учебный API поддерживает JSON Merge Patch, получение SAP-style CSRF token через HEAD этого ресурса, cookies и статусы 200/204 для завершённого изменения.",
+    "language": "ABAP",
+    "code": "CONSTANTS co_path TYPE string VALUE '/api/orders/4711'.\nCONSTANTS co_if_match TYPE string VALUE 'If-Match'.\nCONSTANTS co_content_type TYPE string VALUE 'Content-Type'.\nCONSTANTS co_patch_type TYPE string VALUE 'application/merge-patch+json'.\nCONSTANTS co_patch TYPE string VALUE '{\"note\":\"Deliver on Friday\"}'.\nCONSTANTS co_timeout TYPE i VALUE 30.\nDATA client TYPE REF TO if_web_http_client.\nDATA failure TYPE REF TO cx_root.\nDATA cleanup_failure TYPE REF TO cx_root.\nDATA status_code TYPE i.\nDATA response_text TYPE string.\n\nTRY.\n    client = cl_web_http_client_manager=>create_by_http_destination(\n      i_destination = destination ).\n    client->accept_cookies( i_allow = abap_true ).\n    DATA(request) = client->get_http_request( ).\n    request->set_uri_path( co_path ).\n    client->set_csrf_token( ).\n    request->set_header_field( i_name = co_if_match i_value = etag ).\n    request->set_header_field(\n      i_name = co_content_type i_value = co_patch_type ).\n    request->set_text( co_patch ).\n    DATA(response) = client->execute(\n      i_method = if_web_http_client=>patch i_timeout = co_timeout ).\n    DATA(ls_status) = response->get_status( ).\n    status_code = ls_status-code.\n    response_text = response->get_text( ).\n  CATCH cx_web_http_client_error cx_web_message_error INTO failure.\nENDTRY.\n\nIF client IS BOUND.\n  TRY.\n      client->close( ).\n    CATCH cx_web_http_client_error INTO cleanup_failure.\n  ENDTRY.\nENDIF.\nDATA(change_confirmed) = xsdbool(\n  failure IS NOT BOUND AND ( status_code = 200 OR status_code = 204 ) ).",
+    "highlights": [
+      {
+        "lines": [
+          16,
+          17,
+          18,
+          19
+        ],
+        "label": "Подготовить сессию CSRF",
+        "explanation": "Cookies сохраняются в том же клиенте. SET_CSRF_TOKEN отправляет HEAD и сохраняет token; сервер должен поддерживать такой обмен. Тело изменения задаём после этого."
+      },
+      {
+        "lines": [
+          20,
+          21,
+          22,
+          23
+        ],
+        "label": "Проверить версию и описать изменение",
+        "explanation": "Передаём настоящий ETag в If-Match. Этот API меняет только note: такое поведение задаёт формат JSON Merge Patch."
+      },
+      {
+        "lines": [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "label": "Проверить результат сервера",
+        "explanation": "200/204 подтверждают операцию этого API. 412 означает устаревшую версию: прочитайте данные заново и разрешите конфликт. При тайм-ауте результат изменения неизвестен."
+      },
+      {
+        "lines": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "label": "Закрыть, сохранив исходную ошибку",
+        "explanation": "Закрываем клиент при успехе и при исключении. Внешний адаптер получает status, body, исходную ошибку и отдельную ошибку закрытия."
+      }
+    ],
+    "outcome": "change_confirmed устанавливается только для статусов завершённого изменения, предусмотренных API. Пустое тело ответа 204 не нужно разбирать как JSON.",
+    "caveat": "Это не универсальное тело запроса OData: используйте формат и имена полей реального сервиса. OData допускает weak ETag по своим правилам конкурентных изменений; передавайте значение точно. Не подменяйте его If-Match *, чтобы скрыть конфликт. Если сервер иначе получает CSRF token, используйте поддерживаемую им процедуру. SET_CSRF_TOKEN делает дополнительный запрос; его ограничения соединения настраиваются отдельно. Ошибка закрытия или локальный ROLLBACK не отменяют изменение на сервере. PATCH автоматически не повторяется.",
+    "references": [
+      {
+        "title": "SAP: outbound HTTP, destinations и методы клиента",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161"
+      },
+      {
+        "title": "IETF: условные запросы и If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
+      }
+    ]
+  }
+]

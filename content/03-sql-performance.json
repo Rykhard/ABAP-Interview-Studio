@@ -28,7 +28,7 @@
     {
       "id": "SQL-01",
       "question": "How do ABAP SQL, Native SQL, CDS, and AMDP differ?",
-      "answer": "ABAP SQL is the usual way to read and change database data from ABAP. CDS defines reusable data models and queries. Native SQL uses database-specific SQL, so the developer must handle more details. AMDP manages database procedures, commonly written in HANA SQLScript, through ABAP objects. I start with the simplest supported option and check client, authorization and release rules.",
+      "answer": "ABAP SQL is the usual way to read and change database data from ABAP. CDS defines reusable data models and queries. Native SQL uses database-specific SQL, so the developer must handle more details. AMDP manages HANA database procedures and functions written in SQLScript through ABAP classes. I start with the simplest supported option and check client, authorization and release rules.",
       "detail": "A report needs totals for one company and month. ABAP SQL may express the whole selection and sum clearly. CDS becomes useful when the same data model should be reused by several consumers. Neither requirement automatically needs a database procedure.\n\nIf a necessary calculation cannot be expressed well in supported ABAP SQL or CDS, I consider AMDP and measure the result. I also check which dependencies are allowed in the target environment. Writing SQLScript inside an ABAP-managed method does not turn it into ABAP SQL. In particular, direct table reads must not be assumed to apply the access control of a CDS entity that would otherwise protect those records.",
       "pitfall": "ABAP syntax around an AMDP method does not turn its SQLScript body into ABAP SQL or automatically apply CDS access control.",
       "level": "Core",
@@ -239,7 +239,7 @@
       "id": "SQL-14",
       "question": "When is AMDP justified, and what risks must you address?",
       "answer": "I consider AMDP when a required HANA operation is difficult to express with supported ABAP SQL or CDS, or measurements justify keeping a large calculation in the database. I check release support, dependencies, client handling and authorization. The team also needs SQLScript skills and suitable tests. AMDP should solve a real problem, not be a default replacement for a simple SELECT.",
-      "detail": "A complex analytical calculation repeatedly transfers a large dataset to ABAP and back. After trying simpler supported SQL and CDS options, I may compare an AMDP implementation that keeps the calculation on HANA. I measure the full operation and compare the actual result, including empty data and unusual values.\n\nI also inspect access rules. Reading an underlying table inside database logic does not automatically enforce the DCL attached to a CDS entity used elsewhere. Transaction ownership still matters: the procedure must not introduce an independent commit into the application operation. A short filtered selection normally gains little from an extra SQLScript layer and may become harder to maintain.",
+      "detail": "A complex analytical calculation repeatedly transfers a large dataset to ABAP and back. After trying simpler supported SQL and CDS options, I may compare an AMDP implementation that keeps the calculation on HANA. I measure the full operation and compare the actual result, including empty data and unusual values.\n\nI also inspect access rules. Reading an underlying table inside database logic does not automatically enforce the DCL attached to a CDS entity used elsewhere. Transaction ownership still matters: the procedure must not introduce an independent commit into the application operation. A short filtered selection normally gains little from an extra SQLScript layer and may become harder to maintain.\n\nIn ABAP for Cloud Development, AMDP procedures must be read-only and client-safe, with permitted dependencies. Standard ABAP has broader procedure options. CDS table functions remain read-only. Check the exact language version and release before reusing an example; AMDP does not allow its own COMMIT or ROLLBACK.",
       "pitfall": "AMDP is not a universal performance upgrade, and an AMDP method should not introduce an independent commit into an application transaction.",
       "level": "Advanced",
       "references": [
@@ -247,6 +247,31 @@
           "title": "SAP AMDP use and selection guidance",
           "url": "https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/example-amdp-procedure-implementations",
           "note": "Check what the query returns and measure it in the target system before choosing a performance change."
+        },
+        {
+          "title": "SAP: AMDP language versions and restrictions",
+          "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/12_AMDP.md",
+          "note": "Distinguish Standard ABAP from ABAP for Cloud Development."
+        }
+      ]
+    },
+    {
+      "id": "SQL-15",
+      "level": "Advanced",
+      "question": "AMDP procedure or CDS table function: what is the difference, and when would you use each?",
+      "answer": "An AMDP procedure runs SQLScript on HANA and is called from ABAP as a method with input and output parameters. A CDS table function exposes a table-shaped result that ABAP SQL and other CDS entities can read. Its implementation is an AMDP database function. Choose a procedure for an operation your ABAP code calls; choose a CDS table function when a calculation must be a reusable query source. Try supported ABAP SQL or CDS first.",
+      "detail": "For example, an ABAP report passes rows to a multi-stage allocation calculation and receives the calculated rows back. A procedure can fit that calling style. If several CDS consumers need the calculated rows in further joins or filters, a CDS table function may fit better. These are design examples, not proof that SQLScript is faster; first check whether the target release already supports the calculation in ordinary SQL or CDS.\n\nThe declarations differ. A procedure uses IMPORTING/EXPORTING or CHANGING parameters passed by VALUE; it has no RETURNING parameter. A CDS table function declares its parameters and result columns in DEFINE TABLE FUNCTION. A public static method declared FOR TABLE FUNCTION implements that contract with BY DATABASE FUNCTION and OPTIONS READ-ONLY. Read the CDS entity with SELECT; do not call its implementation as an ordinary ABAP method. An AMDP table function intended only for other AMDP methods is another variant and is not directly callable from ABAP.\n\nA CDS table function cannot write a helper table. ABAP for Cloud Development also restricts AMDP procedures to read-only, client-safe access and permitted dependencies. Standard ABAP allows broader procedure capabilities, but not an independent COMMIT inside AMDP. Check client handling, authorization, numeric types and empty results explicitly. The small code examples show the different contracts using a trivial calculation; that calculation itself does not require AMDP.",
+      "pitfall": "AMDP is the framework, not a synonym for procedure. Not every AMDP function is a CDS table function, and read-only code is not automatically authorized or client-safe.",
+      "references": [
+        {
+          "title": "SAP: AMDP procedures, functions and ABAP Cloud restrictions",
+          "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/12_AMDP.md",
+          "note": "Compare procedure parameters, table-function variants and client-safety requirements for the target release."
+        },
+        {
+          "title": "SAP: CDS table functions",
+          "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html",
+          "note": "The CDS contract defines the returned columns; the AMDP database function implements the query."
         }
       ]
     }

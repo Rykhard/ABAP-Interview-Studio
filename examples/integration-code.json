@@ -925,59 +925,65 @@
   },
   {
     "id": "abap-http-client-status",
-    "title": "Execute a request and inspect the reply",
+    "title": "Read an HTTP response and close on every path",
     "questions": [
       "HTTP-10",
       "BTP-06"
     ],
-    "intro": "A configured destination provides the connection. Your code still has to inspect the HTTP response.",
+    "intro": "A returned response still needs its HTTP status checked. A connection exception is a different outcome.",
+    "context": "Method-body excerpt with destination already resolved as an IF_HTTP_DESTINATION reference. The fictional API returns order 4711 as JSON with HTTP 200; /api/orders/4711 is an example path, not an SAP standard endpoint. The enclosing adapter returns the captured outcomes to its caller.",
     "language": "ABAP",
-    "context": "Method-body excerpt for a target supporting these released HTTP interfaces. destination is an already resolved IF_HTTP_DESTINATION from the target-supported communication/destination setup. The enclosing method declares CX_WEB_HTTP_CLIENT_ERROR and CX_WEB_MESSAGE_ERROR.",
-    "code": "DATA(client) =\n  cl_web_http_client_manager=>create_by_http_destination(\n    i_destination = destination ).\n\nDATA(response) = client->execute(\n  i_method = if_web_http_client=>get ).\nDATA(ls_status) = response->get_status( ).\nDATA(response_text) = response->get_text( ).\nclient->close( ).\n\nIF ls_status-code < 200 OR ls_status-code >= 300.\n  RETURN.\nENDIF.",
+    "code": "CONSTANTS co_path TYPE string VALUE '/api/orders/4711'.\nCONSTANTS co_accept TYPE string VALUE 'Accept'.\nCONSTANTS co_json TYPE string VALUE 'application/json'.\nCONSTANTS co_timeout TYPE i VALUE 30.\nCONSTANTS co_etag TYPE string VALUE 'ETag'.\nDATA client TYPE REF TO if_web_http_client.\nDATA failure TYPE REF TO cx_root.\nDATA cleanup_failure TYPE REF TO cx_root.\nDATA status_code TYPE i.\nDATA response_text TYPE string.\n\nTRY.\n    client = cl_web_http_client_manager=>create_by_http_destination(\n      i_destination = destination ).\n    DATA(request) = client->get_http_request( ).\n    request->set_uri_path( co_path ).\n    request->set_header_field( i_name = co_accept i_value = co_json ).\n    DATA(response) = client->execute(\n      i_method = if_web_http_client=>get i_timeout = co_timeout ).\n    DATA(ls_status) = response->get_status( ).\n    status_code = ls_status-code.\n    response_text = response->get_text( ).\n    DATA(etag) = response->get_header_field( co_etag ).\n  CATCH cx_web_http_client_error cx_web_message_error INTO failure.\nENDTRY.\n\nIF client IS BOUND.\n  TRY.\n      client->close( ).\n    CATCH cx_web_http_client_error INTO cleanup_failure.\n  ENDTRY.\nENDIF.\nDATA(read_succeeded) = xsdbool(\n  failure IS NOT BOUND AND status_code = 200 ).",
     "highlights": [
       {
         "lines": [
-          1,
-          2,
-          3
+          13,
+          14,
+          15,
+          16,
+          17
         ],
-        "label": "Use the configured destination",
-        "explanation": "The client uses the endpoint and connection setup already resolved by the application. Do not put passwords into the source."
+        "label": "Prepare one read",
+        "explanation": "Create the released client, select the resource path and request JSON."
       },
       {
         "lines": [
-          5,
-          6,
-          7,
-          8
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
         ],
-        "label": "Separate transport from HTTP outcome",
-        "explanation": "The call can raise a client exception. If it returns a response, inspect its status before treating the body as business data."
+        "label": "Keep response and failure separate",
+        "explanation": "Capture status and body if available. Capture client/message exceptions without pretending that an HTTP 404 or 500 is a connection exception. Keep the exact ETag for a later update if the server supplies one."
       },
       {
         "lines": [
-          9,
-          11,
-          12
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34
         ],
-        "label": "Close and route the failure",
-        "explanation": "The successful execution path closes the connection. Non-2xx responses go to an error-handling path, not the JSON success parser."
+        "label": "Close on both paths",
+        "explanation": "Close after success or failure. Preserve a separate cleanup error; it must not erase the primary error or change a known server result."
       }
     ],
-    "outcome": "A received 401, 403 or 500 is handled as an HTTP result; a connection exception is handled by the enclosing boundary.",
-    "caveat": "RETURN is only the teaching stop point: add error mapping, timeouts and cleanup on exception paths. Verify release status and destination creation for the actual edition. A destination does not itself install Cloud Connector or grant business permission. Not SAP-executed.",
+    "outcome": "Only HTTP 200 with no client/message exception sets read_succeeded. The caller must still validate Content-Type and payload before using the order.",
+    "caveat": "These local outcome variables are a teaching adapter boundary, not a silent error policy: return or map them into your application result and log redacted diagnostics. A cleanup failure is reported separately. The timeout controls this execute call, not every proxy or backend time limit. No automatic retry or SAP execution is shown.",
     "references": [
       {
-        "title": "SAP: HTTP client usage",
-        "url": "https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/setting-http-logon-popup-policy"
+        "title": "SAP: Outbound HTTP, destinations and client methods",
+        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161"
       },
       {
-        "title": "SAP: Integration and connectivity",
-        "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf"
-      },
-      {
-        "title": "SAP sample: HTTP response and message errors",
-        "url": "https://github.com/SAP-samples/abap-oo-basics/blob/main/src/zcl_obj_xml_test.clas.abap"
+        "title": "IETF: Conditional requests and If-Match",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1"
       }
     ]
   }

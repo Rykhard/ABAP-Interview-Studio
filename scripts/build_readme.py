@@ -26,13 +26,13 @@ For offline use, download this repository, keep its folders together and open `S
 
 - Switch EN/RU in the top bar. Questions, explanations, practice choices, worked-example steps and interface text are authored in both languages. Technical identifiers and executable code stay unchanged. Language switching preserves the current question, lesson step and ongoing practice session. See [Localization](docs/Localization.md) for scope and maintenance.
 - Browse subjects and subtopics as compact question lists with all difficulty levels together. Open a question to read its explanation immediately; return to the same list position and filters.
-- Open a question's code example, select a step to highlight its lines, and read what happens. Use the larger code view or copy the excerpt. Process diagrams remain available beside code where useful. Teaching fragments state their prerequisites and link to primary sources.
+- Open a question's code example, select a step to highlight its lines, and read what happens. Use the larger code view or copy the excerpt. Explanation shows a compact diagram preview with an enlarged viewer. Teaching fragments state their prerequisites and link to primary sources.
 - Switch between light and dark with the animated sun/moon control. Reading preferences include system appearance, larger answer text and a focus mode that hides topic navigation. Theme and reading choices stay in this browser.
 - Save questions into a personal collection, resume the last opened question and move between neighboring questions in a subtopic.
 - Choose Explanation, Code or Step by step where available. The explanation starts with the short answer and one concrete example; extended material is in one optional details section. Visual references open directly in a readable diagram viewer, without tiny previews.
 - Open Guided lessons in the sidebar to browse {len(lessons)} authored examples linked to {len(lesson_questions)} questions, covering RAP/CDS/Clean Core, LUW/locks, RFC/workers, HTTP/JSON, IDoc/AIF, patterns, SQL and testing. Each step changes the current process stage and example data. Values illustrate scenarios; they are not a live SAP simulation.
 - Guided views are also available after revealing a practice answer. One step navigator follows changing example data, showing previous values when a state changes. Sources and scope remain available.
-- Question list / All answers has an explicit selected state and remembers your preference. Reading a single question always opens its explanation.
+- Question list / All answers has an explicit selected state and remembers your preference. Reading preferences provide a global Explanation/Code default; questions without code fall back to Explanation. Step by step remains a question-specific choice.
 - Search the whole library with Ctrl+K / Cmd+K. The separate text filter narrows the current view.
 - Interview practice covers every question: answer aloud, reveal the model and self-rate 0-3.
 - Multiple-choice practice has four authored options with explanations. First-correct-concept XP stays separate from spoken readiness. RAP contains {len(rap_ids)} study questions, of which {sum(q['questionId'] in rap_ids for q in quizzes)} have multiple-choice challenges.
@@ -67,7 +67,7 @@ Choose one full Anki edition; the senior deck is a subset rather than extra uniq
     text += """
 ## Evidence
 
-Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [plain-language revision](review/Plain_Language_Review.md), [content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
+Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [October content and reading review](review/Content_Review_2026_10.md), [plain-language revision](review/Plain_Language_Review.md), [earlier content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
 
 ## Build and deploy
 

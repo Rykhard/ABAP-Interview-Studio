@@ -1381,14 +1381,14 @@
    },
    {
     "title": "Reject a cosmetic cardinality fix",
-    "explanation": "Declaring the association to-one would not remove the second matching text. DISTINCT also cannot collapse these two rows while their language or text values differ.",
+    "explanation": "Declaring to-one does not repair the two matching texts. A false cardinality can mislead the optimizer, so the returned rows and total are no longer a reliable prediction. DISTINCT also cannot merge rows whose selected language or text differs. Fix the relationship first.",
     "active": [
      "diagnose"
     ],
     "states": [
      {
       "label": "Order rows",
-      "value": "Still 2"
+      "value": "Not reliable"
      },
      {
       "label": "Cause",
@@ -1396,7 +1396,7 @@
      },
      {
       "label": "Report amount",
-      "value": "Still 200 EUR"
+      "value": "Not reliable"
      },
      {
       "label": "Proposed shortcut",
@@ -1437,6 +1437,10 @@
   "references": [
    {
     "title": "SAP: CDS cardinality",
+    "url": "https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/ABENCDS_CARDINALITY_V2.html"
+   },
+   {
+    "title": "SAP: CDS cardinality and incorrect declarations",
     "url": "https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/ABENCDS_CARDINALITY_V2.html"
    }
   ]
@@ -1981,6 +1985,180 @@
    {
     "title": "SAP: Expose a RAP business event",
     "url": "https://developers.sap.com/tutorials/abap-environment-expose-rap-business-events"
+   }
+  ]
+ },
+ {
+  "id": "lesson-rap-action-defaults",
+  "questions": [
+   "ADV-15"
+  ],
+  "title": "From a suggested discount to a checked action",
+  "scenario": "Order 4720 totals 1200 EUR. The UI supports action parameter defaults. This example suggests 10 percent and allows actual discounts from 0 to 20 percent.",
+  "goal": "See when a suggestion is returned, when input is checked and when business data actually changes.",
+  "nodes": [
+   {
+    "id": "open",
+    "label": "Open dialog"
+   },
+   {
+    "id": "suggest",
+    "label": "Suggest"
+   },
+   {
+    "id": "edit",
+    "label": "Edit input"
+   },
+   {
+    "id": "execute",
+    "label": "Execute action"
+   },
+   {
+    "id": "save",
+    "label": "Save"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Open ApplyDiscount",
+    "explanation": "The user opens the action dialog. The supporting UI requests GetDefaultsForApplyDiscount; it has not executed ApplyDiscount.",
+    "active": [
+     "open"
+    ],
+    "states": [
+     {
+      "label": "Dialog input",
+      "value": "Waiting for defaults"
+     },
+     {
+      "label": "Order in buffer",
+      "value": "1200 EUR"
+     },
+     {
+      "label": "Saved order",
+      "value": "1200 EUR"
+     }
+    ],
+    "outcome": "Opening a dialog must not apply the discount."
+   },
+   {
+    "title": "Return the suggested 10 percent",
+    "explanation": "The default function reads 1200 EUR and returns DiscountPercent 10. Only the dialog receives a value.",
+    "active": [
+     "suggest"
+    ],
+    "states": [
+     {
+      "label": "Dialog input",
+      "value": "10 percent suggested"
+     },
+     {
+      "label": "Order in buffer",
+      "value": "1200 EUR"
+     },
+     {
+      "label": "Saved order",
+      "value": "1200 EUR"
+     }
+    ],
+    "outcome": "The business object remains unchanged."
+   },
+   {
+    "title": "Replace the suggestion with 80",
+    "explanation": "The user enters 80. The earlier suggestion does not prevent different input. A direct API caller could submit the same value without asking for defaults.",
+    "active": [
+     "edit"
+    ],
+    "states": [
+     {
+      "label": "Dialog input",
+      "value": "80 percent entered"
+     },
+     {
+      "label": "Order in buffer",
+      "value": "1200 EUR"
+     },
+     {
+      "label": "Saved order",
+      "value": "1200 EUR"
+     }
+    ],
+    "outcome": "A suggestion is not a validation rule."
+   },
+   {
+    "title": "Reject the actual action input",
+    "explanation": "ApplyDiscount receives 80 and checks the example policy of 0 to 20 percent. It rejects the input with a message and makes no order change.",
+    "active": [
+     "execute"
+    ],
+    "states": [
+     {
+      "label": "Dialog input",
+      "value": "80 rejected; message shown"
+     },
+     {
+      "label": "Order in buffer",
+      "value": "1200 EUR"
+     },
+     {
+      "label": "Saved order",
+      "value": "1200 EUR"
+     }
+    ],
+    "outcome": "The action protects its own input, independently of defaulting."
+   },
+   {
+    "title": "Submit a valid 10 percent",
+    "explanation": "The user enters 10 and executes the action again. After its permission and business checks pass, the action applies the discount in the transactional buffer.",
+    "active": [
+     "edit",
+     "execute"
+    ],
+    "states": [
+     {
+      "label": "Dialog input",
+      "value": "10 accepted"
+     },
+     {
+      "label": "Order in buffer",
+      "value": "1080 EUR pending save"
+     },
+     {
+      "label": "Saved order",
+      "value": "1200 EUR"
+     }
+    ],
+    "outcome": "Successful interaction is not yet a committed result."
+   },
+   {
+    "title": "Complete the save",
+    "explanation": "The save sequence succeeds and the framework or external transaction owner completes the transaction. The saved amount is now 1080 EUR.",
+    "active": [
+     "save"
+    ],
+    "states": [
+     {
+      "label": "Dialog input",
+      "value": "Dialog completed"
+     },
+     {
+      "label": "Order in buffer",
+      "value": "Transaction completed"
+     },
+     {
+      "label": "Saved order",
+      "value": "1080 EUR"
+     }
+    ],
+    "outcome": "The default function did not save anything; the later action and save did."
+   }
+  ],
+  "takeaway": "A default function suggests. The action checks and changes. A successful save makes the change permanent.",
+  "limitation": "Illustrative supported Fiori elements flow, not a live SAP trace. Real discount policy, currency rounding, authorization, concurrency and client support must be verified. A direct caller can skip defaulting.",
+  "references": [
+   {
+    "title": "SAP: defaulting action input parameters",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations"
    }
   ]
  }

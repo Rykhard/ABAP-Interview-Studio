@@ -56,8 +56,7 @@
     "questions": [
       "RAP-03",
       "RAP-08",
-      "RAP-09",
-      "MODEL-13"
+      "RAP-09"
     ],
     "intro": "EML reads the order that RAP is currently working on, including buffered changes.",
     "language": "ABAP",
@@ -73,8 +72,7 @@
         "label": "Read the buffer",
         "explanation": "If Comment was changed from Old to New in this transaction, this read can return New before the database is saved.",
         "questions": [
-          "RAP-03",
-          "MODEL-13"
+          "RAP-03"
         ]
       },
       {
@@ -385,7 +383,8 @@
     "questions": [
       "RAP-06",
       "RAP-13",
-      "SRAP-11"
+      "SRAP-11",
+      "MODEL-13"
     ],
     "intro": "A determination should produce the same total when RAP runs it again with the same inputs.",
     "language": "ABAP",
@@ -413,6 +412,18 @@
           "RAP-13",
           "SRAP-11"
         ]
+      },
+      {
+        "lines": [
+          6,
+          8,
+          11
+        ],
+        "questions": [
+          "MODEL-13"
+        ],
+        "label": "Only trusted derived input",
+        "explanation": "Local mode updates readonly Total from Quantity and UnitPrice. A public action that instead passes an arbitrary caller-supplied Total can create an indirect write bypass. Check input and permissions at the public operation boundary."
       }
     ],
     "outcome": "The buffered Total becomes 30 for quantity 3 and unit price 10, regardless of repeated execution with those inputs.",
@@ -424,7 +435,8 @@
       }
     ],
     "startFor": [
-      "RAP-13"
+      "RAP-13",
+      "MODEL-13"
     ]
   },
   {
@@ -807,11 +819,11 @@
     "intro": "Adding a field to the consumer projection is one step of extending a business object.",
     "language": "CDS",
     "context": "A CDS view-entity extension for your own ZC_Order projection over ZI_Order. Your table and base entity already contain ApprovalReference, persistence mapping is maintained, and ZC_Order permits this extension in the target release. This is not an SAP standard BO.",
-    "code": "@EndUserText.label: 'Order approval reference'\nextend view entity ZC_Order with\n{\n  ApprovalReference\n}",
+    "code": "extend view entity ZC_Order with\n{\n  @EndUserText.label: 'Order approval reference'\n  ApprovalReference\n}",
     "highlights": [
       {
         "lines": [
-          2
+          1
         ],
         "label": "Extend the permitted layer",
         "explanation": "The extension adds to the existing projection. Before writing it, verify that this exact entity is allowed to be extended."
