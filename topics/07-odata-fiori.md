@@ -4,22 +4,31 @@ Separate the OData protocol from SAP implementation technologies. Practice expla
 
 [Return to the study guide](../README.md) | [Study plan](../study/Study_Plan.md)
 
-## ODATA-01 When would you choose OData V4 rather than V2?
+## ODATA-01 OData V2 vs V4: what really changes, and what are the benefits of each?
 
 **Level:** Core
 
-**Short answer:** For a new RAP service, I start with OData V4 if the backend and client support it. I keep V2 when an existing app or integration needs it. The choice affects request formats and supported operations, so it needs testing. Switching to V4 alone does not make an application faster.
+**Short answer:** Both let an app read and change business data over HTTP. V4 gives a clearer API contract: separate actions and functions, a date-only type, and more expressive queries. V2 is valuable when existing SAP apps or partners already depend on it. For a new RAP app, I normally choose V4 when the backend and UI support the required features. V4 is not an automatic speed upgrade, and a V2 client cannot simply switch its URL and become a V4 client.
 
-**Reasoning and example:** Suppose we are building a new Fiori elements app for purchase requests. I check the backend release, the SAPUI5 version and the chosen page template before selecting a V4 binding. I then test the operations the app needs, including actions and draft editing if used.
+**Reasoning and example:** One example: a purchase-request app shows 20 orders and lets the user approve one. In V2, an inline count uses $inlinecount=allpages; its JSON collection is inside d.results with __count. In V4, use $count=true; the rows are in value with @odata.count. The screen can look identical, but the client must understand the different contract. Open the two Code examples to compare the same two orders.
 
-An older partner application might only understand V2. I would keep its working endpoint during migration rather than force a protocol change with the new UI. Draft, validations and determinations belong to RAP; they are not exclusive V4 features. Support still depends on the particular service and consumer, so a successful V4 demo does not answer every compatibility question.
+Dates and operations: V4 has Edm.Date for a calendar date such as a delivery day. V2 has no equivalent date-only primitive; SAP services commonly use Edm.DateTime with a date-display annotation. V4 also distinguishes a read/calculation function from a potentially modifying action called with POST; V2 exposes service operations through function imports. These differences make intent clearer, but the exact RAP exposure still depends on the supported binding.
 
-**Avoid this mistake:** RAP and draft are not exclusive to V4, and Gateway is not exclusive to V2. Check the actual supported combination.
+Queries: V4 can place query options inside $expand, for example requesting only selected fields of related items. This can avoid unnecessary transferred data when the service supports it. V2 already has $filter, $select, $expand and $batch, so these are not all new V4 features. Both versions support batch changesets; putting requests in one batch does not by itself make the whole batch atomic.
+
+The practical benefit of V2 is compatibility: keep a working partner integration or older Fiori app without forcing a client rewrite. The benefit of V4 is its richer protocol and the matching modern SAPUI5/Fiori elements capabilities on supported releases. SAPUI5 V2 and V4 models have different programming APIs; changing only the service URL is not a migration.
+
+My decision: use a supported V4 binding for the new purchase-request UI, but keep the existing V2 partner endpoint while that consumer migrates. Test metadata, dates, action calls, errors, paging and concurrency. RAP and draft are available in supported V2 scenarios too. Measure real payload size, round trips and backend processing before claiming a performance benefit.
+
+**Avoid this mistake:** Do not claim that V2 only supports XML, V4 introduced $batch, or only V4 supports RAP/draft. Both can use JSON. Protocol support, SAP provider support and UI5 model capabilities are separate checks.
 
 **Read and verify this answer:**
 
-- [SAP Learning on OData](https://learning.sap.com/courses/building-odata-services-with-sap-gateway/explaining-open-data-protocol-odata-) - Check the protocol version and what the SAP service actually supports. A feature in the standard is not automatically available in every service.
-- [SAP Learning on UI service bindings](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-an-odata-ui-service) - Check the protocol version and what the SAP service actually supports. A feature in the standard is not automatically available in every service.
+- [OData V2: JSON format](https://www.odata.org/documentation/odata-version-2-0/json-format/) - Check the format and capabilities against the service version. For SAP, also verify the release, binding and UI5 support.
+- [OASIS: OData V4 JSON format](https://docs.oasis-open.org/odata/odata-json-format/v4.0/errata03/os/odata-json-format-v4.0-errata03-os-complete.html) - Check the format and capabilities against the service version. For SAP, also verify the release, binding and UI5 support.
+- [OASIS: OData V4 protocol](https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html) - Check the format and capabilities against the service version. For SAP, also verify the release, binding and UI5 support.
+- [SAP: RAP service binding](https://help.sap.com/docs/abap-cloud/abap-rap/service-binding) - Check the format and capabilities against the service version. For SAP, also verify the release, binding and UI5 support.
+- [SAPUI5: changes compared to the V2 model](https://ui5.sap.com/#/topic/abd4d7c7548d4c29ab8364d3904a6d74) - Check the format and capabilities against the service version. For SAP, also verify the release, binding and UI5 support.
 
 ## ODATA-02 What does $metadata describe?
 

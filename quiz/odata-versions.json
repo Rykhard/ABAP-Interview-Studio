@@ -1,0 +1,30 @@
+[
+  {
+    "id": "QUIZ-ODATA-VERSIONS",
+    "questionId": "ODATA-01",
+    "correctOption": "a",
+    "prompt": "A new RAP UI supports V4, but a partner uses a working V2 client. Which plan is most reasonable?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use V4 for the new UI; retain V2 until the partner migration is tested.",
+        "explanation": "This balances the new app capabilities with compatibility for the existing consumer."
+      },
+      {
+        "id": "b",
+        "text": "Change only the partner URL because the formats are identical.",
+        "explanation": "JSON, metadata and operations differ. The client needs testing and adaptation."
+      },
+      {
+        "id": "c",
+        "text": "Choose V4 only because V2 lacks JSON and batch.",
+        "explanation": "V2 supports both JSON and batch."
+      },
+      {
+        "id": "d",
+        "text": "Promise faster backend processing after changing the binding to V4.",
+        "explanation": "A protocol version alone does not fix slow SQL or unnecessary requests. Measure the actual workload."
+      }
+    ]
+  }
+]

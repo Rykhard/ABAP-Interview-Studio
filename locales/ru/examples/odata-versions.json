@@ -1,0 +1,86 @@
+[
+  {
+    "id": "odata-v2-comparison",
+    "questions": [
+      "ODATA-01"
+    ],
+    "title": "V2: строки в d.results",
+    "intro": "Два заказа на экране, 42 во всём наборе.",
+    "context": "Учебная пара HTTP request/response. Адрес вымышленный; metadata определяет Orders с ключом ID типа Edm.Int32. Запрос и ответ показаны вместе для сравнения.",
+    "language": "HTTP",
+    "code": "GET /v2/Orders?$top=2&$orderby=ID&$inlinecount=allpages HTTP/1.1\nHost: api.example.test\nAccept: application/json\n\nHTTP/1.1 200 OK\nContent-Type: application/json\nDataServiceVersion: 2.0\n\n{\n  \"d\": {\n    \"__count\": \"42\",\n    \"results\": [\n      { \"ID\": 7 },\n      { \"ID\": 9 }\n    ]\n  }\n}",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Запрос количества",
+        "explanation": "V2: $inlinecount=allpages. V4: $count=true. $top=2 ограничивает страницу, но не общее количество."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Прочитать ответ",
+        "explanation": "V2: __count — строка, записи — в d.results. V4: @odata.count — число в этом примере, записи — в value. Поэтому V2-клиенту нужен другой разбор ответа."
+      }
+    ],
+    "outcome": "Пользователь видит те же два заказа; меняется контракт между клиентом и сервисом.",
+    "caveat": "Это не замер скорости и не готовый SAP endpoint. Другие metadata-поля не показаны. Для V4 в примере не включён IEEE754Compatible=true; при таком режиме count передаётся строкой. Server-driven paging может добавить next link.",
+    "references": [
+      {
+        "title": "OData V2: JSON format",
+        "url": "https://www.odata.org/documentation/odata-version-2-0/json-format/"
+      },
+      {
+        "title": "OASIS: OData V4 JSON format",
+        "url": "https://docs.oasis-open.org/odata/odata-json-format/v4.0/errata03/os/odata-json-format-v4.0-errata03-os-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "odata-v4-comparison",
+    "questions": [
+      "ODATA-01"
+    ],
+    "title": "V4: тот же список в другом формате",
+    "intro": "Два заказа на экране, 42 во всём наборе.",
+    "context": "Учебная пара HTTP request/response. Адрес вымышленный; metadata определяет Orders с ключом ID типа Edm.Int32. Запрос и ответ показаны вместе для сравнения.",
+    "language": "HTTP",
+    "code": "GET /v4/Orders?$top=2&$orderby=ID&$count=true HTTP/1.1\nHost: api.example.test\nAccept: application/json;odata.metadata=minimal\n\nHTTP/1.1 200 OK\nContent-Type: application/json;odata.metadata=minimal\nOData-Version: 4.0\n\n{\n  \"@odata.context\": \"https://api.example.test/v4/$metadata#Orders\",\n  \"@odata.count\": 42,\n  \"value\": [\n    { \"ID\": 7 },\n    { \"ID\": 9 }\n  ]\n}",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Запрос количества",
+        "explanation": "V2: $inlinecount=allpages. V4: $count=true. $top=2 ограничивает страницу, но не общее количество."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Прочитать ответ",
+        "explanation": "V2: __count — строка, записи — в d.results. V4: @odata.count — число в этом примере, записи — в value. Поэтому V2-клиенту нужен другой разбор ответа."
+      }
+    ],
+    "outcome": "Пользователь видит те же два заказа; меняется контракт между клиентом и сервисом.",
+    "caveat": "Это не замер скорости и не готовый SAP endpoint. Другие metadata-поля не показаны. Для V4 в примере не включён IEEE754Compatible=true; при таком режиме count передаётся строкой. Server-driven paging может добавить next link.",
+    "references": [
+      {
+        "title": "OData V2: JSON format",
+        "url": "https://www.odata.org/documentation/odata-version-2-0/json-format/"
+      },
+      {
+        "title": "OASIS: OData V4 JSON format",
+        "url": "https://docs.oasis-open.org/odata/odata-json-format/v4.0/errata03/os/odata-json-format-v4.0-errata03-os-complete.html"
+      }
+    ]
+  }
+]

@@ -416,7 +416,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 
 | Question | Level |
 | --- | --- |
-| [ODATA-01 - When would you choose OData V4 rather than V2?](../topics/07-odata-fiori.md#odata-01-when-would-you-choose-odata-v4-rather-than-v2) | Core |
+| [ODATA-01 - OData V2 vs V4: what really changes, and what are the benefits of each?](../topics/07-odata-fiori.md#odata-01-odata-v2-vs-v4-what-really-changes-and-what-are-the-benefits-of-each) | Core |
 | [ODATA-02 - What does $metadata describe?](../topics/07-odata-fiori.md#odata-02-what-does-metadata-describe) | Core |
 | [ODATA-03 - What are the main query options?](../topics/07-odata-fiori.md#odata-03-what-are-the-main-query-options) | Core |
 | [ODATA-05 - What is the difference between actions and functions?](../topics/07-odata-fiori.md#odata-05-what-is-the-difference-between-actions-and-functions) | Core |

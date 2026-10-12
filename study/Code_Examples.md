@@ -2266,6 +2266,89 @@ DATA(read_succeeded) = xsdbool(
 - [SAP: Outbound HTTP, destinations and client methods](https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf#page=161)
 - [IETF: Conditional requests and If-Match](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1)
 
+## V2: rows inside d.results
+
+Two orders on screen, 42 in the complete set.
+
+Questions: [ODATA-01](https://abap-interview-studio.pages.dev/#q-ODATA-01)
+
+**Where this belongs:** Illustrative HTTP request/response pair at a fictional endpoint. Metadata defines Orders with an Edm.Int32 key named ID. Request and response are displayed together for comparison.
+
+```http
+GET /v2/Orders?$top=2&$orderby=ID&$inlinecount=allpages HTTP/1.1
+Host: api.example.test
+Accept: application/json
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+DataServiceVersion: 2.0
+
+{
+  "d": {
+    "__count": "42",
+    "results": [
+      { "ID": 7 },
+      { "ID": 9 }
+    ]
+  }
+}
+```
+
+**Read it step by step:**
+
+1. **Request the total** (lines 1): V2 uses $inlinecount=allpages; V4 uses $count=true. $top=2 limits this page, not the total count.
+2. **Read the response** (lines 11, 12, 13, 14): V2 uses a string __count and d.results. V4 uses a numeric @odata.count in this example and value. A V2 parser must therefore change.
+
+**What happens:** The user sees the same two orders; the contract between client and service changes.
+
+**Scope:** This is not a speed measurement or a working SAP endpoint. Other metadata fields are omitted. The V4 example does not enable IEEE754Compatible=true, which would serialize the count as a string. Server-driven paging may add a next link.
+
+**Primary references:**
+
+- [OData V2: JSON format](https://www.odata.org/documentation/odata-version-2-0/json-format/)
+- [OASIS: OData V4 JSON format](https://docs.oasis-open.org/odata/odata-json-format/v4.0/errata03/os/odata-json-format-v4.0-errata03-os-complete.html)
+
+## V4: the same list, a different contract
+
+Two orders on screen, 42 in the complete set.
+
+Questions: [ODATA-01](https://abap-interview-studio.pages.dev/#q-ODATA-01)
+
+**Where this belongs:** Illustrative HTTP request/response pair at a fictional endpoint. Metadata defines Orders with an Edm.Int32 key named ID. Request and response are displayed together for comparison.
+
+```http
+GET /v4/Orders?$top=2&$orderby=ID&$count=true HTTP/1.1
+Host: api.example.test
+Accept: application/json;odata.metadata=minimal
+
+HTTP/1.1 200 OK
+Content-Type: application/json;odata.metadata=minimal
+OData-Version: 4.0
+
+{
+  "@odata.context": "https://api.example.test/v4/$metadata#Orders",
+  "@odata.count": 42,
+  "value": [
+    { "ID": 7 },
+    { "ID": 9 }
+  ]
+}
+```
+
+**Read it step by step:**
+
+1. **Request the total** (lines 1): V2 uses $inlinecount=allpages; V4 uses $count=true. $top=2 limits this page, not the total count.
+2. **Read the response** (lines 11, 12, 13, 14): V2 uses a string __count and d.results. V4 uses a numeric @odata.count in this example and value. A V2 parser must therefore change.
+
+**What happens:** The user sees the same two orders; the contract between client and service changes.
+
+**Scope:** This is not a speed measurement or a working SAP endpoint. Other metadata fields are omitted. The V4 example does not enable IEEE754Compatible=true, which would serialize the count as a string. Server-driven paging may add a next link.
+
+**Primary references:**
+
+- [OData V2: JSON format](https://www.odata.org/documentation/odata-version-2-0/json-format/)
+- [OASIS: OData V4 JSON format](https://docs.oasis-open.org/odata/odata-json-format/v4.0/errata03/os/odata-json-format-v4.0-errata03-os-complete.html)
+
 ## Let RAP save the order
 
 This behavior definition gives a custom order standard create and update operations.

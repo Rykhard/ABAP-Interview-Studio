@@ -2,7 +2,7 @@
 
 An English/Russian interview preparation app focused on ABAP Cloud, RAP and Clean Core, with classic ABAP, OO patterns, CDS, SQL/HANA, integration and operations.
 
-**338 study questions, 113 authored multiple-choice challenges, 70 teaching visuals and 10 topics.** ABAP Cloud, RAP and Clean Core form the largest curriculum track: 158 questions. Content reviewed 12 October 2026.
+**338 study questions, 114 authored multiple-choice challenges, 70 teaching visuals and 10 topics.** ABAP Cloud, RAP and Clean Core form the largest curriculum track: 158 questions. Content reviewed 12 October 2026.
 
 ## Open the app
 

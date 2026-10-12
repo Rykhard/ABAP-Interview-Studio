@@ -1,0 +1,86 @@
+[
+  {
+    "id": "odata-v2-comparison",
+    "questions": [
+      "ODATA-01"
+    ],
+    "title": "V2: rows inside d.results",
+    "intro": "Two orders on screen, 42 in the complete set.",
+    "context": "Illustrative HTTP request/response pair at a fictional endpoint. Metadata defines Orders with an Edm.Int32 key named ID. Request and response are displayed together for comparison.",
+    "language": "HTTP",
+    "code": "GET /v2/Orders?$top=2&$orderby=ID&$inlinecount=allpages HTTP/1.1\nHost: api.example.test\nAccept: application/json\n\nHTTP/1.1 200 OK\nContent-Type: application/json\nDataServiceVersion: 2.0\n\n{\n  \"d\": {\n    \"__count\": \"42\",\n    \"results\": [\n      { \"ID\": 7 },\n      { \"ID\": 9 }\n    ]\n  }\n}",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Request the total",
+        "explanation": "V2 uses $inlinecount=allpages; V4 uses $count=true. $top=2 limits this page, not the total count."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Read the response",
+        "explanation": "V2 uses a string __count and d.results. V4 uses a numeric @odata.count in this example and value. A V2 parser must therefore change."
+      }
+    ],
+    "outcome": "The user sees the same two orders; the contract between client and service changes.",
+    "caveat": "This is not a speed measurement or a working SAP endpoint. Other metadata fields are omitted. The V4 example does not enable IEEE754Compatible=true, which would serialize the count as a string. Server-driven paging may add a next link.",
+    "references": [
+      {
+        "title": "OData V2: JSON format",
+        "url": "https://www.odata.org/documentation/odata-version-2-0/json-format/"
+      },
+      {
+        "title": "OASIS: OData V4 JSON format",
+        "url": "https://docs.oasis-open.org/odata/odata-json-format/v4.0/errata03/os/odata-json-format-v4.0-errata03-os-complete.html"
+      }
+    ]
+  },
+  {
+    "id": "odata-v4-comparison",
+    "questions": [
+      "ODATA-01"
+    ],
+    "title": "V4: the same list, a different contract",
+    "intro": "Two orders on screen, 42 in the complete set.",
+    "context": "Illustrative HTTP request/response pair at a fictional endpoint. Metadata defines Orders with an Edm.Int32 key named ID. Request and response are displayed together for comparison.",
+    "language": "HTTP",
+    "code": "GET /v4/Orders?$top=2&$orderby=ID&$count=true HTTP/1.1\nHost: api.example.test\nAccept: application/json;odata.metadata=minimal\n\nHTTP/1.1 200 OK\nContent-Type: application/json;odata.metadata=minimal\nOData-Version: 4.0\n\n{\n  \"@odata.context\": \"https://api.example.test/v4/$metadata#Orders\",\n  \"@odata.count\": 42,\n  \"value\": [\n    { \"ID\": 7 },\n    { \"ID\": 9 }\n  ]\n}",
+    "highlights": [
+      {
+        "lines": [
+          1
+        ],
+        "label": "Request the total",
+        "explanation": "V2 uses $inlinecount=allpages; V4 uses $count=true. $top=2 limits this page, not the total count."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Read the response",
+        "explanation": "V2 uses a string __count and d.results. V4 uses a numeric @odata.count in this example and value. A V2 parser must therefore change."
+      }
+    ],
+    "outcome": "The user sees the same two orders; the contract between client and service changes.",
+    "caveat": "This is not a speed measurement or a working SAP endpoint. Other metadata fields are omitted. The V4 example does not enable IEEE754Compatible=true, which would serialize the count as a string. Server-driven paging may add a next link.",
+    "references": [
+      {
+        "title": "OData V2: JSON format",
+        "url": "https://www.odata.org/documentation/odata-version-2-0/json-format/"
+      },
+      {
+        "title": "OASIS: OData V4 JSON format",
+        "url": "https://docs.oasis-open.org/odata/odata-json-format/v4.0/errata03/os/odata-json-format-v4.0-errata03-os-complete.html"
+      }
+    ]
+  }
+]
