@@ -24,7 +24,7 @@ function filtered(includeSelection=true){
  const term=$('search').value.trim().toLowerCase(),topic=$('topic').value,section=$('section').value,scope=$('scope').value,selection=$('selection').value,exactId=byId.has(term.toUpperCase());
  return topics.flatMap(topicQuestions).filter(q=>(!topic||topic===q.topic)&&(!section||section===q.section)&&(!term||(exactId?q.id.toLowerCase()===term:[q.id,q.question,q.answer,q.detail,q.pitfall,q.moduleTitle,...q.followups||[],...q.signals||[],q.evidence||''].join(' ').toLowerCase().includes(term)))&&(mode==='learn'||((scope==='all'||scope===q.level)&&(!includeSelection||selection==='all'||questionStatus(q)===selection))));
 }
-function focusDestination(id){const target=id?document.querySelector('#q-'+id+' h3'):$('heading');if(!target)return;target.tabIndex=-1;target.focus({preventScroll:true});if(id)document.querySelector('#q-'+id).scrollIntoView({block:'start'});else window.scrollTo(0,0);}
+function focusDestination(id){const target=id?document.querySelector('#q-'+id+' h3'):$('heading');if(!target)return;target.tabIndex=-1;target.focus({preventScroll:true});if(id)document.querySelector('#q-'+id).scrollIntoView({block:'start'});else window.scrollTo(0,0);animateDestination();}
 function setMode(next){storeFilters();mode=next;restoreFilters();render();routeSelection();focusDestination();}
 function route(hash,replace=false){if(restoringRoute)return;const next=hash||location.pathname+location.search;if((hash&&location.hash===hash)||(!hash&&!location.hash))return;try{history[replace?'replaceState':'pushState'](null,'',next);}catch{/* Local file contexts may restrict history updates. */}}
 function routeSelection(replace=false){const params=new URLSearchParams();if(mode==='train'){params.set('mode','train');params.set('kind',practiceKind);params.set('size',$('sessionLength').value);}else if(libraryList&&!$('topic').value)params.set('view','list');for(const key of (mode==='train'?['topic','section','scope','selection','search']:['topic','section','search'])){const value=$(key).value;if(value&&value!=='all')params.set(key,value);}route(params.size?'#'+params:'',replace);}
@@ -87,6 +87,7 @@ $('toolsButton').onclick=()=>{resources();$('toolsDialog').showModal();};$('clos
 document.addEventListener('keydown',e=>{if($('toolsDialog').open||$('visualDialog').open||$('searchDialog').open||/INPUT|SELECT|TEXTAREA|BUTTON|SUMMARY|A/.test(e.target.tagName)||mode!=='train'||!activeSession||activeSession.done)return;if(e.key===' '&&activeSession.kind==='recall'&&!activeSession.revealed){e.preventDefault();$('revealPractice')?.click();}});
 __SEARCH_APP__
 __QUIZ_APP__
+__MOTION_APP__
 restoreFilters();render();
 function loadRoute(focus=false){
  restoringRoute=true;

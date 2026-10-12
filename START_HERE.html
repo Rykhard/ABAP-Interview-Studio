@@ -773,13 +773,99 @@ main.in-session header h2 { font-size: 25px; }
 @media(max-width:570px){#codeDialog{padding:14px;width:calc(100% - 16px)}#codeDialog .code-window{font-size:12px}#codeDialog h2{font-size:18px}}
 @media print{.code-steps,.code-copy,.code-enlarge,.explanation-picker,#codeDialog{display:none}.code-window{overflow:visible;max-height:none}.code-window,.code-outcome{break-inside:avoid}}
 
+/* Short, local feedback. Reading surfaces never move while being scrolled. */
+:root {
+ --motion-fast: 140ms;
+ --motion-enter: 180ms;
+ --motion-ease: cubic-bezier(.2, 0, .2, 1);
+}
+.brand-home {
+ display: inline-block;
+ color: white;
+ text-decoration: none;
+ border-radius: 5px;
+ transition: color var(--motion-fast) var(--motion-ease);
+}
+.brand-home:hover { color: #c6e8dd; }
+.brand-home:focus-visible { outline-color: #eda975; }
+.back-to-top {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ gap: 7px;
+ flex: none;
+ margin-left: auto;
+ min-width: 46px;
+ min-height: 46px;
+ padding: 10px 13px;
+ background: var(--ink);
+ color: white;
+ border-color: var(--ink);
+ box-shadow: 0 3px 10px #122b3e14;
+ opacity: 0;
+ visibility: hidden;
+ pointer-events: none;
+}
+.back-to-top[data-visible=true] { opacity: 1; visibility: visible; pointer-events: auto; }
+.back-to-top svg { width: 20px; height: 20px; flex: none; }
+.back-to-top:hover { background: #23485b; border-color: #23485b; }
+.app-bar .global-search-launcher { flex-shrink: 1; min-width: 0; }
+button, .question-index a, .resource-grid a {
+ transition: background-color var(--motion-fast) var(--motion-ease),
+  border-color var(--motion-fast) var(--motion-ease),
+  color var(--motion-fast) var(--motion-ease),
+  box-shadow var(--motion-fast) var(--motion-ease);
+}
+.back-to-top {
+ transition: opacity var(--motion-enter) var(--motion-ease),
+  visibility var(--motion-enter), background-color var(--motion-fast) var(--motion-ease);
+}
+aside nav button:not(.active):hover { background: #203e51; color: white; }
+.topic-card {
+ transition: transform var(--motion-enter) var(--motion-ease),
+  box-shadow var(--motion-enter) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
+}
+.topic-card .topic-icon {
+ transition: background-color var(--motion-enter) var(--motion-ease), color var(--motion-enter) var(--motion-ease);
+}
+@media (hover: hover) and (pointer: fine) {
+ .topic-card:hover { transform: translateY(-2px); box-shadow: 0 9px 24px #122b3e0c; }
+ .topic-card:hover .topic-icon { background: #dceee5; color: #0c5243; }
+ .topic-card:active { transform: translateY(0); }
+}
+dialog[open] { animation: dialog-enter var(--motion-enter) var(--motion-ease); }
+dialog[open]::backdrop { animation: backdrop-enter var(--motion-enter) ease-out; }
+@keyframes dialog-enter {
+ from { opacity: .4; transform: translateY(6px) scale(.99); }
+ to { opacity: 1; transform: none; }
+}
+@keyframes backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 650px) {
+ .app-bar { display: grid; grid-template-columns: minmax(0, 1fr) 46px; }
+ .app-bar .global-search-launcher { flex: 1; width: auto; }
+ .global-search-launcher { grid-column: 1; grid-row: 1; }
+ .global-search-launcher span { text-wrap: balance; }
+ .back-to-top { grid-column: 2; grid-row: 1; padding: 10px; }
+ .back-to-top span { display: none; }
+ #resumePractice { grid-column: 1 / -1; grid-row: 2; justify-self: end; }
+}
+@media (prefers-reduced-motion: reduce) {
+ html { scroll-behavior: auto !important; }
+ .brand-home, button, .question-index a, .resource-grid a, .topic-card, .topic-card .topic-icon {
+  transition: none !important;
+ }
+ .topic-card:hover, .topic-card:active { transform: none; }
+ dialog[open], dialog[open]::backdrop { animation: none !important; }
+}
+@media print { .back-to-top { display: none; } }
+
 </style>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to study content</a>
-<aside><div class="eyebrow">Interview preparation</div><h1>ABAP<br>Interview Studio</h1><p class="subtle">Understand. Practice. Remember.</p><button id="menuToggle" aria-expanded="false" aria-controls="segments">Browse topics</button><nav id="segments" aria-label="Topic navigation"></nav><p class="small" style="color:#b5c8d4;margin-top:25px">Updated 12 October 2026<br>Works offline without sign-in</p><a class="small" href="https://github.com/Rykhard/ABAP-Interview-Studio#readme" target="_blank" rel="noopener">Repository guide</a></aside>
+<aside><div class="eyebrow">Interview preparation</div><h1><a id="brandHome" class="brand-home" href="#view=topics" aria-label="ABAP Interview Studio - All topics">ABAP<br>Interview Studio</a></h1><p class="subtle">Understand. Practice. Remember.</p><button id="menuToggle" aria-expanded="false" aria-controls="segments">Browse topics</button><nav id="segments" aria-label="Topic navigation"></nav><p class="small" style="color:#b5c8d4;margin-top:25px">Updated 12 October 2026<br>Works offline without sign-in</p><a class="small" href="https://github.com/Rykhard/ABAP-Interview-Studio#readme" target="_blank" rel="noopener">Repository guide</a></aside>
 <main id="mainContent" tabindex="-1">
-<div class="app-bar"><button id="openSearch" class="global-search-launcher" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/></svg><span>Search all topics and questions</span><kbd>Ctrl K</kbd></button><button id="resumePractice" hidden>Resume practice</button></div>
+<div class="app-bar"><button id="openSearch" class="global-search-launcher" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/></svg><span>Search all topics and questions</span><kbd>Ctrl K</kbd></button><button id="resumePractice" hidden>Resume practice</button><button id="backToTop" class="back-to-top" type="button" aria-label="Back to top" title="Back to top" data-visible="false" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-7 7 7-7 7 7"/></svg><span>Top</span></button></div>
 <header><div><nav id="breadcrumbs" aria-label="Breadcrumb"></nav><h2 id="heading" tabindex="-1">Topic library</h2><p class="subtle" id="intro"></p></div><div class="stat"><strong id="readyCount">0</strong><span class="subtle">ready to explain</span></div></header>
 <progress id="progress" value="0" max="100" aria-label="Study progress"></progress>
 <div class="modes" role="group" aria-label="Workspace mode"><button id="learnTab" class="active" aria-pressed="true">Learn</button><button id="trainTab" aria-pressed="false">Practice</button><span class="spacer"></span><button id="toolsButton" class="utility" aria-haspopup="dialog">Downloads &amp; progress</button></div>
@@ -837,7 +923,7 @@ function filtered(includeSelection=true){
  const term=$('search').value.trim().toLowerCase(),topic=$('topic').value,section=$('section').value,scope=$('scope').value,selection=$('selection').value,exactId=byId.has(term.toUpperCase());
  return topics.flatMap(topicQuestions).filter(q=>(!topic||topic===q.topic)&&(!section||section===q.section)&&(!term||(exactId?q.id.toLowerCase()===term:[q.id,q.question,q.answer,q.detail,q.pitfall,q.moduleTitle,...q.followups||[],...q.signals||[],q.evidence||''].join(' ').toLowerCase().includes(term)))&&(mode==='learn'||((scope==='all'||scope===q.level)&&(!includeSelection||selection==='all'||questionStatus(q)===selection))));
 }
-function focusDestination(id){const target=id?document.querySelector('#q-'+id+' h3'):$('heading');if(!target)return;target.tabIndex=-1;target.focus({preventScroll:true});if(id)document.querySelector('#q-'+id).scrollIntoView({block:'start'});else window.scrollTo(0,0);}
+function focusDestination(id){const target=id?document.querySelector('#q-'+id+' h3'):$('heading');if(!target)return;target.tabIndex=-1;target.focus({preventScroll:true});if(id)document.querySelector('#q-'+id).scrollIntoView({block:'start'});else window.scrollTo(0,0);animateDestination();}
 function setMode(next){storeFilters();mode=next;restoreFilters();render();routeSelection();focusDestination();}
 function route(hash,replace=false){if(restoringRoute)return;const next=hash||location.pathname+location.search;if((hash&&location.hash===hash)||(!hash&&!location.hash))return;try{history[replace?'replaceState':'pushState'](null,'',next);}catch{/* Local file contexts may restrict history updates. */}}
 function routeSelection(replace=false){const params=new URLSearchParams();if(mode==='train'){params.set('mode','train');params.set('kind',practiceKind);params.set('size',$('sessionLength').value);}else if(libraryList&&!$('topic').value)params.set('view','list');for(const key of (mode==='train'?['topic','section','scope','selection','search']:['topic','section','search'])){const value=$(key).value;if(value&&value!=='all')params.set(key,value);}route(params.size?'#'+params:'',replace);}
@@ -1088,7 +1174,7 @@ function beginPractice(ids,kind=practiceKind){
  if(kind==='quiz')for(const id of activeSession.ids)activeSession.orders[id]=shuffled(quizByQuestion.get(id).options.map(o=>o.id));
  render();routeSelection();focusPractice();
 }
-function focusPractice(){window.scrollTo(0,0);const target=$('sessionQuestion')||$('resultsTitle');if(target)target.focus({preventScroll:true});}
+function focusPractice(){window.scrollTo(0,0);const target=$('sessionQuestion')||$('resultsTitle');if(target)target.focus({preventScroll:true});animateDestination();}
 function nextPractice(){if(!activeSession||activeSession.done)return;if(activeSession.index===activeSession.ids.length-1)activeSession.done=true;else activeSession.index++;activeSession.selected=null;activeSession.revealed=false;render();focusPractice();}
 function finishPractice(){if(!activeSession)return;activeSession.done=true;render();focusPractice();}
 function checkQuiz(){
@@ -1130,6 +1216,58 @@ $('recallKind').onclick=()=>setPracticeKind('recall');$('quizKind').onclick=()=>
 $('useAllQuestions').onclick=()=>{$('selection').value='all';storeFilters();setPracticeKind('recall');};
 $('sessionLength').onchange=()=>{render();routeSelection();};
 $('startPractice').onclick=()=>{const pool=practicePool();beginPractice(shuffled(pool).slice(0,plannedCount(pool.length)).map(q=>q.id));};
+
+// Motion follows the system preference, including changes made while the app is open.
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+const entranceAnimations=new Set();
+function animateEntrance(element){
+ if(!element||reducedMotion.matches||!element.animate)return;
+ element.getAnimations().forEach(animation=>animation.cancel());
+ const animation=element.animate([{opacity:.45},{opacity:1}],{duration:160,easing:'cubic-bezier(.2,0,.2,1)'});
+ entranceAnimations.add(animation);
+ const release=()=>entranceAnimations.delete(animation);
+ animation.onfinish=release;animation.oncancel=release;
+}
+function animateDestination(){animateEntrance($('view'));}
+reducedMotion.addEventListener('change',()=>{
+ if(reducedMotion.matches)for(const animation of entranceAnimations)animation.cancel();
+});
+
+let topButtonFrame=0;
+function updateTopButton(){
+ topButtonFrame=0;
+ const visible=window.scrollY>320;
+ $('backToTop').dataset.visible=String(visible);
+ $('backToTop').disabled=!visible;
+}
+window.addEventListener('scroll',()=>{
+ if(!topButtonFrame)topButtonFrame=requestAnimationFrame(updateTopButton);
+},{passive:true});
+window.addEventListener('resize',updateTopButton);
+updateTopButton();
+$('backToTop').onclick=()=>{
+ $('heading').focus({preventScroll:true});
+ window.scrollTo({top:0,behavior:reducedMotion.matches?'instant':'smooth'});
+};
+$('brandHome').onclick=event=>{
+ // Preserve normal link behavior for a new tab or window.
+ if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+ event.preventDefault();
+ document.querySelector('aside').classList.remove('nav-open');
+ $('menuToggle').setAttribute('aria-expanded','false');
+ openTopic('');
+};
+
+// Animate only an explicitly opened answer, never every card in a long topic.
+$('view').addEventListener('click',event=>{
+ const summary=event.target.closest('summary');
+ if(!summary)return;
+ const details=summary.parentElement;
+ if(details.tagName!=='DETAILS'||details.open)return;
+ requestAnimationFrame(()=>{
+  if(details.isConnected&&details.open)animateEntrance(details.querySelector(':scope > .answer, :scope > .rubric'));
+ });
+});
 
 restoreFilters();render();
 function loadRoute(focus=false){

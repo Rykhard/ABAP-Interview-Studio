@@ -49,7 +49,7 @@ function beginPractice(ids,kind=practiceKind){
  if(kind==='quiz')for(const id of activeSession.ids)activeSession.orders[id]=shuffled(quizByQuestion.get(id).options.map(o=>o.id));
  render();routeSelection();focusPractice();
 }
-function focusPractice(){window.scrollTo(0,0);const target=$('sessionQuestion')||$('resultsTitle');if(target)target.focus({preventScroll:true});}
+function focusPractice(){window.scrollTo(0,0);const target=$('sessionQuestion')||$('resultsTitle');if(target)target.focus({preventScroll:true});animateDestination();}
 function nextPractice(){if(!activeSession||activeSession.done)return;if(activeSession.index===activeSession.ids.length-1)activeSession.done=true;else activeSession.index++;activeSession.selected=null;activeSession.revealed=false;render();focusPractice();}
 function finishPractice(){if(!activeSession)return;activeSession.done=true;render();focusPractice();}
 function checkQuiz(){

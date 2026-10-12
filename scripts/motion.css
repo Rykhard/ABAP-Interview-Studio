@@ -1,0 +1,85 @@
+/* Short, local feedback. Reading surfaces never move while being scrolled. */
+:root {
+ --motion-fast: 140ms;
+ --motion-enter: 180ms;
+ --motion-ease: cubic-bezier(.2, 0, .2, 1);
+}
+.brand-home {
+ display: inline-block;
+ color: white;
+ text-decoration: none;
+ border-radius: 5px;
+ transition: color var(--motion-fast) var(--motion-ease);
+}
+.brand-home:hover { color: #c6e8dd; }
+.brand-home:focus-visible { outline-color: #eda975; }
+.back-to-top {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ gap: 7px;
+ flex: none;
+ margin-left: auto;
+ min-width: 46px;
+ min-height: 46px;
+ padding: 10px 13px;
+ background: var(--ink);
+ color: white;
+ border-color: var(--ink);
+ box-shadow: 0 3px 10px #122b3e14;
+ opacity: 0;
+ visibility: hidden;
+ pointer-events: none;
+}
+.back-to-top[data-visible=true] { opacity: 1; visibility: visible; pointer-events: auto; }
+.back-to-top svg { width: 20px; height: 20px; flex: none; }
+.back-to-top:hover { background: #23485b; border-color: #23485b; }
+.app-bar .global-search-launcher { flex-shrink: 1; min-width: 0; }
+button, .question-index a, .resource-grid a {
+ transition: background-color var(--motion-fast) var(--motion-ease),
+  border-color var(--motion-fast) var(--motion-ease),
+  color var(--motion-fast) var(--motion-ease),
+  box-shadow var(--motion-fast) var(--motion-ease);
+}
+.back-to-top {
+ transition: opacity var(--motion-enter) var(--motion-ease),
+  visibility var(--motion-enter), background-color var(--motion-fast) var(--motion-ease);
+}
+aside nav button:not(.active):hover { background: #203e51; color: white; }
+.topic-card {
+ transition: transform var(--motion-enter) var(--motion-ease),
+  box-shadow var(--motion-enter) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
+}
+.topic-card .topic-icon {
+ transition: background-color var(--motion-enter) var(--motion-ease), color var(--motion-enter) var(--motion-ease);
+}
+@media (hover: hover) and (pointer: fine) {
+ .topic-card:hover { transform: translateY(-2px); box-shadow: 0 9px 24px #122b3e0c; }
+ .topic-card:hover .topic-icon { background: #dceee5; color: #0c5243; }
+ .topic-card:active { transform: translateY(0); }
+}
+dialog[open] { animation: dialog-enter var(--motion-enter) var(--motion-ease); }
+dialog[open]::backdrop { animation: backdrop-enter var(--motion-enter) ease-out; }
+@keyframes dialog-enter {
+ from { opacity: .4; transform: translateY(6px) scale(.99); }
+ to { opacity: 1; transform: none; }
+}
+@keyframes backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 650px) {
+ .app-bar { display: grid; grid-template-columns: minmax(0, 1fr) 46px; }
+ .app-bar .global-search-launcher { flex: 1; width: auto; }
+ .global-search-launcher { grid-column: 1; grid-row: 1; }
+ .global-search-launcher span { text-wrap: balance; }
+ .back-to-top { grid-column: 2; grid-row: 1; padding: 10px; }
+ .back-to-top span { display: none; }
+ #resumePractice { grid-column: 1 / -1; grid-row: 2; justify-self: end; }
+}
+@media (prefers-reduced-motion: reduce) {
+ html { scroll-behavior: auto !important; }
+ .brand-home, button, .question-index a, .resource-grid a, .topic-card, .topic-card .topic-icon {
+  transition: none !important;
+ }
+ .topic-card:hover, .topic-card:active { transform: none; }
+ dialog[open], dialog[open]::backdrop { animation: none !important; }
+}
+@media print { .back-to-top { display: none; } }
