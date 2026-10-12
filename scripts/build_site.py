@@ -18,6 +18,7 @@ files = {'index.html': ROOT / 'START_HERE.html', 'START_HERE.html': ROOT / 'STAR
 for name in ['README.md', '404.html', '_headers']:
     files[name] = ROOT / name
 for directory, extensions in {
+    'assets': {'.svg', '.png', '.ico'},
     'visuals': {'.svg', '.png', '.json', '.md'},
     'pdf': {'.pdf'},
     'flashcards': {'.tsv', '.png'},
