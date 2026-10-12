@@ -22,9 +22,11 @@ For offline use, download this repository, keep its folders together and open `S
 
 - Browse subjects and subtopics with all difficulty levels together. Read plain-English answers followed by concrete examples, common mistakes, references and compact diagrams with an enlarged viewer.
 - Open a question's code example, select a step to highlight its lines, and read what happens. Use the larger code view or copy the excerpt. Process diagrams remain available beside code where useful. Teaching fragments state their prerequisites and link to primary sources.
-- Switch between light and dark with the animated sun/moon control. Reading preferences include system appearance, larger answer text and a focus mode that hides topic navigation. Theme and reading choices stay in this browser. Choose Balanced or Larger examples in Reading to adjust the answer layout.
+- Switch between light and dark with the animated sun/moon control. Reading preferences include system appearance, larger answer text and a focus mode that hides topic navigation. Theme and reading choices stay in this browser. Choose Calm Study or Developer Workspace as your default in Reading. Each supported question also offers Guided Lesson.
 - Save questions into a personal collection, resume the last opened question and move between neighboring questions in a subtopic.
-- Follow structured explanations such as the RAP save sequence one step at a time, or expand all steps together.
+- Switch study views inside an answer: Calm Study for reading, Developer Workspace for larger code and diagrams, Guided Lesson for a worked process with changing state.
+- Open Guided lessons in the sidebar to browse 23 authored examples linked to 57 questions, covering RAP/CDS/Clean Core, LUW/locks, RFC/workers, HTTP/JSON, IDoc/AIF, patterns, SQL and testing. Each step changes the current process stage and example data. Values illustrate scenarios; they are not a live SAP simulation.
+- Guided views are also available after revealing a practice answer. Use the full-answer disclosure to read all original details and sources.
 - Show all answers / Questions only has an explicit selected state and remembers your preference.
 - Search the whole library with Ctrl+K / Cmd+K. The separate text filter narrows the current view.
 - Interview practice covers every question: answer aloud, reveal the model and self-rate 0-3.
@@ -66,7 +68,7 @@ Technical questions carry primary references and release/context notes. Personal
 
 Run `python scripts/build_site.py` to create the static `dist` directory and `dist.zip`. The hosting build needs Python's standard library only. For Cloudflare Pages use project `abap-interview-studio`, production branch `main`, build command `python scripts/build_site.py` and output directory `dist`. See the [deployment guide](docs/Deployment.md).
 
-For content changes, edit `content/*.json` and `quiz/*.json`, install `requirements.txt`, regenerate with `python scripts/build.py`, and run `python scripts/validate.py` before building the site. Existing question IDs keep browser progress and Anki updates compatible. The app source is in `scripts/study-template.html`, `scripts/studio*.js`, `scripts/calm.css`, `scripts/practice.css` and `scripts/usability.css`.
+For content changes, edit `content/*.json` and `quiz/*.json`, install `requirements.txt`, regenerate with `python scripts/build.py`, and run `python scripts/validate.py` before building the site. Existing question IDs keep browser progress and Anki updates compatible. The app source is in `scripts/study-template.html`, `scripts/studio*.js`, `scripts/calm.css`, `scripts/lessons.css`, `lessons/*.json`, `scripts/practice.css` and `scripts/usability.css`.
 
 This public repository contains the reviewed app and publishable study materials. Personal source documents, old private Git history, credentials and learner progress exports are excluded.
 """

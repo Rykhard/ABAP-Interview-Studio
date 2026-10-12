@@ -1,0 +1,1964 @@
+[
+  {
+    "id": "lesson-luw-commit",
+    "title": "Save an order and its items together",
+    "questions": [
+      "ABAP-07",
+      "ABAP-08"
+    ],
+    "scenario": "A classic order editor must save order 4701 with two items. An email will be handled separately after the save.",
+    "goal": "Follow the business save from validation to the confirmed update result.",
+    "nodes": [
+      {
+        "id": "validate",
+        "label": "Validate"
+      },
+      {
+        "id": "register",
+        "label": "Register updates"
+      },
+      {
+        "id": "owner",
+        "label": "Save owner"
+      },
+      {
+        "id": "update",
+        "label": "V1 update"
+      },
+      {
+        "id": "followup",
+        "label": "Follow-up"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Check the whole order",
+        "explanation": "The editor checks the header and both items before saving. Its working copy contains two valid items, while no order has been posted yet.",
+        "active": [
+          "validate"
+        ],
+        "states": [
+          {
+            "label": "Order 4701",
+            "value": "Working copy"
+          },
+          {
+            "label": "Items",
+            "value": "2 validated"
+          },
+          {
+            "label": "Update request",
+            "value": "Not registered"
+          },
+          {
+            "label": "Email",
+            "value": "Not started"
+          }
+        ],
+        "outcome": "A valid working copy is not a saved document."
+      },
+      {
+        "title": "Register the required changes",
+        "explanation": "The save helper registers the header and item changes as high-priority update work for this SAP LUW. It returns control without issuing its own commit.",
+        "active": [
+          "register"
+        ],
+        "states": [
+          {
+            "label": "Order 4701",
+            "value": "Not yet posted"
+          },
+          {
+            "label": "Items",
+            "value": "2 queued"
+          },
+          {
+            "label": "Update request",
+            "value": "Registered, not executed"
+          },
+          {
+            "label": "Email",
+            "value": "Not started"
+          }
+        ],
+        "outcome": "Registration records work to run when the owner saves."
+      },
+      {
+        "title": "Let the owner commit",
+        "explanation": "The caller responsible for the complete order issues COMMIT WORK AND WAIT. This starts the registered update and waits for the high-priority update result.",
+        "active": [
+          "owner"
+        ],
+        "states": [
+          {
+            "label": "Order 4701",
+            "value": "Save in progress"
+          },
+          {
+            "label": "Items",
+            "value": "2 in update request"
+          },
+          {
+            "label": "Update request",
+            "value": "V1 executing"
+          },
+          {
+            "label": "Email",
+            "value": "Not started"
+          }
+        ],
+        "outcome": "The transaction owner chooses the save boundary."
+      },
+      {
+        "title": "Confirm the update result",
+        "explanation": "In this successful run, the V1 update saves the header and both items in its database transaction. The caller receives sy-subrc 0; a failed synchronous update would require error handling instead of a success message.",
+        "active": [
+          "update"
+        ],
+        "states": [
+          {
+            "label": "Order 4701",
+            "value": "Posted"
+          },
+          {
+            "label": "Items",
+            "value": "2 saved"
+          },
+          {
+            "label": "Update request",
+            "value": "V1 complete; sy-subrc 0"
+          },
+          {
+            "label": "Email",
+            "value": "Not started"
+          }
+        ],
+        "outcome": "Confirm the update result before reporting the save as successful."
+      },
+      {
+        "title": "Track the email separately",
+        "explanation": "The application now shows the order as saved and hands the email to its separate delivery process. AND WAIT did not wait for that process or for every background job.",
+        "active": [
+          "followup"
+        ],
+        "states": [
+          {
+            "label": "Order 4701",
+            "value": "Posted"
+          },
+          {
+            "label": "Items",
+            "value": "2 saved"
+          },
+          {
+            "label": "Update request",
+            "value": "V1 complete"
+          },
+          {
+            "label": "Email",
+            "value": "Queued, delivery unconfirmed"
+          }
+        ],
+        "outcome": "Saving the order and delivering the email are separate outcomes."
+      }
+    ],
+    "takeaway": "Keep required changes under one save owner and name exactly which result has been confirmed.",
+    "limitation": "This is a classic Standard ABAP update-task example, with all required persistence in the V1 request. RAP owns its save sequence; do not insert COMMIT WORK into RAP behavior handlers. Separate direct database writes or remote commits would require a different analysis.",
+    "references": [
+      {
+        "title": "SAP: COMMIT WORK and synchronous update result",
+        "url": "https://help.sap.com/doc/abapdocu_752_index_htm/7.52/en-US/abapcommit.htm?file=abapcommit.htm%2F1000"
+      },
+      {
+        "title": "SAP: SAP LUW and update bundling",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/17_SAP_LUW.md"
+      }
+    ]
+  },
+  {
+    "id": "lesson-lock-edit-cancel",
+    "title": "Two users try to edit the same order",
+    "questions": [
+      "ABAP-09"
+    ],
+    "scenario": "Alice and Ben both need to change order 4701. This classic editor uses a dialog-owned SAP lock and explicitly releases it when editing is canceled.",
+    "goal": "See how a business lock prevents cooperating editors from overwriting each other.",
+    "nodes": [
+      {
+        "id": "acquire",
+        "label": "Acquire lock"
+      },
+      {
+        "id": "edit",
+        "label": "Read and edit"
+      },
+      {
+        "id": "conflict",
+        "label": "Second editor"
+      },
+      {
+        "id": "cancel",
+        "label": "Cancel and release"
+      },
+      {
+        "id": "retry",
+        "label": "Retry edit"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Alice obtains the lock",
+        "explanation": "Alice requests the lock for the complete identity of order 4701 before reading data for change. The lock service accepts the request because no conflicting editor owns it.",
+        "active": [
+          "acquire"
+        ],
+        "states": [
+          {
+            "label": "Lock owner",
+            "value": "Alice; dialog scope"
+          },
+          {
+            "label": "Saved quantity",
+            "value": "10 EA"
+          },
+          {
+            "label": "Alice's edit",
+            "value": "Not loaded"
+          },
+          {
+            "label": "Ben's access",
+            "value": "Not requested"
+          }
+        ],
+        "outcome": "Acquire the agreed lock before preparing a change."
+      },
+      {
+        "title": "Alice changes her working copy",
+        "explanation": "Alice reads quantity 10 EA and enters 12 EA. Her screen change does not yet change the saved quantity.",
+        "active": [
+          "edit"
+        ],
+        "states": [
+          {
+            "label": "Lock owner",
+            "value": "Alice; dialog scope"
+          },
+          {
+            "label": "Saved quantity",
+            "value": "10 EA"
+          },
+          {
+            "label": "Alice's edit",
+            "value": "12 EA, unsaved"
+          },
+          {
+            "label": "Ben's access",
+            "value": "Not requested"
+          }
+        ],
+        "outcome": "The lock protects an edit that can span user interaction."
+      },
+      {
+        "title": "Ben receives a conflict",
+        "explanation": "Ben requests the same change lock and receives a conflict. His application does not continue with an unlocked update; it reports that another edit is in progress.",
+        "active": [
+          "conflict"
+        ],
+        "states": [
+          {
+            "label": "Lock owner",
+            "value": "Alice; dialog scope"
+          },
+          {
+            "label": "Saved quantity",
+            "value": "10 EA"
+          },
+          {
+            "label": "Alice's edit",
+            "value": "12 EA, unsaved"
+          },
+          {
+            "label": "Ben's access",
+            "value": "Change blocked"
+          }
+        ],
+        "outcome": "The second writer must respect the locking agreement."
+      },
+      {
+        "title": "Alice cancels cleanly",
+        "explanation": "Alice cancels, so the application discards 12 EA and explicitly releases her dialog-owned lock. It does not assume that a rollback alone releases every possible lock scope.",
+        "active": [
+          "cancel"
+        ],
+        "states": [
+          {
+            "label": "Lock owner",
+            "value": "None"
+          },
+          {
+            "label": "Saved quantity",
+            "value": "10 EA"
+          },
+          {
+            "label": "Alice's edit",
+            "value": "Discarded"
+          },
+          {
+            "label": "Ben's access",
+            "value": "Can retry"
+          }
+        ],
+        "outcome": "Cancellation needs both state cleanup and the correct lock cleanup."
+      },
+      {
+        "title": "Ben retries and reads again",
+        "explanation": "Ben obtains the now-free lock and reads the current quantity of 10 EA. His new working copy starts from saved data, not a value kept from a failed edit attempt.",
+        "active": [
+          "retry"
+        ],
+        "states": [
+          {
+            "label": "Lock owner",
+            "value": "Ben; dialog scope"
+          },
+          {
+            "label": "Saved quantity",
+            "value": "10 EA"
+          },
+          {
+            "label": "Alice's edit",
+            "value": "Discarded"
+          },
+          {
+            "label": "Ben's access",
+            "value": "Editing fresh 10 EA"
+          }
+        ],
+        "outcome": "Retry the protected read as well as the lock request."
+      }
+    ],
+    "takeaway": "An SAP lock coordinates writers; a complete edit flow also handles conflict, cancel, and fresh reads.",
+    "limitation": "The example assumes classic dialog ownership equivalent to _SCOPE 1. Update ownership and mixed scopes have different transfer and release behavior. Locks do not physically stop SQL writers that ignore the protocol; cloud applications require supported locking APIs.",
+    "references": [
+      {
+        "title": "SAP: Lock ownership and _SCOPE values",
+        "url": "https://help.sap.com/saphelp_snc700_ehp01/helpdata/en/47/daadf638793c85e10000000a42189c/content.htm"
+      },
+      {
+        "title": "SAP: SAP lock concept in the SAP LUW",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/17_SAP_LUW.md#concepts-related-to-the-sap-luw"
+      }
+    ]
+  },
+  {
+    "id": "lesson-rfc-remote-boundary",
+    "title": "A remote order survives a local failure",
+    "questions": [
+      "RFC-04",
+      "RFC-05"
+    ],
+    "scenario": "A caller creates an order in a second SAP system under external reference EXT-81. The remote order saves successfully, but the caller then fails to store its local link.",
+    "goal": "Separate the remote save from local recovery.",
+    "nodes": [
+      {
+        "id": "caller",
+        "label": "Caller"
+      },
+      {
+        "id": "remote",
+        "label": "Remote BAPI"
+      },
+      {
+        "id": "commit",
+        "label": "Remote commit"
+      },
+      {
+        "id": "local",
+        "label": "Local link"
+      },
+      {
+        "id": "recover",
+        "label": "Reconcile"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Send a stable reference",
+        "explanation": "The caller sends EXT-81 to the documented order API in the remote context. It has no uncommitted local business writes at this point, avoiding an assumption that the RFC preserves a local database transaction.",
+        "active": [
+          "caller"
+        ],
+        "states": [
+          {
+            "label": "Reference",
+            "value": "EXT-81"
+          },
+          {
+            "label": "Remote order",
+            "value": "Not created"
+          },
+          {
+            "label": "Local link",
+            "value": "Absent"
+          },
+          {
+            "label": "Recovery",
+            "value": "Not needed"
+          }
+        ],
+        "outcome": "Record a reference that can later identify the remote result."
+      },
+      {
+        "title": "Check the BAPI result",
+        "explanation": "The remote BAPI accepts the request and prepares order 90081. The caller checks its documented return messages before asking that same remote transaction context to save.",
+        "active": [
+          "remote"
+        ],
+        "states": [
+          {
+            "label": "Reference",
+            "value": "EXT-81"
+          },
+          {
+            "label": "Remote order",
+            "value": "90081 prepared, not confirmed saved"
+          },
+          {
+            "label": "Local link",
+            "value": "Absent"
+          },
+          {
+            "label": "Recovery",
+            "value": "Not needed"
+          }
+        ],
+        "outcome": "An accepted BAPI call is not itself the commit confirmation."
+      },
+      {
+        "title": "Commit in the remote context",
+        "explanation": "The caller invokes the documented transaction commit with WAIT in the correct remote context and checks the result. In this run the remote save is confirmed for order 90081.",
+        "active": [
+          "commit"
+        ],
+        "states": [
+          {
+            "label": "Reference",
+            "value": "EXT-81"
+          },
+          {
+            "label": "Remote order",
+            "value": "90081 committed"
+          },
+          {
+            "label": "Local link",
+            "value": "Absent"
+          },
+          {
+            "label": "Recovery",
+            "value": "Not needed"
+          }
+        ],
+        "outcome": "The remote system now owns a durable business result."
+      },
+      {
+        "title": "The local link fails",
+        "explanation": "The caller tries to store EXT-81 to 90081 in a new local transaction, but the local write fails. Rolling back that local transaction leaves the remote order in place.",
+        "active": [
+          "local"
+        ],
+        "states": [
+          {
+            "label": "Reference",
+            "value": "EXT-81"
+          },
+          {
+            "label": "Remote order",
+            "value": "90081 still committed"
+          },
+          {
+            "label": "Local link",
+            "value": "Rolled back; absent"
+          },
+          {
+            "label": "Recovery",
+            "value": "Required"
+          }
+        ],
+        "outcome": "Local rollback cannot undo a completed remote commit."
+      },
+      {
+        "title": "Repair the missing link",
+        "explanation": "Recovery queries the remote result by EXT-81 and confirms that 90081 already exists. It writes the missing local link instead of creating another order; a business cancellation would be a separate operation if required.",
+        "active": [
+          "recover"
+        ],
+        "states": [
+          {
+            "label": "Reference",
+            "value": "EXT-81"
+          },
+          {
+            "label": "Remote order",
+            "value": "One order: 90081"
+          },
+          {
+            "label": "Local link",
+            "value": "EXT-81 -> 90081 saved"
+          },
+          {
+            "label": "Recovery",
+            "value": "Reconciled"
+          }
+        ],
+        "outcome": "Recover from the observed business state, not by replaying creation blindly."
+      }
+    ],
+    "takeaway": "Identify each transaction owner and design recovery across the boundary between them.",
+    "limitation": "The chosen BAPI must support the assumed caller-controlled transaction, remote context handling, and reference lookup. Some legacy BAPIs commit internally. WAIT confirms the relevant update work, not every remote follow-up; this is not a RAP handler recipe.",
+    "references": [
+      {
+        "title": "SAP: BAPI transaction model and documented exceptions",
+        "url": "https://help.sap.com/SAPHELP_SCM700_EHP02/helpdata/EN/4d/5b102ba1483d8fe10000000a42189e/content.htm"
+      },
+      {
+        "title": "SAP: SAP LUW and implicit database commits",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/17_SAP_LUW.md#terms"
+      }
+    ]
+  },
+  {
+    "id": "lesson-worker-restart",
+    "title": "Restart only the unfinished worker package",
+    "questions": [
+      "RFC-06",
+      "RFC-09",
+      "RFC-10"
+    ],
+    "scenario": "A nightly job splits six invoices into three independent packages of two. One worker commits its invoices but its completion reply never reaches the coordinator.",
+    "goal": "Recover a partly completed run without posting invoices twice.",
+    "nodes": [
+      {
+        "id": "plan",
+        "label": "Plan packages"
+      },
+      {
+        "id": "workers",
+        "label": "Workers"
+      },
+      {
+        "id": "results",
+        "label": "Collect replies"
+      },
+      {
+        "id": "recover",
+        "label": "Reconcile and restart"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Give each package a stable identity",
+        "explanation": "The job creates packages P1, P2, and P3 with non-overlapping invoice references. Each worker owns its package transaction, and the coordinator allows only two workers at a time.",
+        "active": [
+          "plan"
+        ],
+        "states": [
+          {
+            "label": "P1",
+            "value": "Invoices A/B pending"
+          },
+          {
+            "label": "P2",
+            "value": "Invoices C/D pending"
+          },
+          {
+            "label": "P3",
+            "value": "Invoices E/F pending"
+          },
+          {
+            "label": "Confirmed invoices",
+            "value": "0 of 6"
+          }
+        ],
+        "outcome": "Stable package and business identities make recovery possible."
+      },
+      {
+        "title": "Start two workers",
+        "explanation": "The coordinator dispatches P1 and P2 with distinct task names. Successful dispatch means the work started; the coordinator still needs each completion reply and business result.",
+        "active": [
+          "workers"
+        ],
+        "states": [
+          {
+            "label": "P1",
+            "value": "Running"
+          },
+          {
+            "label": "P2",
+            "value": "Running"
+          },
+          {
+            "label": "P3",
+            "value": "Waiting for a slot"
+          },
+          {
+            "label": "Confirmed invoices",
+            "value": "0 of 6"
+          }
+        ],
+        "outcome": "Started is different from finished and saved."
+      },
+      {
+        "title": "Keep an uncertain result uncertain",
+        "explanation": "P1 reports two committed invoices, while P2's reply is lost after its own commit. The coordinator stops this run before dispatching P3 and records P2 as uncertain, rather than assuming its invoices were rolled back.",
+        "active": [
+          "results"
+        ],
+        "states": [
+          {
+            "label": "P1",
+            "value": "Complete: A/B saved"
+          },
+          {
+            "label": "P2",
+            "value": "Unknown to coordinator"
+          },
+          {
+            "label": "P3",
+            "value": "Not started"
+          },
+          {
+            "label": "Confirmed invoices",
+            "value": "2 of 6"
+          }
+        ],
+        "outcome": "A missing reply does not prove missing business effects."
+      },
+      {
+        "title": "Reconcile before restarting",
+        "explanation": "Recovery looks up C and D by their stable invoice references and finds both saved. It marks P2 complete and selects only P3 for restart, while preventing an overlapping scheduled run.",
+        "active": [
+          "recover"
+        ],
+        "states": [
+          {
+            "label": "P1",
+            "value": "Complete; skip"
+          },
+          {
+            "label": "P2",
+            "value": "C/D found; skip"
+          },
+          {
+            "label": "P3",
+            "value": "Selected for restart"
+          },
+          {
+            "label": "Confirmed invoices",
+            "value": "4 of 6"
+          }
+        ],
+        "outcome": "The restart set follows the reconciled business results."
+      },
+      {
+        "title": "Finish the remaining package",
+        "explanation": "The restarted worker saves E and F and returns a checked result. The coordinator reconciles six unique invoice references with six documents before closing the run.",
+        "active": [
+          "workers",
+          "results"
+        ],
+        "states": [
+          {
+            "label": "P1",
+            "value": "2 saved; no replay"
+          },
+          {
+            "label": "P2",
+            "value": "2 saved; no replay"
+          },
+          {
+            "label": "P3",
+            "value": "2 saved on restart"
+          },
+          {
+            "label": "Confirmed invoices",
+            "value": "6 of 6; no duplicates"
+          }
+        ],
+        "outcome": "A complete run is established by business reconciliation, not a job status alone."
+      }
+    ],
+    "takeaway": "Separately committed workers need separate outcomes and a restart rule for uncertain work.",
+    "limitation": "This is a proposed application recovery design around classic asynchronous RFC, not an automatic RFC guarantee. Verify callback handling, resource limits, locking, and duplicate protection for the real API. Cloud application jobs use their own supported framework and APIs.",
+    "references": [
+      {
+        "title": "SAP: Implementing parallel processing and collecting replies",
+        "url": "https://help.sap.com/saphelp_snc700_ehp04/helpdata/en/4d/909309eba36e73e10000000a15822b/content.htm"
+      },
+      {
+        "title": "SAP: Classic background scheduling and monitoring",
+        "url": "https://help.sap.com/saphelp_em700_ehp01/helpdata/en/48/baab96ca960611e10000000a42189b/content.htm"
+      }
+    ]
+  },
+  {
+    "id": "lesson-idoc-reprocess",
+    "title": "Repair an inbound IDoc posting failure",
+    "questions": [
+      "INTF-04",
+      "INTF-05",
+      "INTF-06"
+    ],
+    "scenario": "An inbound order IDoc carries external reference BUY-208. The sender handed it to its port, but the receiver cannot post because the customer is not extended to the required sales area.",
+    "goal": "Trace the message to the receiver, fix the cause, and verify one business document.",
+    "nodes": [
+      {
+        "id": "send",
+        "label": "Sender"
+      },
+      {
+        "id": "receive",
+        "label": "Inbound IDoc"
+      },
+      {
+        "id": "diagnose",
+        "label": "Find cause"
+      },
+      {
+        "id": "restart",
+        "label": "Controlled retry"
+      },
+      {
+        "id": "verify",
+        "label": "Business result"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Follow the sender's reference",
+        "explanation": "The sender reports outbound status 03 for its message. That confirms handoff to the port, so support uses the correlation information to find the receiving IDoc rather than declaring the order posted.",
+        "active": [
+          "send"
+        ],
+        "states": [
+          {
+            "label": "Sender status",
+            "value": "03: passed to port"
+          },
+          {
+            "label": "Receiver status",
+            "value": "Not checked"
+          },
+          {
+            "label": "Customer setup",
+            "value": "Not checked"
+          },
+          {
+            "label": "Order BUY-208",
+            "value": "Not confirmed"
+          }
+        ],
+        "outcome": "A transport milestone is not an application posting result."
+      },
+      {
+        "title": "Read the inbound error",
+        "explanation": "The receiver has IDoc 800208 in status 51. Its detailed message identifies missing customer sales-area data, so the investigation moves to the application data rather than repeating transport.",
+        "active": [
+          "receive"
+        ],
+        "states": [
+          {
+            "label": "Sender status",
+            "value": "03: passed to port"
+          },
+          {
+            "label": "Receiver status",
+            "value": "800208: 51 posting error"
+          },
+          {
+            "label": "Customer setup",
+            "value": "Sales area missing"
+          },
+          {
+            "label": "Order BUY-208",
+            "value": "Not confirmed"
+          }
+        ],
+        "outcome": "Read the status detail to find the failing business step."
+      },
+      {
+        "title": "Correct and check existing effects",
+        "explanation": "The responsible team supplies the required customer data through its approved process. Support checks BUY-208 and confirms that no order already exists, then records the original message identity for recovery.",
+        "active": [
+          "diagnose"
+        ],
+        "states": [
+          {
+            "label": "Sender status",
+            "value": "03: passed to port"
+          },
+          {
+            "label": "Receiver status",
+            "value": "800208: 51 awaiting retry"
+          },
+          {
+            "label": "Customer setup",
+            "value": "Sales area available"
+          },
+          {
+            "label": "Order BUY-208",
+            "value": "Lookup confirms absent"
+          }
+        ],
+        "outcome": "Fix the cause and establish the business state before replay."
+      },
+      {
+        "title": "Reprocess the original message",
+        "explanation": "An authorized operator uses the supported reprocessing path for IDoc 800208, such as BD87 where appropriate. The operator does not send a new test copy or change the status merely to make it look successful.",
+        "active": [
+          "restart"
+        ],
+        "states": [
+          {
+            "label": "Sender status",
+            "value": "03: passed to port"
+          },
+          {
+            "label": "Receiver status",
+            "value": "800208: retry running"
+          },
+          {
+            "label": "Customer setup",
+            "value": "Sales area available"
+          },
+          {
+            "label": "Order BUY-208",
+            "value": "Creation being checked"
+          }
+        ],
+        "outcome": "Keep recovery attached to the original history and reference."
+      },
+      {
+        "title": "Verify posting and the linked order",
+        "explanation": "The receiving IDoc reaches status 53 and its application link points to order 47208. Support confirms that BUY-208 identifies exactly this order and checks any required later process separately.",
+        "active": [
+          "verify"
+        ],
+        "states": [
+          {
+            "label": "Sender status",
+            "value": "03: passed to port"
+          },
+          {
+            "label": "Receiver status",
+            "value": "800208: 53 posted"
+          },
+          {
+            "label": "Customer setup",
+            "value": "Sales area available"
+          },
+          {
+            "label": "Order BUY-208",
+            "value": "One order: 47208"
+          }
+        ],
+        "outcome": "Close the incident with both message and business evidence."
+      }
+    ],
+    "takeaway": "Diagnose at the receiver and reprocess from known business state, preserving the original audit trail.",
+    "limitation": "Status meanings here refer to common classic IDoc processing. The supported restart action and duplicate checks depend on message type, process code, application, release, and authorizations. Status 53 does not prove every downstream business step is complete.",
+    "references": [
+      {
+        "title": "SAP: Check communication at sender and receiver",
+        "url": "https://help.sap.com/docs/ERP_HCM/d9cb82c153454334bee3e640fc0b311e/058ce0535e56424de10000000a174cb4.html"
+      },
+      {
+        "title": "SAP: ALE inbound processing and IDoc status records",
+        "url": "https://help.sap.com/docs/SUPPORT_CONTENT/abapconn/3354079745.html?locale=en-US"
+      }
+    ]
+  },
+  {
+    "id": "lesson-aif-map-check-act",
+    "title": "Map and validate an invoice before the AIF action",
+    "questions": [
+      "INTF-08",
+      "INTF-10"
+    ],
+    "scenario": "A configured AIF inbound interface receives invoice INV-42 for company EXT01. Its mapping has no entry for that company, so its validation blocks the posting action.",
+    "goal": "Separate data mapping, validation, posting, and controlled restart.",
+    "nodes": [
+      {
+        "id": "source",
+        "label": "Source message"
+      },
+      {
+        "id": "map",
+        "label": "Map fields and codes"
+      },
+      {
+        "id": "check",
+        "label": "Check data"
+      },
+      {
+        "id": "action",
+        "label": "Posting action"
+      },
+      {
+        "id": "monitor",
+        "label": "Verify result"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Identify the input and interface",
+        "explanation": "The message contains invoice INV-42, company EXT01, and amount 120 EUR. Support identifies the interface version and confirms that this example uses AIF-controlled mapping, checks, and a posting action.",
+        "active": [
+          "source"
+        ],
+        "states": [
+          {
+            "label": "Company mapping",
+            "value": "EXT01 -> not evaluated"
+          },
+          {
+            "label": "Validation",
+            "value": "Not run"
+          },
+          {
+            "label": "Posting action",
+            "value": "Not called"
+          },
+          {
+            "label": "INV-42",
+            "value": "No document confirmed"
+          }
+        ],
+        "outcome": "Establish the processing configuration before interpreting the monitor."
+      },
+      {
+        "title": "Map the structure and company code",
+        "explanation": "Structure mapping places the invoice fields into the target structure. The value lookup finds no approved translation for EXT01, leaving company code unresolved for the next check.",
+        "active": [
+          "map"
+        ],
+        "states": [
+          {
+            "label": "Company mapping",
+            "value": "EXT01 -> missing mapping"
+          },
+          {
+            "label": "Validation",
+            "value": "Ready to check"
+          },
+          {
+            "label": "Posting action",
+            "value": "Not called"
+          },
+          {
+            "label": "INV-42",
+            "value": "No document confirmed"
+          }
+        ],
+        "outcome": "Correct field placement does not guarantee a valid business value."
+      },
+      {
+        "title": "Stop before the action",
+        "explanation": "The configured check rejects an unresolved company code. The monitor identifies the mapping problem, and this processing path does not call the posting action.",
+        "active": [
+          "check"
+        ],
+        "states": [
+          {
+            "label": "Company mapping",
+            "value": "EXT01 -> missing mapping"
+          },
+          {
+            "label": "Validation",
+            "value": "Failed: company unresolved"
+          },
+          {
+            "label": "Posting action",
+            "value": "Blocked by check"
+          },
+          {
+            "label": "INV-42",
+            "value": "No action executed"
+          }
+        ],
+        "outcome": "A useful check makes the failure actionable before posting."
+      },
+      {
+        "title": "Correct and retry the mapped input",
+        "explanation": "The mapping owner approves EXT01 to 1000, and support confirms no prior target document exists. A controlled retry in the owning engine reruns the required mapping and checks; the posting action then receives company 1000 and amount 120 EUR.",
+        "active": [
+          "map",
+          "action"
+        ],
+        "states": [
+          {
+            "label": "Company mapping",
+            "value": "EXT01 -> 1000"
+          },
+          {
+            "label": "Validation",
+            "value": "Passed on retry"
+          },
+          {
+            "label": "Posting action",
+            "value": "Called with corrected data"
+          },
+          {
+            "label": "INV-42",
+            "value": "Result pending"
+          }
+        ],
+        "outcome": "Restart only after knowing what the retry will repeat."
+      },
+      {
+        "title": "Verify the application result",
+        "explanation": "The action reports a saved document 190042, which support checks against INV-42 and 120 EUR. The monitor retains the earlier error and the later successful processing history.",
+        "active": [
+          "monitor"
+        ],
+        "states": [
+          {
+            "label": "Company mapping",
+            "value": "EXT01 -> 1000"
+          },
+          {
+            "label": "Validation",
+            "value": "Passed on retry"
+          },
+          {
+            "label": "Posting action",
+            "value": "Document confirmed"
+          },
+          {
+            "label": "INV-42",
+            "value": "190042; 120 EUR; one document"
+          }
+        ],
+        "outcome": "A successful retry needs an application result and preserved history."
+      }
+    ],
+    "takeaway": "Use each AIF component for its own job and verify the business effect after recovery.",
+    "limitation": "This sequence is the stated interface configuration, not a universal AIF execution order. Checks can occur in several places, and underlying engines may own restart. AIF does not automatically guarantee exactly-once posting or reverse an earlier commit; verify release availability and the action's transaction contract.",
+    "references": [
+      {
+        "title": "SAP AIF: Interface creation, mappings, checks, and actions",
+        "url": "https://help.sap.com/docs/ABAP_PLATFORM_BW4HANA/4db1676c3f114f119b500bd80ccd944d/f0d1b60ff43c45efad71398b1214db04.html"
+      },
+      {
+        "title": "SAP AIF: Monitoring and error handling",
+        "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/19d48293097f4a2589433856b034dfa5/0e8f002ea0894c51bd957168699669c5.html"
+      }
+    ]
+  },
+  {
+    "id": "lesson-http-timeout-retry",
+    "title": "Retry an order request after losing its response",
+    "questions": [
+      "HTTP-04",
+      "HTTP-10",
+      "HTTP-12"
+    ],
+    "scenario": "An API client sends a POST to create an order. This example API explicitly supports request key REQ-17, binds it to the request payload, and stores the completed result with the business change.",
+    "goal": "Distinguish a network timeout from a failed business operation.",
+    "nodes": [
+      {
+        "id": "client",
+        "label": "Client request"
+      },
+      {
+        "id": "server",
+        "label": "Server save"
+      },
+      {
+        "id": "network",
+        "label": "Lost response"
+      },
+      {
+        "id": "retry",
+        "label": "Same-key retry"
+      },
+      {
+        "id": "result",
+        "label": "Confirmed result"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Send one identified request",
+        "explanation": "The client sends REQ-17 with customer C20 and two items. It retains that key and the same payload for any permitted retry under the API's documented contract.",
+        "active": [
+          "client"
+        ],
+        "states": [
+          {
+            "label": "Request key",
+            "value": "REQ-17"
+          },
+          {
+            "label": "Client outcome",
+            "value": "Waiting"
+          },
+          {
+            "label": "Server orders",
+            "value": "0"
+          },
+          {
+            "label": "Stored result",
+            "value": "None"
+          }
+        ],
+        "outcome": "The retry identity belongs to the business request, not each network attempt."
+      },
+      {
+        "title": "The server commits the order",
+        "explanation": "The server creates order 6017 and records the completed result for REQ-17. Its implementation protects the same key against concurrent duplicate creation as part of the stated API contract.",
+        "active": [
+          "server"
+        ],
+        "states": [
+          {
+            "label": "Request key",
+            "value": "REQ-17"
+          },
+          {
+            "label": "Client outcome",
+            "value": "Waiting"
+          },
+          {
+            "label": "Server orders",
+            "value": "1: order 6017"
+          },
+          {
+            "label": "Stored result",
+            "value": "REQ-17 -> 6017"
+          }
+        ],
+        "outcome": "The business change can finish before the client knows it."
+      },
+      {
+        "title": "The response is lost",
+        "explanation": "The connection fails before the client receives the success response. The client records an unknown outcome; it cannot infer that the server rolled back.",
+        "active": [
+          "network"
+        ],
+        "states": [
+          {
+            "label": "Request key",
+            "value": "REQ-17"
+          },
+          {
+            "label": "Client outcome",
+            "value": "Timeout; outcome unknown"
+          },
+          {
+            "label": "Server orders",
+            "value": "1: order 6017"
+          },
+          {
+            "label": "Stored result",
+            "value": "REQ-17 -> 6017"
+          }
+        ],
+        "outcome": "A timeout is evidence about communication, not proof of failed posting."
+      },
+      {
+        "title": "Retry under the explicit contract",
+        "explanation": "Within the API's supported retry window, the client resends the same key and unchanged payload. The server finds the completed result and returns order 6017 without creating another order.",
+        "active": [
+          "retry"
+        ],
+        "states": [
+          {
+            "label": "Request key",
+            "value": "REQ-17 reused"
+          },
+          {
+            "label": "Client outcome",
+            "value": "Retry response received"
+          },
+          {
+            "label": "Server orders",
+            "value": "Still 1: order 6017"
+          },
+          {
+            "label": "Stored result",
+            "value": "Existing result reused"
+          }
+        ],
+        "outcome": "Safe recovery depends on the API's duplicate-handling contract."
+      },
+      {
+        "title": "Confirm one business effect",
+        "explanation": "The client stores order 6017 as the result of its original request. A contract test would also try simultaneous retries and a changed payload with the same key, checking that the documented rejection or reuse rules hold.",
+        "active": [
+          "result"
+        ],
+        "states": [
+          {
+            "label": "Request key",
+            "value": "REQ-17 complete"
+          },
+          {
+            "label": "Client outcome",
+            "value": "Order 6017 confirmed"
+          },
+          {
+            "label": "Server orders",
+            "value": "1 total"
+          },
+          {
+            "label": "Stored result",
+            "value": "Linked to original request"
+          }
+        ],
+        "outcome": "Count business effects, not just successful HTTP responses."
+      }
+    ],
+    "takeaway": "Retry a non-idempotent method only when the operation's contract or reliable result lookup makes the retry safe.",
+    "limitation": "REQ-17 and its storage rules are an example API design, not a universal HTTP header or guarantee. POST is not inherently idempotent. Verify key scope, retention, payload matching, concurrent requests, and atomic result storage for the actual service.",
+    "references": [
+      {
+        "title": "IETF RFC 9110: Idempotent methods and automatic retry",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2"
+      }
+    ]
+  },
+  {
+    "id": "lesson-json-patch-presence",
+    "title": "Keep missing, null, and zero distinct in a patch",
+    "questions": [
+      "HTTP-03",
+      "HTTP-07"
+    ],
+    "scenario": "A customer API uses JSON Merge Patch. Customer 0004711 has phone +48-555-0100, discount 5, and city Warsaw; the request removes the phone, sets discount to zero, and omits city.",
+    "goal": "Preserve field presence before mapping patch data into ABAP values.",
+    "nodes": [
+      {
+        "id": "input",
+        "label": "Patch input"
+      },
+      {
+        "id": "presence",
+        "label": "Read presence"
+      },
+      {
+        "id": "map",
+        "label": "Map changes"
+      },
+      {
+        "id": "apply",
+        "label": "Apply patch"
+      },
+      {
+        "id": "verify",
+        "label": "Verify fields"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Read the patch contract",
+        "explanation": "The request declares application/merge-patch+json and supplies phone as null and discount as 0. City is absent from the request, and the customer identifier remains the string 0004711.",
+        "active": [
+          "input"
+        ],
+        "states": [
+          {
+            "label": "Phone",
+            "value": "Saved: +48-555-0100"
+          },
+          {
+            "label": "Discount",
+            "value": "Saved: 5"
+          },
+          {
+            "label": "City",
+            "value": "Saved: Warsaw"
+          },
+          {
+            "label": "Change intent",
+            "value": "Not decoded"
+          }
+        ],
+        "outcome": "The media type and API contract determine patch meaning."
+      },
+      {
+        "title": "Capture presence and value separately",
+        "explanation": "The parser records that phone is present with null, discount is present with numeric zero, and city is not present. It does this before a simple ABAP structure could collapse different inputs into initial values.",
+        "active": [
+          "presence"
+        ],
+        "states": [
+          {
+            "label": "Phone",
+            "value": "Input present; null"
+          },
+          {
+            "label": "Discount",
+            "value": "Input present; 0"
+          },
+          {
+            "label": "City",
+            "value": "Input absent"
+          },
+          {
+            "label": "Change intent",
+            "value": "Three distinct cases"
+          }
+        ],
+        "outcome": "Presence is part of the update data."
+      },
+      {
+        "title": "Build explicit change instructions",
+        "explanation": "Under JSON Merge Patch, phone null requests removal of that member and discount 0 requests the value zero. The API's adapter maps phone removal to clearing the optional stored phone, while no instruction changes city.",
+        "active": [
+          "map"
+        ],
+        "states": [
+          {
+            "label": "Phone",
+            "value": "Remove optional phone"
+          },
+          {
+            "label": "Discount",
+            "value": "Set to 0"
+          },
+          {
+            "label": "City",
+            "value": "Leave unchanged"
+          },
+          {
+            "label": "Change intent",
+            "value": "Ready for validation"
+          }
+        ],
+        "outcome": "Do not treat zero as missing or null as an ordinary unchanged value."
+      },
+      {
+        "title": "Apply the validated patch",
+        "explanation": "The application accepts removal of this optional phone and allows a zero discount. It changes those two fields under its normal save rules and retains the existing city.",
+        "active": [
+          "apply"
+        ],
+        "states": [
+          {
+            "label": "Phone",
+            "value": "Cleared"
+          },
+          {
+            "label": "Discount",
+            "value": "Saved: 0"
+          },
+          {
+            "label": "City",
+            "value": "Saved: Warsaw"
+          },
+          {
+            "label": "Change intent",
+            "value": "2 changes applied"
+          }
+        ],
+        "outcome": "Only the requested, valid changes reach persistence."
+      },
+      {
+        "title": "Check all three outcomes",
+        "explanation": "The readback representation omits phone, shows discount 0, and still shows Warsaw for customer 0004711. These separate assertions would catch a mapper that clears omitted fields or ignores explicit zero.",
+        "active": [
+          "verify"
+        ],
+        "states": [
+          {
+            "label": "Phone",
+            "value": "Member absent in readback"
+          },
+          {
+            "label": "Discount",
+            "value": "Readback: 0"
+          },
+          {
+            "label": "City",
+            "value": "Readback: Warsaw"
+          },
+          {
+            "label": "Change intent",
+            "value": "All 3 expectations met"
+          }
+        ],
+        "outcome": "Test changed fields and deliberately unchanged fields."
+      }
+    ],
+    "takeaway": "Decode the patch contract first, then map presence and value into explicit business changes.",
+    "limitation": "These null rules are specifically JSON Merge Patch, not every PATCH API or OData service. The optional phone storage and readback behavior are stated choices for this example. Required fields, nullable fields, arrays, and concurrency checks need their own contract tests.",
+    "references": [
+      {
+        "title": "IETF RFC 7396: JSON Merge Patch processing rules",
+        "url": "https://www.rfc-editor.org/rfc/rfc7396.html#section-2"
+      },
+      {
+        "title": "IETF RFC 8259: JSON values, strings, numbers, and null",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259.html"
+      }
+    ]
+  },
+  {
+    "id": "lesson-strategy-approval",
+    "title": "Change an approval rule without changing the workflow",
+    "questions": [
+      "OO-07",
+      "OO-09",
+      "PAT-01"
+    ],
+    "scenario": "An approval service handles an order for 8,000 EUR. In this example, country DE requires a manager above 5,000 EUR, while country FR requires a manager above 10,000 EUR.",
+    "goal": "Keep the varying decision inside a supplied Strategy and the process inside the coordinator.",
+    "nodes": [
+      {
+        "id": "setup",
+        "label": "Application setup"
+      },
+      {
+        "id": "service",
+        "label": "Approval service"
+      },
+      {
+        "id": "rule",
+        "label": "Country rule"
+      },
+      {
+        "id": "decision",
+        "label": "Decision"
+      },
+      {
+        "id": "continue",
+        "label": "Continue process"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Supply the country rule",
+        "explanation": "Application setup selects the DE rule and gives it to the approval service through an interface. The service receives a required collaborator rather than looking up a global factory during every decision.",
+        "active": [
+          "setup"
+        ],
+        "states": [
+          {
+            "label": "Order",
+            "value": "DE; 8,000 EUR"
+          },
+          {
+            "label": "Supplied rule",
+            "value": "DE: manager above 5,000"
+          },
+          {
+            "label": "Decision",
+            "value": "Not evaluated"
+          },
+          {
+            "label": "Workflow",
+            "value": "Not advanced"
+          }
+        ],
+        "outcome": "Make the varying dependency visible at construction."
+      },
+      {
+        "title": "Keep coordination in one place",
+        "explanation": "The real approval service checks that the request contains the data required by its contract. It then passes the amount and country context to the supplied rule without letting that rule save or send messages.",
+        "active": [
+          "service"
+        ],
+        "states": [
+          {
+            "label": "Order",
+            "value": "DE; 8,000 EUR; valid"
+          },
+          {
+            "label": "Supplied rule",
+            "value": "DE rule ready"
+          },
+          {
+            "label": "Decision",
+            "value": "Requested"
+          },
+          {
+            "label": "Workflow",
+            "value": "Waiting for decision"
+          }
+        ],
+        "outcome": "A replaceable rule should not take over the workflow."
+      },
+      {
+        "title": "Evaluate the selected policy",
+        "explanation": "The DE rule compares 8,000 with its example threshold of 5,000 and returns manager approval required. It makes no database commit and creates no workflow item.",
+        "active": [
+          "rule"
+        ],
+        "states": [
+          {
+            "label": "Order",
+            "value": "DE; 8,000 EUR"
+          },
+          {
+            "label": "Supplied rule",
+            "value": "8,000 > 5,000"
+          },
+          {
+            "label": "Decision",
+            "value": "Manager required"
+          },
+          {
+            "label": "Workflow",
+            "value": "Still not advanced"
+          }
+        ],
+        "outcome": "The Strategy returns a decision with a narrow contract."
+      },
+      {
+        "title": "Apply the decision through the coordinator",
+        "explanation": "The service turns that decision into the next application state: awaiting manager approval. The surrounding application keeps responsibility for its save and any durable workflow handoff.",
+        "active": [
+          "decision",
+          "continue"
+        ],
+        "states": [
+          {
+            "label": "Order",
+            "value": "DE; 8,000 EUR"
+          },
+          {
+            "label": "Supplied rule",
+            "value": "DE rule complete"
+          },
+          {
+            "label": "Decision",
+            "value": "Manager required"
+          },
+          {
+            "label": "Workflow",
+            "value": "Awaiting manager; save owned by caller"
+          }
+        ],
+        "outcome": "The same coordinator applies decisions from different rules."
+      },
+      {
+        "title": "Try a second country as a separate case",
+        "explanation": "A separate test constructs the same service with the FR rule and an FR order for 8,000 EUR. The result is no manager required because 8,000 is below 10,000; the coordinator still follows the same contract and owns the next step.",
+        "active": [
+          "setup",
+          "rule"
+        ],
+        "states": [
+          {
+            "label": "Order",
+            "value": "New case: FR; 8,000 EUR"
+          },
+          {
+            "label": "Supplied rule",
+            "value": "FR: manager above 10,000"
+          },
+          {
+            "label": "Decision",
+            "value": "Manager not required"
+          },
+          {
+            "label": "Workflow",
+            "value": "Eligible for next normal step"
+          }
+        ],
+        "outcome": "Replace the policy while keeping the coordination contract stable."
+      }
+    ],
+    "takeaway": "Use Strategy for a rule that varies, and dependency injection to supply that rule explicitly.",
+    "limitation": "The country thresholds are invented teaching rules, not legal or SAP standard policies. This is a plain application service; framework-created objects may require a delegated service or supported seam instead of custom constructor parameters. Strategy alone does not make workflow delivery durable.",
+    "references": [
+      {
+        "title": "SAP: Strategy design pattern examples",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/34_OO_Design_Patterns.md#strategy"
+      },
+      {
+        "title": "SAP Clean ABAP: Dependency inversion for test doubles",
+        "url": "https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md#use-dependency-inversion-to-inject-test-doubles"
+      }
+    ]
+  },
+  {
+    "id": "lesson-sql-join-total",
+    "title": "Find why a joined sales total doubled",
+    "questions": [
+      "SQL-06",
+      "SQL-07"
+    ],
+    "scenario": "A sales report should total October items by company and currency. Company 1000 has two EUR items worth 100 and 50, but adding a multilingual product-text join makes the report show 300 EUR.",
+    "goal": "Check the rows feeding an aggregate before trusting the total.",
+    "nodes": [
+      {
+        "id": "filter",
+        "label": "Filter items"
+      },
+      {
+        "id": "join",
+        "label": "Join texts"
+      },
+      {
+        "id": "aggregate",
+        "label": "Group and sum"
+      },
+      {
+        "id": "repair",
+        "label": "Repair join"
+      },
+      {
+        "id": "verify",
+        "label": "Check result"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Establish the intended item set",
+        "explanation": "The October filter selects item A for 100 EUR and item B for 50 EUR, both in company 1000. The expected total from those two business items is 150 EUR.",
+        "active": [
+          "filter"
+        ],
+        "states": [
+          {
+            "label": "Business items",
+            "value": "A: 100; B: 50 EUR"
+          },
+          {
+            "label": "Rows to sum",
+            "value": "2"
+          },
+          {
+            "label": "Total",
+            "value": "Expected 150 EUR"
+          },
+          {
+            "label": "Text language",
+            "value": "EN requested"
+          }
+        ],
+        "outcome": "Use a small, known fixture to define the correct answer."
+      },
+      {
+        "title": "Expose the extra text matches",
+        "explanation": "The first join matches product identity but omits text language. Each item finds an EN text and a DE text, so the result now has four rows even though there are still only two business items.",
+        "active": [
+          "join"
+        ],
+        "states": [
+          {
+            "label": "Business items",
+            "value": "Still A and B"
+          },
+          {
+            "label": "Rows to sum",
+            "value": "4: A/EN, A/DE, B/EN, B/DE"
+          },
+          {
+            "label": "Total",
+            "value": "Input amounts repeated"
+          },
+          {
+            "label": "Text language",
+            "value": "EN and DE matched"
+          }
+        ],
+        "outcome": "A join can multiply the rows before aggregation."
+      },
+      {
+        "title": "Observe the wrong aggregate",
+        "explanation": "GROUP BY company and currency sums 100 plus 100 plus 50 plus 50. A HAVING condition above 200 now keeps this group, even though the true business total should not pass that threshold.",
+        "active": [
+          "aggregate"
+        ],
+        "states": [
+          {
+            "label": "Business items",
+            "value": "2 unique items"
+          },
+          {
+            "label": "Rows to sum",
+            "value": "4"
+          },
+          {
+            "label": "Total",
+            "value": "Wrong: 300 EUR"
+          },
+          {
+            "label": "Text language",
+            "value": "Missing from join condition"
+          }
+        ],
+        "outcome": "A valid SQL aggregate can answer the wrong business question."
+      },
+      {
+        "title": "Correct the relationship",
+        "explanation": "The query now joins by the full product-text identity including requested language EN, using a left join to retain items without text. The fixture and source key confirm at most one EN text per product; the language condition belongs in the join condition so missing text does not remove an item.",
+        "active": [
+          "repair"
+        ],
+        "states": [
+          {
+            "label": "Business items",
+            "value": "A and B retained"
+          },
+          {
+            "label": "Rows to sum",
+            "value": "2"
+          },
+          {
+            "label": "Total",
+            "value": "100 + 50 EUR"
+          },
+          {
+            "label": "Text language",
+            "value": "EN in join condition"
+          }
+        ],
+        "outcome": "Repair the match conditions rather than hiding repeated rows with DISTINCT."
+      },
+      {
+        "title": "Recheck sum and group filter",
+        "explanation": "The corrected group totals 150 EUR and is excluded by HAVING above 200. Further fixtures cover a missing EN text and a second currency, with currencies kept in separate groups.",
+        "active": [
+          "verify"
+        ],
+        "states": [
+          {
+            "label": "Business items",
+            "value": "2 included before grouping"
+          },
+          {
+            "label": "Rows to sum",
+            "value": "2"
+          },
+          {
+            "label": "Total",
+            "value": "Correct: 150 EUR"
+          },
+          {
+            "label": "Group above 200",
+            "value": "No; excluded"
+          }
+        ],
+        "outcome": "Check row counts, amounts, currencies, and the final filter together."
+      }
+    ],
+    "takeaway": "WHERE selects rows, joins determine their multiplicity, and GROUP BY and HAVING operate on that resulting set.",
+    "limitation": "The tables and values are a teaching fixture. Actual keys, client handling, language fallback, currencies, and authorizations must be checked against the real model. This correctness example makes no performance measurement claim.",
+    "references": [
+      {
+        "title": "SAP: ABAP SQL joins, aggregate expressions, and grouping",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      }
+    ]
+  },
+  {
+    "id": "lesson-test-real-retry-policy",
+    "title": "Test the retry policy, not its mock",
+    "questions": [
+      "TEST-01",
+      "TEST-02",
+      "OO-14"
+    ],
+    "scenario": "A service may retry an idempotent remote lookup once after a temporary timeout. A business rejection must be returned immediately; neither test may reach a live server or actually wait.",
+    "goal": "Arrange controlled dependencies, run the real policy, and assert its observable behavior.",
+    "nodes": [
+      {
+        "id": "arrange",
+        "label": "Arrange doubles"
+      },
+      {
+        "id": "act",
+        "label": "Run real policy"
+      },
+      {
+        "id": "assert",
+        "label": "Assert result"
+      },
+      {
+        "id": "negative",
+        "label": "Test rejection"
+      },
+      {
+        "id": "exhaust",
+        "label": "Test retry limit"
+      },
+      {
+        "id": "handoff",
+        "label": "State evidence"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Arrange a timeout followed by success",
+        "explanation": "The test supplies a client double that returns a temporary timeout on call one and customer C20 on call two. A delay double records waiting requests without sleeping, while the retry policy itself remains real.",
+        "active": [
+          "arrange"
+        ],
+        "states": [
+          {
+            "label": "Client calls",
+            "value": "0"
+          },
+          {
+            "label": "Client script",
+            "value": "Timeout, then C20"
+          },
+          {
+            "label": "Delay requests",
+            "value": "0"
+          },
+          {
+            "label": "Policy result",
+            "value": "Not run"
+          }
+        ],
+        "outcome": "Replace outside effects while preserving the behavior under test."
+      },
+      {
+        "title": "Act through the public operation",
+        "explanation": "The test calls the real lookup operation once. The policy handles the first timeout, requests its configured delay, and makes its one permitted retry.",
+        "active": [
+          "act"
+        ],
+        "states": [
+          {
+            "label": "Client calls",
+            "value": "2"
+          },
+          {
+            "label": "Client script",
+            "value": "Both responses consumed"
+          },
+          {
+            "label": "Delay requests",
+            "value": "1; no real sleep"
+          },
+          {
+            "label": "Policy result",
+            "value": "Customer C20"
+          }
+        ],
+        "outcome": "One test invocation exercises the real retry decision."
+      },
+      {
+        "title": "Assert the successful retry",
+        "explanation": "The test expects customer C20, exactly two client calls, and one delay request. Those assertions would fail if the policy returned an empty customer, never retried, or made an extra call.",
+        "active": [
+          "assert"
+        ],
+        "states": [
+          {
+            "label": "Client calls",
+            "value": "Expected 2; observed 2"
+          },
+          {
+            "label": "Client script",
+            "value": "No third call allowed"
+          },
+          {
+            "label": "Delay requests",
+            "value": "Expected 1; observed 1"
+          },
+          {
+            "label": "Policy result",
+            "value": "Expected C20; observed C20"
+          }
+        ],
+        "outcome": "Assertions should expose a broken rule, not just record that code ran."
+      },
+      {
+        "title": "Arrange a fresh rejection case",
+        "explanation": "A separate test uses fresh objects and a client that returns a business rejection. The real policy must surface that rejection after one call, with no delay and no retry.",
+        "active": [
+          "negative"
+        ],
+        "states": [
+          {
+            "label": "Client calls",
+            "value": "New case: 1"
+          },
+          {
+            "label": "Client script",
+            "value": "Business rejection only"
+          },
+          {
+            "label": "Delay requests",
+            "value": "0"
+          },
+          {
+            "label": "Policy result",
+            "value": "Rejection preserved"
+          }
+        ],
+        "outcome": "A failure that should not retry is part of the contract too."
+      },
+      {
+        "title": "Prove that retrying stops",
+        "explanation": "A third, separate test returns a timeout on both permitted calls. Assert exactly two client calls, one delay, and the final timeout returned to the caller. A policy that keeps retrying would fail this case even if the success case passed.",
+        "active": [
+          "exhaust"
+        ],
+        "states": [
+          {
+            "label": "Client calls",
+            "value": "New case: exactly 2; a third call fails the test"
+          },
+          {
+            "label": "Client script",
+            "value": "Timeout, then another timeout"
+          },
+          {
+            "label": "Delay requests",
+            "value": "Exactly 1"
+          },
+          {
+            "label": "Policy result",
+            "value": "Final timeout preserved; no customer returned"
+          }
+        ],
+        "outcome": "Repeated failure is the case that proves the retry limit."
+      },
+      {
+        "title": "Describe exactly what is proved",
+        "explanation": "If implemented and run, these isolated tests can prove the specified policy decisions against doubles. This lesson is a prepared scenario, so the handoff must still request an actual ABAP Unit run and a separate check of production client wiring and remote behavior.",
+        "active": [
+          "handoff"
+        ],
+        "states": [
+          {
+            "label": "Client calls",
+            "value": "Checked by proposed assertions"
+          },
+          {
+            "label": "Client script",
+            "value": "Controlled test responses"
+          },
+          {
+            "label": "Delay requests",
+            "value": "No real waiting proposed"
+          },
+          {
+            "label": "Policy result",
+            "value": "Prepared cases; not executed here"
+          }
+        ],
+        "outcome": "Keep prepared tests, actual runs, and integration evidence distinct."
+      }
+    ],
+    "takeaway": "A useful unit test makes a real decision under controlled conditions and checks the behavior that matters.",
+    "limitation": "This example uses an idempotent lookup; do not copy its retry rule to an arbitrary write operation. The displayed observations illustrate the expected successful test trace, not an executed ABAP Unit result. Test-double frameworks and seams depend on the target release.",
+    "references": [
+      {
+        "title": "SAP Clean ABAP: Testing and dependency isolation",
+        "url": "https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md#testing"
+      },
+      {
+        "title": "SAP: ABAP Unit",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/abap-unit"
+      }
+    ]
+  }
+]

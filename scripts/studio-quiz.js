@@ -85,7 +85,7 @@ function practice(){
  if(!activeSession){$('view').innerHTML='';return;}const s=activeSession;if(s.done){practiceResults(s);return;}const q=byId.get(s.ids[s.index]);
  $('view').innerHTML=`<section class="session-shell">${sessionProgress(s)}${s.kind==='quiz'?quizQuestion(s,q):recallQuestion(s,q)}</section>`;
  $('finishPractice').onclick=finishPractice;if($('nextPractice'))$('nextPractice').onclick=nextPractice;if($('skipPractice'))$('skipPractice').onclick=nextPractice;
- if($('revealPractice'))$('revealPractice').onclick=()=>{s.revealed=true;render();const summary=document.querySelector('.answer-summary');if(summary){summary.tabIndex=-1;summary.focus({preventScroll:true});summary.scrollIntoView({block:'nearest'});}};
+ if($('revealPractice'))$('revealPractice').onclick=()=>{s.revealed=true;render();const summary=document.querySelector('.lesson-intro h4')||document.querySelector('.answer-summary');if(summary){summary.tabIndex=-1;summary.focus({preventScroll:true});summary.scrollIntoView({block:'nearest'});}};
  document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{if(s.answers[q.id])return;s.selected=b.dataset.choice;render();document.querySelector(`[data-choice="${s.selected}"]`)?.focus({preventScroll:true});});
  if($('checkQuiz'))$('checkQuiz').onclick=checkQuiz;document.querySelectorAll('[data-score]').forEach(b=>b.onclick=()=>rateRecall(Number(b.dataset.score)));
 }

@@ -12,10 +12,10 @@ function diagramPanel(q,related){
  const current=related.find(v=>v.id===visualChoices.get(q.id))||related[0];
  return `<div class="visual-heading">Diagram <span>${related.indexOf(current)+1} / ${related.length}</span></div><figure class="visual-preview"><button class="visual-open" data-open-visual="${current.id}" aria-haspopup="dialog" aria-label="Enlarge ${esc(current.title)}"><img loading="lazy" decoding="async" data-visual-image="${current.id}" src="${esc(visualImageSource(current))}" alt="${esc(current.title)}"><span class="enlarge-hint">Enlarge diagram ↗</span></button><figcaption><strong>${esc(current.title)}</strong><p>${esc(current.caption)}</p></figcaption></figure>${related.length>1?`<div class="visual-switcher" role="group" aria-label="Related diagrams">${related.map((v,i)=>`<button data-visual-choice="${v.id}" data-question="${q.id}" aria-pressed="${v.id===current.id}"><span>${i+1}</span>${esc(v.title)}</button>`).join('')}</div>`:''}<details class="visual-notes"><summary>Recall prompt &amp; diagram limits</summary><p><strong>Explain it:</strong> ${esc(current.recall)}</p><p><strong>Limit:</strong> ${esc(current.limit)}</p></details>`;
 }
-function visualPanel(q){
+function visualPanel(q,preferCode=false){
  const related=visuals.filter(v=>v.questions.includes(q.id)),examples=codeExamples.filter(example=>example.questions.includes(q.id));
  if(!related.length&&!examples.length)return '';
- const showCode=examples.length&&(!related.length||(explanationModes.get(q.id)||q.defaultExplanation)!=='diagram');
+ const showCode=examples.length&&(!related.length||(explanationModes.get(q.id)||(preferCode?'code':q.defaultExplanation))!=='diagram');
  const picker=examples.length&&related.length?`<div class="explanation-picker" role="group" aria-label="Explanation format"><button data-explanation-mode="code" data-question="${q.id}" aria-pressed="${!!showCode}">Code example</button><button data-explanation-mode="diagram" data-question="${q.id}" aria-pressed="${!showCode}">Diagram</button></div>`:'';
  return `<div class="visual-panel" data-visual-panel="${q.id}">${picker}${showCode?codePanel(q,examples):diagramPanel(q,related)}</div>`;
 }
@@ -42,9 +42,14 @@ function reasoningContent(text){
  const visible=paragraphs.length>3?2:1;
  return readingParagraphs(paragraphs.slice(0,visible).join('\n\n'))+`<details class="reasoning-more"><summary>Continue the explanation</summary>${readingParagraphs(paragraphs.slice(visible).join('\n\n'))}</details>`;
 }
-function answer(q){const panel=visualPanel(q),steps=questionSteps(q),guided=steps.length>=3;
- const remainder=guided?q.detail.split(/\n\s*\n/).filter(part=>!/^\d+\. [A-Z][A-Z0-9_]+ - /.test(part.trim())).join('\n\n'):q.detail;
- return `<div class="answer reading-layout ${panel?'has-visual':''} ${guided?'has-steps':''}"><div class="answer-summary"><div class="label">The short answer</div>${readingParagraphs(q.answer)}</div>${panel}${guided?guidedSteps(q,steps):''}<div class="answer-reasoning"><div class="label">Reasoning and example</div>${reasoningContent(remainder)}<div class="trap"><strong>Avoid this mistake</strong><br>${esc(q.pitfall)}</div>${seniorRubric(q)}</div></div>`;
+function readingAnswer(q,view='calm'){const panel=visualPanel(q,view==='developer'),steps=questionSteps(q),guided=steps.length>=3&&!lessonsByQuestion.has(q.id);
+ const remainder=steps.length>=3?q.detail.split(/\n\s*\n/).filter(part=>!/^\d+\. [A-Z][A-Z0-9_]+ - /.test(part.trim())).join('\n\n'):q.detail;
+ return `<div class="answer reading-layout ${panel?'has-visual':''} ${guided?'has-steps':''}"><div class="answer-summary"><div class="label">The short answer</div>${readingParagraphs(q.answer)}</div>${panel}${guided?guidedSteps(q,steps):''}<div class="answer-reasoning"><div class="label">Reasoning and example</div>${reasoningContent(remainder)}${steps.length>=3&&!guided?`<details class="phase-full"><summary>Read the save phases together</summary>${readingParagraphs(steps.map(item=>item[0]).join('\n\n'))}</details>`:''}<div class="trap"><strong>Avoid this mistake</strong><br>${esc(q.pitfall)}</div>${seniorRubric(q)}</div></div>`;
+}
+function answer(q){
+ const view=selectedStudyView(q);
+ const content=view==='guided'?guidedLesson(q)+`<details class="lesson-full-answer"><summary>Read the full answer, code &amp; diagrams</summary>${readingAnswer(q)}</details>`:readingAnswer(q,view)+lessonPreview(q);
+ return `<section class="study-experience" data-study-question="${q.id}" data-study-view="${view}">${studyViewToolbar(q,view)}${content}</section>`;
 }
 let visualZoom=1,visualOpener=null;
 function sizeVisual(){const img=$('visualImage'),stage=$('visualStage');if(!img.naturalWidth||!stage.clientWidth)return;const fit=Math.min(stage.clientWidth/img.naturalWidth,stage.clientHeight/img.naturalHeight,1);img.style.width=Math.round(img.naturalWidth*fit*visualZoom)+'px';img.style.height=Math.round(img.naturalHeight*fit*visualZoom)+'px';$('visualZoomLabel').textContent=visualZoom===1?'Fit':Math.round(visualZoom*100)+'% of fit';$('visualZoomOut').disabled=visualZoom===1;$('visualZoomIn').disabled=visualZoom===4;}

@@ -5,6 +5,7 @@ const searchIndex=all.map(q=>({q,fields:[
  ['Question',q.question],['Answer',q.answer],['Example',q.detail],['Common mistake',q.pitfall],
  ['Topic',q.moduleTitle],['Follow-up',[...q.followups||[],...q.signals||[],q.evidence||''].join(' ')],
  ['Reference',(q.references||[]).map(r=>r.title+' '+r.note).join(' ')],
+ ['Guided lesson',(lessonsByQuestion.get(q.id)||[]).map(lesson=>[lesson.title,lesson.scenario,lesson.goal,...lesson.steps.map(step=>step.title+' '+step.explanation)].join(' ')).join(' ')],
  ['Diagram',visuals.filter(v=>v.questions.includes(q.id)).map(v=>v.title+' '+v.caption).join(' ')]
 ].map(([label,text])=>({label,text,normalized:normalized(text)}))}));
 function globalMatches(query){
@@ -30,7 +31,7 @@ function searchHighlight(text,terms){
 function renderGlobalSearch(){
  const matches=globalMatches(searchQuery),shown=matches.slice(0,searchLimit);
  $('clearGlobalSearch').hidden=!searchQuery;
- $('globalSearchCount').textContent=searchQuery.trim()?`${matches.length} ${matches.length===1?'question':'questions'} found across all ${topics.length} topics`:`Search all ${all.length} questions, answers, examples and references.`;
+ $('globalSearchCount').textContent=searchQuery.trim()?`${matches.length} ${matches.length===1?'question':'questions'} found across all ${topics.length} topics`:`Search all ${all.length} questions, answers, guided lessons, examples and references.`;
  $('globalResults').innerHTML=!searchQuery.trim()?`<div class="search-empty"><h3>Find a concept, not just a topic</h3><p>Try a question ID, an acronym or a few words.</p><div class="search-examples">${['RAP save','Clean Core','BAPI commit','SQL-12'].map(term=>`<button data-search-example="${esc(term)}">${esc(term)}</button>`).join('')}</div><p class="small subtle">Topic, difficulty and practice filters do not limit this search.</p></div>`:!matches.length?'<div class="search-empty"><h3>No matching questions</h3><p>Try fewer words, an acronym such as EML or RFC, or a question ID. You are already searching every topic.</p></div>':`<ol class="search-results">${shown.map(({q,match,terms})=>`<li><button class="search-result" data-search-result="${q.id}"><span class="search-result-meta">${q.id} &middot; ${esc(q.topicTitle)} / ${esc(q.sectionTitle)}</span><strong>${searchHighlight(q.question,terms)}</strong><span class="search-snippet"><span class="match-label">${esc(match.label)}</span> ${searchHighlight(searchExcerpt(match.text,terms),terms)}</span></button></li>`).join('')}</ol>`;
  $('moreSearchResults').hidden=matches.length<=shown.length;$('moreSearchResults').textContent=`Show more results (${shown.length} of ${matches.length})`;
  document.querySelectorAll('[data-search-example]').forEach(b=>b.onclick=()=>{$('globalSearchInput').value=b.dataset.searchExample;updateGlobalSearch();$('globalSearchInput').focus();});

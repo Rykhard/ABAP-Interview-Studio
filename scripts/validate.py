@@ -7,6 +7,7 @@ from urllib.parse import unquote
 import pymupdf as fitz
 from study_topics import topic_catalog
 from code_examples import load_examples
+from guided_lessons import load_lessons
 from study_catalog import ordered_modules, is_cloud, catalog, track_key
 
 root=Path(__file__).resolve().parents[1]
@@ -86,6 +87,10 @@ quiz_match=re.search(r'<script id="quiz-data" type="application/json">(.*?)</scr
 if not quiz_match or json.loads(quiz_match.group(1))!=quiz_items:errors.append('Quiz payload mismatch')
 if any(token in html for token in ['__QUIZ__','__APP__','__QUIZ_APP__','__READING_APP__','__PRACTICE_CSS__','__SEARCH_APP__','__USABILITY_CSS__']):errors.append('Unresolved app placeholder')
 if '__DATA__' in html:errors.append('HTML template placeholder remains')
+lessons=load_lessons(root,set(ids))
+lesson_match=re.search(r'<script id="lesson-data" type="application/json">(.*?)</script>',html,re.S)
+if not lesson_match or json.loads(lesson_match.group(1))!=lessons:errors.append('Guided lesson payload mismatch')
+if any(token in html for token in ['__LESSON_APP__','__LESSON_DATA__','__LESSON_CSS__']):errors.append('Unresolved lesson template')
 catalog=json.loads((root/'visuals'/'catalog.json').read_text(encoding='utf-8'))
 visual_match=re.search(r'<script id="visual-data" type="application/json">(.*?)</script>',html,re.S)
 embedded_visuals=json.loads(visual_match.group(1)) if visual_match else []
@@ -150,5 +155,8 @@ for path in sorted((root/'pdf').glob('*.pdf')):
 summary=dict(study_topics=len(topics),study_subtopics=len(sections),quiz_questions=len(quiz_items),questions_with_references=sum(bool(q.get('references')) for q in questions),track_counts=track_counts,senior_questions=sum(q['level']=='Senior' for q in questions),cloud_questions=sum(len(m['questions']) for m in modules if is_cloud(m)),senior_flashcards=len(senior_rows),modules=len(modules),questions=len(questions),flashcards=len(rows),illustrated_flashcards=len(illustrated),visuals=len(catalog),questions_with_visuals=len(visual_questions),pdfs=pdf_results,errors=errors)
 summary['code_examples']=len(examples)
 summary['questions_with_code']=len({qid for example in examples for qid in example['questions']})
+summary['guided_lessons']=len(lessons)
+summary['guided_steps']=sum(len(lesson['steps']) for lesson in lessons)
+summary['questions_with_lessons']=len({qid for lesson in lessons for qid in lesson['questions']})
 print(json.dumps(summary,indent=2))
 raise SystemExit(bool(errors))

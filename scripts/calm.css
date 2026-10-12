@@ -128,7 +128,7 @@ dialog::backdrop,#codeDialog::backdrop{background:#06131dc2}.search-result{backg
 #view .result-metrics>div{background:var(--surface)}#view .result-list .status{background:var(--paper)}#view .result-list .status.correct{background:var(--soft)}#view .result-list .status.retry{background:var(--warm);color:var(--accent)}
 #view .self-rating-buttons button[aria-pressed=true]{background:var(--soft)}
 #practiceSetup :is(button,input,select,summary):focus-visible,#view .session-shell :is(button,input,select,summary,a):focus-visible,#view .session-results :is(button,summary,a):focus-visible{outline-color:var(--focus)}
-main.in-session header,main.in-session>.modes{display:none}
+main.in-session>header,main.in-session>.modes{display:none}
 .reading-options{display:grid;gap:22px}.reading-options label{display:grid;gap:8px;font-size:14px}.reading-options .check-option{display:flex;align-items:center;gap:10px}.reading-options input[type=checkbox]{width:18px;height:18px;accent-color:var(--green)}
 #readingDialog{max-width:470px}.reading-options p{margin:0;font-size:12px;color:var(--muted)}
 body.focus-reading>aside{display:none}body.focus-reading>main{margin:0 auto;max-width:1440px}body.focus-reading #focusIndicator{display:inline}

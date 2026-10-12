@@ -1,0 +1,1987 @@
+[
+ {
+  "id": "lesson-rap-save",
+  "title": "Follow one order through the save sequence",
+  "questions": [
+   "RAP-05",
+   "SRAP-03"
+  ],
+  "scenario": "Order request P1 contains two items at 40 EUR each and a 5 EUR delivery charge. Its permitted total is 100 EUR.",
+  "goal": "Place derivation, validation, numbering, persistence and cleanup on the correct side of the save boundary.",
+  "nodes": [
+   {
+    "id": "finalize",
+    "label": "Finalize"
+   },
+   {
+    "id": "check",
+    "label": "Check"
+   },
+   {
+    "id": "boundary",
+    "label": "No return"
+   },
+   {
+    "id": "number",
+    "label": "Number"
+   },
+   {
+    "id": "save",
+    "label": "Save"
+   },
+   {
+    "id": "cleanup",
+    "label": "Cleanup"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Finish the calculations",
+    "explanation": "FINALIZE derives 85 EUR from the pending items and delivery charge. This is the final phase for ordinary changes to the transactional data.",
+    "active": [
+     "finalize"
+    ],
+    "states": [
+     {
+      "label": "Total",
+      "value": "80 -> 85 EUR"
+     },
+     {
+      "label": "Business check",
+      "value": "Not yet complete"
+     },
+     {
+      "label": "Order number",
+      "value": "Preliminary P1"
+     },
+     {
+      "label": "Database",
+      "value": "No new order"
+     }
+    ],
+    "outcome": "Calculate before the final consistency check."
+   },
+   {
+    "title": "Check the finished values",
+    "explanation": "CHECK_BEFORE_SAVE tests 85 EUR against the 100 EUR limit. This example passes; an ordinary validation failure would stop the early save and return correlated failure information.",
+    "active": [
+     "check"
+    ],
+    "states": [
+     {
+      "label": "Total",
+      "value": "85 EUR"
+     },
+     {
+      "label": "Business check",
+      "value": "Passed: 85 <= 100"
+     },
+     {
+      "label": "Order number",
+      "value": "Preliminary P1"
+     },
+     {
+      "label": "Database",
+      "value": "No new order"
+     }
+    ],
+    "outcome": "Predictable business errors belong before late save."
+   },
+   {
+    "title": "Cross the shared boundary",
+    "explanation": "All business objects in this transaction have passed their early checks. The point of no return is reached; ordinary late saving now assumes consistent input.",
+    "active": [
+     "boundary"
+    ],
+    "states": [
+     {
+      "label": "Total",
+      "value": "85 EUR"
+     },
+     {
+      "label": "Business check",
+      "value": "All participating BOs passed"
+     },
+     {
+      "label": "Order number",
+      "value": "Preliminary P1"
+     },
+     {
+      "label": "Database",
+      "value": "No new order"
+     }
+    ],
+    "outcome": "One object's passing check alone is insufficient."
+   },
+   {
+    "title": "Assign the final number",
+    "explanation": "The late-numbered order receives number 4701 in ADJUST_NUMBERS. The mapping connects preliminary identity P1 to 4701; this is numbering, not another opportunity to change the amount.",
+    "active": [
+     "number"
+    ],
+    "states": [
+     {
+      "label": "Total",
+      "value": "85 EUR"
+     },
+     {
+      "label": "Business check",
+      "value": "Passed"
+     },
+     {
+      "label": "Order number",
+      "value": "P1 -> 4701"
+     },
+     {
+      "label": "Database",
+      "value": "No new order"
+     }
+    ],
+    "outcome": "Late numbering follows the point of no return."
+   },
+   {
+    "title": "Write and commit the order",
+    "explanation": "SAVE writes order 4701 and its items. The runtime or external transaction owner completes the commit; a handler must not issue its own commit.",
+    "active": [
+     "save"
+    ],
+    "states": [
+     {
+      "label": "Total",
+      "value": "85 EUR"
+     },
+     {
+      "label": "Business check",
+      "value": "Passed"
+     },
+     {
+      "label": "Order number",
+      "value": "4701"
+     },
+     {
+      "label": "Database",
+      "value": "4701 committed at 85 EUR"
+     }
+    ],
+    "outcome": "Persistence and commit remain under transaction control."
+   },
+   {
+    "title": "Reset transaction state",
+    "explanation": "CLEANUP resets the transactional buffer for the completed transaction. Early-save failure has a separate CLEANUP_FINALIZE hook to undo relevant early-save work; it is not the success path shown here.",
+    "active": [
+     "cleanup"
+    ],
+    "states": [
+     {
+      "label": "Total",
+      "value": "Persisted: 85 EUR"
+     },
+     {
+      "label": "Buffer",
+      "value": "Cleared"
+     },
+     {
+      "label": "Order number",
+      "value": "4701"
+     },
+     {
+      "label": "Database",
+      "value": "4701 committed at 85 EUR"
+     }
+    ],
+    "outcome": "Do not carry pending state into the next transaction."
+   }
+  ],
+  "takeaway": "FINALIZE -> CHECK_BEFORE_SAVE -> point of no return -> ADJUST_NUMBERS when needed -> SAVE -> CLEANUP.",
+  "limitation": "Illustrative successful standard save, not a runtime trace. SAP documents special failure-capable saver behavior for certain BAPI integrations; verify the target release and generated contract before applying that exception.",
+  "references": [
+   {
+    "title": "SAP: Save sequence runtime",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/save-sequence-runtime"
+   },
+   {
+    "title": "SAP: Cleanup after early-save failure",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/f030096abe1d41f9ac7549f0290b9c09.html"
+   },
+   {
+    "title": "SAP: BAPI numbering and save sequence",
+    "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence"
+   }
+  ]
+ },
+ {
+  "id": "lesson-rap-buffer-responses",
+  "title": "Separate accepted changes from committed changes",
+  "questions": [
+   "RAP-03",
+   "RAP-07",
+   "SRAP-05"
+  ],
+  "scenario": "An external EML consumer updates quantities for orders 101, 102 and 999. Order 999 does not exist, and the agreed batch policy permits eligible orders to continue.",
+  "goal": "Read pending values correctly and interpret FAILED, REPORTED and MAPPED without claiming an early commit.",
+  "nodes": [
+   {
+    "id": "request",
+    "label": "Request"
+   },
+   {
+    "id": "buffer",
+    "label": "Buffer"
+   },
+   {
+    "id": "response",
+    "label": "Responses"
+   },
+   {
+    "id": "commit",
+    "label": "Commit"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Receive all three inputs",
+    "explanation": "The caller asks to change 101 from 1 to 2 and 102 from 2 to 3. It also sends an update for missing key 999.",
+    "active": [
+     "request"
+    ],
+    "states": [
+     {
+      "label": "Inputs",
+      "value": "101: 2; 102: 3; 999: 1"
+     },
+     {
+      "label": "Pending updates",
+      "value": "0"
+     },
+     {
+      "label": "FAILED",
+      "value": "Not evaluated"
+     },
+     {
+      "label": "Database",
+      "value": "101: 1; 102: 2"
+     }
+    ],
+    "outcome": "Every input needs an accountable outcome."
+   },
+   {
+    "title": "Accept eligible changes into the buffer",
+    "explanation": "The behavior accepts the two existing orders and rejects 999. A transactional EML read can see the pending quantities; SQL against persistence still sees 1 and 2.",
+    "active": [
+     "buffer"
+    ],
+    "states": [
+     {
+      "label": "Inputs",
+      "value": "3 processed"
+     },
+     {
+      "label": "Pending updates",
+      "value": "101: 2; 102: 3"
+     },
+     {
+      "label": "FAILED",
+      "value": "999: missing"
+     },
+     {
+      "label": "Database",
+      "value": "101: 1; 102: 2"
+     }
+    ],
+    "outcome": "The buffer holds the current transaction's working state."
+   },
+   {
+    "title": "Interpret the response roles",
+    "explanation": "FAILED identifies 999. REPORTED contains its error plus an informational message for 101; MAPPED is empty because this update creates no identity mapping.",
+    "active": [
+     "response"
+    ],
+    "states": [
+     {
+      "label": "FAILED",
+      "value": "999"
+     },
+     {
+      "label": "REPORTED",
+      "value": "999 error; 101 information"
+     },
+     {
+      "label": "MAPPED",
+      "value": "Empty"
+     },
+     {
+      "label": "Database",
+      "value": "101: 1; 102: 2"
+     }
+    ],
+    "outcome": "A message is not automatically a failure, and MAPPED is not a success list."
+   },
+   {
+    "title": "Apply the caller's commit policy",
+    "explanation": "The external consumer chooses to save the two eligible updates and inspects the save response. In this worked example the save checks pass and the commit succeeds.",
+    "active": [
+     "commit"
+    ],
+    "states": [
+     {
+      "label": "FAILED",
+      "value": "Interaction: 999; save: none"
+     },
+     {
+      "label": "Pending updates",
+      "value": "0 after cleanup"
+     },
+     {
+      "label": "Committed updates",
+      "value": "101 and 102"
+     },
+     {
+      "label": "Database",
+      "value": "101: 2; 102: 3"
+     }
+    ],
+    "outcome": "Only the successful save establishes persistence."
+   }
+  ],
+  "takeaway": "MODIFY acceptance, response interpretation and successful commit are separate checkpoints.",
+  "limitation": "Illustrative non-draft batch with an explicitly chosen partial-processing policy. Actual change-set atomicity, operation contracts and consumer policy can require rollback of the entire business unit.",
+  "references": [
+   {
+    "title": "SAP: Entity Manipulation Language",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/entity-manipulation-language-eml"
+   },
+   {
+    "title": "SAP: Commit responses",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/commit-entities-response-of-long-form"
+   }
+  ]
+ },
+ {
+  "id": "lesson-rap-numbering",
+  "title": "Keep a new parent and child linked before numbering",
+  "questions": [
+   "RAP-10",
+   "RAP-11",
+   "SRAP-07"
+  ],
+  "scenario": "One request creates an order and its item before the final order number exists. The BO uses late numbering.",
+  "goal": "Distinguish request content IDs, transactional identity and the final business key.",
+  "nodes": [
+   {
+    "id": "request",
+    "label": "Request IDs"
+   },
+   {
+    "id": "identity",
+    "label": "Pending identity"
+   },
+   {
+    "id": "number",
+    "label": "Final number"
+   },
+   {
+    "id": "result",
+    "label": "Result"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Link the create operations",
+    "explanation": "The new order has content ID H1, and its new item has I1. The item uses %cid_ref H1 to identify the parent create in this request.",
+    "active": [
+     "request"
+    ],
+    "states": [
+     {
+      "label": "Parent content ID",
+      "value": "H1"
+     },
+     {
+      "label": "Child content ID",
+      "value": "I1 -> parent H1"
+     },
+     {
+      "label": "Preliminary identity",
+      "value": "Not assigned yet"
+     },
+     {
+      "label": "Final order",
+      "value": "Unknown"
+     }
+    ],
+    "outcome": "Content IDs correlate operations within the request."
+   },
+   {
+    "title": "Retain transactional identities",
+    "explanation": "The create response associates H1 with preliminary identity P1 in this illustrative BO. Later transactional operations retain the generated %tky components rather than inventing a final order number.",
+    "active": [
+     "identity"
+    ],
+    "states": [
+     {
+      "label": "Parent content ID",
+      "value": "H1"
+     },
+     {
+      "label": "Child relation",
+      "value": "Item remains under P1"
+     },
+     {
+      "label": "Preliminary identity",
+      "value": "P1 available"
+     },
+     {
+      "label": "Final order",
+      "value": "Unknown"
+     }
+    ],
+    "outcome": "A pending instance can be addressed before its final key exists."
+   },
+   {
+    "title": "Map preliminary to final identity",
+    "explanation": "After successful early-save checks, ADJUST_NUMBERS maps P1 to order 4702. The implementation preserves the parent-child relationship using the actual BDEF-derived mapping contract.",
+    "active": [
+     "number"
+    ],
+    "states": [
+     {
+      "label": "Parent content ID",
+      "value": "H1"
+     },
+     {
+      "label": "Child relation",
+      "value": "Item belongs to 4702"
+     },
+     {
+      "label": "Preliminary identity",
+      "value": "P1 -> 4702"
+     },
+     {
+      "label": "Final order",
+      "value": "4702 assigned"
+     }
+    ],
+    "outcome": "Late numbering needs a complete identity mapping."
+   },
+   {
+    "title": "Return the saved identity",
+    "explanation": "The transaction saves successfully and the external consumer obtains the final key using the supported commit/key-conversion contract. It can now address order 4702; it must not treat H1 as a persistent key.",
+    "active": [
+     "result"
+    ],
+    "states": [
+     {
+      "label": "Parent content ID",
+      "value": "H1 was request-local"
+     },
+     {
+      "label": "Child relation",
+      "value": "4702 / item 10 saved"
+     },
+     {
+      "label": "Preliminary identity",
+      "value": "Resolved"
+     },
+     {
+      "label": "Final order",
+      "value": "4702 committed"
+     }
+    ],
+    "outcome": "Publish the final identity after successful saving."
+   }
+  ],
+  "takeaway": "Use %cid/%cid_ref for create correlation, retain %tky for pending work, and resolve late keys through the supported mapping contract.",
+  "limitation": "P1 is a readable placeholder, not a proposed ABAP type or universal %pid value. Generated identity components vary with draft and numbering settings; this lesson does not implement a BAPI adapter.",
+  "references": [
+   {
+    "title": "SAP: ADJUST_NUMBERS",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/adjust-numbers"
+   },
+   {
+    "title": "SAP: EML examples and derived identities",
+    "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/08_EML_ABAP_for_RAP.md"
+   }
+  ]
+ },
+ {
+  "id": "lesson-rap-draft",
+  "title": "Persist unfinished work without changing the active order",
+  "questions": [
+   "RAP-12",
+   "SRAP-09"
+  ],
+  "scenario": "Maya edits active order 4703 from 80 EUR to 120 EUR. The business limit is 100 EUR, and she closes and later reopens the application.",
+  "goal": "Trace draft persistence, failed activation, correction and successful activation.",
+  "nodes": [
+   {
+    "id": "edit",
+    "label": "Edit"
+   },
+   {
+    "id": "draft",
+    "label": "Persist draft"
+   },
+   {
+    "id": "check",
+    "label": "Prepare"
+   },
+   {
+    "id": "correct",
+    "label": "Correct"
+   },
+   {
+    "id": "activate",
+    "label": "Activate"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Create an edit draft",
+    "explanation": "Editing copies the active state into Maya's draft. The active order remains available at its committed amount.",
+    "active": [
+     "edit"
+    ],
+    "states": [
+     {
+      "label": "Active amount",
+      "value": "80 EUR"
+     },
+     {
+      "label": "Draft amount",
+      "value": "80 EUR"
+     },
+     {
+      "label": "Draft owner",
+      "value": "Maya"
+     },
+     {
+      "label": "Activation",
+      "value": "Not requested"
+     }
+    ],
+    "outcome": "Draft and active are distinct instances."
+   },
+   {
+    "title": "Save the unfinished draft",
+    "explanation": "Maya enters 120 EUR and the draft change is persisted. Closing the browser does not turn this draft into active business data.",
+    "active": [
+     "draft"
+    ],
+    "states": [
+     {
+      "label": "Active amount",
+      "value": "80 EUR"
+     },
+     {
+      "label": "Draft amount",
+      "value": "120 EUR persisted"
+     },
+     {
+      "label": "Draft owner",
+      "value": "Maya"
+     },
+     {
+      "label": "Activation",
+      "value": "Not requested"
+     }
+    ],
+    "outcome": "A durable draft is still unfinished work."
+   },
+   {
+    "title": "Reject activation of the invalid draft",
+    "explanation": "Maya returns and requests activation; relevant prepare/validation processing detects 120 EUR above the limit. A field-linked state message explains the problem and active data stays at 80 EUR.",
+    "active": [
+     "check"
+    ],
+    "states": [
+     {
+      "label": "Active amount",
+      "value": "80 EUR"
+     },
+     {
+      "label": "Draft amount",
+      "value": "120 EUR"
+     },
+     {
+      "label": "State message",
+      "value": "Amount exceeds 100 EUR"
+     },
+     {
+      "label": "Activation",
+      "value": "Rejected"
+     }
+    ],
+    "outcome": "Validation can protect active data while preserving editable work."
+   },
+   {
+    "title": "Correct the same draft",
+    "explanation": "Maya reduces the amount to 90 EUR and the relevant validation state is refreshed. In this example no active data changed while she was away, so draft concurrency checks also succeed.",
+    "active": [
+     "correct"
+    ],
+    "states": [
+     {
+      "label": "Active amount",
+      "value": "80 EUR"
+     },
+     {
+      "label": "Draft amount",
+      "value": "90 EUR"
+     },
+     {
+      "label": "State message",
+      "value": "Amount error cleared"
+     },
+     {
+      "label": "Activation",
+      "value": "Ready for retry"
+     }
+    ],
+    "outcome": "Correction must update both values and validation feedback."
+   },
+   {
+    "title": "Activate and save successfully",
+    "explanation": "The valid draft is activated and the active save succeeds. The draft is removed by the framework and 90 EUR becomes the committed business value.",
+    "active": [
+     "activate"
+    ],
+    "states": [
+     {
+      "label": "Active amount",
+      "value": "90 EUR committed"
+     },
+     {
+      "label": "Draft amount",
+      "value": "No remaining draft"
+     },
+     {
+      "label": "State message",
+      "value": "None"
+     },
+     {
+      "label": "Activation",
+      "value": "Successful"
+     }
+    ],
+    "outcome": "Only successful activation and saving replace active state."
+   }
+  ],
+  "takeaway": "Draft persistence protects unfinished work; successful activation makes the corrected values active.",
+  "limitation": "Illustrative managed exclusive draft. Exact prepare execution, validation reuse, draft retention and lock timing depend on the release and BO configuration; applications must not directly edit draft tables.",
+  "references": [
+   {
+    "title": "SAP: Draft runtime",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/draft-runtime"
+   },
+   {
+    "title": "SAP: Implementing validations",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-validations"
+   },
+   {
+    "title": "SAP: State messages",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/state-messages"
+   }
+  ]
+ },
+ {
+  "id": "lesson-rap-etag",
+  "title": "Reject a stale update from a second browser",
+  "questions": [
+   "ADV-01",
+   "OPS-05"
+  ],
+  "scenario": "Ana and Ben read order 4704 at quantity 2 with the same ETag. Ana saves first; Ben then submits his older view.",
+  "goal": "Demonstrate optimistic concurrency with two independently obtained versions.",
+  "nodes": [
+   {
+    "id": "read",
+    "label": "Read"
+   },
+   {
+    "id": "first",
+    "label": "First update"
+   },
+   {
+    "id": "stale",
+    "label": "Stale update"
+   },
+   {
+    "id": "refresh",
+    "label": "Refresh"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Give both clients the same starting version",
+    "explanation": "Ana and Ben independently read quantity 2 and ETag V1. V1 is a symbolic version token, not an integer the clients calculate.",
+    "active": [
+     "read"
+    ],
+    "states": [
+     {
+      "label": "Server",
+      "value": "Quantity 2 / V1"
+     },
+     {
+      "label": "Ana",
+      "value": "Quantity 2 / V1"
+     },
+     {
+      "label": "Ben",
+      "value": "Quantity 2 / V1"
+     },
+     {
+      "label": "Conflict",
+      "value": "None"
+     }
+    ],
+    "outcome": "Concurrency starts with the version each client actually read."
+   },
+   {
+    "title": "Accept Ana's current update",
+    "explanation": "Ana requests quantity 3 with the current ETag. The server accepts and saves it, producing a new ETag V2.",
+    "active": [
+     "first"
+    ],
+    "states": [
+     {
+      "label": "Server",
+      "value": "Quantity 3 / V2"
+     },
+     {
+      "label": "Ana",
+      "value": "Quantity 3 / V2"
+     },
+     {
+      "label": "Ben",
+      "value": "Quantity 2 / V1"
+     },
+     {
+      "label": "Conflict",
+      "value": "None"
+     }
+    ],
+    "outcome": "A saved change invalidates older version tokens."
+   },
+   {
+    "title": "Reject Ben's stale condition",
+    "explanation": "Ben requests quantity 4 using V1 in the conditional request. The ETag check detects that V1 no longer matches V2 and the server leaves quantity 3 intact.",
+    "active": [
+     "stale"
+    ],
+    "states": [
+     {
+      "label": "Server",
+      "value": "Quantity 3 / V2"
+     },
+     {
+      "label": "Ana",
+      "value": "Quantity 3 / V2"
+     },
+     {
+      "label": "Ben",
+      "value": "Quantity 4 requested with V1"
+     },
+     {
+      "label": "Conflict",
+      "value": "Stale update rejected"
+     }
+    ],
+    "outcome": "A stale client must not silently overwrite a newer save."
+   },
+   {
+    "title": "Refresh before making a new decision",
+    "explanation": "Ben reads quantity 3 and V2, then deliberately chooses quantity 4 using that current version. The successful retry produces V3; it is a new informed change, not blind resubmission.",
+    "active": [
+     "refresh"
+    ],
+    "states": [
+     {
+      "label": "Server",
+      "value": "Quantity 4 / V3"
+     },
+     {
+      "label": "Ana",
+      "value": "Still displays quantity 3 / V2"
+     },
+     {
+      "label": "Ben",
+      "value": "Quantity 4 / V3"
+     },
+     {
+      "label": "Conflict",
+      "value": "Resolved by refresh and retry"
+     }
+    ],
+    "outcome": "Locks coordinate current work; ETags detect outdated client state."
+   }
+  ],
+  "takeaway": "A meaningful stale-update test uses two clients or retained independent versions, then asserts the rejected write changed nothing.",
+  "limitation": "Illustrative conditional OData updates with correctly maintained entity ETags. Exact HTTP responses and lock behavior depend on the service; V1-V3 are display labels, not literal SAP ETag values.",
+  "references": [
+   {
+    "title": "SAP: Optimistic concurrency control",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/optimistic-concurrency-control"
+   }
+  ]
+ },
+ {
+  "id": "lesson-rap-total-etag",
+  "title": "Detect a child change before resuming a draft",
+  "questions": [
+   "SRAP-10"
+  ],
+  "scenario": "Maya leaves an edit draft of order 4705 open. After its exclusive lock expires, a background process changes an active item.",
+  "goal": "Explain why the whole BO needs a total ETag in addition to an ordinary entity ETag.",
+  "nodes": [
+   {
+    "id": "draft",
+    "label": "Open draft"
+   },
+   {
+    "id": "expire",
+    "label": "Lock expires"
+   },
+   {
+    "id": "change",
+    "label": "Active change"
+   },
+   {
+    "id": "resume",
+    "label": "Resume"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Record the active version when editing",
+    "explanation": "The active order and its edit draft correspond to total ETag T1. Item 10 has quantity 2 and Maya changes a draft comment.",
+    "active": [
+     "draft"
+    ],
+    "states": [
+     {
+      "label": "Active item",
+      "value": "10: quantity 2"
+     },
+     {
+      "label": "Active total ETag",
+      "value": "T1"
+     },
+     {
+      "label": "Draft basis",
+      "value": "T1; comment edited"
+     },
+     {
+      "label": "Lock",
+      "value": "Exclusive"
+     }
+    ],
+    "outcome": "The draft remembers the active BO version it was based on."
+   },
+   {
+    "title": "Allow the exclusive lock to expire",
+    "explanation": "Maya stops editing and the configured lock period passes. Her draft remains, but another authorized process can now change the active BO.",
+    "active": [
+     "expire"
+    ],
+    "states": [
+     {
+      "label": "Active item",
+      "value": "10: quantity 2"
+     },
+     {
+      "label": "Active total ETag",
+      "value": "T1"
+     },
+     {
+      "label": "Draft basis",
+      "value": "T1; comment edited"
+     },
+     {
+      "label": "Lock",
+      "value": "Expired"
+     }
+    ],
+    "outcome": "A persistent draft does not imply an indefinite exclusive lock."
+   },
+   {
+    "title": "Change an active child",
+    "explanation": "The background process saves item 10 with quantity 3. Correct total-ETag handling advances the root's whole-BO version to T2 even though Maya edited a header field.",
+    "active": [
+     "change"
+    ],
+    "states": [
+     {
+      "label": "Active item",
+      "value": "10: quantity 3"
+     },
+     {
+      "label": "Active total ETag",
+      "value": "T2"
+     },
+     {
+      "label": "Draft basis",
+      "value": "Still T1"
+     },
+     {
+      "label": "Lock",
+      "value": "No Maya exclusive lock"
+     }
+    ],
+    "outcome": "A child change must count as a BO change."
+   },
+   {
+    "title": "Refuse a stale resume",
+    "explanation": "When Maya resumes, the runtime compares the draft's T1 with active T2. The mismatch prevents resuming this stale draft as though nothing changed; the app must guide recovery from current data.",
+    "active": [
+     "resume"
+    ],
+    "states": [
+     {
+      "label": "Active item",
+      "value": "10: quantity 3"
+     },
+     {
+      "label": "Active total ETag",
+      "value": "T2"
+     },
+     {
+      "label": "Draft basis",
+      "value": "T1 conflicts with T2"
+     },
+     {
+      "label": "Resume",
+      "value": "Rejected for stale active state"
+     }
+    ],
+    "outcome": "Total ETag closes the gap left by an expired draft lock."
+   }
+  ],
+  "takeaway": "Entity ETags protect client updates; a total ETag protects draft transitions against changes anywhere in the BO.",
+  "limitation": "Illustrative exclusive edit draft with a child entity. Automatic total-ETag maintenance needs the documented managed prerequisites; unmanaged implementations must fulfill their own maintenance contract.",
+  "references": [
+   {
+    "title": "SAP: Total ETag",
+    "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/f5e8548c241b43ab82bceec030b5dc9a.html"
+   },
+   {
+    "title": "SAP: Draft runtime",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/draft-runtime"
+   }
+  ]
+ },
+ {
+  "id": "lesson-rap-side-effects",
+  "title": "Refresh a total that the backend already calculated",
+  "questions": [
+   "ADV-07",
+   "SRAP-21",
+   "OPS-06"
+  ],
+  "scenario": "A Fiori draft page shows quantity 2, unit price 15 EUR and total 30 EUR. The user changes quantity to 3.",
+  "goal": "Separate calculation correctness from the consumer's refresh contract.",
+  "nodes": [
+   {
+    "id": "input",
+    "label": "Input"
+   },
+   {
+    "id": "derive",
+    "label": "Derive"
+   },
+   {
+    "id": "metadata",
+    "label": "Refresh rule"
+   },
+   {
+    "id": "reload",
+    "label": "Reload"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Change the source field",
+    "explanation": "The user enters quantity 3 and the page sends the update. Until the response and dependent read complete, the displayed total can still be 30 EUR.",
+    "active": [
+     "input"
+    ],
+    "states": [
+     {
+      "label": "UI quantity",
+      "value": "3"
+     },
+     {
+      "label": "Backend quantity",
+      "value": "Update pending"
+     },
+     {
+      "label": "Backend total",
+      "value": "30 EUR before update"
+     },
+     {
+      "label": "UI total",
+      "value": "30 EUR"
+     }
+    ],
+    "outcome": "A changed input does not itself refresh every dependent field."
+   },
+   {
+    "title": "Verify the backend result",
+    "explanation": "The determination processes quantity 3 and derives 45 EUR in the draft. A backend read confirms 45 EUR, while the page still displays 30 EUR.",
+    "active": [
+     "derive"
+    ],
+    "states": [
+     {
+      "label": "UI quantity",
+      "value": "3"
+     },
+     {
+      "label": "Backend quantity",
+      "value": "3"
+     },
+     {
+      "label": "Backend total",
+      "value": "45 EUR"
+     },
+     {
+      "label": "UI total",
+      "value": "30 EUR"
+     }
+    ],
+    "outcome": "This symptom points to refresh behavior after calculation."
+   },
+   {
+    "title": "Express the dependency to the consumer",
+    "explanation": "The service's supported side-effect metadata says Quantity affects Total. In this corrected configuration, the consumer schedules a read of Total after the source change.",
+    "active": [
+     "metadata"
+    ],
+    "states": [
+     {
+      "label": "UI quantity",
+      "value": "3"
+     },
+     {
+      "label": "Backend total",
+      "value": "45 EUR"
+     },
+     {
+      "label": "Refresh target",
+      "value": "Total requested"
+     },
+     {
+      "label": "UI total",
+      "value": "30 EUR while read pending"
+     }
+    ],
+    "outcome": "Side effects describe which dependent values to reload."
+   },
+   {
+    "title": "Display the returned value",
+    "explanation": "The read returns 45 EUR and the page updates Total. The calculation remains backend logic, and the side effect does not imply that the draft has been activated.",
+    "active": [
+     "reload"
+    ],
+    "states": [
+     {
+      "label": "UI quantity",
+      "value": "3"
+     },
+     {
+      "label": "Backend total",
+      "value": "45 EUR"
+     },
+     {
+      "label": "UI total",
+      "value": "45 EUR"
+     },
+     {
+      "label": "Active persistence",
+      "value": "Unchanged by this refresh"
+     }
+    ],
+    "outcome": "A refreshed screen and a committed business change are different outcomes."
+   }
+  ],
+  "takeaway": "First verify the backend value, then trace side-effect metadata, the dependent request and the displayed response.",
+  "limitation": "Illustrative managed draft Fiori flow. Side-effect syntax, projection exposure and consumer support must match the backend, OData and SAPUI5 versions; the states are not a browser recording.",
+  "references": [
+   {
+    "title": "SAP: RAP side effect",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/rap-side-effect"
+   },
+   {
+    "title": "SAP: Defining an OData service",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/defining-odata-service?version=s4hana_cloud"
+   }
+  ]
+ },
+ {
+  "id": "lesson-rap-custom-query",
+  "title": "Page and count the same authorized result set",
+  "questions": [
+   "ADV-10",
+   "MODEL-03",
+   "MODEL-05"
+  ],
+  "scenario": "A custom query has 12 orders. User Lea may read organization A; six orders belong to A, and four of those are open: 101, 104, 108 and 110.",
+  "goal": "Apply authorization and filtering before counting and paging, with a predictable order.",
+  "nodes": [
+   {
+    "id": "request",
+    "label": "Request"
+   },
+   {
+    "id": "restrict",
+    "label": "Restrict"
+   },
+   {
+    "id": "sort",
+    "label": "Sort"
+   },
+   {
+    "id": "page",
+    "label": "Page"
+   },
+   {
+    "id": "count",
+    "label": "Count"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Read the full query request",
+    "explanation": "Lea requests open orders sorted by CreatedAt, skipping one and taking two, with a total count. The provider records the data and count requirements separately.",
+    "active": [
+     "request"
+    ],
+    "states": [
+     {
+      "label": "Raw rows",
+      "value": "12"
+     },
+     {
+      "label": "User scope",
+      "value": "Organization A"
+     },
+     {
+      "label": "Filter",
+      "value": "Status = Open"
+     },
+     {
+      "label": "Page",
+      "value": "Skip 1, take 2"
+     }
+    ],
+    "outcome": "A custom provider owns the requested query behavior."
+   },
+   {
+    "title": "Form the authorized filtered set",
+    "explanation": "The provider enforces Lea's organization scope and the open-status filter. The resulting set is 101, 104, 108 and 110; unauthorized rows cannot contribute to either data or count.",
+    "active": [
+     "restrict"
+    ],
+    "states": [
+     {
+      "label": "Raw rows",
+      "value": "12"
+     },
+     {
+      "label": "Visible matching rows",
+      "value": "4"
+     },
+     {
+      "label": "Matching IDs",
+      "value": "101, 104, 108, 110"
+     },
+     {
+      "label": "Page",
+      "value": "Not sliced yet"
+     }
+    ],
+    "outcome": "Use the same restriction for every response component."
+   },
+   {
+    "title": "Use deterministic ordering",
+    "explanation": "Orders 104 and 108 have the same CreatedAt value. The effective order includes OrderID as a unique tie-breaker, yielding 101, 104, 108, 110 consistently for this unchanged dataset.",
+    "active": [
+     "sort"
+    ],
+    "states": [
+     {
+      "label": "Visible matching rows",
+      "value": "4"
+     },
+     {
+      "label": "Order",
+      "value": "CreatedAt, then OrderID"
+     },
+     {
+      "label": "Ordered IDs",
+      "value": "101, 104, 108, 110"
+     },
+     {
+      "label": "Page",
+      "value": "Not sliced yet"
+     }
+    ],
+    "outcome": "Equal sort values need a stable tie-breaker."
+   },
+   {
+    "title": "Return only the requested slice",
+    "explanation": "Skipping 101 and taking two returns 104 and 108. The provider does not call these two rows the entire matching population.",
+    "active": [
+     "page"
+    ],
+    "states": [
+     {
+      "label": "Visible matching rows",
+      "value": "4"
+     },
+     {
+      "label": "Returned IDs",
+      "value": "104, 108"
+     },
+     {
+      "label": "Returned rows",
+      "value": "2"
+     },
+     {
+      "label": "Offset",
+      "value": "1"
+     }
+    ],
+    "outcome": "Page length and total count answer different questions."
+   },
+   {
+    "title": "Return the matching count",
+    "explanation": "The count response is 4 under the same authorization and filter. For a count-only request the provider can omit retrieving the page data while retaining those restrictions.",
+    "active": [
+     "count"
+    ],
+    "states": [
+     {
+      "label": "Visible matching rows",
+      "value": "4"
+     },
+     {
+      "label": "Returned IDs",
+      "value": "104, 108"
+     },
+     {
+      "label": "Returned rows",
+      "value": "2"
+     },
+     {
+      "label": "Total count",
+      "value": "4"
+     }
+    ],
+    "outcome": "Neither 12 raw rows nor 2 page rows is the correct count."
+   }
+  ],
+  "takeaway": "Authorize and filter the set, order it deterministically, slice the data and count the unsliced matching set.",
+  "limitation": "Illustrative fixed dataset, not a snapshot guarantee across requests. Concurrent inserts can shift offset pages; verify the source's consistency model, supported filters and paging API on the target release.",
+  "references": [
+   {
+    "title": "SAP: Implementing an unmanaged query",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-unmanaged-query"
+   },
+   {
+    "title": "SAP: Data and count requests",
+    "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/edb412d5647f457289f745c8be1b660d.html"
+   },
+   {
+    "title": "SAP: Access control",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-data-models/cds-authorization-concept"
+   }
+  ]
+ },
+ {
+  "id": "lesson-cds-join-fanout",
+  "title": "Find the extra rows behind a doubled total",
+  "questions": [
+   "CDS-03",
+   "MODEL-06",
+   "MODEL-10"
+  ],
+  "scenario": "Order 4710 has amount 100 EUR. Its product has an English and a German text, and a report joins both texts using only the product key.",
+  "goal": "Repair the relationship's real uniqueness instead of hiding duplicated business rows.",
+  "nodes": [
+   {
+    "id": "base",
+    "label": "Base row"
+   },
+   {
+    "id": "join",
+    "label": "Join"
+   },
+   {
+    "id": "diagnose",
+    "label": "Diagnose"
+   },
+   {
+    "id": "repair",
+    "label": "Repair"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Establish the business grain",
+    "explanation": "The order source contains one row for 4710 and an amount of 100 EUR. The intended report grain is one row per order in the requested language.",
+    "active": [
+     "base"
+    ],
+    "states": [
+     {
+      "label": "Order rows",
+      "value": "1"
+     },
+     {
+      "label": "Texts",
+      "value": "English and German"
+     },
+     {
+      "label": "Report amount",
+      "value": "100 EUR before join"
+     },
+     {
+      "label": "Expected grain",
+      "value": "One row per order"
+     }
+    ],
+    "outcome": "Decide what one result row represents."
+   },
+   {
+    "title": "Observe the row multiplication",
+    "explanation": "Joining on the product alone matches two texts. The result now contains 4710 twice, once per language; summing its amount yields 200 EUR.",
+    "active": [
+     "join"
+    ],
+    "states": [
+     {
+      "label": "Order rows",
+      "value": "2 after join"
+     },
+     {
+      "label": "Texts",
+      "value": "English and German matched"
+     },
+     {
+      "label": "Report amount",
+      "value": "200 EUR"
+     },
+     {
+      "label": "Declared order key",
+      "value": "4710 repeated"
+     }
+    ],
+    "outcome": "Joining a to-many target can repeat the source measure."
+   },
+   {
+    "title": "Reject a cosmetic cardinality fix",
+    "explanation": "Declaring the association to-one would not remove the second matching text. DISTINCT also cannot collapse these two rows while their language or text values differ.",
+    "active": [
+     "diagnose"
+    ],
+    "states": [
+     {
+      "label": "Order rows",
+      "value": "Still 2"
+     },
+     {
+      "label": "Cause",
+      "value": "Language omitted from match"
+     },
+     {
+      "label": "Report amount",
+      "value": "Still 200 EUR"
+     },
+     {
+      "label": "Proposed shortcut",
+      "value": "Rejected"
+     }
+    ],
+    "outcome": "Cardinality describes the data; it does not enforce uniqueness."
+   },
+   {
+    "title": "Make the match fit the grain",
+    "explanation": "The corrected relationship includes the requested English language, and the text key is unique for product plus language. The report returns one order row and its amount returns to 100 EUR.",
+    "active": [
+     "repair"
+    ],
+    "states": [
+     {
+      "label": "Order rows",
+      "value": "1"
+     },
+     {
+      "label": "Texts",
+      "value": "English only"
+     },
+     {
+      "label": "Report amount",
+      "value": "100 EUR"
+     },
+     {
+      "label": "Declared order key",
+      "value": "4710 unique"
+     }
+    ],
+    "outcome": "Fix the join condition and verify the actual target uniqueness."
+   }
+  ],
+  "takeaway": "Trace row counts at each relationship before changing aggregation or adding DISTINCT.",
+  "limitation": "Illustrative text table with uniqueness on product and language. Real text models may also require validity, client or other keys; missing-text behavior depends on inner versus outer join semantics.",
+  "references": [
+   {
+    "title": "SAP: CDS cardinality",
+    "url": "https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/ABENCDS_CARDINALITY_V2.html"
+   }
+  ]
+ },
+ {
+  "id": "lesson-cds-security-stack",
+  "title": "Protect the entity the user actually reads",
+  "questions": [
+   "CDS-07",
+   "MODEL-01",
+   "MODEL-11"
+  ],
+  "scenario": "The base order view restricts users to their sales organization. A newly exposed consumption view and its customer value help accidentally show organization B to a user authorized only for A.",
+  "goal": "Trace each read entry point and preserve authorization across the exposed model.",
+  "nodes": [
+   {
+    "id": "base",
+    "label": "Base check"
+   },
+   {
+    "id": "expose",
+    "label": "Exposed view"
+   },
+   {
+    "id": "protect",
+    "label": "Access rule"
+   },
+   {
+    "id": "valuehelp",
+    "label": "Value help"
+   },
+   {
+    "id": "verify",
+    "label": "Verify"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Check the protected base entity",
+    "explanation": "A normal read of the base entity as user Lea returns order A1 only. The source data also contains B1, which Lea is not allowed to see.",
+    "active": [
+     "base"
+    ],
+    "states": [
+     {
+      "label": "Identity",
+      "value": "Lea: organization A"
+     },
+     {
+      "label": "Base result",
+      "value": "A1"
+     },
+     {
+      "label": "Exposed result",
+      "value": "Not tested"
+     },
+     {
+      "label": "Value help",
+      "value": "Not tested"
+     }
+    ],
+    "outcome": "A passing base read proves only that access path."
+   },
+   {
+    "title": "Test the new exposed entity",
+    "explanation": "Reading the consumption entity returns A1 and B1 in this broken setup. The base DCL is not automatically applied just because another CDS entity selects from the base.",
+    "active": [
+     "expose"
+    ],
+    "states": [
+     {
+      "label": "Identity",
+      "value": "Lea: organization A"
+     },
+     {
+      "label": "Base result",
+      "value": "A1"
+     },
+     {
+      "label": "Exposed result",
+      "value": "A1 and B1: leak"
+     },
+     {
+      "label": "Value help",
+      "value": "Not tested"
+     }
+    ],
+    "outcome": "A view stack is not an automatic authorization stack."
+   },
+   {
+    "title": "Protect the consumption path",
+    "explanation": "The developer adds the applicable access rule, using supported DCL inheritance and field mappings where appropriate. Lea's direct service read now returns only A1.",
+    "active": [
+     "protect"
+    ],
+    "states": [
+     {
+      "label": "Identity",
+      "value": "Lea: organization A"
+     },
+     {
+      "label": "Base result",
+      "value": "A1"
+     },
+     {
+      "label": "Exposed result",
+      "value": "A1"
+     },
+     {
+      "label": "Value help",
+      "value": "Not tested"
+     }
+    ],
+    "outcome": "The exposed entity needs effective read protection."
+   },
+   {
+    "title": "Check the value help independently",
+    "explanation": "The customer value help still reveals customer B-Customer until its own read path is protected. After the correction, Lea sees only the authorized A-Customer choice.",
+    "active": [
+     "valuehelp"
+    ],
+    "states": [
+     {
+      "label": "Identity",
+      "value": "Lea: organization A"
+     },
+     {
+      "label": "Exposed result",
+      "value": "A1"
+     },
+     {
+      "label": "Value help",
+      "value": "A-Customer only"
+     },
+     {
+      "label": "Second leak",
+      "value": "Closed"
+     }
+    ],
+    "outcome": "A secured order list does not automatically secure its helpers."
+   },
+   {
+    "title": "Verify with distinct identities",
+    "explanation": "A separate organization-B test identity sees B1 and B-Customer, while Lea still sees only A data. Tests call the real service and value-help paths without privileged bypass.",
+    "active": [
+     "verify"
+    ],
+    "states": [
+     {
+      "label": "Lea order result",
+      "value": "A1"
+     },
+     {
+      "label": "Lea value help",
+      "value": "A-Customer"
+     },
+     {
+      "label": "B-user order result",
+      "value": "B1"
+     },
+     {
+      "label": "B-user value help",
+      "value": "B-Customer"
+     }
+    ],
+    "outcome": "Check both permitted access and denied cross-organization access."
+   }
+  ],
+  "takeaway": "Protect every actual read entry point, including the exposed entity and value helps; read protection does not replace RAP write authorization.",
+  "limitation": "Illustrative ordinary CDS read paths. Supported inheritance syntax varies with entity type and release; analytical, privileged and custom-query paths need their own documented authorization treatment.",
+  "references": [
+   {
+    "title": "SAP: CDS authorization concept",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-data-models/cds-authorization-concept"
+   },
+   {
+    "title": "SAP: DCL inheritance replacement",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/cds-dcl-define-role-replacing"
+   },
+   {
+    "title": "SAP: Implementing authority checks",
+    "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks"
+   }
+  ]
+ },
+ {
+  "id": "lesson-cloud-api-dependency",
+  "title": "Inspect what a released wrapper actually depends on",
+  "questions": [
+   "CORE-08",
+   "CORE-13",
+   "GOV-03"
+  ],
+  "scenario": "A private-edition extension calls the team's released posting wrapper. The wrapper still calls an internal SAP function with no evidenced release contract or suitable classification.",
+  "goal": "Evaluate the full dependency and intended API use before claiming Clean Core compliance.",
+  "nodes": [
+   {
+    "id": "claim",
+    "label": "Claim"
+   },
+   {
+    "id": "trace",
+    "label": "Trace"
+   },
+   {
+    "id": "verify",
+    "label": "Verify API"
+   },
+   {
+    "id": "decide",
+    "label": "Decide"
+   },
+   {
+    "id": "record",
+    "label": "Record"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Record the current claim",
+    "explanation": "The team labels the extension Level A because its application calls a released custom wrapper. That label has not yet examined the wrapper's SAP dependency.",
+    "active": [
+     "claim"
+    ],
+    "states": [
+     {
+      "label": "App dependency",
+      "value": "Custom posting wrapper"
+     },
+     {
+      "label": "Wrapper release",
+      "value": "Team released"
+     },
+     {
+      "label": "SAP dependency",
+      "value": "Not inspected"
+     },
+     {
+      "label": "Assessment",
+      "value": "Level A claimed, unverified"
+     }
+    ],
+    "outcome": "A public custom interface is only the start of the review."
+   },
+   {
+    "title": "Follow the call to its SAP dependency",
+    "explanation": "The call graph reveals an internal SAP function behind the wrapper. Releasing the wrapper does not grant that function a SAP stability contract or erase its upgrade risk.",
+    "active": [
+     "trace"
+    ],
+    "states": [
+     {
+      "label": "App dependency",
+      "value": "Custom posting wrapper"
+     },
+     {
+      "label": "Wrapper release",
+      "value": "Unchanged"
+     },
+     {
+      "label": "SAP dependency",
+      "value": "Internal function identified"
+     },
+     {
+      "label": "Assessment",
+      "value": "Level A claim unsupported"
+     }
+    ],
+    "outcome": "Encapsulation does not change the underlying dependency's status."
+   },
+   {
+    "title": "Evaluate a real alternative",
+    "explanation": "For this hypothetical target, repository evidence identifies a released local API with C1 and suitable visibility. The team also checks that its posting operation, authorization and transaction behavior meet the requirement.",
+    "active": [
+     "verify"
+    ],
+    "states": [
+     {
+      "label": "Candidate",
+      "value": "Released local posting API"
+     },
+     {
+      "label": "Contract",
+      "value": "C1: local use"
+     },
+     {
+      "label": "Fit",
+      "value": "Operation and LUW reviewed"
+     },
+     {
+      "label": "Assessment",
+      "value": "Replacement candidate accepted"
+     }
+    ],
+    "outcome": "Release purpose and business suitability are separate checks."
+   },
+   {
+    "title": "Replace the dependency and retest",
+    "explanation": "The wrapper is adapted to the suitable released API. A successful post, rejected post and rollback scenario are checked against the new dependency before removing the internal call.",
+    "active": [
+     "decide"
+    ],
+    "states": [
+     {
+      "label": "App dependency",
+      "value": "Same custom interface"
+     },
+     {
+      "label": "SAP dependency",
+      "value": "Released local API"
+     },
+     {
+      "label": "Internal call",
+      "value": "Removed in this scenario"
+     },
+     {
+      "label": "Verification",
+      "value": "Success, rejection, rollback checked"
+     }
+    ],
+    "outcome": "A dependency change still needs behavior evidence."
+   },
+   {
+    "title": "Keep the evidence with the decision",
+    "explanation": "The record identifies the target release, API release state, contract, visibility, dependency scan and test revision. C1 is a use contract, not Clean Core Level C and not a remote API release.",
+    "active": [
+     "record"
+    ],
+    "states": [
+     {
+      "label": "API evidence",
+      "value": "Target-specific record stored"
+     },
+     {
+      "label": "Dependency assessment",
+      "value": "Internal dependency removed"
+     },
+     {
+      "label": "Contract meaning",
+      "value": "C1 local; C2 remote"
+     },
+     {
+      "label": "Remaining review",
+      "value": "Whole extension and delivery checks"
+     }
+    ],
+    "outcome": "Assess the full solution rather than promoting one wrapper in isolation."
+   }
+  ],
+  "takeaway": "Trace transitive dependencies, verify released use on the target and test the business contract; a wrapper alone cannot upgrade an internal API's status.",
+  "limitation": "Hypothetical API names and successful checks are scenario facts, not evidence for a real system. Where no suitable released API exists, assess edition-specific options and an owned exception; do not assume every classic BAPI is Level B.",
+  "references": [
+   {
+    "title": "SAP: Clean Core extensibility best practices",
+    "url": "https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487"
+   },
+   {
+    "title": "SAP: Released APIs and release contracts",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis"
+   },
+   {
+    "title": "SAP: Finding released APIs",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/finding-released-apis-and-deprecated-objects"
+   }
+  ]
+ },
+ {
+  "id": "lesson-rap-reliable-event",
+  "title": "Start an external workflow from a committed approval",
+  "questions": [
+   "ADV-11",
+   "SRAP-18",
+   "SRAP-04"
+  ],
+  "scenario": "Approving order 4720 must start an external workflow. The first approval attempt fails validation; a corrected retry succeeds while event delivery is temporarily delayed.",
+  "goal": "Separate RAP event raising in late save from asynchronous delivery after commit and duplicate-safe consumption.",
+  "nodes": [
+   {
+    "id": "validate",
+    "label": "Validate"
+   },
+   {
+    "id": "raise",
+    "label": "Raise in save"
+   },
+   {
+    "id": "commit",
+    "label": "Commit"
+   },
+   {
+    "id": "deliver",
+    "label": "Deliver"
+   },
+   {
+    "id": "consume",
+    "label": "Consume"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Reject the first attempt before external work",
+    "explanation": "The first approval fails its credit check. Calling the workflow endpoint from a determination could have started work for an approval that never saved, so this design performs no such call.",
+    "active": [
+     "validate"
+    ],
+    "states": [
+     {
+      "label": "Order",
+      "value": "Pending approval"
+     },
+     {
+      "label": "Save",
+      "value": "Rejected by credit check"
+     },
+     {
+      "label": "Event",
+      "value": "No committed event"
+     },
+     {
+      "label": "Workflow",
+      "value": "Not started"
+     }
+    ],
+    "outcome": "Early calculations must not announce a completed business change."
+   },
+   {
+    "title": "Retry and raise the event in supported late save",
+    "explanation": "After correction, the approval passes its checks. In the supported save implementation, the BO raises Approved with order 4720 and business reference APPROVAL-4720-1.",
+    "active": [
+     "raise"
+    ],
+    "states": [
+     {
+      "label": "Order",
+      "value": "Approved in pending save"
+     },
+     {
+      "label": "Save",
+      "value": "Late save running"
+     },
+     {
+      "label": "Event",
+      "value": "Raised through RAP"
+     },
+     {
+      "label": "Workflow",
+      "value": "Not started"
+     }
+    ],
+    "outcome": "Raising a RAP business event occurs within the save lifecycle."
+   },
+   {
+    "title": "Commit the local approval",
+    "explanation": "The local transaction commits successfully. Event infrastructure now has the committed notification for asynchronous delivery; the external workflow has its own transaction and outcome.",
+    "active": [
+     "commit"
+    ],
+    "states": [
+     {
+      "label": "Order",
+      "value": "Approved and committed"
+     },
+     {
+      "label": "Save",
+      "value": "Successful"
+     },
+     {
+      "label": "Event",
+      "value": "Awaiting delivery"
+     },
+     {
+      "label": "Workflow",
+      "value": "Not started"
+     }
+    ],
+    "outcome": "A local commit cannot atomically complete a remote workflow."
+   },
+   {
+    "title": "Recover delayed delivery",
+    "explanation": "The configured event channel is temporarily unavailable, then delivery resumes through its supported retry mechanism. Operations monitor the pending event instead of repeating the approval action.",
+    "active": [
+     "deliver"
+    ],
+    "states": [
+     {
+      "label": "Order",
+      "value": "Approved and committed"
+     },
+     {
+      "label": "Event",
+      "value": "Delivered after retry"
+     },
+     {
+      "label": "Reference",
+      "value": "APPROVAL-4720-1"
+     },
+     {
+      "label": "Workflow",
+      "value": "Request received"
+     }
+    ],
+    "outcome": "Delivery recovery should not create another approval."
+   },
+   {
+    "title": "Make repeated consumption harmless",
+    "explanation": "The workflow consumer records APPROVAL-4720-1 together with its workflow result. In this example a repeated notification finds that record and acknowledges it without creating another workflow.",
+    "active": [
+     "consume"
+    ],
+    "states": [
+     {
+      "label": "Order",
+      "value": "Approved and committed"
+     },
+     {
+      "label": "Notifications",
+      "value": "2 received"
+     },
+     {
+      "label": "Reference",
+      "value": "APPROVAL-4720-1 already processed"
+     },
+     {
+      "label": "Workflow",
+      "value": "Exactly 1 created in this example"
+     }
+    ],
+    "outcome": "Design and test deduplication; do not assume exactly-once delivery."
+   }
+  ],
+  "takeaway": "Raise the event through supported RAP saving, let committed work be delivered asynchronously, and make the consumer safe to retry.",
+  "limitation": "Illustrative event-enabled design with a configured reliable channel and a consumer that atomically records deduplication with its result. Event bindings, delivery guarantees, retries and monitoring must be verified for the target setup; no remote call was executed.",
+  "references": [
+   {
+    "title": "SAP: RAP business events",
+    "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/fc4c71aa50014fd1b43721701471913d/0b925bc556d4491aad395b21ec2566ff.html"
+   },
+   {
+    "title": "SAP: Raising and handling business events",
+    "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/raising-and-handling-business-events"
+   },
+   {
+    "title": "SAP: Expose a RAP business event",
+    "url": "https://developers.sap.com/tutorials/abap-environment-expose-rap-business-events"
+   }
+  ]
+ }
+]

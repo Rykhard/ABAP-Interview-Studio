@@ -35,7 +35,7 @@ function applyReading(saveChoice=false){
 }
 function rememberQuestion(id){lastQuestion=id;saveOptional('abap-studio-last-question-v1',id);}
 function questionActions(q){return `<div class="question-toolbar"><button data-save-question="${q.id}" aria-pressed="${savedQuestions.has(q.id)}" aria-label="${savedQuestions.has(q.id)?'Unsave':'Save'} question ${q.id}">${savedQuestions.has(q.id)?'Saved':'Save question'}</button><button data-practice-question="${q.id}">Practice</button></div>`;}
-function openSavedQuestions(){storeFilters();mode='learn';savedOnly=true;libraryList=true;questionFromSearch=false;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
+function openSavedQuestions(){lessonLibrary=false;storeFilters();mode='learn';savedOnly=true;libraryList=true;questionFromSearch=false;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
 function focusedQuestion(q){
  const section=topicById.get(q.topic).sections.find(x=>x.id===q.section),position=section.questionIds.indexOf(q.id);
  return `<div class="question-routebar"><button id="questionTopic">&larr; All questions in this topic</button><div class="route-controls"><button id="previousQuestion" ${position===0?'disabled':''} aria-label="Previous question">&larr;</button><span class="route-position">${position+1} of ${section.questionIds.length} in this subtopic</span><button id="nextQuestion" ${position===section.questionIds.length-1?'disabled':''} aria-label="Next question">&rarr;</button></div></div>${questionFromSearch?'<div class="question-links"><button id="backSearch">&larr; Search results</button></div>':''}<section class="question-group"><article class="card focused-card" id="q-${q.id}"><div class="meta"><span>${q.id}</span>${questionActions(q)}</div><h3 tabindex="-1">${esc(q.question)}</h3>${questionReferences(q)}<details class="learning-answer" data-answer-id="${q.id}" ${answerIsOpen(q.id)?'open':''}><summary>Answer &amp; examples</summary>${answer(q)}</details></article></section>`;
@@ -52,11 +52,12 @@ function syncCalmView(){
  const main=$('mainContent'),qs=mode==='learn'?filtered():[],exact=mode==='learn'&&qs.length===1&&byId.has($('search').value.trim().toUpperCase());
  main.classList.toggle('single-question',!!exact);
  document.body.classList.toggle('practice-focus',mode==='train'&&!!activeSession&&!activeSession.done);
- main.classList.toggle('is-catalog',mode==='learn'&&!savedOnly&&!libraryList&&!$('topic').value&&!$('search').value.trim());
- $('learnFilters').hidden=mode!=='learn';
+ main.classList.toggle('is-catalog',mode==='learn'&&!lessonLibrary&&!savedOnly&&!libraryList&&!$('topic').value&&!$('search').value.trim());
+ $('learnFilters').hidden=mode!=='learn'||lessonLibrary;
  $('filterSummary').textContent=$('search').value&&!exact?'· '+$('search').value:'';
+ if(lessonLibrary&&mode==='learn'){$('heading').textContent='Guided lessons';$('intro').textContent='Follow a concrete example. See the process stage and data change at each step.';}
  if(savedOnly&&mode==='learn'){$('heading').textContent='Saved questions';$('intro').textContent='Your personal collection. Open a question to read, or practice the collection aloud.';}
- $('savedQuestionsNav').onclick=openSavedQuestions;
+ $('savedQuestionsNav').onclick=openSavedQuestions;$('guidedLessonsNav').onclick=openLessonLibrary;
  document.querySelectorAll('[data-open-question]').forEach(a=>a.onclick=e=>{e.preventDefault();openQuestion(a.dataset.openQuestion);});
  if($('continueReading'))$('continueReading').onclick=()=>openQuestion(lastQuestion);
 }
@@ -72,10 +73,10 @@ $('readingDialog').addEventListener('close',()=>$('readingOptions').focus({preve
 $('readingSize').onchange=()=>{readingPreference.size=$('readingSize').value;applyReading(true);};
 $('focusReading').onchange=()=>{readingPreference.focus=$('focusReading').checked;applyReading(true);};
 $('systemTheme').onchange=()=>applyTheme($('systemTheme').checked?'system':document.documentElement.dataset.theme,true,true);
-document.querySelectorAll('[data-reading-layout]').forEach(button=>button.onclick=()=>{readingPreference.layout=button.dataset.readingLayout;applyReading(true);});
+document.querySelectorAll('[data-reading-layout]').forEach(button=>button.onclick=()=>{readingPreference.layout=button.dataset.readingLayout;studyViewChoices.clear();saveOptional('abap-studio-study-views-v1','{}');applyReading(true);render();});
 $('view').addEventListener('click',event=>{
  const saveButton=event.target.closest('[data-save-question]');
- if(saveButton){const id=saveButton.dataset.saveQuestion;if(savedQuestions.has(id))savedQuestions.delete(id);else savedQuestions.add(id);saveBookmarks();saveButton.setAttribute('aria-pressed',String(savedQuestions.has(id)));saveButton.setAttribute('aria-label',(savedQuestions.has(id)?'Unsave':'Save')+' question '+id);saveButton.textContent=savedQuestions.has(id)?'Saved':'Save question';nav();$('savedQuestionsNav').onclick=openSavedQuestions;if(savedOnly){render();$('savedQuestionsNav').focus();}return;}
+ if(saveButton){const id=saveButton.dataset.saveQuestion;if(savedQuestions.has(id))savedQuestions.delete(id);else savedQuestions.add(id);saveBookmarks();saveButton.setAttribute('aria-pressed',String(savedQuestions.has(id)));saveButton.setAttribute('aria-label',(savedQuestions.has(id)?'Unsave':'Save')+' question '+id);saveButton.textContent=savedQuestions.has(id)?'Saved':'Save question';nav();$('savedQuestionsNav').onclick=openSavedQuestions;$('guidedLessonsNav').onclick=openLessonLibrary;if(savedOnly){render();$('savedQuestionsNav').focus();}return;}
  const practiceButton=event.target.closest('[data-practice-question]');
  if(practiceButton){const q=byId.get(practiceButton.dataset.practiceQuestion);storeFilters();prefs.train={search:q.id,topic:q.topic,section:q.section,scope:'all',selection:'all'};mode='train';savedOnly=false;activeSession=null;restoreFilters();beginPractice([q.id],'recall');}
 });
