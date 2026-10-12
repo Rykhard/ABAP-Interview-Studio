@@ -15,14 +15,14 @@ For offline use, download this repository, keep its folders together and open `S
 - Browse subjects and subtopics with all difficulty levels together. Read plain-English answers followed by concrete examples, common mistakes, references and compact diagrams with an enlarged viewer.
 - Open a question's code example, select a step to highlight its lines, and read what happens. Use the larger code view or copy the excerpt. Process diagrams remain available beside code where useful. Teaching fragments state their prerequisites and link to primary sources.
 - Switch between light and dark with the animated sun/moon control. Reading preferences include system appearance, larger answer text and a focus mode that hides topic navigation. Theme and reading choices stay in this browser. Choose Balanced or Larger examples in Reading to adjust the answer layout.
-- Save questions into a personal collection, resume the last opened question and move between neighboring questions in a subtopic. Progress exports include saved questions.
+- Save questions into a personal collection, resume the last opened question and move between neighboring questions in a subtopic.
 - Follow structured explanations such as the RAP save sequence one step at a time, or expand all steps together.
 - Show all answers / Questions only has an explicit selected state and remembers your preference.
 - Search the whole library with Ctrl+K / Cmd+K. The separate text filter narrows the current view.
 - Interview practice covers every question: answer aloud, reveal the model and self-rate 0-3.
 - Multiple-choice practice has four authored options with explanations. First-correct-concept XP stays separate from spoken readiness. RAP contains 52 study questions, of which 24 have multiple-choice challenges.
 - Search during practice and use Resume practice to return to the same session within the page. Reload preserves saved progress, not an unfinished session queue.
-- Downloads & progress contains PDF/Anki resources and progress export/import. Progress stays in your browser. Export from the offline app and import on the hosted site to transfer it; devices do not synchronize automatically.
+- Progress and saved questions stay in this browser; devices do not synchronize automatically. Downloadable study materials remain in the repository.
 
 ## Study formats
 

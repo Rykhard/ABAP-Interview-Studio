@@ -13,7 +13,7 @@ function validatedQuizProgress(value){
 }
 let quizProgress=emptyQuizProgress();
 try{const stored=localStorage.getItem('abap-study-quiz-v1');if(stored)quizProgress=validatedQuizProgress(JSON.parse(stored));}catch{/* In-memory quiz remains usable if stored data is unavailable. */}
-function saveQuiz(){try{localStorage.setItem('abap-study-quiz-v1',JSON.stringify(quizProgress));}catch{$('notice').textContent='Quiz progress is in memory only. Export it before closing.';}}
+function saveQuiz(){try{localStorage.setItem('abap-study-quiz-v1',JSON.stringify(quizProgress));}catch{$('notice').textContent='Quiz progress is in memory only and will be lost when this page closes.';}}
 
 function practicePool(kind=practiceKind,applySelection=true){
  return filtered(false).filter(q=>(kind!=='quiz'||quizByQuestion.has(q.id))&&(!applySelection||$('selection').value==='all'||questionStatus(q,kind)===$('selection').value));
