@@ -1,0 +1,58 @@
+[
+  {
+    "id": "QUIZ-SQL-16",
+    "questionId": "SQL-16",
+    "prompt": "Customer A has three sales with quantities 100, 100 and 50. The report must keep each sale and show the customer total beside it. Which result is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Three rows, each with total 250, using SUM OVER PARTITION BY customer",
+        "explanation": "The window adds the partition total without collapsing the sale rows."
+      },
+      {
+        "id": "b",
+        "text": "One row with total 250, using GROUP BY customer",
+        "explanation": "The total is correct, but GROUP BY removes the required sale-level detail."
+      },
+      {
+        "id": "c",
+        "text": "Three rows with totals 100, 200 and 250, using an ordered running frame",
+        "explanation": "Those are running totals; the report asks for the whole customer total on every row."
+      },
+      {
+        "id": "d",
+        "text": "Three rows with ranks 1, 1 and 3, using RANK by quantity",
+        "explanation": "Ranking describes relative positions, not the sum requested by the report."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-SQL-17",
+    "questionId": "SQL-17",
+    "prompt": "A report reads 1,000 rows per package, then appends each package to lt_all for later processing. Why can memory still grow with the full result?",
+    "options": [
+      {
+        "id": "a",
+        "text": "lt_all retains every package, so the source rows still accumulate",
+        "explanation": "PACKAGE SIZE limits the current target delivery, not the separate growing result table."
+      },
+      {
+        "id": "b",
+        "text": "PACKAGE SIZE always means 1,000 bytes rather than rows",
+        "explanation": "PACKAGE SIZE specifies rows in each target delivery; row width and retained objects also affect memory."
+      },
+      {
+        "id": "c",
+        "text": "Changing INTO TABLE to APPENDING TABLE will release prior rows",
+        "explanation": "APPENDING does the opposite: it retains and extends the target contents."
+      },
+      {
+        "id": "d",
+        "text": "COMMIT WORK after each package safely clears lt_all and keeps the cursor open",
+        "explanation": "COMMIT does not clear that internal table and closes database cursors, which can break the ongoing SELECT loop."
+      }
+    ],
+    "correctOption": "a"
+  }
+]

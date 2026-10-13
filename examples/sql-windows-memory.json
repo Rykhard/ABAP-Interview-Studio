@@ -1,0 +1,185 @@
+[
+  {
+    "id": "sql-window-total-versus-group",
+    "questions": [
+      "SQL-16"
+    ],
+    "language": "ABAP",
+    "context": "Method-body ABAP SQL excerpts on a release supporting these window expressions. Prerequisite: your own permitted client-dependent table zstudy_sales with sale_id INT4 (unique within the client), customer_id CHAR(1), quantity INT4. The current client has exactly four fixture rows: (1,A,100), (2,A,100), (3,A,50), (4,B,80); all quantities use the same unit. Table creation and fixture loading are not included.",
+    "code": "SELECT FROM zstudy_sales\n  FIELDS sale_id, customer_id, quantity,\n    SUM( quantity ) OVER( PARTITION BY customer_id ) AS total\n  ORDER BY customer_id, sale_id\n  INTO TABLE @DATA(lt_details).\n\nSELECT FROM zstudy_sales\n  FIELDS customer_id, SUM( quantity ) AS total\n  GROUP BY customer_id\n  ORDER BY customer_id\n  INTO TABLE @DATA(lt_totals).",
+    "references": [
+      {
+        "title": "SAP ABAP SQL: window expressions and worked examples",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md#window-expressions"
+      },
+      {
+        "title": "SAP ABAP Keyword Documentation: window functions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/window-function"
+      }
+    ],
+    "title": "Keep detail rows or return groups",
+    "intro": "Choose the output shape before choosing the function.",
+    "outcome": "lt_details has four rows: A rows each show 250, B shows 80. lt_totals has two rows: A/250 and B/80.",
+    "caveat": "The table intentionally contains only the tiny fixture. Production selections must restrict the intended population and enforce access; direct table reads do not gain CDS DCL automatically.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3
+        ],
+        "label": "Keep every sale",
+        "explanation": "The partition total repeats alongside each detail row; PARTITION BY does not collapse them."
+      },
+      {
+        "lines": [
+          8,
+          9
+        ],
+        "label": "Return one total per customer",
+        "explanation": "GROUP BY removes the sale-level detail from this result."
+      }
+    ]
+  },
+  {
+    "id": "sql-window-running-frame",
+    "questions": [
+      "SQL-16"
+    ],
+    "language": "ABAP",
+    "context": "Method-body ABAP SQL excerpts on a release supporting these window expressions. Prerequisite: your own permitted client-dependent table zstudy_sales with sale_id INT4 (unique within the client), customer_id CHAR(1), quantity INT4. The current client has exactly four fixture rows: (1,A,100), (2,A,100), (3,A,50), (4,B,80); all quantities use the same unit. Table creation and fixture loading are not included.",
+    "code": "SELECT FROM zstudy_sales\n  FIELDS sale_id, customer_id, quantity,\n    SUM( quantity ) OVER(\n      PARTITION BY customer_id\n      ORDER BY sale_id\n      ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    ) AS running_total\n  ORDER BY customer_id, sale_id\n  INTO TABLE @DATA(lt_running).",
+    "references": [
+      {
+        "title": "SAP ABAP SQL: window expressions and worked examples",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md#window-expressions"
+      },
+      {
+        "title": "SAP ABAP Keyword Documentation: window functions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/window-function"
+      }
+    ],
+    "title": "Make the running-total frame explicit",
+    "intro": "Each row includes its predecessors in that customer partition.",
+    "outcome": "For A, sale IDs 1,2,3 show 100,200,250. B starts a separate partition at 80.",
+    "caveat": "ROWS counts rows, not calendar days. The unique sale_id makes this fixture order deterministic. A real business timeline may need a date plus a unique tie-breaker.",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          5,
+          6
+        ],
+        "label": "Define contributing rows",
+        "explanation": "Reset by customer, order by sale ID, then include the first row through the current row."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9
+        ],
+        "label": "Separate calculation and presentation",
+        "explanation": "running_total is calculated in the window; the outer ORDER BY defines the output order."
+      }
+    ]
+  },
+  {
+    "id": "sql-window-ranking-ties",
+    "questions": [
+      "SQL-16"
+    ],
+    "language": "ABAP",
+    "context": "Method-body ABAP SQL excerpts on a release supporting these window expressions. Prerequisite: your own permitted client-dependent table zstudy_sales with sale_id INT4 (unique within the client), customer_id CHAR(1), quantity INT4. The current client has exactly four fixture rows: (1,A,100), (2,A,100), (3,A,50), (4,B,80); all quantities use the same unit. Table creation and fixture loading are not included.",
+    "code": "SELECT FROM zstudy_sales\n  FIELDS sale_id, customer_id, quantity,\n    ROW_NUMBER( ) OVER( PARTITION BY customer_id\n      ORDER BY quantity DESCENDING, sale_id ) AS position,\n    RANK( ) OVER( PARTITION BY customer_id\n      ORDER BY quantity DESCENDING ) AS rank_with_gaps,\n    DENSE_RANK( ) OVER( PARTITION BY customer_id\n      ORDER BY quantity DESCENDING ) AS dense_position\n  ORDER BY customer_id, quantity DESCENDING, sale_id\n  INTO TABLE @DATA(lt_ranks).",
+    "references": [
+      {
+        "title": "SAP ABAP SQL: window expressions and worked examples",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md#window-expressions"
+      },
+      {
+        "title": "SAP ABAP Keyword Documentation: window functions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/window-function"
+      }
+    ],
+    "title": "Decide what equal values mean",
+    "intro": "Give rows unique positions or let equal quantities share a rank.",
+    "outcome": "For A quantities 100,100,50: position = 1,2,3; rank_with_gaps = 1,1,3; dense_position = 1,1,2. B starts at 1 for each function.",
+    "caveat": "Only ROW_NUMBER uses sale_id inside its window ordering. Adding that unique key to RANK/DENSE_RANK would remove the intended quantity ties.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4
+        ],
+        "label": "Break ties for a unique position",
+        "explanation": "The unique sale_id stabilizes which equal-quantity row gets position 1 versus 2."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Preserve ties for a business rank",
+        "explanation": "The rank orders only by quantity, so equal quantities share a rank. RANK leaves a gap afterward; DENSE_RANK does not."
+      }
+    ]
+  },
+  {
+    "id": "sql-bounded-package-processing",
+    "questions": [
+      "SQL-17"
+    ],
+    "language": "ABAP",
+    "title": "Keep one package, not every package",
+    "intro": "The scalar result survives; the individual source rows do not accumulate.",
+    "context": "Method-body excerpt using the same own client-dependent zstudy_sales fixture as SQL-16: (1,A,100), (2,A,100), (3,A,50), (4,B,80), with sale_id INT4 and quantity INT4. Only sale_id and quantity are selected. The example sum fits INT8. Database setup, access checks and production filters are prerequisites.",
+    "code": "CONSTANTS co_package_size TYPE i VALUE 2.\nDATA total_quantity TYPE int8.\nSELECT FROM zstudy_sales\n  FIELDS sale_id, quantity\n  INTO TABLE @DATA(lt_package) PACKAGE SIZE @co_package_size.\n  LOOP AT lt_package INTO DATA(ls_sale).\n    total_quantity += ls_sale-quantity.\n  ENDLOOP.\nENDSELECT.\nFREE lt_package.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3,
+          4,
+          5
+        ],
+        "label": "Replace the package contents",
+        "explanation": "INTO TABLE delivers the current package, unlike APPENDING TABLE. The package size is a teaching value, not a universally optimal setting."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "label": "Retain only the required result",
+        "explanation": "Each row contributes to one scalar total. No lt_all table, copied packages or long-lived row references are retained."
+      },
+      {
+        "lines": [
+          9,
+          10
+        ],
+        "label": "Finish before releasing the target",
+        "explanation": "No COMMIT occurs inside the open SELECT loop. FREE releases the target table after reading; it does not prove that the database query used bounded memory."
+      }
+    ],
+    "outcome": "Four fixture rows are processed in two packages. The final total_quantity is 330; only the current package and scalar accumulation are retained during the loop.",
+    "caveat": "For this pure total, SELECT SUM on the database is simpler and avoids transferring all rows; the loop only illustrates package lifetime for processing that genuinely needs rows. This example has no FOR ALL ENTRIES. Deep output, retained packages or FAE materialization can still increase total memory.",
+    "references": [
+      {
+        "title": "SAP ABAP SQL: target packages",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md#specifying-the-target-and-related-additions"
+      },
+      {
+        "title": "SAP SELECT INTO: PACKAGE SIZE restrictions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/select-into-appending"
+      },
+      {
+        "title": "SAP ABAP 7.52: PACKAGE SIZE and FOR ALL ENTRIES restrictions",
+        "url": "https://help.sap.com/doc/abapdocu_752_index_htm/7.52/en-US/abapinto_clause.htm"
+      }
+    ]
+  }
+]

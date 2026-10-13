@@ -1,6 +1,6 @@
 # Choose a learning route
 
-The studio contains 350 questions across 10 topics, 121 authored multiple-choice
+The studio contains 353 questions across 10 topics, 123 authored multiple-choice
 challenges and 28 guided lessons. It is a library you can explore freely, with
 short recommended paths when you want a starting point. A path introduces a
 topic; it does not cover every question or establish production readiness.
@@ -71,7 +71,7 @@ assuming it is a complete program or valid for your SAP release.
 
 Interview practice lets you answer aloud, reveal the model answer and self-rate
 your explanation. It does not record a microphone or grade speech. Multiple-choice
-practice is available for the 121 questions with authored choices; it gives
+practice is available for the 123 questions with authored choices; it gives
 feedback after submission. The two formats measure different things: recognizing
 an option does not prove you can explain the decision without prompts.
 

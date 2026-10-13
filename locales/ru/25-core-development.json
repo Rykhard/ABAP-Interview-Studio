@@ -46,21 +46,39 @@
     {
       "title": "OpenTelemetry: Log timestamps",
       "url": "https://opentelemetry.io/docs/specs/otel/logs/data-model/"
+    },
+    {
+      "title": "SAP Learning: roles and authorization profiles",
+      "url": "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles"
+    },
+    {
+      "title": "SAP BTP ABAP environment: authorization basics",
+      "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/authorization-basics"
     }
   ],
   "questions": [
     {
       "id": "DEVCORE-01",
       "level": "Core",
-      "question": "Что проверяет AUTHORITY-CHECK и что делать при отказе?",
-      "answer": "AUTHORITY-CHECK проверяет, есть ли у текущего пользователя нужные значения для объекта авторизации. Сразу проверь sy-subrc: ноль означает успех; любой другой результат должен остановить защищаемую операцию. Сама инструкция доступ не блокирует. Проверяй реальное действие и организационные значения, а не только факт входа пользователя в систему.",
-      "detail": "Пользователь может просматривать заказы компании 1000, но не изменять их. Проверка ACTVT 02 и BUKRS 1000 по объекту авторизации приложения вернёт отказ. Приложение должно отклонить изменение до записи данных. Проверка активности просмотра 03 ответила бы на другой вопрос.\n\nОбъект и его поля должны уже существовать и соответствовать модели безопасности приложения. Организационное значение бери из доверенных данных, а не из непроверенного утверждения клиента. До проверки результата не выполняй другую инструкцию, которая меняет sy-subrc. Проверь разрешённый и запрещённый сценарии; скрытая кнопка не заменяет проверку.",
+      "question": "Как связаны roles, authorization objects и AUTHORITY-CHECK?",
+      "answer": "Администратор назначает пользователю роли с нужными разрешениями. Authorization object объединяет поля для проверки: например, действие и компанию. AUTHORITY-CHECK сравнивает запрошенные значения с разрешениями текущего пользователя. Сразу проверь sy-subrc: ноль означает успех, любой другой результат должен остановить защищённую операцию. Сам оператор сообщает результат, но не запрещает действие за тебя.",
+      "detail": "Пользователь может просматривать заказы компании 1000, но не изменять их. Проверка ACTVT 02 и BUKRS 1000 по объекту авторизации приложения вернёт отказ. Приложение должно отклонить изменение до записи данных. Проверка активности просмотра 03 ответила бы на другой вопрос.\n\nОбъект и его поля должны уже существовать и соответствовать модели безопасности приложения. Организационное значение бери из доверенных данных, а не из непроверенного утверждения клиента. До проверки результата не выполняй другую инструкцию, которая меняет sy-subrc. Проверь разрешённый и запрещённый сценарии; скрытая кнопка не заменяет проверку.\n\nВ классическом AS ABAP администратор поддерживает authorizations в PFCG roles и создаёт authorization profiles для назначенных пользователей. В SAP BTP ABAP environment используются IAM apps, business catalogs и business roles с нужными restrictions. Способ настройки зависит от продукта; PFCG нельзя считать универсальным экраном для любого Cloud-сценария. Одна роль с названием Approver ещё не доказывает наличие нужных значений полей.\n\nВ RAP отдельно проверь право использовать сервис, чтение через CDS DCL и разрешения на операции через global/instance authorization. Эти слои дополняют друг друга. Открытая Fiori tile не даёт автоматически доступ ко всем заказам, а разрешённое чтение не разрешает Submit. Подробности этих границ есть в ADV-02 и TEST-06.",
       "pitfall": "AUTHORITY-CHECK только сообщает результат. Если проигнорировать ненулевой sy-subrc, защищаемая операция останется доступной.",
       "references": [
         {
           "title": "SAP Learning: AUTHORITY-CHECK",
           "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/using-the-authority-check-statement_a60b8989-12c1-4764-89b2-e168feae035d",
           "note": "Поясняет поля объекта, немедленную проверку sy-subrc и обязанность приложения отказать в доступе. Пользовательский объект в примере — явно указанная предпосылка."
+        },
+        {
+          "title": "SAP Learning: roles and authorization profiles",
+          "url": "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles",
+          "note": "Управление ролями в классическом AS ABAP; не универсальная процедура для Cloud."
+        },
+        {
+          "title": "SAP BTP ABAP environment: authorization basics",
+          "url": "https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/authorization-basics",
+          "note": "IAM apps, catalogs, roles и restrictions для business users; проверки чтения и операций остаются отдельными."
         }
       ]
     },

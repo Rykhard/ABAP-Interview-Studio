@@ -1480,21 +1480,27 @@ Joining two order headers to three items repeats order 10's total, inflating a n
 
 </details>
 
-## SQL-10 How do ST05, SAT, SQL Monitor, and database plans complement each other?
+## SQL-10 Which tools help locate ABAP, database, and memory performance problems?
 
 **Level:** Advanced
 
-**Short answer:** ST05 shows database accesses for a traced execution. SAT shows where ABAP runtime is spent and which calls are made. SQL Monitor helps find costly SQL across a wider workload. A database plan shows how a particular statement is executed. I choose the tool for the suspected problem and use the tools and permissions available in the target environment.
+**Short answer:** Start with the slow business request and locate where its time or memory goes. Where available, ST03N/STAD help identify costly workloads or requests, SAT traces ABAP execution, and ST05 traces SQL. ST12 combines relevant traces. SQL Monitor helps prioritize SQL across a wider workload; a database plan explains one statement. Memory analysis needs its own evidence.
 
-**Reasoning and example:** A report is slow, but one SQL statement does not explain the whole delay. I first find whether time is spent in ABAP processing, database calls or another dependency. Then I trace a representative run and compare execution count, rows and total time. A statement taking a small amount of time can dominate if it runs thousands of times.
+**Reasoning and example:** A report is slow, but the longest individual SQL statement may not dominate total time. Use workload/request statistics to choose a representative case, then trace it. Compare call count, transferred rows and total time: a short statement called thousands of times may be the real problem. SQLM can collect a broader SQL profile; SWLT can combine runtime evidence and static findings where supported. Its low monitoring overhead is not zero or a guarantee for every workload: scope collection and permissions appropriately.
 
-For expensive database work, the execution plan helps explain scans, joins and large intermediate results. I measure again after a focused change. Classic ST05 and SAT access is not available in every cloud environment, so I use supported ADT or monitoring tools there rather than promise the same transaction codes everywhere.
+For a memory dump, inspect ST22 and compare Memory Inspector snapshots at comparable phases. Look for growing internal tables, retained copies and objects. A database execution plan instead helps explain scans, joins, sorts and large database intermediates. Change one measured bottleneck, then verify the same result, runtime and peak memory again.
+
+Tool access depends on the deployment. Do not promise classic transactions in every ABAP Cloud environment. Use supported ADT profiling/SQL analysis and the available monitoring apps. In SAP BTP ABAP environment, administrator SQL tracing can be started through Capture Request Statistics; detailed trace evaluation uses the Technical Monitoring Cockpit. The exact role, release and tool entry point must be checked.
 
 **Avoid this mistake:** The slowest individual SQL statement may not be the largest total cost if another cheap statement is executed thousands of times.
 
 **Read and verify this answer:**
 
 - [SAP analyzing SQL statements in ADT](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/analyzing-sql-statements) - Cloud-tool reference for SQL investigation; classic ST05/SAT access depends on the target landscape.
+- [SAP BTP ABAP environment: tracing SQL activities](https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/tracing-sql-activities-for-administrators) - Cloud tool entry points and administrator role requirements.
+- [SAP SQL Monitor](https://help.sap.com/docs/SAP_NETWEAVER_740/a24970c68fcf4770a64bf9a78e3719e2/f1be2e59f44d448180703d6a497ec1e2.html) - Understand workload collection and monitoring overhead.
+- [SAP Memory Inspector concepts](https://help.sap.com/docs/ABAP_PLATFORM_NEW/ba879a6e2ea04d9bb94c7ccd7cdac446/8884fb5269d34838a1f119b41dcdbc57.html) - Snapshots describe retained memory of the ABAP internal session.
+- [SAP analysis tools overview](https://help.sap.com/docs/SUPPORT_CONTENT/srm/3362937177.html?locale=en-US&q=SLG1&state=PRODUCTION&version=1.0) - Classic tools apply only where available and authorized.
 
 <details>
 <summary>Visual: Performance diagnosis</summary>

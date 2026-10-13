@@ -2,7 +2,7 @@
 
 An English/Russian interview preparation app focused on ABAP Cloud, RAP and Clean Core, with classic ABAP, OO patterns, CDS, SQL/HANA, integration and operations.
 
-**350 study questions, 121 authored multiple-choice challenges, 70 teaching visuals and 10 topics.** ABAP Cloud, RAP and Clean Core form the largest curriculum track: 165 questions. Content reviewed 13 October 2026.
+**353 study questions, 123 authored multiple-choice challenges, 70 teaching visuals and 10 topics.** ABAP Cloud, RAP and Clean Core form the largest curriculum track: 165 questions. Content reviewed 13 October 2026.
 
 ## Open the app
 
@@ -54,15 +54,15 @@ Choose one full Anki edition; the senior deck is a subset rather than extra uniq
 | Clean Core & extensibility | 36 |
 | CDS modeling & security | 30 |
 | ABAP, OO & patterns | 72 |
-| SQL & HANA performance | 18 |
+| SQL & HANA performance | 20 |
 | Protocols & integration | 60 |
 | Testing, delivery & operations | 32 |
 | Enhancements & workflow | 15 |
-| Interview stories & judgment | 6 |
+| Interview stories & judgment | 7 |
 
 ## Evidence
 
-Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [Core and Applied coverage review](review/Core_Applied_Coverage_2026_10_13.md), [180-prompt comparison](review/Attachment_Coverage_2026_10_13.md), [October content and reading review](review/Content_Review_2026_10.md), [plain-language revision](review/Plain_Language_Review.md), [earlier content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
+Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [window functions, memory and estimation review](review/Windows_Memory_Estimation_2026_10_13.md), [Core and Applied coverage review](review/Core_Applied_Coverage_2026_10_13.md), [180-prompt comparison](review/Attachment_Coverage_2026_10_13.md), [October content and reading review](review/Content_Review_2026_10.md), [plain-language revision](review/Plain_Language_Review.md), [earlier content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
 
 ## Build and deploy
 

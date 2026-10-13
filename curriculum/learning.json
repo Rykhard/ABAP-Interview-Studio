@@ -1072,6 +1072,15 @@
     },
     "DEVCORE-05": {
       "level": "Core"
+    },
+    "SQL-16": {
+      "level": "Core"
+    },
+    "SQL-17": {
+      "level": "Applied"
+    },
+    "STORY-07": {
+      "level": "Applied"
     }
   },
   "paths": [

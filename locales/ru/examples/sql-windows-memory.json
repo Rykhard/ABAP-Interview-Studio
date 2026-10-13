@@ -1,0 +1,185 @@
+[
+  {
+    "id": "sql-window-total-versus-group",
+    "questions": [
+      "SQL-16"
+    ],
+    "language": "ABAP",
+    "context": "Фрагменты ABAP SQL для тела метода в версии с поддержкой этих оконных выражений. Предусловие: собственная разрешённая client-dependent таблица zstudy_sales с sale_id INT4 (уникален в клиенте), customer_id CHAR(1), quantity INT4. В текущем клиенте ровно четыре учебные строки: (1,A,100), (2,A,100), (3,A,50), (4,B,80); единица quantity одинаковая. Создание и заполнение таблицы не показаны.",
+    "code": "SELECT FROM zstudy_sales\n  FIELDS sale_id, customer_id, quantity,\n    SUM( quantity ) OVER( PARTITION BY customer_id ) AS total\n  ORDER BY customer_id, sale_id\n  INTO TABLE @DATA(lt_details).\n\nSELECT FROM zstudy_sales\n  FIELDS customer_id, SUM( quantity ) AS total\n  GROUP BY customer_id\n  ORDER BY customer_id\n  INTO TABLE @DATA(lt_totals).",
+    "references": [
+      {
+        "title": "SAP ABAP SQL: window expressions and worked examples",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md#window-expressions"
+      },
+      {
+        "title": "SAP ABAP Keyword Documentation: window functions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/window-function"
+      }
+    ],
+    "title": "Сохранить детали или вернуть группы",
+    "intro": "Сначала выберите форму результата, затем функцию.",
+    "outcome": "В lt_details четыре строки: у каждой строки A итог 250, у B — 80. В lt_totals две строки: A/250 и B/80.",
+    "caveat": "Таблица намеренно содержит только маленький fixture. Реальный query должен ограничивать выборку и проверять доступ; прямое чтение таблицы не получает CDS DCL автоматически.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3
+        ],
+        "label": "Сохранить каждую продажу",
+        "explanation": "Итог partition повторяется рядом с деталями; PARTITION BY не объединяет их в одну строку."
+      },
+      {
+        "lines": [
+          8,
+          9
+        ],
+        "label": "Вернуть итог клиента",
+        "explanation": "GROUP BY убирает детализацию по отдельным продажам из этого результата."
+      }
+    ]
+  },
+  {
+    "id": "sql-window-running-frame",
+    "questions": [
+      "SQL-16"
+    ],
+    "language": "ABAP",
+    "context": "Фрагменты ABAP SQL для тела метода в версии с поддержкой этих оконных выражений. Предусловие: собственная разрешённая client-dependent таблица zstudy_sales с sale_id INT4 (уникален в клиенте), customer_id CHAR(1), quantity INT4. В текущем клиенте ровно четыре учебные строки: (1,A,100), (2,A,100), (3,A,50), (4,B,80); единица quantity одинаковая. Создание и заполнение таблицы не показаны.",
+    "code": "SELECT FROM zstudy_sales\n  FIELDS sale_id, customer_id, quantity,\n    SUM( quantity ) OVER(\n      PARTITION BY customer_id\n      ORDER BY sale_id\n      ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    ) AS running_total\n  ORDER BY customer_id, sale_id\n  INTO TABLE @DATA(lt_running).",
+    "references": [
+      {
+        "title": "SAP ABAP SQL: window expressions and worked examples",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md#window-expressions"
+      },
+      {
+        "title": "SAP ABAP Keyword Documentation: window functions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/window-function"
+      }
+    ],
+    "title": "Явно задать frame накопительного итога",
+    "intro": "В каждой строке учитываются её предшественники внутри partition клиента.",
+    "outcome": "Для A строки sale_id 1,2,3 показывают 100,200,250. У B отдельная partition начинается с 80.",
+    "caveat": "ROWS считает строки, а не календарные дни. Уникальный sale_id делает порядок примера определённым. Реальная временная последовательность может требовать дату и уникальный ключ при равенстве.",
+    "highlights": [
+      {
+        "lines": [
+          4,
+          5,
+          6
+        ],
+        "label": "Задать участвующие строки",
+        "explanation": "Начать заново для клиента, упорядочить по sale ID и включить строки от первой до текущей."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9
+        ],
+        "label": "Разделить вычисление и показ",
+        "explanation": "running_total вычисляется внутри окна; внешний ORDER BY задаёт порядок результата."
+      }
+    ]
+  },
+  {
+    "id": "sql-window-ranking-ties",
+    "questions": [
+      "SQL-16"
+    ],
+    "language": "ABAP",
+    "context": "Фрагменты ABAP SQL для тела метода в версии с поддержкой этих оконных выражений. Предусловие: собственная разрешённая client-dependent таблица zstudy_sales с sale_id INT4 (уникален в клиенте), customer_id CHAR(1), quantity INT4. В текущем клиенте ровно четыре учебные строки: (1,A,100), (2,A,100), (3,A,50), (4,B,80); единица quantity одинаковая. Создание и заполнение таблицы не показаны.",
+    "code": "SELECT FROM zstudy_sales\n  FIELDS sale_id, customer_id, quantity,\n    ROW_NUMBER( ) OVER( PARTITION BY customer_id\n      ORDER BY quantity DESCENDING, sale_id ) AS position,\n    RANK( ) OVER( PARTITION BY customer_id\n      ORDER BY quantity DESCENDING ) AS rank_with_gaps,\n    DENSE_RANK( ) OVER( PARTITION BY customer_id\n      ORDER BY quantity DESCENDING ) AS dense_position\n  ORDER BY customer_id, quantity DESCENDING, sale_id\n  INTO TABLE @DATA(lt_ranks).",
+    "references": [
+      {
+        "title": "SAP ABAP SQL: window expressions and worked examples",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md#window-expressions"
+      },
+      {
+        "title": "SAP ABAP Keyword Documentation: window functions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/window-function"
+      }
+    ],
+    "title": "Решить, что означают равные значения",
+    "intro": "Назначить уникальные позиции или общий ранг одинаковым quantity.",
+    "outcome": "Для quantity клиента A 100,100,50: position = 1,2,3; rank_with_gaps = 1,1,3; dense_position = 1,1,2. У B каждая функция начинается с 1.",
+    "caveat": "Только ROW_NUMBER использует sale_id внутри оконной сортировки. Если добавить этот уникальный ключ в RANK/DENSE_RANK, равенство quantity больше не даст общий ранг.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4
+        ],
+        "label": "Разрешить равенство для позиции",
+        "explanation": "Уникальный sale_id определяет, какая из равных строк получает позицию 1, а какая 2."
+      },
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "label": "Сохранить равенство бизнес-ранга",
+        "explanation": "Ранг сортируется только по quantity, поэтому равные значения делят ранг. RANK оставляет затем пропуск, DENSE_RANK — нет."
+      }
+    ]
+  },
+  {
+    "id": "sql-bounded-package-processing",
+    "questions": [
+      "SQL-17"
+    ],
+    "language": "ABAP",
+    "title": "Хранить один пакет, а не все пакеты",
+    "intro": "Скалярный результат сохраняется; исходные строки не накапливаются.",
+    "context": "Фрагмент метода с собственной client-dependent таблицей zstudy_sales из SQL-16: (1,A,100), (2,A,100), (3,A,50), (4,B,80); sale_id INT4 и quantity INT4. Выбираются только sale_id и quantity. Сумма примера помещается в INT8. Настройка базы, проверки доступа и производственные фильтры — предусловия.",
+    "code": "CONSTANTS co_package_size TYPE i VALUE 2.\nDATA total_quantity TYPE int8.\nSELECT FROM zstudy_sales\n  FIELDS sale_id, quantity\n  INTO TABLE @DATA(lt_package) PACKAGE SIZE @co_package_size.\n  LOOP AT lt_package INTO DATA(ls_sale).\n    total_quantity += ls_sale-quantity.\n  ENDLOOP.\nENDSELECT.\nFREE lt_package.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          3,
+          4,
+          5
+        ],
+        "label": "Заменять содержимое пакета",
+        "explanation": "INTO TABLE передаёт текущий пакет, в отличие от APPENDING TABLE. Размер — учебное значение, а не универсальный оптимум."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8
+        ],
+        "label": "Хранить только нужный результат",
+        "explanation": "Каждая строка добавляет quantity к одному скаляру. Нет lt_all, копий всех пакетов или долгоживущих ссылок на строки."
+      },
+      {
+        "lines": [
+          9,
+          10
+        ],
+        "label": "Завершить чтение и освободить цель",
+        "explanation": "Внутри открытого SELECT loop нет COMMIT. FREE освобождает целевую таблицу после чтения, но не доказывает ограниченную память самого запроса базы."
+      }
+    ],
+    "outcome": "Четыре строки примера обрабатываются двумя порциями. В конце total_quantity = 330; во время цикла сохраняются только текущая порция и итоговая сумма.",
+    "caveat": "Для одной суммы проще SELECT SUM на базе: он не передаёт все строки в ABAP. Цикл лишь показывает время жизни пакета для обработки, которой действительно нужны строки. Здесь нет FOR ALL ENTRIES. Глубокий результат, удерживаемые пакеты или материализация FAE всё ещё могут увеличить общую память.",
+    "references": [
+      {
+        "title": "SAP ABAP SQL: target packages",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md#specifying-the-target-and-related-additions"
+      },
+      {
+        "title": "SAP SELECT INTO: PACKAGE SIZE restrictions",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-keyword/select-into-appending"
+      },
+      {
+        "title": "SAP ABAP 7.52: PACKAGE SIZE and FOR ALL ENTRIES restrictions",
+        "url": "https://help.sap.com/doc/abapdocu_752_index_htm/7.52/en-US/abapinto_clause.htm"
+      }
+    ]
+  }
+]

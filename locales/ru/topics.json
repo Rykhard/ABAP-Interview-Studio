@@ -416,6 +416,7 @@
           "SQL-03",
           "SQL-06",
           "SQL-08",
+          "SQL-16",
           "SQL-04",
           "SQL-05",
           "SQL-07",
@@ -430,7 +431,8 @@
           "SQL-13",
           "SQL-10",
           "SQL-11",
-          "SQL-12"
+          "SQL-12",
+          "SQL-17"
         ]
       },
       {
@@ -670,7 +672,8 @@
         "questionIds": [
           "STORY-06",
           "STORY-03",
-          "STORY-05"
+          "STORY-05",
+          "STORY-07"
         ]
       }
     ]

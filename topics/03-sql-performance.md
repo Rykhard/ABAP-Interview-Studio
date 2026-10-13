@@ -199,6 +199,8 @@ The unique extra sort field matters when two events have the same timestamp. Wit
 
 I compare total runtime, number of calls and transferred rows before and after the change. I also test missing records and a large customer whose data is much less evenly distributed than the development sample. Selecting every column or returning an unlimited result can still waste memory after the repeated calls are removed. The goal is less necessary work, supported by measurements.
 
+There is no universal sequence such as indexes first, then CDS, then AMDP. Start with the measured bottleneck: ABAP work, database work, transfer, locks or a remote dependency. Choose a change that removes that cost and preserves behavior. Pushdown is useful when appropriate set processing belongs near the data, not merely because the target database is HANA.
+
 **Avoid this mistake:** A query that is fast on ten development rows may be unsuitable for millions of production rows or a different key distribution.
 
 **Read and verify this answer:**
@@ -219,21 +221,27 @@ Inspect database work, ABAP computation, transferred volume, and repeated calls 
 
 </details>
 
-## SQL-10 How do ST05, SAT, SQL Monitor, and database plans complement each other?
+## SQL-10 Which tools help locate ABAP, database, and memory performance problems?
 
 **Level:** Advanced
 
-**Short answer:** ST05 shows database accesses for a traced execution. SAT shows where ABAP runtime is spent and which calls are made. SQL Monitor helps find costly SQL across a wider workload. A database plan shows how a particular statement is executed. I choose the tool for the suspected problem and use the tools and permissions available in the target environment.
+**Short answer:** Start with the slow business request and locate where its time or memory goes. Where available, ST03N/STAD help identify costly workloads or requests, SAT traces ABAP execution, and ST05 traces SQL. ST12 combines relevant traces. SQL Monitor helps prioritize SQL across a wider workload; a database plan explains one statement. Memory analysis needs its own evidence.
 
-**Reasoning and example:** A report is slow, but one SQL statement does not explain the whole delay. I first find whether time is spent in ABAP processing, database calls or another dependency. Then I trace a representative run and compare execution count, rows and total time. A statement taking a small amount of time can dominate if it runs thousands of times.
+**Reasoning and example:** A report is slow, but the longest individual SQL statement may not dominate total time. Use workload/request statistics to choose a representative case, then trace it. Compare call count, transferred rows and total time: a short statement called thousands of times may be the real problem. SQLM can collect a broader SQL profile; SWLT can combine runtime evidence and static findings where supported. Its low monitoring overhead is not zero or a guarantee for every workload: scope collection and permissions appropriately.
 
-For expensive database work, the execution plan helps explain scans, joins and large intermediate results. I measure again after a focused change. Classic ST05 and SAT access is not available in every cloud environment, so I use supported ADT or monitoring tools there rather than promise the same transaction codes everywhere.
+For a memory dump, inspect ST22 and compare Memory Inspector snapshots at comparable phases. Look for growing internal tables, retained copies and objects. A database execution plan instead helps explain scans, joins, sorts and large database intermediates. Change one measured bottleneck, then verify the same result, runtime and peak memory again.
+
+Tool access depends on the deployment. Do not promise classic transactions in every ABAP Cloud environment. Use supported ADT profiling/SQL analysis and the available monitoring apps. In SAP BTP ABAP environment, administrator SQL tracing can be started through Capture Request Statistics; detailed trace evaluation uses the Technical Monitoring Cockpit. The exact role, release and tool entry point must be checked.
 
 **Avoid this mistake:** The slowest individual SQL statement may not be the largest total cost if another cheap statement is executed thousands of times.
 
 **Read and verify this answer:**
 
 - [SAP analyzing SQL statements in ADT](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/analyzing-sql-statements) - Cloud-tool reference for SQL investigation; classic ST05/SAT access depends on the target landscape.
+- [SAP BTP ABAP environment: tracing SQL activities](https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/tracing-sql-activities-for-administrators) - Cloud tool entry points and administrator role requirements.
+- [SAP SQL Monitor](https://help.sap.com/docs/SAP_NETWEAVER_740/a24970c68fcf4770a64bf9a78e3719e2/f1be2e59f44d448180703d6a497ec1e2.html) - Understand workload collection and monitoring overhead.
+- [SAP Memory Inspector concepts](https://help.sap.com/docs/ABAP_PLATFORM_NEW/ba879a6e2ea04d9bb94c7ccd7cdac446/8884fb5269d34838a1f119b41dcdbc57.html) - Snapshots describe retained memory of the ABAP internal session.
+- [SAP analysis tools overview](https://help.sap.com/docs/SUPPORT_CONTENT/srm/3362937177.html?locale=en-US&q=SLG1&state=PRODUCTION&version=1.0) - Classic tools apply only where available and authorized.
 
 <details>
 <summary>Visual: Performance diagnosis</summary>
@@ -361,6 +369,45 @@ READ-ONLY is not a third kind of AMDP; it restricts database changes. In Code, s
 
 - [SAP: AMDP procedures, functions and ABAP Cloud restrictions](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/12_AMDP.md) - Compare procedure parameters, table-function variants and client-safety requirements for the target release.
 - [SAP: CDS table functions](https://help.sap.com/docs/ABAP_PLATFORM_NEW/67e4075c942e43d4a9f6f891a8dafcf4/ed4c5fc6d3fd43ebb355f12aa1e73757.html) - The CDS contract defines the returned columns; the AMDP database function implements the query.
+
+## SQL-16 What do window functions do in ABAP SQL, and when are they useful?
+
+**Level:** Core
+
+**Short answer:** A window function calculates a value across related result rows while keeping each detail row. Use it for a customer total beside each sale, a running total, or a rank. GROUP BY instead combines rows into one result per group. OVER defines the window; PARTITION BY separates groups, window ORDER BY orders calculations, and a frame selects which rows contribute.
+
+**Reasoning and example:** Customer A has three sales with quantities 100, 100 and 50. SUM( quantity ) OVER( PARTITION BY customer_id ) adds 250 beside each of the three rows. GROUP BY customer_id with SUM returns just one row for A. A running ROWS frame ordered by the unique sale ID instead produces 100, 200, 250. Its final value matches the partition total, but the earlier values answer a different question.
+
+For descending quantity, RANK gives 1, 1, 3 and DENSE_RANK gives 1, 1, 2. ROW_NUMBER gives a separate position to each row; add sale_id as a tie-breaker if that position must be repeatable. Do not add this unique tie-breaker to RANK when equal quantities should share a rank. The final SELECT ORDER BY controls displayed row order separately from the window ORDER BY.
+
+WHERE filters the input before the window calculation. To rank first and then keep only selected ranks, use a supported outer query or CTE instead of expecting a window alias to be available in the same WHERE. Check the ABAP release and permitted data source; ABAP SQL support does not prove that the same syntax is available in an ABAP CDS definition. A window can avoid extra ABAP aggregation loops, but it still needs measured database cost, especially for sorting and large partitions.
+
+**Avoid this mistake:** Do not replace GROUP BY with a window without checking the required row count, and do not leave tie ordering or a running-total frame implicit.
+
+**Read and verify this answer:**
+
+- [SAP ABAP SQL: window expressions and worked examples](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md#window-expressions) - ABAP SQL syntax; check the supported functions and additions in your target release.
+- [SAP ABAP Keyword Documentation: window functions](https://help.sap.com/docs/abap-cloud/abap-keyword/window-function) - Use the ABAP SQL documentation, not a HANA SQLScript syntax assumption.
+
+## SQL-17 A large report still runs out of memory with PACKAGE SIZE. What do you check?
+
+**Level:** Advanced
+
+**Short answer:** PACKAGE SIZE limits rows delivered to the target table per iteration; it does not guarantee bounded total memory. Check whether the program appends every package elsewhere, retains copies or references, or builds a large final result. With FOR ALL ENTRIES, the result can first be materialized in an internal system table, so small packages are not a reliable memory guard.
+
+**Reasoning and example:** Suppose the report reads 1,000 rows per package but appends each package to lt_all. After a million source rows, lt_all still contains a million rows. Instead, process the current package and keep only the output actually needed: a bounded aggregate, streamed output, or an explicitly designed persisted result. A growing output table, cache, log or deep object graph can defeat an otherwise small package.
+
+Start from the dump or failing phase: use ST22 where available, then compare memory snapshots before and after representative processing steps. Find which internal tables or retained objects grow. Distinguish ABAP session memory from expensive database intermediates; a database plan and an ABAP memory snapshot answer different questions. Select fewer columns and rows, avoid retained duplicates, then measure peak memory and runtime on realistic volumes.
+
+Use INTO TABLE for the current package; APPENDING TABLE keeps adding rows. Do not COMMIT while a SELECT loop still needs its open cursor. If processing needs commits between chunks, design separate restartable reads with a stable continuation key and explicit consistency/transaction rules. Simply adding PACKAGE SIZE is not that design. FOR ALL ENTRIES requires particular care because packaging its target can happen after the full matching result is collected internally.
+
+**Avoid this mistake:** A small package count is not proof of small peak memory. Inspect retained data, database work and the selection variant.
+
+**Read and verify this answer:**
+
+- [SAP ABAP SQL: SELECT INTO and PACKAGE SIZE](https://help.sap.com/docs/abap-cloud/abap-keyword/select-into-appending) - Read the PACKAGE SIZE restrictions, including FOR ALL ENTRIES and INTO versus APPENDING.
+- [SAP Memory Inspector: compare memory snapshots](https://help.sap.com/docs/ABAP_PLATFORM_NEW/ba879a6e2ea04d9bb94c7ccd7cdac446/49255f4629ac16b7e10000000a42189d.html?version=latest) - Inspect retained ABAP memory in comparable program phases; tool availability depends on the environment.
+- [SAP ABAP COMMIT WORK and open cursors](https://help.sap.com/doc/abapdocu_752_index_htm/7.52/en-US/abapcommit.htm?file=abapcommit.htm%2F1000) - COMMIT WORK closes database cursors; a later fetch from that cursor can fail.
 
 ## Official references
 

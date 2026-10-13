@@ -806,6 +806,8 @@ The widening base suggests many focused checks, but there is no mandatory numeri
 
 A critical test crashes between the business update and checkpoint handling. The design must detect the existing effect or repeat it safely; a checkpoint alone may not prove exactly-once execution. I tune package size and concurrency against database locks and remote limits. Moving one huge loop into a background job does not solve its restart problem.
 
+Moving a job to background avoids a dialog waiting limit; it does not make an unbounded selection or retained internal table use less memory. Reduce the selected population and retained data, or design bounded, restartable processing. See SQL-17 for package lifetime and memory checks.
+
 **Avoid this mistake:** Moving a huge synchronous loop into a background job does not solve its transaction or restart design.
 
 **Interviewer follow-ups:**

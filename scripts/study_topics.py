@@ -40,8 +40,8 @@ def topic_catalog(modules):
             section('abap-oo', 'OO contracts', 'OO-01 OO-02 OO-03 OO-04 OO-05 OO-06 OO-07 OO-08 OO-13 OO-14 OO-17 '+numbered('OODEEP',12)),
             section('abap-patterns', 'Patterns', 'OO-09 OO-10 OO-11 OO-12 OO-15 OO-16 '+numbered('PAT',12))]),
         topic('sql', 'SQL & HANA performance', 'performance', 'Preserve result semantics, select a database implementation and measure actual cost.', [
-            section('sql-queries', 'Selection, joins & result semantics', 'SQL-02 SQL-03 SQL-04 SQL-05 SQL-06 SQL-07 SQL-08 DEVCORE-03'),
-            section('sql-performance', 'Measurement, buffering & data design', 'SQL-09 SQL-10 SQL-11 SQL-12 SQL-13'),
+            section('sql-queries', 'Selection, joins & result semantics', 'SQL-02 SQL-03 SQL-04 SQL-05 SQL-06 SQL-07 SQL-08 SQL-16 DEVCORE-03'),
+            section('sql-performance', 'Measurement, buffering & data design', 'SQL-09 SQL-10 SQL-11 SQL-12 SQL-13 SQL-17'),
             section('sql-pushdown', 'CDS, AMDP & pushdown', 'SQL-01 SQL-14 SQL-15 SQLX-01 SQLX-02')]),
         topic('integration', 'Protocols & integration', 'integration', 'Connect systems with explicit payload, security, transaction and recovery contracts.', [
             section('integration-http', 'HTTP, REST & formats', numbered('HTTP',14)),
@@ -60,7 +60,7 @@ def topic_catalog(modules):
             section('extensions-workflow', 'Workflow & approval lifecycle', 'RICEFW-09 RICEFW-10 RICEFW-11 RICEFW-12 RICEFW-13 RICEFW-14')]),
         topic('interview', 'Interview stories & judgment', 'interview', 'Explain your own work, defend decisions and identify the evidence or context still missing.', [
             section('interview-stories', 'Project stories & results', 'STORY-01 STORY-02 STORY-04'),
-            section('interview-decisions', 'Decisions & interviewer questions', 'STORY-03 STORY-05 STORY-06')])]
+            section('interview-decisions', 'Decisions & interviewer questions', 'STORY-03 STORY-05 STORY-06 STORY-07')])]
     expected={q['id'] for m in modules for q in m['questions']}
     actual=Counter(ident for t in result for s in t['sections'] for ident in s['questionIds'])
     if set(actual)!=expected or any(n!=1 for n in actual.values()):

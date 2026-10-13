@@ -4,21 +4,27 @@ Build reliable checks, tests and data flows with small examples. Shared Objects 
 
 [Return to the study guide](../README.md) | [Study plan](../study/Study_Plan.md)
 
-## DEVCORE-01 What does AUTHORITY-CHECK check, and what must happen when it fails?
+## DEVCORE-01 How do roles, authorization objects and AUTHORITY-CHECK work together?
 
 **Level:** Core
 
-**Short answer:** AUTHORITY-CHECK checks whether the current user has the required values for an authorization object. Check sy-subrc immediately: zero means the check passed; any other result must stop the protected operation. The statement does not block access by itself. Check the actual activity and organizational values, not just whether the user is logged in.
+**Short answer:** An administrator assigns roles that give a user the required authorizations. An authorization object groups the fields to check, such as activity and company. AUTHORITY-CHECK compares the requested values with the current user's authorizations. Check sy-subrc immediately: zero means success; any other result must stop the protected operation. The statement reports the result; your code must enforce it.
 
 **Reasoning and example:** A user may display orders in company 1000 but cannot change them. Checking ACTVT 02 and BUKRS 1000 against the application authorization object fails for that user. The application must then reject the change before it writes anything. Checking display activity 03 would answer the wrong question.
 
 The object and its fields must already exist and match the application security design. Read the organizational value from trusted data, not an unchecked client claim. Do not run another statement that changes sy-subrc before evaluating it. Test an allowed user and a denied user; a hidden button is not the check.
+
+In classic AS ABAP, an administrator maintains authorizations in PFCG roles and generates authorization profiles for assigned users. SAP BTP ABAP environment uses IAM apps, business catalogs and business roles with appropriate restrictions. Administration depends on the product; PFCG is not a universal Cloud setup screen. A role named Approver does not by itself prove that the required field values are present.
+
+In RAP, separately check service access, read restrictions through CDS DCL and operation permissions through global/instance authorization. These layers complement one another. An accessible Fiori tile does not automatically grant every order, and an allowed read does not permit Submit. ADV-02 and TEST-06 explain those boundaries further.
 
 **Avoid this mistake:** AUTHORITY-CHECK only reports its result. Ignoring a nonzero sy-subrc leaves the protected operation open.
 
 **Read and verify this answer:**
 
 - [SAP Learning: AUTHORITY-CHECK](https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/using-the-authority-check-statement_a60b8989-12c1-4764-89b2-e168feae035d) - Explains the object fields, immediate sy-subrc evaluation and the application responsibility to deny access. The custom object in the example is an explicit prerequisite.
+- [SAP Learning: roles and authorization profiles](https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles) - Classic AS ABAP role administration; not a universal cloud procedure.
+- [SAP BTP ABAP environment: authorization basics](https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/authorization-basics) - Business-user IAM apps, catalogs, roles and restrictions; read and operation checks remain distinct.
 
 ## DEVCORE-02 When are ABAP Shared Objects useful, and how do you access them safely?
 
@@ -103,3 +109,5 @@ Keep metric dimensions bounded, such as operation and outcome; avoid a new serie
 - [OpenTelemetry: Traces](https://opentelemetry.io/docs/concepts/signals/traces/)
 - [SAP: Shared Objects introduction](https://help.sap.com/saphelp_gbt10/helpdata/en/4a/0150f7a23736eae10000000a421937/content.htm?no_cache=true)
 - [OpenTelemetry: Log timestamps](https://opentelemetry.io/docs/specs/otel/logs/data-model/)
+- [SAP Learning: roles and authorization profiles](https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles)
+- [SAP BTP ABAP environment: authorization basics](https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/authorization-basics)

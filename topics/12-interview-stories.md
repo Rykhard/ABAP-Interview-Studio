@@ -154,6 +154,28 @@ Practice a 60-second version first, then expand the mechanism and evidence when 
 
 </details>
 
+## STORY-07 How do you estimate an ABAP or RAP task when some requirements are still unclear?
+
+**Level:** Advanced
+
+**Short answer:** First agree what finished means, then split the work into small parts. Compare familiar parts with similar completed work and estimate them from the bottom up. Use a range for uncertain parts and a short investigation for the biggest unknown. Include testing, review and delivery. Effort in person-days is not the same as a calendar deadline.
+
+**Reasoning and example:** Suppose the task is a RAP Submit action. A teaching example for the most likely effort is: clarify the API and rules, 0.5 day; implement the action, 1 day; authorization and validation, 1 day; automated and integration tests, 1 day; review and handoff, 0.5 day. That is 4 person-days under the stated assumptions. These are illustrative numbers, not standard durations for RAP work. Waiting for an API owner or a test system affects the delivery date separately.
+
+Choose the technique for the information available. Analogy compares a genuinely similar completed task and adjusts for differences. Bottom-up estimation adds the work packages. Three-point estimation records optimistic, most likely and pessimistic cases, for example 2, 4 and 8 person-days. Explain what causes each case; these values are not guaranteed bounds or a promised probability. Planning Poker helps a team compare relative size and discuss different assumptions. Story points are not a fixed number of hours and should not be used to compare developer productivity.
+
+If the key uncertainty is whether an API supports the required save behavior, time-box a small spike before committing to a delivery forecast. Agree its question, owner and time limit. Record assumptions, exclusions, dependencies and acceptance checks, then update the estimate when evidence changes. Include the spike effort explicitly; do not hide it in an unexplained buffer. A date forecast also needs team availability, dependencies and the planned release window.
+
+**Avoid this mistake:** Do not estimate only coding time, convert story points into fixed hours, or present an uncertain forecast as a guaranteed deadline.
+
+**Read and verify this answer:**
+
+- [SAP Activate: release planning and Planning Poker](https://learning.sap.com/courses/discovering-sap-activate-agile-project-delivery/analyzing-release-planning_d23953f4-0805-4eb6-8711-f723d8d84954) - Supports acceptance criteria, backlog sizing and team discussion; the RAP work breakdown is an original teaching example.
+- [PMI: Practice Standard for Scheduling, three-point estimates](https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/practice-standard-scheduling.pdf?rev=eed9ee4249bf49df8b40fc2c54bb8000&v=c7ca2721-8c26-4e07-ba47-069d0987bc0c) - Section 3.4.4 describes optimistic, most likely and pessimistic durations. A range is not automatically a calibrated confidence interval.
+- [Scrum.org: story-point estimation pitfalls](https://www.scrum.org/resources/blog/story-points-estimate-or-not-estimate) - Explains why fixed hour conversion and individual productivity comparisons misuse relative estimates.
+
 ## Official references
 
-These are rehearsal structures. Populate them with your own truthful experience.
+- [SAP Activate: release planning and Planning Poker](https://learning.sap.com/courses/discovering-sap-activate-agile-project-delivery/analyzing-release-planning_d23953f4-0805-4eb6-8711-f723d8d84954)
+- [PMI: Practice Standard for Scheduling, three-point estimates](https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/practice-standard-scheduling.pdf?rev=eed9ee4249bf49df8b40fc2c54bb8000&v=c7ca2721-8c26-4e07-ba47-069d0987bc0c)
+- [Scrum.org: story-point estimation pitfalls](https://www.scrum.org/resources/blog/story-points-estimate-or-not-estimate)

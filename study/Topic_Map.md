@@ -363,7 +363,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 
 ## SQL & HANA performance
 
-18 questions. Preserve result semantics, select a database implementation and measure actual cost.
+20 questions. Preserve result semantics, select a database implementation and measure actual cost.
 
 ### Selection, joins & result semantics
 
@@ -373,6 +373,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | [SQL-03 - When would you use a join instead of FOR ALL ENTRIES?](../topics/03-sql-performance.md#sql-03-when-would-you-use-a-join-instead-of-for-all-entries) | Applied |
 | [SQL-06 - How do GROUP BY, WHERE, and HAVING work together?](../topics/03-sql-performance.md#sql-06-how-do-group-by-where-and-having-work-together) | Core |
 | [SQL-08 - Does SELECT SINGLE return a predictable first row?](../topics/03-sql-performance.md#sql-08-does-select-single-return-a-predictable-first-row) | Core |
+| [SQL-16 - What do window functions do in ABAP SQL, and when are they useful?](../topics/03-sql-performance.md#sql-16-what-do-window-functions-do-in-abap-sql-and-when-are-they-useful) | Core |
 | [SQL-04 - How can a LEFT OUTER JOIN accidentally behave like an inner join?](../topics/03-sql-performance.md#sql-04-how-can-a-left-outer-join-accidentally-behave-like-an-inner-join) | Applied |
 | [SQL-05 - What is the difference between SQL NULL and an ABAP initial value?](../topics/03-sql-performance.md#sql-05-what-is-the-difference-between-sql-null-and-an-abap-initial-value) | Core |
 | [SQL-07 - What do cardinality and uniqueness mean for join correctness?](../topics/03-sql-performance.md#sql-07-what-do-cardinality-and-uniqueness-mean-for-join-correctness) | Applied |
@@ -384,9 +385,10 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | --- | --- |
 | [SQL-09 - What do you optimize first in a slow data selection?](../topics/03-sql-performance.md#sql-09-what-do-you-optimize-first-in-a-slow-data-selection) | Applied |
 | [SQL-13 - What are normalization and denormalization, and how do they affect ABAP design?](../topics/03-sql-performance.md#sql-13-what-are-normalization-and-denormalization-and-how-do-they-affect-abap-design) | Core |
-| [SQL-10 - How do ST05, SAT, SQL Monitor, and database plans complement each other?](../topics/03-sql-performance.md#sql-10-how-do-st05-sat-sql-monitor-and-database-plans-complement-each-other) | Applied |
+| [SQL-10 - Which tools help locate ABAP, database, and memory performance problems?](../topics/03-sql-performance.md#sql-10-which-tools-help-locate-abap-database-and-memory-performance-problems) | Applied |
 | [SQL-11 - Does SAP HANA remove the need for indexes and performance tuning?](../topics/03-sql-performance.md#sql-11-does-sap-hana-remove-the-need-for-indexes-and-performance-tuning) | Applied |
 | [SQL-12 - When is table buffering appropriate?](../topics/03-sql-performance.md#sql-12-when-is-table-buffering-appropriate) | Applied |
+| [SQL-17 - A large report still runs out of memory with PACKAGE SIZE. What do you check?](../topics/03-sql-performance.md#sql-17-a-large-report-still-runs-out-of-memory-with-package-size-what-do-you-check) | Applied |
 
 ### CDS, AMDP & pushdown
 
@@ -513,7 +515,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | Question | Level |
 | --- | --- |
 | [TEST-06 - What security tests would you include?](../topics/11-testing-security.md#test-06-what-security-tests-would-you-include) | Applied |
-| [DEVCORE-01 - What does AUTHORITY-CHECK check, and what must happen when it fails?](../topics/25-core-development.md#devcore-01-what-does-authority-check-check-and-what-must-happen-when-it-fails) | Core |
+| [DEVCORE-01 - How do roles, authorization objects and AUTHORITY-CHECK work together?](../topics/25-core-development.md#devcore-01-how-do-roles-authorization-objects-and-authority-check-work-together) | Core |
 | [TEST-07 - How do you test concurrency and rollback?](../topics/11-testing-security.md#test-07-how-do-you-test-concurrency-and-rollback) | Advanced |
 | [OPS-05 - How do you prove optimistic concurrency rather than merely calling the same update twice?](../topics/19-cloud-production-senior.md#ops-05-how-do-you-prove-optimistic-concurrency-rather-than-merely-calling-the-same-update-twice) | Advanced |
 
@@ -579,7 +581,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 
 ## Interview stories & judgment
 
-6 questions. Explain your own work, defend decisions and identify the evidence or context still missing.
+7 questions. Explain your own work, defend decisions and identify the evidence or context still missing.
 
 ### Project stories & results
 
@@ -596,3 +598,4 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | [STORY-06 - What should you ask the interviewer?](../topics/12-interview-stories.md#story-06-what-should-you-ask-the-interviewer) | Core |
 | [STORY-03 - How do you answer a question when the SAP release is unknown?](../topics/12-interview-stories.md#story-03-how-do-you-answer-a-question-when-the-sap-release-is-unknown) | Core |
 | [STORY-05 - How would you defend an architecture trade-off?](../topics/12-interview-stories.md#story-05-how-would-you-defend-an-architecture-trade-off) | Advanced |
+| [STORY-07 - How do you estimate an ABAP or RAP task when some requirements are still unclear?](../topics/12-interview-stories.md#story-07-how-do-you-estimate-an-abap-or-rap-task-when-some-requirements-are-still-unclear) | Applied |

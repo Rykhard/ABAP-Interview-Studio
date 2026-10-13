@@ -2,7 +2,20 @@
   "id": "12-interview-stories",
   "title": "Interview answers and project discussion",
   "intro": "Use these structures with your real experience. Keep the first answer to about one minute, then expand when asked. Be explicit about the part you owned, the constraints and the evidence for the outcome.",
-  "sources": [],
+  "sources": [
+    {
+      "title": "SAP Activate: release planning and Planning Poker",
+      "url": "https://learning.sap.com/courses/discovering-sap-activate-agile-project-delivery/analyzing-release-planning_d23953f4-0805-4eb6-8711-f723d8d84954"
+    },
+    {
+      "title": "PMI: Practice Standard for Scheduling, three-point estimates",
+      "url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/practice-standard-scheduling.pdf?rev=eed9ee4249bf49df8b40fc2c54bb8000&v=c7ca2721-8c26-4e07-ba47-069d0987bc0c"
+    },
+    {
+      "title": "Scrum.org: story-point estimation pitfalls",
+      "url": "https://www.scrum.org/resources/blog/story-points-estimate-or-not-estimate"
+    }
+  ],
   "questions": [
     {
       "id": "STORY-01",
@@ -51,6 +64,42 @@
       "answer": "I would ask about the SAP systems, the work I would own and how the team delivers changes. I want to know the mix of classic ABAP and RAP, the Clean Core rules, and the testing and release process. I would also ask who handles UI, integration and production incidents. Three focused questions are usually better than a long technology checklist.",
       "detail": "Choose questions that affect your daily work: Which editions and releases do you support? What would I build or maintain in the first few months? How does a change move from development to production? These invite concrete answers about the role, rather than only a list of products.\n\nThen follow one answer with a practical example: Can you describe a recent Clean Core decision or a difficult production issue and how the team handled it? Listen for ownership, review and testing responsibilities. The title ABAP Developer can cover maintenance, new services or migration work. Use the discussion to understand the actual job and compare it with your real experience and learning goals.",
       "pitfall": "Do not assume the role title tells you whether the work is maintenance, migration or new development."
+    },
+    {
+      "id": "STORY-07",
+      "level": "Advanced",
+      "question": "How do you estimate an ABAP or RAP task when some requirements are still unclear?",
+      "answer": "First agree what finished means, then split the work into small parts. Compare familiar parts with similar completed work and estimate them from the bottom up. Use a range for uncertain parts and a short investigation for the biggest unknown. Include testing, review and delivery. Effort in person-days is not the same as a calendar deadline.",
+      "detail": "Suppose the task is a RAP Submit action. A teaching example for the most likely effort is: clarify the API and rules, 0.5 day; implement the action, 1 day; authorization and validation, 1 day; automated and integration tests, 1 day; review and handoff, 0.5 day. That is 4 person-days under the stated assumptions. These are illustrative numbers, not standard durations for RAP work. Waiting for an API owner or a test system affects the delivery date separately.\n\nChoose the technique for the information available. Analogy compares a genuinely similar completed task and adjusts for differences. Bottom-up estimation adds the work packages. Three-point estimation records optimistic, most likely and pessimistic cases, for example 2, 4 and 8 person-days. Explain what causes each case; these values are not guaranteed bounds or a promised probability. Planning Poker helps a team compare relative size and discuss different assumptions. Story points are not a fixed number of hours and should not be used to compare developer productivity.\n\nIf the key uncertainty is whether an API supports the required save behavior, time-box a small spike before committing to a delivery forecast. Agree its question, owner and time limit. Record assumptions, exclusions, dependencies and acceptance checks, then update the estimate when evidence changes. Include the spike effort explicitly; do not hide it in an unexplained buffer. A date forecast also needs team availability, dependencies and the planned release window.",
+      "pitfall": "Do not estimate only coding time, convert story points into fixed hours, or present an uncertain forecast as a guaranteed deadline.",
+      "followups": [
+        "What could move this task from the optimistic to the pessimistic case?",
+        "When is a small spike more useful than adding a large contingency?",
+        "How would you explain the difference between effort and elapsed delivery time?"
+      ],
+      "signals": [
+        "Defines acceptance and assumptions before estimating",
+        "Includes testing, review, integration and waiting dependencies",
+        "Revises the forecast using evidence rather than defending the first number"
+      ],
+      "evidence": "A small work breakdown with assumptions, an uncertainty range and a separately explained delivery forecast; use real project evidence or label teaching figures.",
+      "references": [
+        {
+          "title": "SAP Activate: release planning and Planning Poker",
+          "url": "https://learning.sap.com/courses/discovering-sap-activate-agile-project-delivery/analyzing-release-planning_d23953f4-0805-4eb6-8711-f723d8d84954",
+          "note": "Supports acceptance criteria, backlog sizing and team discussion; the RAP work breakdown is an original teaching example."
+        },
+        {
+          "title": "PMI: Practice Standard for Scheduling, three-point estimates",
+          "url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/practice-standard-scheduling.pdf?rev=eed9ee4249bf49df8b40fc2c54bb8000&v=c7ca2721-8c26-4e07-ba47-069d0987bc0c",
+          "note": "Section 3.4.4 describes optimistic, most likely and pessimistic durations. A range is not automatically a calibrated confidence interval."
+        },
+        {
+          "title": "Scrum.org: story-point estimation pitfalls",
+          "url": "https://www.scrum.org/resources/blog/story-points-estimate-or-not-estimate",
+          "note": "Explains why fixed hour conversion and individual productivity comparisons misuse relative estimates."
+        }
+      ]
     }
   ]
 }
