@@ -30,6 +30,7 @@ function saveSequenceFlow(lesson,index){
 
 function guidedLesson(q){
  const related=lessonsByQuestion.get(q.id),lesson=related.find(x=>x.id===lessonChoices.get(q.id))||related[0];
+ const interactive=interactiveLesson(q,lesson);if(interactive)return interactive;
  const key=q.id+':'+lesson.id,index=Math.min(lessonPositions.get(key)||0,lesson.steps.length-1),step=lesson.steps[index];
  const previous=index?lesson.steps[index-1]:null;
  const changed=state=>!previous||previous.states.find(s=>s.label===state.label)?.value!==state.value;
@@ -78,7 +79,7 @@ function openLessonLibrary(){
 function renderLessonLibrary(){
  const coverage=new Set(lessons.flatMap(lesson=>lesson.questions)).size;
  $('view').innerHTML=`<p class="guided-library-intro">${lessons.length} worked examples linked to ${coverage} questions. Each example shows one scenario, its changing state and the reason for each step. You can switch back to reading or code at any time.</p>`+topics.map(topic=>{
-  const related=lessons.filter(lesson=>byId.get(lesson.questions[0]).topic===topic.id);if(!related.length)return '';
+  const related=lessons.filter(lesson=>byId.get(lesson.questions[0]).topic===topic.id).map(interactiveLessonOverview);if(!related.length)return '';
   return `<section class="lesson-topic-group"><h3>${esc(topic.title)}</h3><div class="guided-library">${related.map(lesson=>`<article class="guided-library-card"><span class="lesson-kicker">${lesson.steps.length} steps · ${lesson.questions.length} related questions</span><h3>${esc(lesson.title)}</h3><p>${esc(lesson.scenario)}</p><button data-open-lesson="${lesson.id}">Open lesson &rarr;</button></article>`).join('')}</div></section>`;
  }).join('');
 }
@@ -89,6 +90,6 @@ $('view').addEventListener('click',event=>{
 });
 $('view').addEventListener('change',event=>{
  const select=event.target.closest('[data-lesson-choice]');if(!select)return;
- const player=select.closest('[data-lesson]'),q=byId.get(player.dataset.lessonQuestion);lessonChoices.set(q.id,select.value);lessonPositions.set(q.id+':'+select.value,0);
+ const player=select.closest('[data-lesson]'),q=byId.get(player.dataset.lessonQuestion);lessonChoices.set(q.id,select.value);lessonPositions.set(q.id+':'+select.value,0);resetInteractiveScene(q.id,select.value);
  const holder=document.createElement('div');holder.innerHTML=guidedLesson(q);const next=holder.firstElementChild;player.replaceWith(next);next.querySelector('[data-lesson-choice]').focus({preventScroll:true});
 });

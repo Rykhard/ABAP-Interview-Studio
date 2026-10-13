@@ -1,0 +1,124 @@
+[
+  {
+    "id": "lesson-internal-tables",
+    "questions": [
+      "ABAP-01",
+      "ABAP-02"
+    ],
+    "title": "Choose an internal table by the operation",
+    "scenario": "Three orders arrive as 9/B/90, 3/A/30 and 5/A/50 (ID/customer/amount). Compare STANDARD with EMPTY KEY, SORTED by customer and ID, and HASHED by unique ID. The interactive example also lets you add order 7/A/70.",
+    "goal": "Match the declared key and table category to the access pattern without inventing performance timings.",
+    "nodes": [
+      {
+        "id": "input",
+        "label": "Input"
+      },
+      {
+        "id": "key",
+        "label": "Key"
+      },
+      {
+        "id": "access",
+        "label": "Access"
+      },
+      {
+        "id": "result",
+        "label": "Result"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Start with the same rows",
+        "explanation": "The fixture appends IDs 9, 3 and 5 in that order. A STANDARD table with EMPTY KEY preserves that insertion order here. SORTED keeps the declared customer-plus-ID order. HASHED offers no index-based order contract.",
+        "active": [
+          "input"
+        ],
+        "states": [
+          {
+            "label": "Input IDs",
+            "value": "9, 3, 5"
+          },
+          {
+            "label": "Customers",
+            "value": "B, A, A"
+          }
+        ],
+        "outcome": "These are in-memory example rows, not a database query."
+      },
+      {
+        "title": "Choose the lookup you need",
+        "explanation": "For ID 9, HASHED can use its complete unique key. ID alone is not the leading part of this SORTED key. For all customer-A orders, the leading customer part of the sorted key is useful.",
+        "active": [
+          "key"
+        ],
+        "states": [
+          {
+            "label": "HASHED key",
+            "value": "ID, unique"
+          },
+          {
+            "label": "SORTED key",
+            "value": "Customer, ID; non-unique"
+          },
+          {
+            "label": "STANDARD key",
+            "value": "EMPTY KEY"
+          }
+        ],
+        "outcome": "A table category alone does not tell you whether a particular access is optimized."
+      },
+      {
+        "title": "Read or insert a row",
+        "explanation": "ID 9 returns the B order for 90. Customer A returns IDs 3 and 5. Adding ID 7/A/70 appends it in the STANDARD fixture; SORTED places it with customer A. HASHED admits its new unique ID but has no promised display position.",
+        "active": [
+          "access"
+        ],
+        "states": [
+          {
+            "label": "ID lookup",
+            "value": "9 / B / 90"
+          },
+          {
+            "label": "Customer-A result",
+            "value": "3 / A / 30 and 5 / A / 50"
+          },
+          {
+            "label": "New row",
+            "value": "7 / A / 70"
+          }
+        ],
+        "outcome": "Changing a scene option starts again from the same three-row fixture."
+      },
+      {
+        "title": "Explain the trade-off",
+        "explanation": "Use STANDARD for this arrival-order sequence, SORTED for the customer-key group, or HASHED for the exact unique-ID lookup. Scanning customer A in the hashed table does not receive its full-key lookup advantage. Real choices also depend on writes, secondary keys, memory and measured workloads.",
+        "active": [
+          "result"
+        ],
+        "states": [
+          {
+            "label": "STANDARD after append",
+            "value": "9, 3, 5, 7"
+          },
+          {
+            "label": "SORTED after insert",
+            "value": "A/3, A/5, A/7, B/9"
+          },
+          {
+            "label": "HASHED after insert",
+            "value": "Unique IDs 3, 5, 7, 9; no index order"
+          }
+        ],
+        "outcome": "The animation illustrates the access contract, not SAP kernel internals or a benchmark."
+      }
+    ],
+    "takeaway": "Choose the operation first, then a table category and key that support it.",
+    "limitation": "A tiny illustrative fixture with no secondary keys. Sorted-key access depends on the supplied leading key components. HASHED card positions are only a presentation choice. No runtime measurements or actual ABAP execution are shown.",
+    "references": [
+      {
+        "title": "SAP: Internal tables",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md"
+      }
+    ]
+  }
+]

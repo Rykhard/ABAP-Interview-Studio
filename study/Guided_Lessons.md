@@ -871,6 +871,61 @@ Keep prepared tests, actual runs, and integration evidence distinct.
 - [SAP Clean ABAP: Testing and dependency isolation](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md#testing)
 - [SAP: ABAP Unit](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/abap-unit)
 
+## Choose an internal table by the operation
+
+Three orders arrive as 9/B/90, 3/A/30 and 5/A/50 (ID/customer/amount). Compare STANDARD with EMPTY KEY, SORTED by customer and ID, and HASHED by unique ID. The interactive example also lets you add order 7/A/70.
+
+**Learn:** Match the declared key and table category to the access pattern without inventing performance timings.
+
+Questions: [ABAP-01](https://abap-interview-studio.pages.dev/#q-ABAP-01), [ABAP-02](https://abap-interview-studio.pages.dev/#q-ABAP-02)
+
+### 1. Start with the same rows
+
+The fixture appends IDs 9, 3 and 5 in that order. A STANDARD table with EMPTY KEY preserves that insertion order here. SORTED keeps the declared customer-plus-ID order. HASHED offers no index-based order contract.
+
+- **Input IDs:** 9, 3, 5
+- **Customers:** B, A, A
+
+These are in-memory example rows, not a database query.
+
+### 2. Choose the lookup you need
+
+For ID 9, HASHED can use its complete unique key. ID alone is not the leading part of this SORTED key. For all customer-A orders, the leading customer part of the sorted key is useful.
+
+- **HASHED key:** ID, unique
+- **SORTED key:** Customer, ID; non-unique
+- **STANDARD key:** EMPTY KEY
+
+A table category alone does not tell you whether a particular access is optimized.
+
+### 3. Read or insert a row
+
+ID 9 returns the B order for 90. Customer A returns IDs 3 and 5. Adding ID 7/A/70 appends it in the STANDARD fixture; SORTED places it with customer A. HASHED admits its new unique ID but has no promised display position.
+
+- **ID lookup:** 9 / B / 90
+- **Customer-A result:** 3 / A / 30 and 5 / A / 50
+- **New row:** 7 / A / 70
+
+Changing a scene option starts again from the same three-row fixture.
+
+### 4. Explain the trade-off
+
+Use STANDARD for this arrival-order sequence, SORTED for the customer-key group, or HASHED for the exact unique-ID lookup. Scanning customer A in the hashed table does not receive its full-key lookup advantage. Real choices also depend on writes, secondary keys, memory and measured workloads.
+
+- **STANDARD after append:** 9, 3, 5, 7
+- **SORTED after insert:** A/3, A/5, A/7, B/9
+- **HASHED after insert:** Unique IDs 3, 5, 7, 9; no index order
+
+The animation illustrates the access contract, not SAP kernel internals or a benchmark.
+
+**Remember:** Choose the operation first, then a table category and key that support it.
+
+**Scope:** A tiny illustrative fixture with no secondary keys. Sorted-key access depends on the supplied leading key components. HASHED card positions are only a presentation choice. No runtime measurements or actual ABAP execution are shown.
+
+**Sources:**
+
+- [SAP: Internal tables](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/01_Internal_Tables.md)
+
 ## Follow one order through the save sequence
 
 Order request P1 contains two items costing 40 EUR and 60 EUR. Its delivery date is valid. Follow this successful save; an invalid date would stop it at the check step.

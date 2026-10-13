@@ -95,6 +95,29 @@ quiz_match=re.search(r'<script id="quiz-data" type="application/json">(.*?)</scr
 if not quiz_match or json.loads(quiz_match.group(1))!=quiz_items:errors.append('Quiz payload mismatch')
 if any(token in html for token in ['__QUIZ__','__APP__','__QUIZ_APP__','__READING_APP__','__PRACTICE_CSS__','__SEARCH_APP__','__USABILITY_CSS__']):errors.append('Unresolved app placeholder')
 if '__DATA__' in html:errors.append('HTML template placeholder remains')
+# Interactive lessons are shipped offline with complete bilingual copy.
+interactive_copy={locale:json.loads((root/path).read_text(encoding='utf-8')) for locale,path in
+                  [('en','visuals/interactive-scenes.json'),('ru','locales/ru/interactive-scenes.json')]}
+interactive_match=re.search(r'<script id="interactive-data" type="application/json">(.*?)</script>',html,re.S)
+if not interactive_match or json.loads(interactive_match.group(1))!=interactive_copy:
+    errors.append('Interactive lesson payload mismatch')
+if set(interactive_copy['en'])!={'common','etag','tables','join','http','grouping','dcl'}:
+    errors.append('Interactive lesson coverage mismatch')
+def check_interactive_copy(original,translated,path='interactive'):
+    if type(original)!=type(translated):
+        errors.append('Interactive translation type mismatch: '+path)
+    elif isinstance(original,dict):
+        if original.keys()!=translated.keys():errors.append('Interactive translation fields differ: '+path)
+        for key in original.keys() & translated.keys():check_interactive_copy(original[key],translated[key],path+'.'+key)
+    elif isinstance(original,list):
+        if len(original)!=len(translated):errors.append('Interactive translation list differs: '+path)
+        for index,(left,right) in enumerate(zip(original,translated)):check_interactive_copy(left,right,path+'.'+str(index))
+    elif isinstance(original,str):
+        if not translated.strip() or '\ufffd' in translated:errors.append('Empty or damaged interactive translation: '+path)
+        if sorted(re.findall(r'\{[A-Za-z][A-Za-z0-9_]*\}',original))!=sorted(re.findall(r'\{[A-Za-z][A-Za-z0-9_]*\}',translated)):
+            errors.append('Interactive translation placeholders differ: '+path)
+check_interactive_copy(interactive_copy['en'],interactive_copy['ru'])
+
 lessons=load_lessons(root,set(ids))
 lesson_match=re.search(r'<script id="lesson-data" type="application/json">(.*?)</script>',html,re.S)
 if not lesson_match or json.loads(lesson_match.group(1))!=lessons:errors.append('Guided lesson payload mismatch')

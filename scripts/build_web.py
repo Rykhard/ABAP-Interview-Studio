@@ -22,7 +22,7 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     app=app.replace('__CALM_APP__', (root/'scripts/studio-calm.js').read_text(encoding='utf-8'))
     lessons=load_lessons(root, {q['id'] for module in modules for q in module['questions']})
     write_lesson_guide(root, lessons)
-    app=app.replace('__LESSON_APP__', (root/'scripts/studio-lessons.js').read_text(encoding='utf-8'))
+    app=app.replace('__LESSON_APP__', (root/'scripts/studio-lessons.js').read_text(encoding='utf-8')+'\n'+(root/'scripts/studio-scenes.js').read_text(encoding='utf-8'))
     examples=load_examples(root, {q['id'] for module in modules for q in module['questions']})
     write_example_guide(root, examples)
     topic_data=topic_catalog(modules)
@@ -41,7 +41,8 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     values['__SIMPLIFY_CSS__']+='\n'+(root/'scripts/diagrams.css').read_text(encoding='utf-8')+'\n'+diagram_theme_css()
     values['__SIMPLIFY_CSS__']+='\n'+(root/'scripts/selects.css').read_text(encoding='utf-8')
     values['__DIAGRAM_DATA__']=payload(diagrams)
-    values['__LESSON_CSS__']=(root/'scripts/lessons.css').read_text(encoding='utf-8')
+    values['__LESSON_CSS__']=(root/'scripts/lessons.css').read_text(encoding='utf-8')+'\n'+(root/'scripts/scenes.css').read_text(encoding='utf-8')
+    values['__INTERACTIVE_DATA__']=payload({'en':read_json(root/'visuals/interactive-scenes.json'),'ru':read_json(root/'locales/ru/interactive-scenes.json')})
     for token,value in values.items():template=template.replace(token,value)
     (root/'START_HERE.html').write_text(template,encoding='utf-8')
     questions={q['id']:(m,q) for m in modules for q in m['questions']}
