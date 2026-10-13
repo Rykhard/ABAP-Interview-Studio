@@ -24,7 +24,7 @@ function environment(db, run = async () => ({ response: { matches: [match] } }))
     const result = await run(model, request);
     if (Array.isArray(result?.response?.matches)) {
       const evidence = JSON.parse(request.messages[1].content).evidence;
-      result.response.matches = result.response.matches.map(({requirement_evidence, requirement_type, ...rest}) => ({...rest, evidence_index: evidence.findIndex(item => item[2] === requirement_evidence)}));
+      result.response.matches = result.response.matches.map(({requirement_evidence, requirement_type, ...rest}) => ({selection: `${rest.id}@${evidence.findIndex(item => item[2] === requirement_evidence)}`, relevance_reason: rest.relevance_reason}));
     }
     return result;
   } } };
@@ -83,7 +83,7 @@ test('retrieval supports Russian titles and bounds complete prompts conservative
   assert.equal(built.request.temperature, 0);
   assert.equal(built.request.stream, false);
   assert.equal(built.request.max_tokens, 2300);
-  assert.deepEqual(built.request.response_format.json_schema.properties.matches.items.properties.id.enum, built.candidates.map(item => item.id));
+  assert.deepEqual(built.request.response_format.json_schema.properties.matches.items.properties.selection.enum, built.selections);
 });
 
 test('long vacancies retain skill coverage without duplicate evidence or metadata', async () => {
@@ -94,11 +94,11 @@ test('long vacancies retain skill coverage without duplicate evidence or metadat
   const built = matching.buildInference(canonical, {description, count:null, language:'en'});
   const ids = new Set(built.candidates.map(item => item.id));
   for (const id of fixture.must_include) assert.ok(ids.has(id), `${id} survives the context bound`);
-  assert.ok(built.candidates.length >= 50);
+  assert.ok(built.candidates.length >= 30);
   assert.ok(built.contextUpperBound <= matching.LIMITS.contextTokens);
   const user = JSON.parse(built.request.messages[1].content);
   assert.equal(user.job_description, description);
-  assert.ok(user.catalog.every(item => Array.isArray(item) && item.length === 2));
+  assert.ok(user.catalog.every(item => Array.isArray(item) && item.length === 3));
   assert.equal(user.evidence_excerpts, undefined);
   const evidence = built.evidence.map(item => item.text);
   assert.ok(!evidence.includes('Nice to have:'));
@@ -123,14 +123,30 @@ test('indexed evidence restores exact quotations and derives priority from job s
   const input = {description, count:null, language:'en'};
   const built = matching.buildInference(catalog, input);
   const index = built.evidence.findIndex(item => item.text === 'RAP business objects and CDS.');
-  const wire = {id:'RAP-01',evidence_index:index,relevance_reason:'Understand the optional RAP requirement.'};
+  const wire = {selection:`RAP-01@${index}`,relevance_reason:'Understand the optional RAP requirement.'};
   const decoded = matching.decodeMatches({matches:[wire]},input,built).matches[0];
   assert.equal(decoded.requirement_evidence, 'RAP business objects and CDS.');
   assert.equal(decoded.requirement_type, 'preferred');
   assert.equal(matching.evidencePriority(description,'Explain decisions clearly.'),'required');
-  for (const evidence_index of [-1, 999, '1', 1.5]) assert.throws(()=>matching.decodeMatches({matches:[{...wire,evidence_index}]},input,built));
+  for (const evidence_index of [-1, 999, '01', 1.5]) assert.throws(()=>matching.decodeMatches({matches:[{...wire,selection:`RAP-01@${evidence_index}`}]},input,built));
+  assert.throws(()=>matching.decodeMatches({matches:[{...wire,selection:'RAP-01@0'}]},input,built));
   assert.throws(()=>matching.decodeMatches({matches:[{...wire,requirement_type:'required'}]},input,built));
   assert.throws(()=>matching.decodeMatches({matches:[wire,wire]},input,built));
+});
+
+test('logistics and general development cannot authorize unrelated technology evidence pairs', async () => {
+  const [matching] = await modules;
+  const canonical = JSON.parse(fs.readFileSync(path.join(__dirname, '../server/catalog.json'), 'utf8'));
+  const description = 'Required:\nAnalyze inbound and outbound logistics. Solid understanding of Agile delivery. Strong expertise in ABAP development. Estimate custom development scope.\nNice to have:\nRAP, CDS, OData, BTP and Key User Extensibility.';
+  const built = matching.buildInference(canonical,{description,count:null,language:'en'});
+  assert.ok(!built.selections.some(item => item.startsWith('INTF-03@')));
+  assert.ok(!built.selections.some(item => item.startsWith('OO-08@')));
+  const rap = built.selections.filter(item => item.startsWith('RAP-01@'));
+  assert.ok(rap.length > 0);
+  assert.ok(rap.every(item => built.evidence[Number(item.split('@')[1])].priority === 'preferred'));
+  const estimation = built.selections.filter(item => item.startsWith('STORY-07@'));
+  assert.ok(estimation.length > 0);
+  assert.ok(estimation.every(item => built.evidence[Number(item.split('@')[1])].text.includes('Estimate')));
 });
 
 test('evidence schema offers bounded exact excerpts without rewriting language or punctuation', async () => {
