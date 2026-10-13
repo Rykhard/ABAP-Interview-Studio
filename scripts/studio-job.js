@@ -4,7 +4,7 @@
  const t=ru?{
   entry:'Подготовиться к вакансии',close:'Закрыть',intro:'Составьте план подготовки под вакансию: от основ к практическим сценариям.',
   privacy:'После нажатия «Подобрать вопросы» текст будет отправлен Cloudflare Workers AI. Удалите персональные и конфиденциальные данные. Текст не сохраняется в приложении.',
-  description:'Описание вакансии',count:'Максимум вопросов',find:'Подобрать вопросы',checking:'Проверяем доступность…',loading:'Подбираем вопросы… Это может занять до 55 секунд.',
+  description:'Описание вакансии',count:'Максимум вопросов',find:'Подобрать вопросы',checking:'Проверяем доступность…',loading:'Подбираем вопросы… Это может занять до 80 секунд.',
   preview:'Ваш план подготовки',review:'AI может ошибаться. «База для подготовки» — полезная основа для указанного навыка, а не отдельное требование работодателя. Уберите лишнее и сохраните план.',required:'Обязательное требование',preferred:'Желательно',evidence:'Цитата из вакансии',reason:'Почему этот вопрос',
   apply:'Начать практику',replace:'Начало новой практики заменит текущую сессию. Сохранённые оценки останутся.',session:'Подготовка к вакансии',selected:n=>`Выбрано вопросов: ${n}`,empty:'Подходящих вопросов не найдено. Попробуйте описание с конкретными обязанностями и технологиями.',
   invalid_input:'Описание вакансии должно содержать от 30 до 6 000 символов и не более 10 000 байт. Выберите от 1 до 60 вопросов или отключите ограничение количества.',
@@ -18,7 +18,7 @@
  }:{
   entry:'Prepare for a job',close:'Close',intro:'Build a preparation plan for your job: from foundations to practical scenarios.',
   privacy:'Selecting “Find relevant questions” sends this text to Cloudflare Workers AI. Remove personal and confidential information. The description is not saved in the app.',
-  description:'Job description',count:'Maximum questions',find:'Find relevant questions',checking:'Checking availability…',loading:'Finding questions… This can take up to 55 seconds.',
+  description:'Job description',count:'Maximum questions',find:'Find relevant questions',checking:'Checking availability…',loading:'Finding questions… This can take up to 80 seconds.',
   preview:'Your preparation plan',review:'AI can make mistakes. Foundation questions prepare you for a named skill; they are not separate employer requirements. Remove anything unnecessary and save your plan.',required:'Required',preferred:'Preferred',evidence:'Job requirement',
   apply:'Start interview practice',replace:'Starting new practice replaces your current session. Saved ratings remain.',session:'Job preparation',selected:n=>`${n} questions selected`,empty:'No relevant questions found. Try a description with specific responsibilities and technologies.',
   invalid_input:'Enter a job description of 30 to 6,000 characters and at most 10,000 bytes. Choose between 1 and 60 questions or turn off the question limit.',
@@ -59,7 +59,7 @@
  }
  async function request(method,body){
   cancel();const version=requestVersion;controller=new AbortController();const current=controller;pending=true;pendingMethod=method;find.disabled=true;busy(method==='POST');
-  let timedOut=false;const timer=setTimeout(()=>{timedOut=true;current.abort();},method==='POST'?55000:8000);
+  let timedOut=false;const timer=setTimeout(()=>{timedOut=true;current.abort();},method==='POST'?80000:8000);
   try{
    if(!/^https?:$/.test(location.protocol))throw {code:'unavailable'};
    const response=await fetch('/api/prepare-job',{method,signal:current.signal,credentials:'same-origin',cache:'no-store',headers:body?{'Content-Type':'application/json'}:undefined,body:body?JSON.stringify(body):undefined});

@@ -63,7 +63,7 @@ async function readQuota(db, day, cap, started) {
   const state = await db.prepare('SELECT (SELECT COUNT(*) FROM job_requests WHERE day = ?) AS used, (SELECT COUNT(*) FROM job_daily_blocks WHERE day = ?) AS blocked').bind(day, day).first();
   return { limit: cap, used: Number(state.used), remaining: state.blocked ? 0 : Math.max(0, cap - Number(state.used)), resetAt: dailyReset(started), providerBlocked: !!state.blocked };
 }
-export function createJobHandler(catalog, { timeoutMs = 45000, bodyTimeoutMs = 5000, now = Date.now, log = entry => console.info(JSON.stringify(entry)) } = {}) {
+export function createJobHandler(catalog, { timeoutMs = 70000, bodyTimeoutMs = 5000, now = Date.now, log = entry => console.info(JSON.stringify(entry)) } = {}) {
   prepareCatalog(catalog);
   async function handleJob(request, env, metrics) {
     if (!['GET', 'POST'].includes(request.method)) return new Response(null, { status: 405, headers: { Allow: 'GET, POST', 'Cache-Control': 'no-store' } });

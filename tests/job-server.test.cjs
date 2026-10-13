@@ -94,6 +94,10 @@ test('preparation plans widen foundations without inventing technologies or empl
   assert.equal(matching.preparationSupport(question('ABAP-01'), 'Choose standard, sorted and hashed internal tables in ABAP.').relationship, 'direct');
   for (const id of ['OO-15','INTF-03','RAP-01']) assert.equal(matching.preparationSupport(question(id), 'Strong ABAP development expertise.'), null, id);
   assert.equal(matching.preparationSupport(question('RAP-01'), 'RAP is explicitly outside this role.'), null);
+  for (const id of ['TEST-03','TEST-04']) assert.equal(matching.preparationSupport(question(id), 'Design, develop, test and deploy logistics solutions.'), null, id);
+  assert.equal(matching.preparationSupport(question('OPS-17'), 'Logistics processes are integrated in SAP S/4HANA solutions.'), null);
+  assert.equal(matching.preparationSupport(question('OPS-08'), 'Estimate custom development scope and costs.'), null);
+  assert.equal(matching.preparationSupport(question('RICEFW-03'), 'Analyze customer logistics requirements.'), null);
   const description = 'Required:\nStrong ABAP development expertise, testing and code review.\nNice to have:\nRAP and CDS.';
   const automatic = {description,count:null,language:'en'};
   const built = matching.buildInference(canonical, automatic);
