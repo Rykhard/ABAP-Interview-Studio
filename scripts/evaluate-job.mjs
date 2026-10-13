@@ -3,7 +3,7 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildInference, DEFAULT_MODEL, parseStrictJSON, validateMatches } from '../server/job-matching.mjs';
+import { buildInference, DEFAULT_MODEL, parseStrictJSON, decodeMatches } from '../server/job-matching.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const fixtures = JSON.parse(await readFile(resolve(root, 'evals/job-preparation.json'), 'utf8'));
@@ -50,7 +50,7 @@ for (const fixture of selected) {
       const result = body.result;
       let validated;
       try {
-        validated = validateMatches(typeof result?.response === 'string' ? parseStrictJSON(result.response) : result?.response, input, built.candidates);
+        validated = decodeMatches(typeof result?.response === 'string' ? parseStrictJSON(result.response) : result?.response, input, built);
       } catch {
         // Only committed synthetic fixtures reach this runner. Keep failed model
         // text in the ignored evaluation report for manual contract diagnosis.

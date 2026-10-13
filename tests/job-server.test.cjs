@@ -10,7 +10,7 @@ const catalog = [
   { id: 'AUTH-01', title: 'How do authorization checks protect data?', title_ru: 'Как проверять полномочия?', topic: 'Security', section: 'Authorization', level: 'core' }
 ];
 const input = { description: 'We require RAP development and transaction handling. Authorization checks are preferred.', count: 5, language: 'en' };
-const match = { id: 'RAP-01', requirement_evidence: 'RAP development', relevance_reason: 'Explains the requested RAP transaction behavior.', requirement_type: 'required' };
+const match = { id: 'RAP-01', requirement_evidence: 'We require RAP development and transaction handling.', relevance_reason: 'Explains the requested RAP transaction behavior.', requirement_type: 'required' };
 function request(body = input, extraHeaders = {}) {
   return new Request('https://studio.example/api/prepare-job', { method: 'POST', headers: { Origin: 'https://studio.example', 'Content-Type': 'application/json', 'CF-Connecting-IP': '192.0.2.1', ...extraHeaders }, body: typeof body === 'string' ? body : JSON.stringify(body) });
 }
@@ -20,7 +20,14 @@ function database() {
   return { sqlite, prepare(sql) { return { bind(...args) { return { async first() { return sqlite.prepare(sql).get(...args); }, async run() { return { meta: { changes: Number(sqlite.prepare(sql).run(...args).changes) } }; } }; } }; } };
 }
 function environment(db, run = async () => ({ response: { matches: [match] } })) {
-  return { JOB_PREP_ENABLED: 'true', JOB_RATE_SECRET: 'test-secret-'.repeat(4), JOB_DB: db, AI: { run } };
+  return { JOB_PREP_ENABLED: 'true', JOB_RATE_SECRET: 'test-secret-'.repeat(4), JOB_DB: db, AI: { run: async (model, request) => {
+    const result = await run(model, request);
+    if (Array.isArray(result?.response?.matches)) {
+      const evidence = JSON.parse(request.messages[1].content).evidence;
+      result.response.matches = result.response.matches.map(({requirement_evidence, requirement_type, ...rest}) => ({...rest, evidence_index: evidence.findIndex(item => item[2] === requirement_evidence)}));
+    }
+    return result;
+  } } };
 }
 
 test('public quota reflects reservations and usage exposes only valid provider token counts', async t => {
@@ -93,7 +100,7 @@ test('long vacancies retain skill coverage without duplicate evidence or metadat
   assert.equal(user.job_description, description);
   assert.ok(user.catalog.every(item => Array.isArray(item) && item.length === 2));
   assert.equal(user.evidence_excerpts, undefined);
-  const evidence = built.request.response_format.json_schema.properties.matches.items.properties.requirement_evidence.enum;
+  const evidence = built.evidence.map(item => item.text);
   assert.ok(!evidence.includes('Nice to have:'));
   assert.ok(evidence.every(text => description.includes(text)));
 });
@@ -110,11 +117,27 @@ test('catalog indexing runs once before requests and cached question snapshots s
   assert.equal(first.title, catalog[0].title);
 });
 
+test('indexed evidence restores exact quotations and derives priority from job scope', async () => {
+  const [matching] = await modules;
+  const description = 'Required:\nImplement ABAP authorization checks.\nNice to have:\nRAP business objects and CDS.\nWorking style:\nExplain decisions clearly.';
+  const input = {description, count:null, language:'en'};
+  const built = matching.buildInference(catalog, input);
+  const index = built.evidence.findIndex(item => item.text === 'RAP business objects and CDS.');
+  const wire = {id:'RAP-01',evidence_index:index,relevance_reason:'Understand the optional RAP requirement.'};
+  const decoded = matching.decodeMatches({matches:[wire]},input,built).matches[0];
+  assert.equal(decoded.requirement_evidence, 'RAP business objects and CDS.');
+  assert.equal(decoded.requirement_type, 'preferred');
+  assert.equal(matching.evidencePriority(description,'Explain decisions clearly.'),'required');
+  for (const evidence_index of [-1, 999, '1', 1.5]) assert.throws(()=>matching.decodeMatches({matches:[{...wire,evidence_index}]},input,built));
+  assert.throws(()=>matching.decodeMatches({matches:[{...wire,requirement_type:'required'}]},input,built));
+  assert.throws(()=>matching.decodeMatches({matches:[wire,wire]},input,built));
+});
+
 test('evidence schema offers bounded exact excerpts without rewriting language or punctuation', async () => {
   const [matching] = await modules;
   const description = 'Required: RAP development; diagnose stale ETags.\nPreferred experience\nCDS view entities are useful but not required.\nОбязательно: проверять global и instance authorization в RAP.';
   const built = matching.buildInference(catalog, { ...input, description });
-  const evidence = built.request.response_format.json_schema.properties.matches.items.properties.requirement_evidence.enum;
+  const evidence = built.evidence.map(item => item.text);
   assert.ok(evidence.includes('Required: RAP development;'));
   assert.ok(evidence.includes('CDS view entities are useful but not required.'));
   assert.ok(evidence.includes('Обязательно: проверять global и instance authorization в RAP.'));

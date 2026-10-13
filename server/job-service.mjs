@@ -1,4 +1,4 @@
-import { DEFAULT_MODEL, LIMITS, buildInference, prepareCatalog, parseStrictJSON, validateInput, validateMatches } from './job-matching.mjs';
+import { DEFAULT_MODEL, LIMITS, buildInference, decodeMatches, prepareCatalog, parseStrictJSON, validateInput } from './job-matching.mjs';
 
 export const RESERVE_SQL = `INSERT INTO job_requests(id, client_hash, day, created_at, lease_until)
 SELECT ?, ?, ?, ?, ?
@@ -120,7 +120,7 @@ export function createJobHandler(catalog, { timeoutMs = 25000, bodyTimeoutMs = 5
           if (Object.keys(usage).length) metrics.usage = usage;
         }
         const data = typeof result?.response === 'string' ? parseStrictJSON(result.response) : result?.response;
-        const validated = validateMatches(data, input, inference.candidates);
+        const validated = decodeMatches(data, input, inference);
         metrics.matchCount = validated.matches.length;
         return response({ ...validated, quota, ...(metrics.usage ? { usage: metrics.usage } : {}) });
       } catch { return failure('invalid_output', undefined, quota); }
