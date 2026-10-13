@@ -2821,7 +2821,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
    const meta=document.createElement('span');meta.className='job-match-meta';const basis=row.relationship==='foundation'?(ru?'База для подготовки':'Preparation foundation'):(ru?'По требованию вакансии':'Directly related');const priority=row.relationship==='foundation'?(row.requirement_type==='required'?(ru?'для обязательного навыка':'for a required skill'):(ru?'для желательного навыка':'for a preferred skill')):t[row.requirement_type];meta.textContent=`${row.id} · ${basis} · ${priority} · ${learningLevel(byId.get(row.id))}`;
    const title=document.createElement('strong');title.textContent=byId.get(row.id).question;
    content.append(meta,title);label.append(checkbox,content);
-   const reason=document.createElement('p');reason.className='job-match-reason';reason.textContent=row.relevance_reason;
+   const reason=document.createElement('p');reason.className='job-match-reason';reason.textContent=byId.get(row.id).sectionTitle;
    const quote=document.createElement('blockquote');quote.textContent=row.requirement_evidence;quote.setAttribute('aria-label',t.evidence);
    card.append(label,reason,quote);list.append(card);
   });
@@ -4188,7 +4188,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
    const meta=document.createElement('span');meta.className='job-match-meta';const basis=row.relationship==='foundation'?(ru?'База для подготовки':'Preparation foundation'):(ru?'По требованию вакансии':'Directly related');const priority=row.relationship==='foundation'?(row.requirement_type==='required'?(ru?'для обязательного навыка':'for a required skill'):(ru?'для желательного навыка':'for a preferred skill')):t[row.requirement_type];meta.textContent=`${row.id} · ${basis} · ${priority} · ${learningLevel(byId.get(row.id))}`;
    const title=document.createElement('strong');title.textContent=byId.get(row.id).question;
    content.append(meta,title);label.append(checkbox,content);
-   const reason=document.createElement('p');reason.className='job-match-reason';reason.textContent=row.relevance_reason;
+   const reason=document.createElement('p');reason.className='job-match-reason';reason.textContent=byId.get(row.id).sectionTitle;
    const quote=document.createElement('blockquote');quote.textContent=row.requirement_evidence;quote.setAttribute('aria-label',t.evidence);
    card.append(label,reason,quote);list.append(card);
   });

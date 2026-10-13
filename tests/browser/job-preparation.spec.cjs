@@ -214,13 +214,14 @@ test('short descriptions are rejected locally after trimming whitespace', async 
   expect(requests).toHaveLength(0);
 });
 
-test('model text is displayed literally rather than interpreted as markup', async ({page}) => {
+test('quotes stay literal and canonical section labels replace untrusted AI explanations', async ({page}) => {
   const untrusted = '<img src=x onerror="window.jobInjected=true">';
   await mockService(page, {matches: [{...matches[0], requirement_evidence: untrusted, relevance_reason: untrusted}]});
   await openJob(page);
   await page.locator('#jobDescription').fill(untrusted);
   await page.locator('#findJobQuestions').click();
-  await expect(page.locator('.job-match-reason')).toHaveText(untrusted);
+  await expect(page.locator('.job-match blockquote')).toHaveText(untrusted);
+  await expect(page.locator('.job-match-reason')).toHaveText('Transactions & save ownership');
   await expect(page.locator('.job-match img')).toHaveCount(0);
   expect(await page.evaluate(() => window.jobInjected)).toBeUndefined();
 });

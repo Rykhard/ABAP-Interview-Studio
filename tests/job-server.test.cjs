@@ -24,7 +24,7 @@ function environment(db, run = async () => ({ response: { matches: [match] } }))
     const result = await run(model, request);
     if (Array.isArray(result?.response?.matches)) {
       const evidence = JSON.parse(request.messages[1].content).evidence;
-      result.response.matches = result.response.matches.map(({requirement_evidence, requirement_type, ...rest}) => ({selection: `${rest.id}@${evidence.findIndex(item => item[2] === requirement_evidence)}`, relevance_reason: rest.relevance_reason}));
+      result.response.matches = result.response.matches.map(({requirement_evidence, requirement_type, ...rest}) => ({selection: `${rest.id}@${evidence.findIndex(item => item[2] === requirement_evidence)}`}));
     }
     return result;
   } } };
@@ -64,7 +64,7 @@ test('automatic count permits relevant matches beyond ten while bounding schema 
   assert.equal(matching.validateInput(automatic).count, null);
   const built = matching.buildInference(canonical, automatic);
   assert.ok(built.candidates.length > 10);
-  assert.equal(built.request.max_tokens, 4500);
+  assert.equal(built.request.max_tokens, 2300);
   assert.equal(built.request.response_format.json_schema.properties.matches.maxItems, Math.min(60, built.candidates.length));
   assert.ok(built.contextUpperBound <= matching.LIMITS.contextTokens);
   const matches = built.candidates.slice(0,12).map(item => ({...match,id:item.id}));
@@ -104,7 +104,7 @@ test('preparation plans widen foundations without inventing technologies or empl
   assert.ok(built.candidates.length > 60);
   const pair = built.selections.find(pair => pair.startsWith('ABAP-02@'));
   assert.ok(pair);
-  const decoded = matching.decodeMatches({matches:[{selection:pair,relevance_reason:'Practice table keys as a foundation for ABAP development.'}]}, automatic,built).matches[0];
+  const decoded = matching.decodeMatches({matches:[{selection:pair}]}, automatic,built).matches[0];
   assert.equal(decoded.relationship,'foundation');
   assert.equal(decoded.requirement_type,'required');
   assert.equal(decoded.requirement_evidence,'Strong ABAP development expertise, testing and code review.');
@@ -154,10 +154,12 @@ test('indexed evidence restores exact quotations and derives priority from job s
   const input = {description, count:null, language:'en'};
   const built = matching.buildInference(catalog, input);
   const index = built.evidence.findIndex(item => item.text === 'RAP business objects and CDS.');
-  const wire = {selection:`RAP-01@${index}`,relevance_reason:'Understand the optional RAP requirement.'};
+  const wire = {selection:`RAP-01@${index}`};
   const decoded = matching.decodeMatches({matches:[wire]},input,built).matches[0];
   assert.equal(decoded.requirement_evidence, 'RAP business objects and CDS.');
   assert.equal(decoded.requirement_type, 'preferred');
+  assert.equal(decoded.relevance_reason, 'Preparation foundation: Transactions.');
+  assert.throws(()=>matching.decodeMatches({matches:[{...wire,relevance_reason:'Invented model answer'}]},input,built));
   assert.equal(matching.evidencePriority(description,'Explain decisions clearly.'),'required');
   for (const evidence_index of [-1, 999, '01', 1.5]) assert.throws(()=>matching.decodeMatches({matches:[{...wire,selection:`RAP-01@${evidence_index}`}]},input,built));
   assert.throws(()=>matching.decodeMatches({matches:[{...wire,selection:'RAP-01@0'}]},input,built));
