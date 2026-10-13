@@ -2730,10 +2730,10 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
 (() => {
  const ru=studioLocale==='ru';
  const t=ru?{
-  entry:'Подготовиться к вакансии',close:'Закрыть',intro:'Подберите вопросы из нашей библиотеки под конкретную вакансию.',
+  entry:'Подготовиться к вакансии',close:'Закрыть',intro:'Составьте план подготовки под вакансию: от основ к практическим сценариям.',
   privacy:'После нажатия «Подобрать вопросы» текст будет отправлен Cloudflare Workers AI. Удалите персональные и конфиденциальные данные. Текст не сохраняется в приложении.',
-  description:'Описание вакансии',count:'Максимум вопросов',find:'Подобрать вопросы',checking:'Проверяем доступность…',loading:'Подбираем вопросы… Это может занять до 30 секунд.',
-  preview:'Проверьте подборку',review:'AI может ошибаться. Сопоставьте объяснение с цитатой из вакансии и оставьте подходящие вопросы.',required:'Обязательное требование',preferred:'Желательно',evidence:'Цитата из вакансии',reason:'Почему этот вопрос',
+  description:'Описание вакансии',count:'Максимум вопросов',find:'Подобрать вопросы',checking:'Проверяем доступность…',loading:'Подбираем вопросы… Это может занять до 55 секунд.',
+  preview:'Ваш план подготовки',review:'AI может ошибаться. «База для подготовки» — полезная основа для указанного навыка, а не отдельное требование работодателя. Уберите лишнее и сохраните план.',required:'Обязательное требование',preferred:'Желательно',evidence:'Цитата из вакансии',reason:'Почему этот вопрос',
   apply:'Начать практику',replace:'Начало новой практики заменит текущую сессию. Сохранённые оценки останутся.',session:'Подготовка к вакансии',selected:n=>`Выбрано вопросов: ${n}`,empty:'Подходящих вопросов не найдено. Попробуйте описание с конкретными обязанностями и технологиями.',
   invalid_input:'Описание вакансии должно содержать от 30 до 6 000 символов и не более 10 000 байт. Выберите от 1 до 60 вопросов или отключите ограничение количества.',
   context_limit:'Описание слишком велико для модели. Сократите его до ключевых обязанностей и требований.',
@@ -2744,10 +2744,10 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
   invalid_output:'Не удалось получить надёжную подборку. Вопросы не добавлены. Попробуйте позже или выберите их в библиотеке.',
   unavailable:'Сервис AI-подбора сейчас недоступен. Учебные материалы и обычная практика доступны.',retry:date=>`Повторите после ${date}.`,tomorrow:'Попробуйте снова после обновления дневного лимита.',
  }:{
-  entry:'Prepare for a job',close:'Close',intro:'Find questions from our library that fit a particular job.',
+  entry:'Prepare for a job',close:'Close',intro:'Build a preparation plan for your job: from foundations to practical scenarios.',
   privacy:'Selecting “Find relevant questions” sends this text to Cloudflare Workers AI. Remove personal and confidential information. The description is not saved in the app.',
-  description:'Job description',count:'Maximum questions',find:'Find relevant questions',checking:'Checking availability…',loading:'Finding questions… This can take up to 30 seconds.',
-  preview:'Review your selection',review:'AI can make mistakes. Compare each reason with the quoted job requirement and keep the questions that fit.',required:'Required',preferred:'Preferred',evidence:'Job requirement',
+  description:'Job description',count:'Maximum questions',find:'Find relevant questions',checking:'Checking availability…',loading:'Finding questions… This can take up to 55 seconds.',
+  preview:'Your preparation plan',review:'AI can make mistakes. Foundation questions prepare you for a named skill; they are not separate employer requirements. Remove anything unnecessary and save your plan.',required:'Required',preferred:'Preferred',evidence:'Job requirement',
   apply:'Start interview practice',replace:'Starting new practice replaces your current session. Saved ratings remain.',session:'Job preparation',selected:n=>`${n} questions selected`,empty:'No relevant questions found. Try a description with specific responsibilities and technologies.',
   invalid_input:'Enter a job description of 30 to 6,000 characters and at most 10,000 bytes. Choose between 1 and 60 questions or turn off the question limit.',
   context_limit:'This description exceeds the model’s context allowance. Shorten it to the key responsibilities and requirements.',
@@ -2787,7 +2787,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
  }
  async function request(method,body){
   cancel();const version=requestVersion;controller=new AbortController();const current=controller;pending=true;pendingMethod=method;find.disabled=true;busy(method==='POST');
-  let timedOut=false;const timer=setTimeout(()=>{timedOut=true;current.abort();},method==='POST'?30000:8000);
+  let timedOut=false;const timer=setTimeout(()=>{timedOut=true;current.abort();},method==='POST'?55000:8000);
   try{
    if(!/^https?:$/.test(location.protocol))throw {code:'unavailable'};
    const response=await fetch('/api/prepare-job',{method,signal:current.signal,credentials:'same-origin',cache:'no-store',headers:body?{'Content-Type':'application/json'}:undefined,body:body?JSON.stringify(body):undefined});
@@ -2807,8 +2807,8 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
  }
  function showMatches(result,source,maximum){
   const rows=result?.matches;
-  if(!Array.isArray(rows)||rows.length>(maximum??60)||new Set(rows.map(row=>row?.id)).size!==rows.length||rows.some(row=>!row||!byId.has(row.id)||!['required','preferred'].includes(row.requirement_type)||typeof row.relevance_reason!=='string'||!row.relevance_reason.trim()||typeof row.requirement_evidence!=='string'||!row.requirement_evidence.trim()||!source.includes(row.requirement_evidence))){notify(t.invalid_output,true);return;}
-  rows.sort((a,b)=>topics.findIndex(t=>t.id===byId.get(a.id).topic)-topics.findIndex(t=>t.id===byId.get(b.id).topic)||Number(a.requirement_type==='preferred')-Number(b.requirement_type==='preferred'));
+  if(!Array.isArray(rows)||rows.length>(maximum??60)||new Set(rows.map(row=>row?.id)).size!==rows.length||rows.some(row=>!row||!byId.has(row.id)||!['required','preferred'].includes(row.requirement_type)||(row.relationship!==undefined&&!['direct','foundation'].includes(row.relationship))||typeof row.relevance_reason!=='string'||!row.relevance_reason.trim()||typeof row.requirement_evidence!=='string'||!row.requirement_evidence.trim()||!source.includes(row.requirement_evidence))){notify(t.invalid_output,true);return;}
+  rows.sort((a,b)=>topics.findIndex(t=>t.id===byId.get(a.id).topic)-topics.findIndex(t=>t.id===byId.get(b.id).topic)||Number(a.requirement_type==='preferred')-Number(b.requirement_type==='preferred')||learningLevelOrder.indexOf(learningLevel(byId.get(a.id)))-learningLevelOrder.indexOf(learningLevel(byId.get(b.id))));
   matches=rows;
   if(!rows.length){notify(t.empty);return;}
   list.replaceChildren();
@@ -2818,7 +2818,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
    const card=document.createElement('li');card.className='job-match';
    const label=document.createElement('label'),checkbox=document.createElement('input'),content=document.createElement('span');
    checkbox.type='checkbox';checkbox.checked=true;checkbox.value=row.id;checkbox.id=`job-match-${index}`;checkbox.addEventListener('change',updateSelection);
-   const meta=document.createElement('span');meta.className='job-match-meta';meta.textContent=`${row.id} · ${t[row.requirement_type]}`;
+   const meta=document.createElement('span');meta.className='job-match-meta';const basis=row.relationship==='foundation'?(ru?'База для подготовки':'Preparation foundation'):(ru?'По требованию вакансии':'Directly related');const priority=row.relationship==='foundation'?(row.requirement_type==='required'?(ru?'для обязательного навыка':'for a required skill'):(ru?'для желательного навыка':'for a preferred skill')):t[row.requirement_type];meta.textContent=`${row.id} · ${basis} · ${priority} · ${learningLevel(byId.get(row.id))}`;
    const title=document.createElement('strong');title.textContent=byId.get(row.id).question;
    content.append(meta,title);label.append(checkbox,content);
    const reason=document.createElement('p');reason.className='job-match-reason';reason.textContent=row.relevance_reason;
@@ -2830,7 +2830,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
  }
  function buildDialog(){
   dialog=document.createElement('dialog');dialog.id='jobDialog';dialog.setAttribute('aria-labelledby','jobTitle');
-  dialog.innerHTML=`<div class="dialog-heading"><h2 id="jobTitle">${esc(t.entry)}</h2><button type="button" id="closeJob">${esc(t.close)}</button></div><p class="job-intro">${esc(t.intro)}</p><form id="jobForm"><label for="jobDescription">${esc(t.description)}</label><textarea id="jobDescription" rows="7" maxlength="6000" required aria-describedby="jobPrivacy" autocomplete="off" spellcheck="false"></textarea><p id="jobPrivacy" class="subtle">${esc(t.privacy)}</p><div class="job-form-actions"><div class="job-count-settings"><label class="job-limit-toggle"><input id="jobLimitEnabled" type="checkbox" role="switch"><span>${ru?'Ограничить количество':'Limit question count'}</span></label><label for="jobCount" id="jobCountLabel" hidden>${esc(t.count)}<input id="jobCount" type="number" min="1" max="60" value="5" required disabled inputmode="numeric"></label><p id="jobLimitHint" class="subtle">${ru?'Без заданного количества: AI выбирает релевантные вопросы. За один запрос анализируется до 60 кандидатов; подборка не гарантирует полного покрытия.':'No chosen count: AI selects relevant questions. Each request reviews up to 60 candidates; the selection is not a guarantee of complete coverage.'}</p></div><button id="findJobQuestions" class="primary" type="submit">${esc(t.find)}</button></div></form><p id="jobStatus" role="status" aria-live="polite" aria-atomic="true"></p><section id="jobPreview" hidden aria-labelledby="jobPreviewTitle"><h3 id="jobPreviewTitle" tabindex="-1">${esc(t.preview)}</h3><p class="subtle">${esc(t.review)}</p><ul id="jobMatches"></ul><div class="job-apply"><p id="jobSelection" role="status"></p><p id="jobReplace" class="subtle" hidden>${esc(t.replace)}</p><button id="applyJob" type="button" class="primary">${esc(t.apply)}</button></div></section>`;
+  dialog.innerHTML=`<div class="dialog-heading"><h2 id="jobTitle">${esc(t.entry)}</h2><button type="button" id="closeJob">${esc(t.close)}</button></div><p class="job-intro">${esc(t.intro)}</p><form id="jobForm"><label for="jobDescription">${esc(t.description)}</label><textarea id="jobDescription" rows="7" maxlength="6000" required aria-describedby="jobPrivacy" autocomplete="off" spellcheck="false"></textarea><p id="jobPrivacy" class="subtle">${esc(t.privacy)}</p><div class="job-form-actions"><div class="job-count-settings"><label class="job-limit-toggle"><input id="jobLimitEnabled" type="checkbox" role="switch"><span>${ru?'Ограничить количество':'Limit question count'}</span></label><label for="jobCount" id="jobCountLabel" hidden>${esc(t.count)}<input id="jobCount" type="number" min="1" max="60" value="5" required disabled inputmode="numeric"></label><p id="jobLimitHint" class="subtle">${ru?'План подготовки: ориентир 40–50 полезных вопросов, до 60 при широком наборе навыков. Для узкой вакансии — меньше. Без повторов ради количества; полнота покрытия не гарантируется.':'Preparation plan: aim for 40–50 useful questions, up to 60 for a broad skill set. Narrow roles get fewer. No padding; complete coverage is not guaranteed.'}</p></div><button id="findJobQuestions" class="primary" type="submit">${esc(t.find)}</button></div></form><p id="jobStatus" role="status" aria-live="polite" aria-atomic="true"></p><section id="jobPreview" hidden aria-labelledby="jobPreviewTitle"><h3 id="jobPreviewTitle" tabindex="-1">${esc(t.preview)}</h3><p class="subtle">${esc(t.review)}</p><ul id="jobMatches"></ul><div class="job-apply"><p id="jobSelection" role="status"></p><p id="jobReplace" class="subtle" hidden>${esc(t.replace)}</p><button id="applyJob" type="button" class="primary">${esc(t.apply)}</button></div></section>`;
   document.body.append(dialog);
   $('jobTitle').textContent=extra.entry;
   const feedback=document.createElement('div');feedback.innerHTML=`<div id="jobProgress" role="progressbar" aria-label="${esc(t.loading)}" hidden><span></span></div><details id="jobQuotaInfo" hidden><summary id="jobQuota"></summary><p>${esc(extra.quotaNote)}</p></details><details id="jobUsage" hidden><summary>${esc(extra.details)}</summary><p id="jobUsageText"></p></details>`;
@@ -4097,10 +4097,10 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
 (() => {
  const ru=studioLocale==='ru';
  const t=ru?{
-  entry:'Подготовиться к вакансии',close:'Закрыть',intro:'Подберите вопросы из нашей библиотеки под конкретную вакансию.',
+  entry:'Подготовиться к вакансии',close:'Закрыть',intro:'Составьте план подготовки под вакансию: от основ к практическим сценариям.',
   privacy:'После нажатия «Подобрать вопросы» текст будет отправлен Cloudflare Workers AI. Удалите персональные и конфиденциальные данные. Текст не сохраняется в приложении.',
-  description:'Описание вакансии',count:'Максимум вопросов',find:'Подобрать вопросы',checking:'Проверяем доступность…',loading:'Подбираем вопросы… Это может занять до 30 секунд.',
-  preview:'Проверьте подборку',review:'AI может ошибаться. Сопоставьте объяснение с цитатой из вакансии и оставьте подходящие вопросы.',required:'Обязательное требование',preferred:'Желательно',evidence:'Цитата из вакансии',reason:'Почему этот вопрос',
+  description:'Описание вакансии',count:'Максимум вопросов',find:'Подобрать вопросы',checking:'Проверяем доступность…',loading:'Подбираем вопросы… Это может занять до 55 секунд.',
+  preview:'Ваш план подготовки',review:'AI может ошибаться. «База для подготовки» — полезная основа для указанного навыка, а не отдельное требование работодателя. Уберите лишнее и сохраните план.',required:'Обязательное требование',preferred:'Желательно',evidence:'Цитата из вакансии',reason:'Почему этот вопрос',
   apply:'Начать практику',replace:'Начало новой практики заменит текущую сессию. Сохранённые оценки останутся.',session:'Подготовка к вакансии',selected:n=>`Выбрано вопросов: ${n}`,empty:'Подходящих вопросов не найдено. Попробуйте описание с конкретными обязанностями и технологиями.',
   invalid_input:'Описание вакансии должно содержать от 30 до 6 000 символов и не более 10 000 байт. Выберите от 1 до 60 вопросов или отключите ограничение количества.',
   context_limit:'Описание слишком велико для модели. Сократите его до ключевых обязанностей и требований.',
@@ -4111,10 +4111,10 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
   invalid_output:'Не удалось получить надёжную подборку. Вопросы не добавлены. Попробуйте позже или выберите их в библиотеке.',
   unavailable:'Сервис AI-подбора сейчас недоступен. Учебные материалы и обычная практика доступны.',retry:date=>`Повторите после ${date}.`,tomorrow:'Попробуйте снова после обновления дневного лимита.',
  }:{
-  entry:'Prepare for a job',close:'Close',intro:'Find questions from our library that fit a particular job.',
+  entry:'Prepare for a job',close:'Close',intro:'Build a preparation plan for your job: from foundations to practical scenarios.',
   privacy:'Selecting “Find relevant questions” sends this text to Cloudflare Workers AI. Remove personal and confidential information. The description is not saved in the app.',
-  description:'Job description',count:'Maximum questions',find:'Find relevant questions',checking:'Checking availability…',loading:'Finding questions… This can take up to 30 seconds.',
-  preview:'Review your selection',review:'AI can make mistakes. Compare each reason with the quoted job requirement and keep the questions that fit.',required:'Required',preferred:'Preferred',evidence:'Job requirement',
+  description:'Job description',count:'Maximum questions',find:'Find relevant questions',checking:'Checking availability…',loading:'Finding questions… This can take up to 55 seconds.',
+  preview:'Your preparation plan',review:'AI can make mistakes. Foundation questions prepare you for a named skill; they are not separate employer requirements. Remove anything unnecessary and save your plan.',required:'Required',preferred:'Preferred',evidence:'Job requirement',
   apply:'Start interview practice',replace:'Starting new practice replaces your current session. Saved ratings remain.',session:'Job preparation',selected:n=>`${n} questions selected`,empty:'No relevant questions found. Try a description with specific responsibilities and technologies.',
   invalid_input:'Enter a job description of 30 to 6,000 characters and at most 10,000 bytes. Choose between 1 and 60 questions or turn off the question limit.',
   context_limit:'This description exceeds the model’s context allowance. Shorten it to the key responsibilities and requirements.',
@@ -4154,7 +4154,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
  }
  async function request(method,body){
   cancel();const version=requestVersion;controller=new AbortController();const current=controller;pending=true;pendingMethod=method;find.disabled=true;busy(method==='POST');
-  let timedOut=false;const timer=setTimeout(()=>{timedOut=true;current.abort();},method==='POST'?30000:8000);
+  let timedOut=false;const timer=setTimeout(()=>{timedOut=true;current.abort();},method==='POST'?55000:8000);
   try{
    if(!/^https?:$/.test(location.protocol))throw {code:'unavailable'};
    const response=await fetch('/api/prepare-job',{method,signal:current.signal,credentials:'same-origin',cache:'no-store',headers:body?{'Content-Type':'application/json'}:undefined,body:body?JSON.stringify(body):undefined});
@@ -4174,8 +4174,8 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
  }
  function showMatches(result,source,maximum){
   const rows=result?.matches;
-  if(!Array.isArray(rows)||rows.length>(maximum??60)||new Set(rows.map(row=>row?.id)).size!==rows.length||rows.some(row=>!row||!byId.has(row.id)||!['required','preferred'].includes(row.requirement_type)||typeof row.relevance_reason!=='string'||!row.relevance_reason.trim()||typeof row.requirement_evidence!=='string'||!row.requirement_evidence.trim()||!source.includes(row.requirement_evidence))){notify(t.invalid_output,true);return;}
-  rows.sort((a,b)=>topics.findIndex(t=>t.id===byId.get(a.id).topic)-topics.findIndex(t=>t.id===byId.get(b.id).topic)||Number(a.requirement_type==='preferred')-Number(b.requirement_type==='preferred'));
+  if(!Array.isArray(rows)||rows.length>(maximum??60)||new Set(rows.map(row=>row?.id)).size!==rows.length||rows.some(row=>!row||!byId.has(row.id)||!['required','preferred'].includes(row.requirement_type)||(row.relationship!==undefined&&!['direct','foundation'].includes(row.relationship))||typeof row.relevance_reason!=='string'||!row.relevance_reason.trim()||typeof row.requirement_evidence!=='string'||!row.requirement_evidence.trim()||!source.includes(row.requirement_evidence))){notify(t.invalid_output,true);return;}
+  rows.sort((a,b)=>topics.findIndex(t=>t.id===byId.get(a.id).topic)-topics.findIndex(t=>t.id===byId.get(b.id).topic)||Number(a.requirement_type==='preferred')-Number(b.requirement_type==='preferred')||learningLevelOrder.indexOf(learningLevel(byId.get(a.id)))-learningLevelOrder.indexOf(learningLevel(byId.get(b.id))));
   matches=rows;
   if(!rows.length){notify(t.empty);return;}
   list.replaceChildren();
@@ -4185,7 +4185,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
    const card=document.createElement('li');card.className='job-match';
    const label=document.createElement('label'),checkbox=document.createElement('input'),content=document.createElement('span');
    checkbox.type='checkbox';checkbox.checked=true;checkbox.value=row.id;checkbox.id=`job-match-${index}`;checkbox.addEventListener('change',updateSelection);
-   const meta=document.createElement('span');meta.className='job-match-meta';meta.textContent=`${row.id} · ${t[row.requirement_type]}`;
+   const meta=document.createElement('span');meta.className='job-match-meta';const basis=row.relationship==='foundation'?(ru?'База для подготовки':'Preparation foundation'):(ru?'По требованию вакансии':'Directly related');const priority=row.relationship==='foundation'?(row.requirement_type==='required'?(ru?'для обязательного навыка':'for a required skill'):(ru?'для желательного навыка':'for a preferred skill')):t[row.requirement_type];meta.textContent=`${row.id} · ${basis} · ${priority} · ${learningLevel(byId.get(row.id))}`;
    const title=document.createElement('strong');title.textContent=byId.get(row.id).question;
    content.append(meta,title);label.append(checkbox,content);
    const reason=document.createElement('p');reason.className='job-match-reason';reason.textContent=row.relevance_reason;
@@ -4197,7 +4197,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
  }
  function buildDialog(){
   dialog=document.createElement('dialog');dialog.id='jobDialog';dialog.setAttribute('aria-labelledby','jobTitle');
-  dialog.innerHTML=`<div class="dialog-heading"><h2 id="jobTitle">${esc(t.entry)}</h2><button type="button" id="closeJob">${esc(t.close)}</button></div><p class="job-intro">${esc(t.intro)}</p><form id="jobForm"><label for="jobDescription">${esc(t.description)}</label><textarea id="jobDescription" rows="7" maxlength="6000" required aria-describedby="jobPrivacy" autocomplete="off" spellcheck="false"></textarea><p id="jobPrivacy" class="subtle">${esc(t.privacy)}</p><div class="job-form-actions"><div class="job-count-settings"><label class="job-limit-toggle"><input id="jobLimitEnabled" type="checkbox" role="switch"><span>${ru?'Ограничить количество':'Limit question count'}</span></label><label for="jobCount" id="jobCountLabel" hidden>${esc(t.count)}<input id="jobCount" type="number" min="1" max="60" value="5" required disabled inputmode="numeric"></label><p id="jobLimitHint" class="subtle">${ru?'Без заданного количества: AI выбирает релевантные вопросы. За один запрос анализируется до 60 кандидатов; подборка не гарантирует полного покрытия.':'No chosen count: AI selects relevant questions. Each request reviews up to 60 candidates; the selection is not a guarantee of complete coverage.'}</p></div><button id="findJobQuestions" class="primary" type="submit">${esc(t.find)}</button></div></form><p id="jobStatus" role="status" aria-live="polite" aria-atomic="true"></p><section id="jobPreview" hidden aria-labelledby="jobPreviewTitle"><h3 id="jobPreviewTitle" tabindex="-1">${esc(t.preview)}</h3><p class="subtle">${esc(t.review)}</p><ul id="jobMatches"></ul><div class="job-apply"><p id="jobSelection" role="status"></p><p id="jobReplace" class="subtle" hidden>${esc(t.replace)}</p><button id="applyJob" type="button" class="primary">${esc(t.apply)}</button></div></section>`;
+  dialog.innerHTML=`<div class="dialog-heading"><h2 id="jobTitle">${esc(t.entry)}</h2><button type="button" id="closeJob">${esc(t.close)}</button></div><p class="job-intro">${esc(t.intro)}</p><form id="jobForm"><label for="jobDescription">${esc(t.description)}</label><textarea id="jobDescription" rows="7" maxlength="6000" required aria-describedby="jobPrivacy" autocomplete="off" spellcheck="false"></textarea><p id="jobPrivacy" class="subtle">${esc(t.privacy)}</p><div class="job-form-actions"><div class="job-count-settings"><label class="job-limit-toggle"><input id="jobLimitEnabled" type="checkbox" role="switch"><span>${ru?'Ограничить количество':'Limit question count'}</span></label><label for="jobCount" id="jobCountLabel" hidden>${esc(t.count)}<input id="jobCount" type="number" min="1" max="60" value="5" required disabled inputmode="numeric"></label><p id="jobLimitHint" class="subtle">${ru?'План подготовки: ориентир 40–50 полезных вопросов, до 60 при широком наборе навыков. Для узкой вакансии — меньше. Без повторов ради количества; полнота покрытия не гарантируется.':'Preparation plan: aim for 40–50 useful questions, up to 60 for a broad skill set. Narrow roles get fewer. No padding; complete coverage is not guaranteed.'}</p></div><button id="findJobQuestions" class="primary" type="submit">${esc(t.find)}</button></div></form><p id="jobStatus" role="status" aria-live="polite" aria-atomic="true"></p><section id="jobPreview" hidden aria-labelledby="jobPreviewTitle"><h3 id="jobPreviewTitle" tabindex="-1">${esc(t.preview)}</h3><p class="subtle">${esc(t.review)}</p><ul id="jobMatches"></ul><div class="job-apply"><p id="jobSelection" role="status"></p><p id="jobReplace" class="subtle" hidden>${esc(t.replace)}</p><button id="applyJob" type="button" class="primary">${esc(t.apply)}</button></div></section>`;
   document.body.append(dialog);
   $('jobTitle').textContent=extra.entry;
   const feedback=document.createElement('div');feedback.innerHTML=`<div id="jobProgress" role="progressbar" aria-label="${esc(t.loading)}" hidden><span></span></div><details id="jobQuotaInfo" hidden><summary id="jobQuota"></summary><p>${esc(extra.quotaNote)}</p></details><details id="jobUsage" hidden><summary>${esc(extra.details)}</summary><p id="jobUsageText"></p></details>`;

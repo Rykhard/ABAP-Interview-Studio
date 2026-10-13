@@ -20,13 +20,17 @@ for(const locale of ['en','ru'])test(`${locale}: collection learning shows all q
 test('leaving a collection restores the full topic library',async({page})=>{
  await seed(page);await page.locator('.nav-topic[data-topic=rap]').click();await expect(page.locator('.question-row')).toHaveCount(63);expect(page.url()).not.toContain('collection=');
 });
-test('question limit switch submits null and preserves more than ten saved questions',async({page})=>{
- let posted;const description='Build RAP business objects and manage transactional applications.';
- const matches=Array.from({length:12},(_,index)=>({id:'RAP-'+String(index+1).padStart(2,'0'),requirement_type:'required',requirement_evidence:'Build RAP business objects',relevance_reason:'A relevant RAP mechanism.'}));
+for(const locale of ['en','ru'])test(`${locale}: a fifty-question plan distinguishes foundations and saves every question for study`,async({page})=>{
+ let posted;const description='Build ABAP applications. Optional RAP business objects.';
+ const catalog=require('../../server/catalog.json');
+ const matches=catalog.slice(0,50).map((q,index)=>({id:q.id,requirement_type:'required',relationship:index%2?'direct':'foundation',requirement_evidence:'Build ABAP applications.',relevance_reason:'A complementary concept for preparation.'}));
  await page.route('**/api/prepare-job',route=>{const isPost=route.request().method()==='POST';if(isPost)posted=route.request().postDataJSON();return route.fulfill({json:isPost?{matches}:{available:true}});});
- await page.goto('/?lang=en');await page.locator('#prepareJob').click();await expect(page.locator('#findJobQuestions')).toBeEnabled();await page.locator('#jobDescription').fill(description);await expect(page.locator('#jobLimitEnabled')).not.toBeChecked();await expect(page.locator('#jobCount')).not.toBeVisible();await expect(page.locator('#jobLimitHint')).toBeVisible();await page.locator('#findJobQuestions').click();await expect(page.locator('.job-match')).toHaveCount(12);expect(posted.count).toBeNull();
- await page.locator('#saveJobCollection').click();const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('studio.jobCollections.v1')).collections[0]);expect(saved.questionIds).toHaveLength(12);
- await page.locator('#openJobCollections').click();await page.locator('[data-action=learn]').click();await expect(page.locator('.question-row')).toHaveCount(12);
+ await page.goto('/?lang='+locale);await page.locator('#prepareJob').click();await expect(page.locator('#findJobQuestions')).toBeEnabled();await page.locator('#jobDescription').fill(description);await expect(page.locator('#jobLimitEnabled')).not.toBeChecked();await expect(page.locator('#jobCount')).not.toBeVisible();await expect(page.locator('#jobLimitHint')).toContainText('40–50');await page.locator('#findJobQuestions').click();await expect(page.locator('.job-match')).toHaveCount(50);expect(posted.count).toBeNull();
+ await expect(page.locator('.job-match-meta').filter({hasText:locale==='ru'?'База для подготовки':'Preparation foundation'})).toHaveCount(25);
+ await expect(page.locator('.job-match-meta').filter({hasText:locale==='ru'?'По требованию вакансии':'Directly related'})).toHaveCount(25);
+ await page.locator('#saveJobCollection').click();const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('studio.jobCollections.v1')).collections[0]);expect(saved.questionIds).toHaveLength(50);expect(saved).not.toHaveProperty('description');
+ await page.locator('#openJobCollections').click();await page.locator('[data-action=learn]').click();await expect(page.locator('.question-row')).toHaveCount(50);
+ await page.reload();await expect(page.locator('.question-row')).toHaveCount(50);
 });
 
 for(const locale of ['en','ru'])test(`${locale}: question count defaults to automatic after opening and reopening`,async({page})=>{

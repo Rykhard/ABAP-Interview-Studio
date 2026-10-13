@@ -64,8 +64,8 @@ test('automatic count permits relevant matches beyond ten while bounding schema 
   assert.equal(matching.validateInput(automatic).count, null);
   const built = matching.buildInference(canonical, automatic);
   assert.ok(built.candidates.length > 10);
-  assert.equal(built.request.max_tokens, 7000);
-  assert.equal(built.request.response_format.json_schema.properties.matches.maxItems, built.candidates.length);
+  assert.equal(built.request.max_tokens, 4500);
+  assert.equal(built.request.response_format.json_schema.properties.matches.maxItems, Math.min(60, built.candidates.length));
   assert.ok(built.contextUpperBound <= matching.LIMITS.contextTokens);
   const matches = built.candidates.slice(0,12).map(item => ({...match,id:item.id}));
   assert.equal(matching.validateMatches({matches},automatic,built.candidates).matches.length,12);
@@ -86,6 +86,33 @@ test('retrieval supports Russian titles and bounds complete prompts conservative
   assert.deepEqual(built.request.response_format.json_schema.properties.matches.items.properties.selection.enum, built.selections);
 });
 
+test('preparation plans widen foundations without inventing technologies or employer requirements', async () => {
+  const [matching] = await modules;
+  const canonical = JSON.parse(fs.readFileSync(path.join(__dirname, '../server/catalog.json'), 'utf8'));
+  const question = id => canonical.find(item => item.id === id);
+  assert.equal(matching.preparationSupport(question('ABAP-02'), 'Strong ABAP development expertise.').relationship, 'foundation');
+  assert.equal(matching.preparationSupport(question('ABAP-01'), 'Choose standard, sorted and hashed internal tables in ABAP.').relationship, 'direct');
+  for (const id of ['OO-15','INTF-03','RAP-01']) assert.equal(matching.preparationSupport(question(id), 'Strong ABAP development expertise.'), null, id);
+  assert.equal(matching.preparationSupport(question('RAP-01'), 'RAP is explicitly outside this role.'), null);
+  const description = 'Required:\nStrong ABAP development expertise, testing and code review.\nNice to have:\nRAP and CDS.';
+  const automatic = {description,count:null,language:'en'};
+  const built = matching.buildInference(canonical, automatic);
+  assert.ok(built.candidates.length > 60);
+  const pair = built.selections.find(pair => pair.startsWith('ABAP-02@'));
+  assert.ok(pair);
+  const decoded = matching.decodeMatches({matches:[{selection:pair,relevance_reason:'Practice table keys as a foundation for ABAP development.'}]}, automatic,built).matches[0];
+  assert.equal(decoded.relationship,'foundation');
+  assert.equal(decoded.requirement_type,'required');
+  assert.equal(decoded.requirement_evidence,'Strong ABAP development expertise, testing and code review.');
+  const optional = built.selections.filter(pair=>pair.startsWith('RAP-'));
+  assert.ok(optional.length > 3);
+  assert.ok(optional.every(pair=>built.evidence[Number(pair.split('@')[1])].priority==='preferred'));
+  assert.equal(built.request.response_format.json_schema.properties.matches.maxItems,60);
+  assert.equal(matching.buildInference(canonical,{...automatic,count:7}).request.response_format.json_schema.properties.matches.maxItems,7);
+  const narrow = matching.buildInference(canonical,{description:'Required: choose hashed internal tables.',count:null,language:'en'});
+  assert.ok(narrow.candidates.length < 40);
+});
+
 test('long vacancies retain skill coverage without duplicate evidence or metadata', async () => {
   const [matching] = await modules;
   const canonical = JSON.parse(fs.readFileSync(path.join(__dirname, '../server/catalog.json'), 'utf8'));
@@ -98,7 +125,7 @@ test('long vacancies retain skill coverage without duplicate evidence or metadat
   assert.ok(built.contextUpperBound <= matching.LIMITS.contextTokens);
   const user = JSON.parse(built.request.messages[1].content);
   assert.equal(user.job_description, description);
-  assert.ok(user.catalog.every(item => Array.isArray(item) && item.length === 3));
+  assert.ok(user.catalog.every(item => Array.isArray(item) && item.length === 4));
   assert.equal(user.evidence_excerpts, undefined);
   const evidence = built.evidence.map(item => item.text);
   assert.ok(!evidence.includes('Nice to have:'));
@@ -140,7 +167,11 @@ test('logistics and general development cannot authorize unrelated technology ev
   const description = 'Required:\nAnalyze inbound and outbound logistics. Solid understanding of Agile delivery. Strong expertise in ABAP development. Estimate custom development scope.\nNice to have:\nRAP, CDS, OData, BTP and Key User Extensibility.';
   const built = matching.buildInference(canonical,{description,count:null,language:'en'});
   assert.ok(!built.selections.some(item => item.startsWith('INTF-03@')));
-  assert.ok(!built.selections.some(item => item.startsWith('OO-08@')));
+  for (const pair of built.selections.filter(item => item.startsWith('OO-08@'))) {
+    assert.equal(built.relationships.get(pair), 'foundation');
+    assert.match(built.evidence[Number(pair.split('@')[1])].text, /ABAP/);
+  }
+  assert.ok(!built.selections.some(item => item.startsWith('OO-15@')));
   assert.ok(!built.selections.some(item => item.startsWith('CLOUD-08@')));
   const rap = built.selections.filter(item => item.startsWith('RAP-01@'));
   assert.ok(rap.length > 0);
@@ -241,7 +272,7 @@ test('retrieval preserves a short separate requirement alongside a dense topic',
   const built = matching.buildInference(canonical, { description, count: 3, language: 'ru' });
   const ids = new Set(built.candidates.map(item => item.id));
   for (const id of ['RAP-07', 'RAP-08', 'TEST-01']) assert.ok(ids.has(id), `${id} is available to the model`);
-  assert.ok(built.candidates.length <= 60);
+  assert.ok(built.candidates.length <= 96);
   assert.ok(built.contextUpperBound <= matching.LIMITS.contextTokens);
 });
 

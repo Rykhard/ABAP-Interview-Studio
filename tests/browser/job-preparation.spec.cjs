@@ -242,7 +242,7 @@ test('browser timeout stops waiting without making a second inference request', 
   await page.locator('#jobDescription').fill(description);
   await page.locator('#findJobQuestions').click();
   await began;
-  await page.clock.runFor(31000);
+  await page.clock.runFor(56000);
   await expect(page.locator('#jobStatus')).toContainText('took too long');
   await expect(page.locator('#findJobQuestions')).toBeEnabled();
   expect(posts).toBe(1);
