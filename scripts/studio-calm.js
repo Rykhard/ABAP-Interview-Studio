@@ -70,7 +70,6 @@ function syncCalmView(){
  $('filterSummary').textContent=[$('search').value&&!exact?$('search').value:'',$('scope').value!=='all'?learningText(learningLevels.get($('scope').value),'title'):''].filter(Boolean).join(' · ');
  if(lessonLibrary&&mode==='learn'){$('heading').textContent='Guided lessons';$('intro').textContent='Follow a concrete example. See the process stage and data change at each step.';}
  if(savedOnly&&mode==='learn'){$('heading').textContent='Saved questions';$('intro').textContent='Your personal collection. Open a question to read, or practice the collection aloud.';}
- $('savedQuestionsNav').onclick=openSavedQuestions;$('guidedLessonsNav').onclick=openLessonLibrary;
  document.querySelectorAll('[data-open-question]').forEach(a=>a.onclick=e=>{e.preventDefault();activeLearningPath='';openQuestion(a.dataset.openQuestion);});
  if($('continueReading'))$('continueReading').onclick=()=>openQuestion(lastQuestion);
  bindLearningControls();

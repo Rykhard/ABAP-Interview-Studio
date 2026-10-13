@@ -145,7 +145,12 @@ main>#progress{display:none}
 
 /* Topic navigation stays compact until the user deliberately asks for subtopics. */
 .nav-topic-row{display:flex;align-items:stretch;position:relative;z-index:1;min-width:0}
-.nav-topic-row .nav-topic{flex:1;min-width:0;width:auto;padding-right:5px}
+.nav-topic-row .nav-topic{display:grid!important;grid-template-columns:20px minmax(0,1fr) 3ch;gap:8px;flex:1;min-width:0;width:auto;padding-right:5px}
+.nav-topic .nav-title{min-width:0;overflow-wrap:anywhere;hyphens:auto}
+.nav-topic>.nav-count,.nav-library .nav-count{text-align:right;font-size:11px;font-variant-numeric:tabular-nums;white-space:nowrap}
+/* Utility links share the count column; the final 32px remain reserved for disclosures. */
+.nav-library{display:grid;gap:4px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:12px}
+aside nav .nav-library>button{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) 3ch;align-items:center;gap:8px;width:calc(100% - 32px);min-width:0;margin:0;padding-right:5px;overflow-wrap:anywhere}
 aside nav .nav-disclosure{display:grid;place-items:center;width:32px;min-width:32px;padding:0;min-height:44px;margin:0;border:0;background:transparent;color:var(--muted)}
 .nav-disclosure svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform 180ms ease}
 .nav-disclosure[aria-expanded=true] svg{transform:rotate(180deg)}

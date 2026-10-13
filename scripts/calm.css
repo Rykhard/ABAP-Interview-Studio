@@ -6,7 +6,7 @@
  --action:#173e48;--on-action:#fff;--accent:#98501f;--warm:#fcf1e5;--warm-line:#c87840;
  --danger:#a63130;--mark:#ffedb0;--focus:#176d93;
  --code-bg:#f7fafc;--code-text:#183446;--code-bar:#eaf0f2;--code-keyword:#643293;--code-string:#854808;--code-comment:#476652;
- --reading-size:17px;--sidebar-width:238px;
+ --reading-size:17px;--sidebar-width:280px;
 }
 :root[data-theme=dark] {
  color-scheme:dark;

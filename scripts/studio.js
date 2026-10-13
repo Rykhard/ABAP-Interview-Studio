@@ -55,7 +55,7 @@ let expandedNavTopic='';
 try{expandedNavTopic=localStorage.getItem('abap-studio-subtopics-v1')||'';}catch{/* Navigation remains usable without storage. */}
 function nav(animate=true){
  const previousNav=animate?navMotionSnapshot():null,selected=$('topic').value,section=$('section').value;
- let output=`<button class="nav-home ${!selected&&!savedOnly&&!lessonLibrary?'active':''}" data-topic="" ${!selected&&!savedOnly&&!lessonLibrary?'aria-current="page"':''}>All topics</button><button id="savedQuestionsNav" class="nav-saved ${savedOnly?'active':''}" ${savedOnly?'aria-current="page"':''}>Saved questions <span>${savedQuestions.size}</span></button><button id="guidedLessonsNav" class="nav-saved ${lessonLibrary?'active':''}" ${lessonLibrary?'aria-current="page"':''}>Guided lessons <span>${lessons.length}</span></button>`;
+ let output=`<div class="nav-library"><button class="nav-home ${!selected&&!savedOnly&&!lessonLibrary?'active':''}" data-topic="" ${!selected&&!savedOnly&&!lessonLibrary?'aria-current="page"':''}>All topics</button><button id="savedQuestionsNav" class="nav-saved ${savedOnly?'active':''}" ${savedOnly?'aria-current="page"':''}>Saved questions <span class="nav-count">${savedQuestions.size}</span></button><button id="guidedLessonsNav" class="nav-saved ${lessonLibrary?'active':''}" ${lessonLibrary?'aria-current="page"':''}>Guided lessons <span class="nav-count">${lessons.length}</span></button></div>`;
  for(const t of topics){
   const expanded=expandedNavTopic===t.id,current=selected===t.id,active=current&&(!section||!expanded);
   output+=`<div class="nav-topic-row ${current?'is-current-topic':''}"><button data-topic="${t.id}" class="nav-topic ${active?'active':''}" ${active?'aria-current="page"':''}>${icon(t.icon)}<span class="nav-title">${esc(t.title)}</span><span class="nav-count">${topicQuestions(t).length}</span></button><button class="nav-disclosure" data-expand-topic="${t.id}" aria-expanded="${expanded}" aria-controls="subtopics-${t.id}" aria-label="Subtopics: ${esc(t.title)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button></div><div class="nav-subtopics" id="subtopics-${t.id}" ${expanded?'':'hidden'}>${t.sections.map(x=>`<button data-topic="${t.id}" data-section="${x.id}" class="nav-section ${current&&section===x.id?'active':''}" ${current&&section===x.id&&expanded?'aria-current="page"':''}>${esc(x.title)} <span class="nav-count">${x.questionIds.length}</span></button>`).join('')}</div>`;
@@ -63,6 +63,7 @@ function nav(animate=true){
  const sidebar=document.querySelector('aside'),scrollTop=sidebar.scrollTop;
  const subtopicScroll=new Map([...$('segments').querySelectorAll('.nav-subtopics')].map(group=>[group.id,group.scrollTop]));
  $('segments').innerHTML=output;
+ $('savedQuestionsNav').onclick=openSavedQuestions;$('guidedLessonsNav').onclick=openLessonLibrary;
  $('segments').querySelectorAll('.nav-subtopics').forEach(group=>{group.scrollTop=subtopicScroll.get(group.id)||0;});
  document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{selectTopic(b.dataset.topic,b.dataset.section||'');document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');});
  $('segments').querySelectorAll('[data-expand-topic]').forEach(button=>button.onclick=()=>{

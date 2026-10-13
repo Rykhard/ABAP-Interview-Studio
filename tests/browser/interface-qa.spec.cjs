@@ -1,6 +1,39 @@
 const {test, expect} = require('@playwright/test');
 const curriculum = require('../../curriculum/learning.json');
 
+for (const locale of ['en', 'ru']) for (const width of [390, 1440]) {
+  test(`${locale} ${width}: sidebar counts align and long titles never cover disclosures`, async ({page}) => {
+    await page.setViewportSize({width, height: 950});
+    await page.goto(`/?lang=${locale}`);
+    if (width < 900) await page.locator('#menuToggle').click();
+    const checkColumns = async () => {
+      const geometry = await page.locator('#segments').evaluate(nav => {
+        const right = node => node.getBoundingClientRect().right;
+        const rows = [...nav.querySelectorAll('.nav-topic-row')].map(row => {
+          const title = row.querySelector('.nav-title'), count = row.querySelector('.nav-count');
+          const toggle = row.querySelector('.nav-disclosure');
+          return {titleRight: right(title), countLeft: count.getBoundingClientRect().left,
+            countRight: right(count), toggleLeft: toggle.getBoundingClientRect().left,
+            overflow: title.scrollWidth - title.clientWidth};
+        });
+        return {rows, counts: [...nav.querySelectorAll('.nav-topic>.nav-count,.nav-library .nav-count')].map(right)};
+      });
+      expect(Math.max(...geometry.counts) - Math.min(...geometry.counts)).toBeLessThan(1);
+      for (const row of geometry.rows) {
+        expect(row.titleRight).toBeLessThanOrEqual(row.countLeft - 4);
+        expect(row.countRight).toBeLessThanOrEqual(row.toggleLeft - 4);
+        expect(row.overflow).toBeLessThanOrEqual(1);
+      }
+    };
+    await checkColumns();
+    await page.locator('[data-expand-topic=sql]').click();
+    await expect(page.locator('#subtopics-sql')).toBeVisible();
+    await checkColumns();
+    await page.locator('#guidedLessonsNav').click();
+    await expect(page.locator('#guidedLessonsNav')).toHaveAttribute('aria-current', 'page');
+  });
+}
+
 for (const locale of ['en', 'ru']) {
   test(`${locale}: home exposes its active level and accurate catalog totals`, async ({page}) => {
     await page.setViewportSize({width: 390, height: 844});
