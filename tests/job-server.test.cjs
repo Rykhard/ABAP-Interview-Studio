@@ -98,6 +98,7 @@ test('preparation plans widen foundations without inventing technologies or empl
   assert.equal(matching.preparationSupport(question('OPS-17'), 'Logistics processes are integrated in SAP S/4HANA solutions.'), null);
   assert.equal(matching.preparationSupport(question('OPS-08'), 'Estimate custom development scope and costs.'), null);
   assert.equal(matching.preparationSupport(question('RICEFW-03'), 'Analyze customer logistics requirements.'), null);
+  assert.equal(matching.preparationSupport(question('OPS-04'), 'Design, develop, test and deploy logistics solutions.'), null);
   const description = 'Required:\nStrong ABAP development expertise, testing and code review.\nNice to have:\nRAP and CDS.';
   const automatic = {description,count:null,language:'en'};
   const built = matching.buildInference(canonical, automatic);
@@ -115,6 +116,21 @@ test('preparation plans widen foundations without inventing technologies or empl
   assert.equal(matching.buildInference(canonical,{...automatic,count:7}).request.response_format.json_schema.properties.matches.maxItems,7);
   const narrow = matching.buildInference(canonical,{description:'Required: choose hashed internal tables.',count:null,language:'en'});
   assert.ok(narrow.candidates.length < 40);
+});
+
+test('foundation density favors Core concepts without dropping direct requirements', async () => {
+  const [matching] = await modules;
+  const candidates = Array.from({length:9},(_,index)=>({...catalog[0],id:`RAP-${index}`,level:index<6?'Applied':'Core'}));
+  const evidence = [{text:input.description,priority:'required'}];
+  const selections = candidates.map(q=>`${q.id}@0`);
+  const inference = {candidates,evidence,selections,relationships:new Map(selections.map(pair=>[pair,'foundation']))};
+  const automatic = {...input,count:null};
+  const wire = {matches:selections.map(selection=>({selection}))};
+  const result = matching.decodeMatches(wire,automatic,inference);
+  assert.equal(result.matches.length,6);
+  for (const id of ['RAP-6','RAP-7','RAP-8']) assert.ok(result.matches.some(match=>match.id===id));
+  inference.relationships = new Map(selections.map(pair=>[pair,'direct']));
+  assert.equal(matching.decodeMatches(wire,automatic,inference).matches.length,9);
 });
 
 test('long vacancies retain skill coverage without duplicate evidence or metadata', async () => {

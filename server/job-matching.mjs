@@ -190,6 +190,7 @@ export function evidencePriority(description, excerpt) {
 export function preparationSupport(question, text) {
   if (/explicitly outside this role|not used in this role|not part of (?:this|the) role|не используются в этой роли/iu.test(text)) return null;
   if (/BAdI|customer exit|user exit/i.test(question.title) && !/BAdI|customer exit|user exit/iu.test(text)) return null;
+  if (/\bdraft\b|Submit action/i.test(question.title) && !/\bdraft\b|\brap\b|\bbopf\b/iu.test(text)) return null;
   if (/BAdI|customer exit|user exit|enhancement/i.test(question.title) && !/BAdI|\bexit|enhance|extensib|расширен/iu.test(text)) return null;
   if (/\bcloud\b/i.test(question.title) && !/\bcloud\b|\bbtp\b|облак/iu.test(text)) return null;
   const direct = evidenceSupport(question, text);
@@ -244,7 +245,24 @@ export function decodeMatches(value, input, inference) {
     const prior = unique.get(match.id);
     if (!prior || (prior.requirement_type === 'preferred' && match.requirement_type === 'required') || (prior.requirement_type === match.requirement_type && prior.relationship === 'foundation' && match.relationship === 'direct')) unique.set(match.id,match);
   }
-  return validateMatches({ matches:[...unique.values()] }, input, inference.candidates);
+  // Broad ABAP or CDS familiarity must not fill the plan with one subsection.
+  // Retain all direct matches. Among foundations, start with Core concepts and
+  // admit up to six per canonical section, then restore the model's ordering.
+  const sectionCounts = new Map(), kept = new Set();
+  const questions = new Map(inference.candidates.map(question => [question.id, question]));
+  const levels = ['core','applied','advanced'];
+  const ordered = [...unique.values()].sort((a,b) => levels.indexOf(questions.get(a.id).level.toLowerCase()) - levels.indexOf(questions.get(b.id).level.toLowerCase()));
+  for (const match of ordered) {
+    const question = questions.get(match.id);
+    const key = `${question.topic}/${question.section}`;
+    if (match.relationship === 'foundation') {
+      const count = sectionCounts.get(key) || 0;
+      if (count >= 6) continue;
+      sectionCounts.set(key,count+1);
+    }
+    kept.add(match.id);
+  }
+  return validateMatches({ matches:[...unique.values()].filter(match=>kept.has(match.id)) }, input, inference.candidates);
 }
 
 export function buildInference(catalog, input) {
