@@ -76,5 +76,69 @@
     "forbidden_prefixes": ["ODATA-", "BTP-"],
     "preferred_prefixes": ["CDS-02"],
     "review": "Specific transactional, security and safe IDoc recovery responsibilities outrank generic introductions. CDS comparison is preferred, not required. A count of eight is a ceiling."
+  },
+  {
+    "name": "logistics-lead-en",
+    "language": "en",
+    "count": null,
+    "description": "Job description\nLead an international S/4HANA logistics development team. Work with stakeholders, business experts and architects on warehouse and transport processes.\nResponsibilities:\nAnalyze inbound and outbound logistics requirements for EWM, LE and TM. Design, develop, test and deploy solutions. Validate solution concepts through proof of concepts. Evaluate implementation feasibility, risks, costs, effort and maintainability. Estimate custom development scope and technical debt. Lead code reviews and design reviews, mentor developers and support global rollout.\nRequired:\nStrong ABAP development skills. Experience implementing EWM, LE and TM. Explain technical options to business stakeholders. Agile delivery and written and spoken English.\nNice to have:\nBOPF, RAP, CDS, OData services, SAP Fiori, Key User Extensibility, SAP BTP.\nWorking style:\nBalance standard functionality with business needs. Explain assumptions, technical alternatives and tradeoffs. Support users during rollout. Share knowledge and improve code quality without unnecessary complexity.",
+    "must_include": [
+      "STORY-07",
+      "RAP-01",
+      "ODATA-01",
+      "BTP-01"
+    ],
+    "must_include_any": [
+      [
+        "CDS-01",
+        "CDS-02",
+        "CDS-06"
+      ],
+      [
+        "CORE-10",
+        "CLOUD-09"
+      ]
+    ],
+    "forbidden_prefixes": [
+      "INTF-",
+      "OO-15",
+      "RFC-"
+    ],
+    "preferred_prefixes": [
+      "RAP-",
+      "CDS-",
+      "ODATA-",
+      "BTP-"
+    ],
+    "review": "Logistics does not imply IDoc. Generic ABAP does not imply MVC. Retain estimation and each explicitly named preferred technology; never cite a heading as evidence."
+  },
+  {
+    "name": "broad-classic-skills-en",
+    "language": "en",
+    "count": null,
+    "description": "Required:\nModern and classical ABAP syntax. ABAP Objects: interfaces, inheritance, class-based exceptions, factory and builder patterns. ABAP Dictionary: domains, data elements, table types, lock objects, search helps and transparent tables. Asynchronous RFC, parallel processing, enqueue locking, background jobs and shared memory objects. HTTP and REST integration, JSON and XML serialization. High-volume data extraction with efficient Open SQL, internal tables and runtime analysis. Algorithmic complexity, encapsulation and separation of concerns. Testing, transport management and production support. Authorization objects, input validation and injection prevention.\nPreferred:\nRAP, ABAP Cloud, Clean ABAP and ABAP Unit. Monitoring, observability and CI/CD. ADBC and Native SQL. OData V2/V4, IDoc/ALE and AIF.",
+    "must_include": [
+      "OO-09",
+      "ABAP-05",
+      "ABAP-10",
+      "RFC-10",
+      "TEST-01",
+      "DEVCORE-01"
+    ],
+    "must_include_any": [
+      [
+        "RFC-02",
+        "RFC-06"
+      ],
+      [
+        "HTTP-07",
+        "HTTP-09"
+      ],
+      [
+        "SQL-01",
+        "SQL-09"
+      ]
+    ],
+    "review": "Distinct named requirements within a sentence need separate candidate coverage. Candidate inclusion does not establish model relevance or completeness."
   }
 ]

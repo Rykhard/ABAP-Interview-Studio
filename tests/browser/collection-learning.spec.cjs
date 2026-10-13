@@ -24,7 +24,21 @@ test('question limit switch submits null and preserves more than ten saved quest
  let posted;const description='Build RAP business objects and manage transactional applications.';
  const matches=Array.from({length:12},(_,index)=>({id:'RAP-'+String(index+1).padStart(2,'0'),requirement_type:'required',requirement_evidence:'Build RAP business objects',relevance_reason:'A relevant RAP mechanism.'}));
  await page.route('**/api/prepare-job',route=>{const isPost=route.request().method()==='POST';if(isPost)posted=route.request().postDataJSON();return route.fulfill({json:isPost?{matches}:{available:true}});});
- await page.goto('/?lang=en');await page.locator('#prepareJob').click();await expect(page.locator('#findJobQuestions')).toBeEnabled();await page.locator('#jobDescription').fill(description);await page.locator('#jobLimitEnabled').uncheck();await expect(page.locator('#jobCount')).not.toBeVisible();await expect(page.locator('#jobLimitHint')).toBeVisible();await page.locator('#findJobQuestions').click();await expect(page.locator('.job-match')).toHaveCount(12);expect(posted.count).toBeNull();
+ await page.goto('/?lang=en');await page.locator('#prepareJob').click();await expect(page.locator('#findJobQuestions')).toBeEnabled();await page.locator('#jobDescription').fill(description);await expect(page.locator('#jobLimitEnabled')).not.toBeChecked();await expect(page.locator('#jobCount')).not.toBeVisible();await expect(page.locator('#jobLimitHint')).toBeVisible();await page.locator('#findJobQuestions').click();await expect(page.locator('.job-match')).toHaveCount(12);expect(posted.count).toBeNull();
  await page.locator('#saveJobCollection').click();const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('studio.jobCollections.v1')).collections[0]);expect(saved.questionIds).toHaveLength(12);
  await page.locator('#openJobCollections').click();await page.locator('[data-action=learn]').click();await expect(page.locator('.question-row')).toHaveCount(12);
+});
+
+for(const locale of ['en','ru'])test(`${locale}: question count defaults to automatic after opening and reopening`,async({page})=>{
+ let posted;
+ await page.route('**/api/prepare-job',route=>{const post=route.request().method()==='POST';if(post)posted=route.request().postDataJSON();return route.fulfill({json:post?{matches:[]}:{available:true}});});
+ await page.goto('/?lang='+locale);await page.locator('#prepareJob').click();
+ await expect(page.locator('#jobLimitEnabled')).not.toBeChecked();await expect(page.locator('#jobCount')).toBeDisabled();
+ await page.locator('#jobLimitEnabled').check();await page.locator('#jobCount').fill('12');
+ await page.locator('#jobDescription').fill('Required: design and test ABAP applications.');await page.locator('#findJobQuestions').click();
+ await expect.poll(()=>posted?.count).toBe(12);
+ await page.locator('#closeJob').click();await page.locator('#prepareJob').click();
+ await expect(page.locator('#jobLimitEnabled')).not.toBeChecked();await expect(page.locator('#jobCount')).not.toBeVisible();
+ await page.locator('#jobDescription').fill('Required: design and test ABAP applications.');await page.locator('#findJobQuestions').click();
+ await expect.poll(()=>posted?.count).toBeNull();
 });

@@ -37,6 +37,7 @@ for (const locale of ['en', 'ru']) {
     await page.setViewportSize({width: 390, height: 900});
     await openJob(page, locale);
     await page.locator('#jobDescription').fill(description);
+    await page.locator('#jobLimitEnabled').check();
     await page.locator('#jobCount').fill('2');
     await page.locator('#findJobQuestions').click();
     await expect(page.locator('.job-match')).toHaveCount(2);

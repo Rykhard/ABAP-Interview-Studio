@@ -79,6 +79,25 @@ test('retrieval supports Russian titles and bounds complete prompts conservative
   assert.deepEqual(built.request.response_format.json_schema.properties.matches.items.properties.id.enum, built.candidates.map(item => item.id));
 });
 
+test('long vacancies retain skill coverage without duplicate evidence or metadata', async () => {
+  const [matching] = await modules;
+  const canonical = JSON.parse(fs.readFileSync(path.join(__dirname, '../server/catalog.json'), 'utf8'));
+  const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, '../evals/job-preparation.json'), 'utf8')).find(item => item.name === 'logistics-lead-en');
+  const description = fixture.description + '\n' + 'Work with colleagues across international locations and explain decisions clearly. '.repeat(24);
+  const built = matching.buildInference(canonical, {description, count:null, language:'en'});
+  const ids = new Set(built.candidates.map(item => item.id));
+  for (const id of fixture.must_include) assert.ok(ids.has(id), `${id} survives the context bound`);
+  assert.ok(built.candidates.length >= 50);
+  assert.ok(built.contextUpperBound <= matching.LIMITS.contextTokens);
+  const user = JSON.parse(built.request.messages[1].content);
+  assert.equal(user.job_description, description);
+  assert.ok(user.catalog.every(item => Array.isArray(item) && item.length === 2));
+  assert.equal(user.evidence_excerpts, undefined);
+  const evidence = built.request.response_format.json_schema.properties.matches.items.properties.requirement_evidence.enum;
+  assert.ok(!evidence.includes('Nice to have:'));
+  assert.ok(evidence.every(text => description.includes(text)));
+});
+
 test('catalog indexing runs once before requests and cached question snapshots stay immutable', async () => {
   const [matching, service] = await modules; let reads = 0;
   const source = [{ ...catalog[0], get title() { reads++; return catalog[0].title; } }];
@@ -101,7 +120,8 @@ test('evidence schema offers bounded exact excerpts without rewriting language o
   assert.ok(evidence.includes('Обязательно: проверять global и instance authorization в RAP.'));
   assert.ok(evidence.every(excerpt => description.includes(excerpt) && excerpt.length <= 300));
   assert.equal(JSON.parse(built.request.messages[1].content).job_description, description);
-  assert.deepEqual(JSON.parse(built.request.messages[1].content).evidence_excerpts, evidence);
+  assert.equal(JSON.parse(built.request.messages[1].content).evidence_excerpts, undefined);
+  assert.ok(!evidence.includes('Required'));
   const long = 'RAP ' + 'long responsibility requiring authorization checks '.repeat(100);
   const choices = matching.evidenceChoices(long, catalog);
   assert.ok(choices.length > 0);
