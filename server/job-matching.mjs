@@ -127,7 +127,9 @@ const genericEvidenceWords = new Set('how what when which why would should could
 for (const term of 'requirement decision concept approach risk quality support process design application team into onto through during while before after between within without about above below under over across against along around behind beyond toward towards both either neither each every any all some another other others same such own new old more most less least many much several so too very also just not no than then yet still whether where who whom whose whatever something anything nothing using used need needs needed involve involves including include includes ensure consider provide'.split(' ')) genericEvidenceWords.add(term);
 const technologyEvidence = [ /\brap\b/iu, /\bcds\b/iu, /\bodata\b/iu, /\bbtp\b/iu, /\bidocs?\b|\bale\b/iu, /\brfc\b/iu, /\bamdp\b/iu, /\bmvc\b/iu, /\bunit\b|\btest(?:ing|s)?\b|тест/iu, /clean core/iu, /key[- ]user/iu, /\bfiori\b/iu, /\bhttp\b|\brest\b/iu, /\bjson\b/iu, /\bxml\b/iu, /\bsql\b|\badbc\b/iu ];
 export function evidenceSupport(question, text) {
-  if (/^(ABAP|BASE)-/.test(question.id) && !/\babap\b|table|field|reference|parameter|exception|constructor|sy-subrc|таблиц|пол[ея]|ссылк/iu.test(text)) return 0;
+  if (/bachelor|master.s degree|spoken english|german language|степень бакалавра/iu.test(text)) return 0;
+  if (/\bincident\b/i.test(question.title) && !/incident|production support|production defect|инцидент/iu.test(text)) return 0;
+  if (/^(ABAP|BASE)-/.test(question.id) && !/\babap\b|table|field[- ]symbol|reference|parameter|exception|constructor|sy-subrc|таблиц|ссылк/iu.test(text)) return 0;
   if (/\bEML\b/.test(question.title) && !/\beml\b|\brap\b/iu.test(text)) return 0;
   // Topic identity matters even when a scenario title omits its technology.
   // Shared verbs such as "review", "implement" or "optimize" are insufficient.

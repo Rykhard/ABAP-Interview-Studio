@@ -155,6 +155,8 @@ test('logistics and general development cannot authorize unrelated technology ev
   assert.equal(support('ABAP-04','Analyze customer requirements in the areas of inbound and outbound logistics.'),0);
   assert.equal(support('OPS-03','Design, develop, test and deploy SAP logistics modules.'),0);
   assert.equal(support('OODEEP-11','Turn complex requirements into scalable solutions while shaping technical direction.'),0);
+  assert.equal(support('BASE-04',"Bachelor's degree in Computer Science or a comparable field."),0);
+  assert.equal(support('OPS-13','A pragmatic approach balances delivery speed and long-term sustainability.'),0);
 });
 
 test('evidence schema offers bounded exact excerpts without rewriting language or punctuation', async () => {
