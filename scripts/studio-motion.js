@@ -19,6 +19,7 @@ function animateNavSelection(before){
  if(!active)return;
  const key=active.id||active.dataset.topic+':'+(active.dataset.section||'');
  if(key===before.key)return;
+ animateTopicIcon(active.querySelector('[data-topic-icon]'));
  const rect=active.getBoundingClientRect(),base=nav.getBoundingClientRect();
  if(!rect.height||!before.rect.height)return;
  const marker=document.createElement('span');marker.className='nav-motion-indicator';marker.setAttribute('aria-hidden','true');
@@ -41,6 +42,7 @@ function animateStudySelection(region,before){
  animateEntrance(region.querySelector('.reading-flow,.lesson-player'));
 }
 function animateLessonStep(player){
+ animateSaveFlow(player);
  const number=player.querySelector('[aria-current=step] .lesson-step-number');
  playMotion(number,[{transform:'scale(.9)'},{transform:'scale(1)'}],180);
  const color=getComputedStyle(document.documentElement).getPropertyValue('--soft-blue').trim();
@@ -100,3 +102,35 @@ $('view').addEventListener('click',event=>{
   if(details.isConnected&&details.open)animateEntrance(details.querySelector(':scope > .answer, :scope > .rubric'));
  });
 });
+
+// One local gesture per interaction; never a loop or a page-load cascade.
+function animateTopicIcon(icon){
+ if(!icon||reducedMotion.matches)return;
+ icon.getAnimations({subtree:true}).forEach(animation=>animation.cancel());
+ const paths=[...icon.querySelectorAll('path')],key=icon.dataset.topicIcon;
+ const small=!!icon.closest('#segments'),distance=small?.7:1.3,duration=small?320:440;
+ const pulse=path=>playMotion(path,[{opacity:1},{opacity:.35,offset:.35},{opacity:1}],duration);
+ if(key==='quality'){
+  const tick=paths.at(-1),length=tick.getTotalLength();
+  playMotion(tick,[{strokeDasharray:`${length} ${length}`,strokeDashoffset:length},{strokeDasharray:`${length} ${length}`,strokeDashoffset:0}],duration);
+ }else if(key==='cloud'||key==='abap'){
+  paths.slice(-2).forEach((path,i)=>playMotion(path,[{transform:'none'},{transform:`translateX(${(i?1:-1)*distance}px)`,offset:.4},{transform:'none'}],duration));
+ }else if(key==='rap'||key==='cds'||key==='integration'){
+  paths.forEach((path,i)=>playMotion(path,[{opacity:1},{opacity:.25,offset:.15+i/paths.length*.35},{opacity:1}],duration));
+ }else if(key==='extension'){
+  playMotion(paths[0],[{transform:`translate(${distance}px,-${distance}px)`,opacity:.5},{transform:'none',opacity:1}],duration);
+ }else pulse(paths.at(-1));
+}
+for(const name of ['pointerover','focusin'])document.addEventListener(name,event=>{
+ if(name==='pointerover'&&event.pointerType!=='mouse')return;
+ const target=event.target.closest('.topic-card,.nav-topic');
+ if(!target||target.contains(event.relatedTarget))return;
+ animateTopicIcon(target.querySelector('[data-topic-icon]'));
+});
+function animateSaveFlow(player){
+ const current=player.querySelector('.save-flow [aria-current=step]');
+ if(!current)return;
+ playMotion(current.querySelector('.save-flow-dot'),[{transform:'scale(.75)'},{transform:'scale(1.12)',offset:.5},{transform:'scale(1)'}],420);
+ const connector=current.closest('li').querySelector('.save-flow-connector');
+ playMotion(connector,[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],400);
+}

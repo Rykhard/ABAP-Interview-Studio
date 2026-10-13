@@ -20,15 +20,24 @@ function studyViewToolbar(q,selected){
  if(available.length===1)return '';
  return `<div class="study-view-toolbar"><div class="study-view-picker" role="group" aria-label="Answer format for ${q.id}">${available.map(([key,label])=>`<button data-study-view="${key}" aria-pressed="${key===selected}">${label}</button>`).join('')}</div></div>`;
 }
+
+function saveSequenceFlow(lesson,index){
+ const failed=lesson.id==='lesson-rap-save-rejected';
+ if(!failed&&lesson.id!=='lesson-rap-save')return '';
+ const phases=failed?['FINALIZE','CHECK_BEFORE_SAVE','CLEANUP_FINALIZE','Correct and retry']:['FINALIZE','CHECK_BEFORE_SAVE','Point of no return','ADJUST_NUMBERS','SAVE','CLEANUP'];
+ return `<nav class="save-flow ${failed?'is-failure':''}" aria-label="Save sequence"><ol>${phases.map((phase,i)=>`<li class="${i<index?'is-done':''} ${failed&&i===1&&index>=1?'is-rejected':''}">${i?'<span class="save-flow-connector" aria-hidden="true"></span>':''}<button data-lesson-step="${i}" ${i===index?'aria-current="step"':''}><span class="save-flow-dot" aria-hidden="true">${failed&&i===1&&index>=1?'&#10005;':i<index?'&#10003;':i+1}</span><span>${esc(phase)}</span></button></li>`).join('')}</ol>${failed&&index>=1?'<p class="save-flow-stop"><strong>Save stopped before the point of no return.</strong> ADJUST_NUMBERS / SAVE: not executed.</p>':''}</nav>`;
+}
+
 function guidedLesson(q){
  const related=lessonsByQuestion.get(q.id),lesson=related.find(x=>x.id===lessonChoices.get(q.id))||related[0];
  const key=q.id+':'+lesson.id,index=Math.min(lessonPositions.get(key)||0,lesson.steps.length-1),step=lesson.steps[index];
  const previous=index?lesson.steps[index-1]:null;
  const changed=state=>!previous||previous.states.find(s=>s.label===state.label)?.value!==state.value;
- return `<section class="lesson-player" data-lesson="${lesson.id}" data-lesson-question="${q.id}" aria-label="${esc(lesson.title)}">
+ return `<section class="lesson-player ${lesson.id.startsWith('lesson-rap-save')?'has-save-flow':''}" data-lesson="${lesson.id}" data-lesson-question="${q.id}" aria-label="${esc(lesson.title)}">
  ${related.length>1?`<label class="lesson-choice-label">Worked example<select data-lesson-choice>${related.map(x=>`<option value="${x.id}" ${x.id===lesson.id?'selected':''}>${esc(x.title)}</option>`).join('')}</select></label>`:''}
  <header class="lesson-intro"><div><h4>${esc(lesson.title)}</h4><p>${esc(lesson.scenario)}</p></div></header>
 
+ ${saveSequenceFlow(lesson,index)}
  <div class="lesson-body"><nav class="lesson-step-list" aria-label="Lesson steps">${lesson.steps.map((item,i)=>`<button data-lesson-step="${i}" ${i===index?'aria-current="step"':''} aria-label="Step ${i+1}: ${esc(item.title)}" title="${esc(item.title)}"><span class="lesson-step-number">${i+1}</span><span class="lesson-step-name">${esc(item.title)}</span></button>`).join('')}</nav>
  <div class="lesson-stage" aria-live="polite" aria-atomic="true"><div class="lesson-step-heading"><span class="lesson-kicker">Step ${index+1} of ${lesson.steps.length}</span><h5>${esc(step.title)}</h5></div><p class="lesson-explanation">${esc(step.explanation)}</p>
  <div class="lesson-state-board"><div class="lesson-state-heading"><strong>Example state</strong><span>${step.active.map(id=>esc(lesson.nodes.find(n=>n.id===id).label)).join(' · ')}</span></div><dl class="lesson-state-values">${step.states.map(state=>`<div class="${changed(state)?'state-changed':''}"><dt>${esc(state.label)}${index&&changed(state)?'<span class="state-update">Changed</span>':''}</dt><dd>${index&&changed(state)?`<span class="state-before">${esc(previous.states.find(s=>s.label===state.label)?.value||'Not set')} <span aria-label="changes to">&rarr;</span></span>`:''}<span>${esc(state.value)}</span></dd></div>`).join('')}</dl></div>
@@ -55,10 +64,10 @@ $('view').addEventListener('click',event=>{
  const key=player.dataset.lessonQuestion+':'+lesson.id,previousIndex=lessonPositions.get(key)||0,fromFooter=!!button.closest('.lesson-navigation');
  lessonPositions.set(key,index);
  const holder=document.createElement('div');holder.innerHTML=guidedLesson(byId.get(player.dataset.lessonQuestion));const next=holder.firstElementChild;player.replaceWith(next);
- const focusTarget=fromFooter?(index<previousIndex&&index>0?next.querySelector('.lesson-navigation button:first-child'):next.querySelector('.lesson-navigation button:last-child')):next.querySelector(`.lesson-step-list [data-lesson-step="${index}"]`);
+ const focusTarget=fromFooter?(index<previousIndex&&index>0?next.querySelector('.lesson-navigation button:first-child'):next.querySelector('.lesson-navigation button:last-child')):next.querySelector(`.save-flow [data-lesson-step="${index}"],.lesson-step-list [data-lesson-step="${index}"]`);
  focusTarget.focus({preventScroll:true});
  animateLessonStep(next);
- const stage=next.querySelector('.lesson-stage');if(stage.getBoundingClientRect().top<0||stage.getBoundingClientRect().top>innerHeight*.6)stage.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+ const stage=next.querySelector('.save-flow,.lesson-stage');if(stage.getBoundingClientRect().top<0||stage.getBoundingClientRect().top>innerHeight*.6)stage.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 });
 function openLessonLibrary(){
  storeFilters();mode='learn';lessonLibrary=true;savedOnly=false;libraryList=false;questionFromSearch=false;
@@ -80,6 +89,6 @@ $('view').addEventListener('click',event=>{
 });
 $('view').addEventListener('change',event=>{
  const select=event.target.closest('[data-lesson-choice]');if(!select)return;
- const player=select.closest('[data-lesson]'),q=byId.get(player.dataset.lessonQuestion);lessonChoices.set(q.id,select.value);
+ const player=select.closest('[data-lesson]'),q=byId.get(player.dataset.lessonQuestion);lessonChoices.set(q.id,select.value);lessonPositions.set(q.id+':'+select.value,0);
  const holder=document.createElement('div');holder.innerHTML=guidedLesson(q);const next=holder.firstElementChild;player.replaceWith(next);next.querySelector('[data-lesson-choice]').focus({preventScroll:true});
 });

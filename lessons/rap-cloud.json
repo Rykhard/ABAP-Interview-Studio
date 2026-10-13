@@ -210,6 +210,156 @@
   ]
  },
  {
+  "id": "lesson-rap-save-rejected",
+  "title": "Stop an invalid order before it is saved",
+  "questions": [
+   "RAP-05",
+   "SRAP-03"
+  ],
+  "scenario": "The same two items cost 40 EUR and 60 EUR, but the requested delivery date is in the past. Follow the rejected save.",
+  "goal": "See why a failed early check must prevent late numbering and persistence.",
+  "nodes": [
+   {
+    "id": "finalize",
+    "label": "FINALIZE"
+   },
+   {
+    "id": "check",
+    "label": "CHECK_BEFORE_SAVE"
+   },
+   {
+    "id": "cleanup",
+    "label": "CLEANUP_FINALIZE"
+   },
+   {
+    "id": "retry",
+    "label": "Correct and retry"
+   }
+  ],
+  "steps": [
+   {
+    "title": "Calculate the total",
+    "explanation": "FINALIZE finishes the calculation: 40 + 60 = 100 EUR. The order still has preliminary identity P1; nothing has been saved.",
+    "active": [
+     "finalize"
+    ],
+    "states": [
+     {
+      "label": "Requested total",
+      "value": "100 EUR"
+     },
+     {
+      "label": "Delivery date",
+      "value": "Not checked"
+     },
+     {
+      "label": "Final number",
+      "value": "Not assigned"
+     },
+     {
+      "label": "Database",
+      "value": "No new order"
+     }
+    ],
+    "outcome": "A calculated amount does not mean a saved order."
+   },
+   {
+    "title": "Reject the invalid date",
+    "explanation": "CHECK_BEFORE_SAVE finds that the delivery date is in the past. The failed instance and its message are returned. The transaction does not cross the point of no return.",
+    "active": [
+     "check"
+    ],
+    "states": [
+     {
+      "label": "Requested total",
+      "value": "100 EUR"
+     },
+     {
+      "label": "Delivery date",
+      "value": "Rejected: date in the past"
+     },
+     {
+      "label": "Final number",
+      "value": "Not assigned"
+     },
+     {
+      "label": "Database",
+      "value": "No new order"
+     }
+    ],
+    "outcome": "ADJUST_NUMBERS and SAVE are not executed for this rejected save."
+   },
+   {
+    "title": "Undo early-save work where needed",
+    "explanation": "After an early-save failure, CLEANUP_FINALIZE handles the relevant early-save cleanup. For example, a saver can revoke temporary changes made in FINALIZE. This is not the successful CLEANUP path.",
+    "active": [
+     "cleanup"
+    ],
+    "states": [
+     {
+      "label": "Requested total",
+      "value": "100 EUR"
+     },
+     {
+      "label": "Delivery date",
+      "value": "Still invalid"
+     },
+     {
+      "label": "Final number",
+      "value": "Not assigned"
+     },
+     {
+      "label": "Database",
+      "value": "Unchanged; no 4711"
+     }
+    ],
+    "outcome": "Do not show the user a successful save or a final order number."
+   },
+   {
+    "title": "Correct the date and try again",
+    "explanation": "The user chooses a future delivery date and submits another save request. The corrected request must pass the save sequence again; it cannot jump straight to SAVE. Buffer retention depends on the consumer and transaction handling.",
+    "active": [
+     "retry"
+    ],
+    "states": [
+     {
+      "label": "Requested total",
+      "value": "100 EUR"
+     },
+     {
+      "label": "Delivery date",
+      "value": "Corrected; check pending"
+     },
+     {
+      "label": "Final number",
+      "value": "Not assigned"
+     },
+     {
+      "label": "Database",
+      "value": "Still unchanged"
+     }
+    ],
+    "outcome": "Choose the successful example above to follow the valid request through late numbering and saving."
+   }
+  ],
+  "takeaway": "Reject, clean up relevant early-save work, correct, retry. A failed check never becomes a successful save.",
+  "limitation": "Illustrative ordinary early-save rejection, not a live SAP trace. The exact buffer and retry behavior depends on the consumer. Special failure-capable BAPI saver contracts are outside this example.",
+  "references": [
+   {
+    "title": "SAP: Save sequence runtime",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/save-sequence-runtime"
+   },
+   {
+    "title": "SAP: Cleanup after early-save failure",
+    "url": "https://help.sap.com/docs/abap-cloud/abap-rap/f030096abe1d41f9ac7549f0290b9c09.html"
+   },
+   {
+    "title": "SAP: BAPI numbering and save sequence",
+    "url": "https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence"
+   }
+  ]
+ },
+ {
   "id": "lesson-rap-buffer-responses",
   "title": "Separate accepted changes from committed changes",
   "questions": [

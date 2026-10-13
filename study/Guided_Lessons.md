@@ -955,6 +955,68 @@ Do not carry pending state into the next transaction.
 - [SAP: Cleanup after early-save failure](https://help.sap.com/docs/abap-cloud/abap-rap/f030096abe1d41f9ac7549f0290b9c09.html)
 - [SAP: BAPI numbering and save sequence](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence)
 
+## Stop an invalid order before it is saved
+
+The same two items cost 40 EUR and 60 EUR, but the requested delivery date is in the past. Follow the rejected save.
+
+**Learn:** See why a failed early check must prevent late numbering and persistence.
+
+Questions: [RAP-05](https://abap-interview-studio.pages.dev/#q-RAP-05), [SRAP-03](https://abap-interview-studio.pages.dev/#q-SRAP-03)
+
+### 1. Calculate the total
+
+FINALIZE finishes the calculation: 40 + 60 = 100 EUR. The order still has preliminary identity P1; nothing has been saved.
+
+- **Requested total:** 100 EUR
+- **Delivery date:** Not checked
+- **Final number:** Not assigned
+- **Database:** No new order
+
+A calculated amount does not mean a saved order.
+
+### 2. Reject the invalid date
+
+CHECK_BEFORE_SAVE finds that the delivery date is in the past. The failed instance and its message are returned. The transaction does not cross the point of no return.
+
+- **Requested total:** 100 EUR
+- **Delivery date:** Rejected: date in the past
+- **Final number:** Not assigned
+- **Database:** No new order
+
+ADJUST_NUMBERS and SAVE are not executed for this rejected save.
+
+### 3. Undo early-save work where needed
+
+After an early-save failure, CLEANUP_FINALIZE handles the relevant early-save cleanup. For example, a saver can revoke temporary changes made in FINALIZE. This is not the successful CLEANUP path.
+
+- **Requested total:** 100 EUR
+- **Delivery date:** Still invalid
+- **Final number:** Not assigned
+- **Database:** Unchanged; no 4711
+
+Do not show the user a successful save or a final order number.
+
+### 4. Correct the date and try again
+
+The user chooses a future delivery date and submits another save request. The corrected request must pass the save sequence again; it cannot jump straight to SAVE. Buffer retention depends on the consumer and transaction handling.
+
+- **Requested total:** 100 EUR
+- **Delivery date:** Corrected; check pending
+- **Final number:** Not assigned
+- **Database:** Still unchanged
+
+Choose the successful example above to follow the valid request through late numbering and saving.
+
+**Remember:** Reject, clean up relevant early-save work, correct, retry. A failed check never becomes a successful save.
+
+**Scope:** Illustrative ordinary early-save rejection, not a live SAP trace. The exact buffer and retry behavior depends on the consumer. Special failure-capable BAPI saver contracts are outside this example.
+
+**Sources:**
+
+- [SAP: Save sequence runtime](https://help.sap.com/docs/abap-cloud/abap-rap/save-sequence-runtime)
+- [SAP: Cleanup after early-save failure](https://help.sap.com/docs/abap-cloud/abap-rap/f030096abe1d41f9ac7549f0290b9c09.html)
+- [SAP: BAPI numbering and save sequence](https://help.sap.com/docs/abap-cloud/developer-guide-from-classic-abap-to-abap-cloud/bapi-consumption-in-rap-late-numbering-and-save-sequence)
+
 ## Separate accepted changes from committed changes
 
 An external EML consumer updates quantities for orders 101, 102 and 999. Order 999 does not exist, and the agreed batch policy permits eligible orders to continue.

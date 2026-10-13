@@ -244,5 +244,10 @@
   "Choose a diagram": "Выберите схему",
   "Questions without code open an explanation. Step by step stays specific to each question.": "Если примера кода нет, откроется объяснение. Пошаговый разбор выбирается отдельно для каждого вопроса.",
   "Read text explanation": "Текстовое объяснение схемы",
-  "Download SVG": "Скачать SVG"
+  "Download SVG": "Скачать SVG",
+  "Save sequence": "Последовательность сохранения",
+  "Point of no return": "Точка невозврата",
+  "Correct and retry": "Исправить и повторить",
+  "Save stopped before the point of no return.": "Сохранение остановилось до точки невозврата.",
+  "not executed.": "не выполнялись."
 }

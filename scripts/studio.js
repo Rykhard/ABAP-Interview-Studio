@@ -45,7 +45,7 @@ const iconPaths={
  extension:'M9 7V5a3 3 0 0 1 6 0v2h6v6h-2a3 3 0 0 0 0 6h2v2H3V7Z',
  interview:'M4 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-5 4V4a1 1 0 0 1 1-1Z M8 17h8l5 4V9 M7 7h6 M7 10h3'
 };
-function icon(key){return `<span class="topic-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="${iconPaths[key]||iconPaths.abap}"/></svg></span>`;}
+function icon(key){return `<span class="topic-icon" data-topic-icon="${key}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">${(iconPaths[key]||iconPaths.abap).split(/ (?=M)/).map(part=>`<path d="${part}"/>`).join('')}</svg></span>`;}
 __CODE_APP__
 __LESSON_APP__
 __READING_APP__

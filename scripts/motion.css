@@ -93,3 +93,24 @@ aside nav button.active.nav-motion-current{background:transparent;border-left-co
 .study-motion-indicator{position:absolute;bottom:0;height:2px;background:var(--green);pointer-events:none;transform-origin:left center}
 .study-view-picker button[aria-pressed=true].study-motion-current{border-bottom-color:transparent}
 @media(prefers-reduced-motion:reduce){.nav-motion-indicator,.study-motion-indicator{display:none}}
+
+/* The save path is navigable text, with decorative motion on the active stage. */
+.has-save-flow .lesson-body{display:block}
+.has-save-flow .lesson-step-list{display:none}
+.save-flow{margin:26px 0}
+.save-flow ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0}
+.save-flow li{position:relative;min-width:0}
+.save-flow button{position:relative;display:flex;align-items:center;gap:10px;width:100%;height:100%;min-height:66px;padding:12px;text-align:left;font-size:12px;overflow-wrap:anywhere;background:var(--paper);color:var(--muted)}
+.save-flow button[aria-current=step]{border-color:var(--green);background:var(--soft);color:var(--ink);font-weight:650}
+.save-flow-dot{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--surface)}
+.save-flow [aria-current=step] .save-flow-dot,.save-flow .is-done .save-flow-dot{background:var(--green);color:var(--surface);border-color:var(--green)}
+.save-flow-connector{position:absolute;top:50%;left:-12px;width:12px;height:2px;background:var(--green);transform-origin:left}
+.save-flow li:not(.is-done):not(:has([aria-current=step])) .save-flow-connector{background:var(--line)}
+.save-flow li:nth-child(3n+1) .save-flow-connector{display:none}
+.save-flow-stop{padding:12px 16px;border-left:3px solid var(--green);background:var(--soft);font-size:13px;line-height:1.65}
+.save-flow-stop strong{display:block}
+.save-flow .is-rejected .save-flow-dot{border-style:dashed}
+@media(min-width:1400px){.save-flow ol{grid-template-columns:repeat(6,minmax(0,1fr))}.save-flow li:nth-child(4) .save-flow-connector{display:block}.save-flow button{flex-direction:column;align-items:flex-start}}
+@media(max-width:600px){.save-flow ol{grid-template-columns:repeat(2,minmax(0,1fr))}.save-flow li:nth-child(3n+1) .save-flow-connector{display:block}.save-flow li:nth-child(2n+1) .save-flow-connector{display:none}.save-flow button{font-size:11px;padding:10px;gap:7px}}
+
+@media(min-width:1400px){.save-flow.is-failure ol{grid-template-columns:repeat(4,minmax(0,1fr))}}
