@@ -1,0 +1,134 @@
+import { DEFAULT_MODEL, LIMITS, buildInference, prepareCatalog, parseStrictJSON, validateInput, validateMatches } from './job-matching.mjs';
+
+export const RESERVE_SQL = `INSERT INTO job_requests(id, client_hash, day, created_at, lease_until)
+SELECT ?, ?, ?, ?, ?
+WHERE NOT EXISTS (SELECT 1 FROM job_daily_blocks WHERE day = ?)
+AND (SELECT COUNT(*) FROM job_requests WHERE day = ?) < ?
+AND (SELECT COUNT(*) FROM job_requests WHERE client_hash = ? AND created_at > ?) < 3
+AND NOT EXISTS (SELECT 1 FROM job_requests WHERE client_hash = ? AND lease_until > ?)`;
+const DAY = 86400000;
+const hour = 3600000;
+const leaseDuration = 90000;
+export const dailyReset = now => new Date(Math.floor(now / DAY) * DAY + DAY).toISOString();
+const dayKey = now => new Date(now).toISOString().slice(0, 10);
+const dailyCap = env => Math.min(8, Math.max(1, Number.parseInt(env.JOB_DAILY_LIMIT, 10) || 8));
+function response(value, status = 200) {
+  return new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
+}
+function failure(code, retryAt) {
+  const status = { disabled: 503, invalid_input: 400, context_limit: 422, rate_limited: 429, daily_limit: 429, busy: 409, timeout: 504, invalid_output: 502, unavailable: 503 }[code] || 503;
+  const result = response({ error: { code, ...(retryAt ? { retryAt } : {}) } }, status);
+  if (retryAt) result.headers.set('Retry-After', new Date(retryAt).toUTCString());
+  return result;
+}
+export function providerFailure(error) {
+  // Never forward provider messages: they can include request content or details.
+  const text = `${error?.code || ''} ${error?.message || ''} ${JSON.stringify(error?.errors || [])}`;
+  if (/\b3036\b/.test(text) || /used up your daily free allocation of 10,000 neurons/i.test(text)) return 'daily_limit';
+  if (/\b300[78]\b/.test(text)) return 'timeout';
+  if (/\b3040\b/.test(text)) return 'unavailable';
+  if (error?.status === 429 || error?.statusCode === 429) return 'rate_limited';
+  return 'unavailable';
+}
+async function readBody(request, timeoutMs) {
+  const declared = Number(request.headers.get('Content-Length'));
+  if (declared > LIMITS.bodyBytes) throw new Error('invalid_input');
+  if (!/^application\/json(?:\s*;|$)/i.test(request.headers.get('Content-Type') || '') || !request.body) throw new Error('invalid_input');
+  const reader = request.body.getReader(); const chunks = []; let size = 0;
+  let timer;
+  const deadline = new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('body_timeout')), timeoutMs); });
+  try {
+    for (;;) {
+      const { value, done } = await Promise.race([reader.read(), deadline]); if (done) break;
+      size += value.byteLength;
+      if (size > LIMITS.bodyBytes) throw new Error('invalid_input');
+      chunks.push(value);
+    }
+  } finally { clearTimeout(timer); void reader.cancel().catch(() => {}); reader.releaseLock(); }
+  const bytes = new Uint8Array(size); let offset = 0;
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+  return validateInput(parseStrictJSON(new TextDecoder('utf-8', { fatal: true }).decode(bytes)));
+}
+async function clientHash(request, secret) {
+  const ip = request.headers.get('CF-Connecting-IP');
+  if (!ip || ip.length > 64) throw new Error('unavailable');
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  // A stable pseudonym preserves the rolling hour and active lease across midnight.
+  // An eligible POST deletes rows older than two days; there is no automatic SQL
+  // expiration. No raw address or job text is stored.
+  const hash = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(ip));
+  return [...new Uint8Array(hash)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+}
+async function globalAvailable(db, day, cap) {
+  const state = await db.prepare('SELECT (SELECT COUNT(*) FROM job_requests WHERE day = ?) AS used, (SELECT COUNT(*) FROM job_daily_blocks WHERE day = ?) AS blocked').bind(day, day).first();
+  return !state.blocked && state.used < cap;
+}
+export function createJobHandler(catalog, { timeoutMs = 25000, bodyTimeoutMs = 5000, now = Date.now, log = entry => console.info(JSON.stringify(entry)) } = {}) {
+  prepareCatalog(catalog);
+  async function handleJob(request, env, metrics) {
+    if (!['GET', 'POST'].includes(request.method)) return new Response(null, { status: 405, headers: { Allow: 'GET, POST', 'Cache-Control': 'no-store' } });
+    if (env.JOB_PREP_ENABLED !== 'true' || !env.AI?.run || !env.JOB_DB?.prepare || typeof env.JOB_RATE_SECRET !== 'string' || env.JOB_RATE_SECRET.length < 32) return failure('disabled');
+    const started = now(); const day = dayKey(started); const db = env.JOB_DB;
+    let reservation; let retainLease = false;
+    try {
+      if (!await globalAvailable(db, day, dailyCap(env))) return failure('daily_limit', dailyReset(started));
+      if (request.method === 'GET') return response({ available: true });
+      if (request.headers.get('Origin') !== new URL(request.url).origin || request.headers.get('Sec-Fetch-Site') === 'cross-site') return failure('invalid_input');
+      let input;
+      try { input = await readBody(request, bodyTimeoutMs); } catch (error) { return failure(error?.message === 'body_timeout' ? 'timeout' : 'invalid_input'); }
+      const inference = buildInference(catalog, input);
+      metrics.candidateCount = inference.candidates.length;
+      if (inference.contextLimited) return failure('context_limit');
+      // An unrelated description can be answered deterministically without spending AI quota.
+      if (!inference.candidates.length) return response({ matches: [] });
+      const client = await clientHash(request, env.JOB_RATE_SECRET);
+      const id = crypto.randomUUID();
+      await db.prepare('DELETE FROM job_requests WHERE created_at < ?').bind(started - 2 * DAY).run();
+      await db.prepare('DELETE FROM job_daily_blocks WHERE day < ?').bind(dayKey(started - 2 * DAY)).run();
+      const inserted = await db.prepare(RESERVE_SQL).bind(id, client, day, started, started + leaseDuration, day, day, dailyCap(env), client, started - hour, client, started).run();
+      if (!inserted.meta?.changes) {
+        if (!await globalAvailable(db, day, dailyCap(env))) return failure('daily_limit', dailyReset(started));
+        const state = await db.prepare('SELECT MAX(lease_until) AS lease, MIN(created_at) AS first_at FROM job_requests WHERE client_hash = ? AND created_at > ?').bind(client, started - hour).first();
+        if (state.lease > started) return failure('busy', new Date(state.lease).toISOString());
+        return failure('rate_limited', new Date((state.first_at || started) + hour).toISOString());
+      }
+      reservation = id;
+      let timer; let result;
+      try {
+        result = await Promise.race([
+          env.AI.run(env.JOB_AI_MODEL || DEFAULT_MODEL, inference.request),
+          new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('local_deadline')), timeoutMs); })
+        ]);
+      } catch (error) {
+        if (error?.message === 'local_deadline') { retainLease = true; return failure('timeout'); }
+        const code = providerFailure(error);
+        if (code === 'daily_limit') {
+          await db.prepare('INSERT OR IGNORE INTO job_daily_blocks(day) VALUES (?)').bind(day).run();
+          return failure(code, dailyReset(started));
+        }
+        return failure(code, code === 'rate_limited' ? new Date(started + 60000).toISOString() : undefined);
+      } finally { clearTimeout(timer); }
+      try {
+        if (result?.usage && typeof result.usage === 'object') {
+          const usage = Object.fromEntries(['prompt_tokens', 'completion_tokens', 'total_tokens'].filter(key => Number.isFinite(result.usage[key]) && result.usage[key] >= 0).map(key => [key, result.usage[key]]));
+          if (Object.keys(usage).length) metrics.usage = usage;
+        }
+        const data = typeof result?.response === 'string' ? parseStrictJSON(result.response) : result?.response;
+        const validated = validateMatches(data, input, inference.candidates);
+        metrics.matchCount = validated.matches.length;
+        return response(validated);
+      } catch { return failure('invalid_output'); }
+    } catch { return failure('unavailable'); }
+    finally {
+      if (reservation && !retainLease) {
+        try { await db.prepare('UPDATE job_requests SET lease_until = 0 WHERE id = ?').bind(reservation).run(); } catch { /* Fail closed: the bounded lease expires automatically. */ }
+      }
+    }
+  }
+  return async (request, env) => {
+    const started = now(); const metrics = {};
+    const result = await handleJob(request, env, metrics);
+    try { log({ event: 'job_preparation', latencyMs: Math.max(0, now() - started), status: result.status, ...metrics }); } catch { /* Telemetry cannot affect the user response. */ }
+    return result;
+  };
+}

@@ -37,5 +37,7 @@ jobs:
       - run: python scripts/validate.py
       - run: npm run check:syntax
       - run: npm test
+      - run: npm run eval:job
+      - run: npm run check:pages
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser

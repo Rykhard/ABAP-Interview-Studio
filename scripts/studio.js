@@ -131,7 +131,7 @@ $('learningSort').value=learningSettings.sort;$('learningSort').onchange=()=>{le
 $('clearFilters').onclick=()=>{learningSettings.level='all';learningSettings.sort='recommended';$('learningSort').value='recommended';saveLearningSettings();prefs[mode]={search:'',topic:'',section:'',scope:'all',selection:'all'};restoreFilters();if(mode==='train')activeSession=null;questionFromSearch=false;libraryList=false;savedOnly=false;lessonLibrary=false;$('advancedSettings').open=false;render();routeSelection();};
 document.querySelector('.skip-link').onclick=e=>{e.preventDefault();$('mainContent').focus({preventScroll:true});window.scrollTo(0,0);};
 $('menuToggle').onclick=()=>{const open=document.querySelector('aside').classList.toggle('nav-open');$('menuToggle').setAttribute('aria-expanded',String(open));};
-document.addEventListener('keydown',e=>{if($('visualDialog').open||$('searchDialog').open||$('readingDialog').open||$('codeDialog').open||/INPUT|SELECT|TEXTAREA|BUTTON|SUMMARY|A/.test(e.target.tagName)||mode!=='train'||!activeSession||activeSession.done)return;if(e.key===' '&&activeSession.kind==='recall'&&!activeSession.revealed){e.preventDefault();$('revealPractice')?.click();}});
+document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]')||/INPUT|SELECT|TEXTAREA|BUTTON|SUMMARY|A/.test(e.target.tagName)||mode!=='train'||!activeSession||activeSession.done)return;if(e.key===' '&&activeSession.kind==='recall'&&!activeSession.revealed){e.preventDefault();$('revealPractice')?.click();}});
 __SEARCH_APP__
 __QUIZ_APP__
 __MOTION_APP__

@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "abap-interview-studio",
+  "compatibility_date": "2026-10-01",
+  "pages_build_output_dir": "./dist",
+  "ai": { "binding": "AI" },
+  "d1_databases": [
+    {
+      "binding": "JOB_DB",
+      "database_name": "studio-job-guard",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "server/migrations"
+    }
+  ],
+  "vars": {
+    "JOB_PREP_ENABLED": "false",
+    "JOB_DAILY_LIMIT": "8",
+    "JOB_AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+  }
+}

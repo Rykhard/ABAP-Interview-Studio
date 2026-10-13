@@ -1,0 +1,101 @@
+# Prepare for a job
+
+This optional feature selects existing interview questions for a pasted job description. It does not write questions, grade a candidate, infer seniority, or assess missing skills. Review each reason and exact evidence quotation before starting interview practice. A preview does not change filters, ratings or an existing session; applying the selection explicitly replaces the current session.
+
+The ordinary static/offline studio does not depend on AI. The optional dialog reports service unavailability on a static host or local file. EN/RU labels, errors and question titles are supported. Technical identifiers remain unchanged.
+
+## Runtime and publication boundary
+
+The existing Cloudflare Pages Git build remains `python scripts/build_site.py`, with `dist` as the asset directory. Root `functions/api/prepare-job.js` adds a Pages Function; Cloudflare compiles this separately from the static assets. `_routes.json` invokes Functions only for `/api/prepare-job`. The server catalog is generated from the canonical question titles, translations, topic placement and learning level. Answer bodies, source files and server credentials are not public assets.
+
+The portable `dist.zip` is **static only**. Uploading that archive through the dashboard does not install the Function, bindings or database. A Git-integrated Pages deployment or correctly configured Wrangler deployment is required for the optional service. This implementation task does not authorize publication or billing changes.
+
+## Configuration before enabling
+
+1. Keep `JOB_PREP_ENABLED=false` until the following setup and preview checks are complete. Missing bindings or a missing secret fail closed with a localized disabled message.
+2. Create a D1 database for the guard and bind it as `JOB_DB`. Apply `server/migrations/0001_job_guard.sql` to the intended database. Preview and production should use separate databases and secrets.
+3. Add a Workers AI binding named `AI` to the Pages environment. No REST API token is required in the application. Do not add an API token to browser code or build variables.
+4. Add `JOB_RATE_SECRET` as a Pages **secret**, using at least 32 random characters. It HMACs the connecting IP to enforce a shared client limit. Do not use the AI token as this secret.
+5. Set `JOB_AI_MODEL` to `@cf/meta/llama-3.3-70b-instruct-fp8-fast` and `JOB_DAILY_LIMIT` to a value from 1 to 8 (default 8). Set `JOB_PREP_ENABLED=true` only for an authorized environment after validation.
+6. Verify the account's actual plan and Workers AI usage in the Cloudflare dashboard. This code does not change billing, select a paid fallback, or upgrade a plan. Other applications may consume the same account allowance. The local guard is not an account-wide billing control.
+
+`wrangler.example.jsonc` is secret-free and disabled. Its database ID is a placeholder: it is **not** an active production configuration. Set bindings through the Pages dashboard, or copy it to ignored `wrangler.local.jsonc` and replace the database ID. A binding/configuration change requires an authorized redeployment before it affects the hosted site.
+
+## Local development and checks
+
+Use Node 22.13 or newer and the pinned development dependencies:
+
+```text
+npm ci --ignore-scripts
+python scripts/build_site.py
+npm run check:syntax
+npm test
+python -m unittest discover -s tests -p "test_*.py"
+npm run eval:job
+npm run check:pages
+npm run test:browser
+```
+
+The default tests use synthetic fixtures and mock inference. Server guard tests execute the real SQL against SQLite; browser tests exercise the existing session flow. Neither establishes live model quality or production Cloudflare performance.
+
+To exercise the Pages runtime with the feature disabled, run `npx wrangler pages dev dist --port 8795`. For an explicitly authorized AI integration test, configure the local AI and D1 bindings using the example, apply the migration locally, and supply `JOB_RATE_SECRET` through ignored `.dev.vars`. Workers AI bindings call the real service even during local development and consume account usage. Never enable real inference for unattended browser tests. Do not commit `.dev.vars`, `.env`, API tokens, or local Wrangler credentials.
+
+## Limits and errors
+
+The server accepts only JSON `{description, count, language}`: 30–6,000 trimmed characters, at most 10,000 UTF-8 bytes, count 1–10, and `en` or `ru`. Request bodies are limited to 16,000 bytes with a read deadline. The default UI maximum is five questions. One explicit submit makes at most one non-streaming AI call, with temperature zero, 2,300 output tokens and JSON Schema. There are no automatic retries.
+
+Each AI attempt reserves one shared D1 slot atomically, including failed or timed-out attempts. The default and maximum daily cap is eight attempts for the whole site, not eight per visitor. A client can reserve three attempts in a rolling hour. An active 90-second lease blocks overlapping submissions; a local inference timeout retains the lease because aborting the browser does not prove that the provider stopped. IP sharing can therefore affect users behind the same network.
+
+The guard's daily cap and verified Cloudflare error 3036 both produce `daily_limit`, a UTC-midnight reset timestamp, and a localized warning that ordinary practice remains available. A shared circuit prevents further inference that day after a provider daily-quota error. Capacity error 3040, ordinary rate limits, timeouts, disabled configuration and malformed output have separate recoverable states. The UI formats a known retry timestamp in the visitor's local time. It does not estimate remaining Neurons from the number of requests.
+
+Cloudflare currently documents 10,000 free Neurons per account/day and reset at 00:00 UTC. Model costs vary with input and output; eight reserved calls is a conservative application bound, not a promise that eight calls remain available. Changing the model requires reviewing its context window, cost, JSON Schema support and evaluations before enablement.
+
+## Retrieval and model contract
+
+The model has a 24,000-token context window. Deterministic retrieval ranks the entire canonical catalog using shared English/Russian title and topic terms weighted by inverse document frequency. It retains at most 60 candidates, with stable ID tie-breaking. The immutable catalog index is prepared once, rather than tokenizing all titles on each request. This is a lexical shortlist, not a semantic embedding system: synonyms and requirements described without recognizable terminology can be missed.
+
+Before inference, lower-ranked candidates are removed until the UTF-8 byte upper bound for the serialized input/schema, plus 1,024 tokens of template reserve and 2,300 output tokens, fits the context. Titles are not cut mid-sentence, and the submitted description is not silently truncated. The prompt sends compact canonical IDs, English titles, topics, subtopics and levels, not answer bodies; Russian titles participate in retrieval. The response schema enumerates only shortlisted IDs.
+
+Evidence choices are exact source excerpts split at sentence, line or semicolon boundaries, with long spans split at an existing word boundary into at most 300 characters. They are enumerated in the response schema to discourage invented quotations. The evidence list has a 4,000-byte budget; for unusually long descriptions, catalog-relevant excerpts take priority and retain source order. The complete job text remains available to the model for optional-skill scope and exclusions. This restriction can miss a useful excerpt; it does not make an incomplete selection a complete assessment.
+
+Server validation rejects extra fields, unknown/duplicate IDs, too many matches, malformed or duplicate-key JSON, overlong text and quotations that are not contiguous literal substrings of the description. Output is never reconstructed or repaired. Reasons and evidence are rendered as text. A valid quotation does **not** prove semantic relevance or immunity to prompt injection; user review and model evaluation remain necessary. The requested count is a maximum, not a target.
+
+## Reproducible model evaluation
+
+`evals/job-preparation.json` contains synthetic specific-match, exclusion, no-match, optional-skill, embedded-instruction, realistic longer-vacancy and bilingual cases. `npm run eval:job` checks shortlist recall without credentials or model calls. Expected IDs are evaluation assertions, never application matching rules.
+
+For a live evaluation, securely supply `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in the process environment, then explicitly run:
+
+```text
+node scripts/evaluate-job.mjs --live --case specific-rap-en
+node scripts/evaluate-job.mjs --live --max-requests 7
+```
+
+The runner stops on a provider error, limits calls, uses exactly the production prompt/schema/validation, and writes an ignored report under `tasks/job-preparation/`. It records model ID, prompt/catalog hashes, candidate recall, canonical selected IDs, evidence/reasons for public synthetic fixtures, latency and numeric token usage. Failed synthetic model outputs are retained there for contract diagnosis. It never records credentials or provider error bodies. Review each match manually for relevance, correct optional/required classification, and language quality; passing ID assertions alone is insufficient. Do not put real vacancies or personal information in committed fixtures.
+
+## Validation recorded on 13 October 2026
+
+The final live run is preserved in `evals/job-preparation-results.json` with seven synthetic cases, exact prompt/catalog hashes and original model selections. All seven returned structurally valid, literal-evidence results; six met the strict expected-ID assertions. In the longer vacancy, the model chose PAT-10 for dependency injection instead of the fixture's TEST-01/TEST-02/OO-07 group. Independent review of the canonical answer accepted PAT-10 as relevant: it explicitly discusses testing real logic with injected doubles. The original automated failure remains recorded rather than being rewritten as a pass.
+
+Human review also found redundant Factory/Facade coverage in one selection and a preferred question before a required one in another. The preview now groups required matches before preferences. Redundant selections remain a model limitation that users can remove during review. No complete-coverage or general prompt-injection-resistance claim follows from these seven cases. The first evaluation exposed rejected outputs and weak/empty selections; stronger prompts and constrained source excerpts improved the subsequent samples, without establishing universal reliability.
+
+Final live latency ranged from 1.0 to 14.1 seconds; reported usage across seven calls was 23,720 input and 1,471 output tokens. These are observations for synthetic requests, not a service-level or price guarantee. Live evaluation calls use the provider REST API directly and consume the account's allowance; they do not exercise the deployed D1 guard.
+
+Local validation passed the 43-test browser suite, 14 Node tests (including 11 server tests), 11 Python tests, seven retrieval-recall fixtures, source/generated syntax checks, content validation and the Wrangler Pages compilation. The latest job-specific browser checks additionally cover required-before-preferred presentation. Manual browser inspection covered desktop RU and mobile dark-mode quota messaging. A real local Pages runtime returned the expected disabled JSON response. Production bindings, remote D1 integration, production CPU measurements and deployment have not been performed.
+
+## Privacy, disablement and rollback
+
+Descriptions, reasons and evidence live only in browser/request memory; closing the dialog clears its draft and preview. They are not added to local storage, history or D1. Starting practice retains only selected canonical IDs and the session source/title. The description is sent to Cloudflare Workers AI only on explicit submission; consult Cloudflare's data-usage terms before handling sensitive information.
+
+D1 stores random reservation IDs, HMAC client pseudonyms, timestamps, day buckets, leases and daily quota blocks. Operational logs contain only status, latency, match/candidate counts and bounded numeric usage. There is no application prompt/error-body logging. Rows older than two days are deleted on a later eligible POST; D1 does not automatically expire them, so an idle/disabled installation may retain those pseudonymous records longer. If strict time-based retention is required, configure an authorized scheduled cleanup separately.
+
+To disable, set `JOB_PREP_ENABLED=false` in the target environment and apply it through the approved Pages deployment workflow. Static learning and existing practice remain available. To remove retained guard data after disablement, run `DELETE FROM job_requests; DELETE FROM job_daily_blocks;` against the explicitly verified database. This resets limits; do not run it while the feature is enabled. Removing the optional endpoint/bindings and rebuilding the static app is the full rollback. Stable question IDs and stored practice ratings are unchanged.
+
+## Official references
+
+- [Pages Functions bindings](https://developers.cloudflare.com/pages/functions/bindings/)
+- [Workers AI model and context window](https://developers.cloudflare.com/workers-ai/models/llama-3.3-70b-instruct-fp8-fast/)
+- [Workers AI JSON mode](https://developers.cloudflare.com/workers-ai/features/json-mode/)
+- [Workers AI pricing and daily reset](https://developers.cloudflare.com/workers-ai/platform/pricing/)
+- [Workers AI error codes](https://developers.cloudflare.com/workers-ai/platform/errors/)
+- [Workers AI data usage](https://developers.cloudflare.com/workers-ai/platform/data-usage/)

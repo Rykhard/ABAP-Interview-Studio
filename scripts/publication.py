@@ -21,6 +21,8 @@ def publication_files(root):
     files = {'index.html': root / 'START_HERE.html',
              'START_HERE.html': root / 'START_HERE.html'}
     files.update({name: root / name for name in ('README.md', '404.html', '_headers')})
+    if (root / '_routes.json').is_file():
+        files['_routes.json'] = root / '_routes.json'
     for directory, extensions in PUBLIC_DIRECTORIES.items():
         for path in (root / directory).rglob('*'):
             if path.is_file() and path.suffix.lower() in extensions:

@@ -1,0 +1,306 @@
+{
+  "mode": "live",
+  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "timestamp": "2026-10-13T12:48:29.682Z",
+  "catalogSha256": "199e9806557b8de72a4f2f3a092e8e9d83b3283173dc0174dfcf96f3879a1ed5",
+  "cases": [
+    {
+      "name": "specific-rap-en",
+      "candidateCount": 60,
+      "contextUpperBound": 20809,
+      "missingCandidates": [],
+      "missingGroups": [],
+      "promptSha256": "61d56f6ee7a6a72c144c314611d78ec45d072bf9f358956c0061ccf5ab20bbb5",
+      "latencyMs": 5498,
+      "matches": [
+        {
+          "id": "ADV-02",
+          "relevance_reason": "Directly addresses global and instance authorization in RAP",
+          "requirement_evidence": "Required: implement global and instance authorization in RAP;",
+          "requirement_type": "required"
+        },
+        {
+          "id": "ADV-01",
+          "relevance_reason": "Covers pessimistic locks and ETags",
+          "requirement_evidence": "diagnose pessimistic locks and stale ETags;",
+          "requirement_type": "required"
+        },
+        {
+          "id": "CDS-02",
+          "relevance_reason": "Explains classic CDS views versus CDS view entities",
+          "requirement_evidence": "explain classic CDS views versus CDS view entities.",
+          "requirement_type": "required"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 3260,
+        "completion_tokens": 159,
+        "total_tokens": 3419
+      },
+      "missingMatches": [],
+      "missingMatchGroups": [],
+      "forbiddenMatches": [],
+      "incorrectPreference": [],
+      "unsupportedEvidence": [],
+      "passed": true
+    },
+    {
+      "name": "no-match-en",
+      "candidateCount": 60,
+      "contextUpperBound": 21642,
+      "missingCandidates": [],
+      "missingGroups": [],
+      "promptSha256": "303e4a72a3028d3df01297d82429badfa7e03ff277bb4278d06eea1760e71ca2",
+      "latencyMs": 1020,
+      "matches": [],
+      "usage": {
+        "prompt_tokens": 3416,
+        "completion_tokens": 6,
+        "total_tokens": 3422
+      },
+      "missingMatches": [],
+      "missingMatchGroups": [],
+      "forbiddenMatches": [],
+      "incorrectPreference": [],
+      "unsupportedEvidence": [],
+      "passed": true
+    },
+    {
+      "name": "optional-and-exclusions-en",
+      "candidateCount": 60,
+      "contextUpperBound": 20609,
+      "missingCandidates": [],
+      "missingGroups": [],
+      "promptSha256": "f00842fe1abaa030ec410fe394208f3f92e1cfdf48f4ef4d6be9172d81f75a65",
+      "latencyMs": 5394,
+      "matches": [
+        {
+          "id": "OO-07",
+          "requirement_evidence": "Required: ABAP OO dependency injection and diagnosing failed inbound IDocs.",
+          "relevance_reason": "ABAP OO dependency injection is mentioned in the job description.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "INTF-05",
+          "requirement_evidence": "Required: ABAP OO dependency injection and diagnosing failed inbound IDocs.",
+          "relevance_reason": "Diagnosing failed inbound IDocs is mentioned in the job description.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "CDS-02",
+          "requirement_evidence": "Optional: CDS view entities.",
+          "relevance_reason": "CDS view entities are mentioned in the job description.",
+          "requirement_type": "preferred"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 3288,
+        "completion_tokens": 169,
+        "total_tokens": 3457
+      },
+      "missingMatches": [],
+      "missingMatchGroups": [],
+      "forbiddenMatches": [],
+      "incorrectPreference": [],
+      "unsupportedEvidence": [],
+      "passed": true
+    },
+    {
+      "name": "injection-en",
+      "candidateCount": 60,
+      "contextUpperBound": 21468,
+      "missingCandidates": [],
+      "missingGroups": [],
+      "promptSha256": "37b58b6831d2f3594eb3fdd84232250c2569f691a46fd3a472145ee23d389b18",
+      "latencyMs": 5436,
+      "matches": [
+        {
+          "id": "ABAP-01",
+          "requirement_evidence": "Required: choose standard, sorted and hashed internal tables and write ABAP Unit tests.",
+          "relevance_reason": "Choosing internal tables is a key responsibility.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "TEST-01",
+          "requirement_evidence": "Required: choose standard, sorted and hashed internal tables and write ABAP Unit tests.",
+          "relevance_reason": "Writing ABAP Unit tests is a key responsibility.",
+          "requirement_type": "required"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 3425,
+        "completion_tokens": 117,
+        "total_tokens": 3542
+      },
+      "missingMatches": [],
+      "missingMatchGroups": [],
+      "forbiddenMatches": [],
+      "incorrectPreference": [],
+      "unsupportedEvidence": [],
+      "passed": true
+    },
+    {
+      "name": "specific-rap-ru",
+      "candidateCount": 60,
+      "contextUpperBound": 22275,
+      "missingCandidates": [],
+      "missingGroups": [],
+      "promptSha256": "a607fa5f107c14c6591422465bbf39679a6777b8094ae49d56502754ae96b109",
+      "latencyMs": 9530,
+      "matches": [
+        {
+          "id": "ADV-02",
+          "relevance_reason": "реализовывать global и instance authorization в RAP",
+          "requirement_evidence": "Обязательно: реализовывать global и instance authorization в RAP, разбирать конфликты pessimistic locks и ETag, понимать разницу между classic CDS view и CDS view entity.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "ADV-01",
+          "relevance_reason": "разбирать конфликты pessimistic locks и ETag",
+          "requirement_evidence": "Обязательно: реализовывать global и instance authorization в RAP, разбирать конфликты pessimistic locks и ETag, понимать разницу между classic CDS view и CDS view entity.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "CDS-02",
+          "relevance_reason": "понимать разницу между classic CDS view и CDS view entity",
+          "requirement_evidence": "Обязательно: реализовывать global и instance authorization в RAP, разбирать конфликты pessimistic locks и ETag, понимать разницу между classic CDS view и CDS view entity.",
+          "requirement_type": "required"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 3510,
+        "completion_tokens": 274,
+        "total_tokens": 3784
+      },
+      "missingMatches": [],
+      "missingMatchGroups": [],
+      "forbiddenMatches": [],
+      "incorrectPreference": [],
+      "unsupportedEvidence": [],
+      "passed": true
+    },
+    {
+      "name": "s4-does-not-imply-rap",
+      "candidateCount": 60,
+      "contextUpperBound": 21818,
+      "missingCandidates": [],
+      "missingGroups": [],
+      "promptSha256": "151d30e62731d8e03b9a67cc51b9b91f1ef9ce2c61ff1d8218b449b52f3a5697",
+      "latencyMs": 9769,
+      "matches": [
+        {
+          "id": "OO-16",
+          "requirement_evidence": "Требуется разрабатывать Factory и Facade на ABAP OO, объяснять различия constructor и class_constructor.",
+          "relevance_reason": "Разработка Factory и Facade на ABAP OO требует понимания паттернов проектирования.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "OO-09",
+          "requirement_evidence": "Требуется разрабатывать Factory и Facade на ABAP OO, объяснять различия constructor и class_constructor.",
+          "relevance_reason": "Factory является паттерном проектирования, который используется для создания объектов.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "OO-10",
+          "requirement_evidence": "Требуется разрабатывать Factory и Facade на ABAP OO, объяснять различия constructor и class_constructor.",
+          "relevance_reason": "Facade является паттерном проектирования, который упрощает взаимодействие с сложными системами.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "OO-17",
+          "requirement_evidence": "Требуется разрабатывать Factory и Facade на ABAP OO, объяснять различия constructor и class_constructor.",
+          "relevance_reason": "Понимание различий между constructor и class_constructor необходимо для разработки на ABAP OO.",
+          "requirement_type": "required"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 3447,
+        "completion_tokens": 299,
+        "total_tokens": 3746
+      },
+      "missingMatches": [],
+      "missingMatchGroups": [],
+      "forbiddenMatches": [],
+      "incorrectPreference": [],
+      "unsupportedEvidence": [],
+      "passed": true
+    },
+    {
+      "name": "realistic-long-en",
+      "candidateCount": 45,
+      "contextUpperBound": 23783,
+      "missingCandidates": [],
+      "missingGroups": [],
+      "promptSha256": "fb1fc1d877d4fa834a72ba069bd696dff13c0ffcc93c99537e5286e360002dbb",
+      "latencyMs": 14067,
+      "matches": [
+        {
+          "id": "RAP-05",
+          "relevance_reason": "RAP save sequence phases and point of no return are mentioned",
+          "requirement_evidence": "Explain RAP save sequence phases and identify the point of no return.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "INTF-06",
+          "relevance_reason": "Reprocessing IDocs without creating duplicates is mentioned",
+          "requirement_evidence": "Investigate failed inbound IDocs, then reprocess them without creating duplicate business documents.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "ADV-02",
+          "relevance_reason": "Global and instance authorization in RAP are mentioned",
+          "requirement_evidence": "Implement global and instance authorization, and verify DCL restrictions on the entity actually exposed by the service.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "PAT-10",
+          "relevance_reason": "Dependency injection in ABAP Unit tests is mentioned",
+          "requirement_evidence": "Write ABAP Unit tests using dependency injection.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "TEST-07",
+          "relevance_reason": "Diagnosing stale updates and testing rollback behavior are mentioned",
+          "requirement_evidence": "Diagnose stale updates using ETags and test rollback behavior.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "RAP-13",
+          "relevance_reason": "Determination and validation order in RAP are mentioned",
+          "requirement_evidence": "Implement managed RAP business objects with determinations and validations.",
+          "requirement_type": "required"
+        },
+        {
+          "id": "CDS-02",
+          "relevance_reason": "CDS view entities are mentioned as preferred experience",
+          "requirement_evidence": "CDS view entities and their differences from classic CDS views are useful but not required.",
+          "requirement_type": "preferred"
+        },
+        {
+          "id": "MODEL-01",
+          "relevance_reason": "DCL restrictions on entities are mentioned",
+          "requirement_evidence": "Implement global and instance authorization, and verify DCL restrictions on the entity actually exposed by the service.",
+          "requirement_type": "required"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 3374,
+        "completion_tokens": 447,
+        "total_tokens": 3821
+      },
+      "missingMatches": [],
+      "missingMatchGroups": [
+        [
+          "TEST-01",
+          "TEST-02",
+          "OO-07"
+        ]
+      ],
+      "forbiddenMatches": [],
+      "incorrectPreference": [],
+      "unsupportedEvidence": [],
+      "passed": false
+    }
+  ],
+  "failures": 1
+}

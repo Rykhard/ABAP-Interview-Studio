@@ -9,6 +9,9 @@ dist.zip
 node_modules/
 .env
 .env.*
+.dev.vars
+.dev.vars.*
+wrangler.local.jsonc
 abap-study-progress.json
 originals/
 tasks/

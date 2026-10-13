@@ -1,0 +1,2826 @@
+[
+  {
+    "id": "ABAP-01",
+    "title": "How do you choose between standard, sorted, and hashed internal tables?",
+    "title_ru": "Как выбрать между STANDARD, SORTED и HASHED внутренней таблицей?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Core"
+  },
+  {
+    "id": "ABAP-02",
+    "title": "What are primary, secondary, default, and empty internal table keys?",
+    "title_ru": "Чем отличаются первичный, вторичный, стандартный и пустой ключ внутренней таблицы?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "ABAP-03",
+    "title": "When is BINARY SEARCH correct, and how do table expressions handle missing rows?",
+    "title_ru": "Когда BINARY SEARCH работает правильно и что делает табличное выражение, если строки нет?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "ABAP-04",
+    "title": "How do a work area, field symbol, and data reference differ?",
+    "title_ru": "Чем отличаются рабочая область (work area), полевой символ (field symbol) и ссылка на данные (data reference)?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Core"
+  },
+  {
+    "id": "ABAP-05",
+    "title": "What is the difference between a domain, data element, structure, and table type?",
+    "title_ru": "Чем отличаются домен, элемент данных, структура и табличный тип?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Core"
+  },
+  {
+    "id": "ABAP-06",
+    "title": "How do a foreign key, check table, and value table differ in classic DDIC?",
+    "title_ru": "Чем отличаются внешний ключ (foreign key), проверочная таблица (check table) и таблица значений (value table) в классическом DDIC?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Core"
+  },
+  {
+    "id": "ABAP-07",
+    "title": "How do you explain an SAP LUW versus a database LUW?",
+    "title_ru": "Как объяснить разницу между SAP LUW и database LUW?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Core"
+  },
+  {
+    "id": "ABAP-08",
+    "title": "Who should issue COMMIT WORK, and what does AND WAIT guarantee?",
+    "title_ru": "Кто должен выполнять COMMIT WORK и что гарантирует AND WAIT?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "ABAP-09",
+    "title": "Why do SAP enqueue locks exist in addition to database locks?",
+    "title_ru": "Зачем нужны SAP enqueue locks, если уже есть блокировки базы данных?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Core"
+  },
+  {
+    "id": "ABAP-10",
+    "title": "How do you choose and propagate class-based exceptions?",
+    "title_ru": "Как выбрать и передавать исключения на основе классов?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "ABAP-11",
+    "title": "Which modern ABAP expressions are useful, and when should you avoid them?",
+    "title_ru": "Какие современные выражения ABAP полезны и когда их лучше не применять?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "ABAP-12",
+    "title": "How do you handle amounts, quantities, dates, and timestamps correctly?",
+    "title_ru": "Как правильно работать с суммами, количествами, датами и временными метками (timestamps)?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "ABAP-13",
+    "title": "When would you use RTTI, RTTC, or dynamic ABAP?",
+    "title_ru": "Когда нужны RTTI, RTTC и динамический ABAP?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Advanced"
+  },
+  {
+    "id": "ABAP-14",
+    "title": "How would you investigate an ABAP failure without changing production behavior?",
+    "title_ru": "Как исследовать ошибку ABAP, не нарушая работу действующей системы?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "ADV-01",
+    "title": "How do pessimistic locks and ETags complement each other?",
+    "title_ru": "Как пессимистические блокировки и ETag дополняют друг друга?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Applied"
+  },
+  {
+    "id": "ADV-02",
+    "title": "What is the difference between global and instance authorization in RAP, and where do DCL and prechecks fit?",
+    "title_ru": "Чем global authorization отличается от instance authorization в RAP и где нужны DCL и precheck?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Applied"
+  },
+  {
+    "id": "ADV-03",
+    "title": "What does authorization none on an action mean?",
+    "title_ru": "Что означает authorization: none для action?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Applied"
+  },
+  {
+    "id": "ADV-04",
+    "title": "Instance static and factory actions?",
+    "title_ru": "Чем отличаются instance, static и factory actions?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Applied"
+  },
+  {
+    "id": "ADV-05",
+    "title": "How do action parameters and results work?",
+    "title_ru": "Как работают параметры и результаты action?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Applied"
+  },
+  {
+    "id": "ADV-06",
+    "title": "What is augmentation and how does it differ from additional save?",
+    "title_ru": "Что такое augmentation и чем она отличается от additional save?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Advanced"
+  },
+  {
+    "id": "ADV-07",
+    "title": "What are side effects in a RAP UI?",
+    "title_ru": "Что такое side effects в RAP UI?",
+    "topic": "RAP business objects",
+    "section": "Messages, side effects & events",
+    "level": "Applied"
+  },
+  {
+    "id": "ADV-08",
+    "title": "State messages versus transition messages?",
+    "title_ru": "Чем state messages отличаются от transition messages?",
+    "topic": "RAP business objects",
+    "section": "Messages, side effects & events",
+    "level": "Applied"
+  },
+  {
+    "id": "ADV-09",
+    "title": "Service definition versus binding and UI versus Web API?",
+    "title_ru": "Чем service definition отличается от service binding, а UI service — от Web API?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Core"
+  },
+  {
+    "id": "ADV-10",
+    "title": "What must a custom query provider implement?",
+    "title_ru": "Что должен реализовать собственный query provider?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Advanced"
+  },
+  {
+    "id": "ADV-11",
+    "title": "How do RAP business events differ from ABAP Objects events?",
+    "title_ru": "Чем RAP business events отличаются от событий ABAP Objects?",
+    "topic": "RAP business objects",
+    "section": "Messages, side effects & events",
+    "level": "Advanced"
+  },
+  {
+    "id": "ADV-12",
+    "title": "How do you extend an existing RAP BO safely?",
+    "title_ru": "Как безопасно расширить существующий RAP BO?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Advanced"
+  },
+  {
+    "id": "ADV-13",
+    "title": "How do static and dynamic feature controls differ?",
+    "title_ru": "Чем static feature control отличается от dynamic feature control?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Applied"
+  },
+  {
+    "id": "ADV-14",
+    "title": "What is a normal RAP function, and when should you use it instead of an action?",
+    "title_ru": "Что такое обычная RAP function и когда она нужна вместо action?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Core"
+  },
+  {
+    "id": "ADV-15",
+    "title": "How does a default function suggest values for RAP action parameters?",
+    "title_ru": "Как default function предлагает начальные значения параметров RAP action?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-01",
+    "title": "What changes when a method receives a CHANGING parameter by value instead of by reference?",
+    "title_ru": "Что меняется, если CHANGING-параметр метода передаётся по значению, а не по ссылке?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-02",
+    "title": "A copied structure contains a string, a nested table, and an object reference. Is it an independent snapshot?",
+    "title_ru": "Структура скопирована вместе со строкой, вложенной таблицей и ссылкой на объект. Получился независимый снимок?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-03",
+    "title": "A large temporary internal table is no longer needed. When would you choose CLEAR or FREE?",
+    "title_ru": "Большая временная внутренняя таблица больше не нужна. Когда выбрать CLEAR или FREE?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-04",
+    "title": "A dynamic ASSIGN fails, but IS ASSIGNED is still true. How can the program update the wrong field?",
+    "title_ru": "Динамический ASSIGN завершился ошибкой, но IS ASSIGNED остаётся истинным. Как программа может изменить не то поле?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-05",
+    "title": "A READ TABLE fails, yet a later IF sy-subrc = 0 takes the success branch. What do you inspect?",
+    "title_ru": "READ TABLE не нашёл строку, но последующий IF sy-subrc = 0 выполняет успешную ветку. Что проверить?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Core"
+  },
+  {
+    "id": "BASE-06",
+    "title": "An import must reject precision loss rather than silently round or truncate. Where does EXACT help?",
+    "title_ru": "Импорт должен отклонять потерю точности вместо округления или обрезания. Где помогает EXACT?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-07",
+    "title": "Two invoice totals differ by one cent although both use decimal types. How do you diagnose rounding?",
+    "title_ru": "Два расчёта суммы счёта отличаются на цент, хотя оба используют десятичные типы. Как исследовать округление?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-08",
+    "title": "Why can replacing MOVE-CORRESPONDING with CORRESPONDING erase an existing structure field?",
+    "title_ru": "Почему замена MOVE-CORRESPONDING на CORRESPONDING может стереть существующее поле структуры?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-09",
+    "title": "Unsorted orders must be processed once per customer with their member rows. How does GROUP BY change the loop?",
+    "title_ru": "Неотсортированные заказы нужно обработать по одному разу на клиента вместе с его строками. Что меняет GROUP BY?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-10",
+    "title": "A FILTER expression is proposed for a standard table with an empty primary key. Is that enough?",
+    "title_ru": "Для FILTER предложена стандартная таблица с пустым первичным ключом. Этого достаточно?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-11",
+    "title": "A REDUCE expression calculates a maximum, but all-negative input returns zero. What went wrong?",
+    "title_ru": "REDUCE вычисляет максимум, но на отрицательных данных возвращает ноль. Что неверно?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-12",
+    "title": "A report accepts a filter value and a sort-column name. Is escaping quotes sufficient for safe SQL?",
+    "title_ru": "Отчёт принимает значение фильтра и имя колонки сортировки. Достаточно экранировать кавычки для безопасного SQL?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Advanced"
+  },
+  {
+    "id": "BASE-13",
+    "title": "A resource release is placed only in CLEANUP. Why can it remain unreleased after success?",
+    "title_ru": "Освобождение ресурса есть только в CLEANUP. Почему после успеха ресурс может остаться открытым?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Advanced"
+  },
+  {
+    "id": "BASE-14",
+    "title": "An optional limit parameter is omitted in one call and explicitly set to zero in another. How can a method distinguish them?",
+    "title_ru": "В одном вызове необязательный параметр limit пропущен, в другом передан ноль. Как метод их различит?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Core"
+  },
+  {
+    "id": "BASE-15",
+    "title": "A single-line INSERT INTO TABLE hits an existing unique primary key. Does it update the existing row?",
+    "title_ru": "INSERT INTO TABLE одной строки встретил существующий уникальный первичный ключ. Обновится ли строка?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "BASE-16",
+    "title": "An authorization helper returns an empty range table. Why is WHERE field IN range unsafe as the only access restriction?",
+    "title_ru": "Проверка полномочий вернула пустую таблицу диапазонов (range table). Почему одного WHERE field IN range недостаточно для защиты?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Tables & expressions",
+    "level": "Applied"
+  },
+  {
+    "id": "BTP-01",
+    "title": "What is BTP and how is ABAP Cloud different?",
+    "title_ru": "Что такое BTP и чем от него отличается ABAP Cloud?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Core"
+  },
+  {
+    "id": "BTP-02",
+    "title": "How do global accounts subaccounts entitlements and spaces relate?",
+    "title_ru": "Как связаны global account, subaccounts, entitlements и spaces?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Core"
+  },
+  {
+    "id": "BTP-03",
+    "title": "What is the difference between IaaS PaaS and SaaS?",
+    "title_ru": "Чем отличаются IaaS, PaaS и SaaS?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Core"
+  },
+  {
+    "id": "BTP-04",
+    "title": "What are a service instance binding and service key?",
+    "title_ru": "Чем отличаются service instance, binding и service key?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Core"
+  },
+  {
+    "id": "BTP-05",
+    "title": "What do containers buildpacks droplets and routes do?",
+    "title_ru": "Для чего нужны containers, buildpacks, droplets и routes?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Core"
+  },
+  {
+    "id": "BTP-06",
+    "title": "What do destinations and Cloud Connector solve?",
+    "title_ru": "Какие задачи решают destinations и Cloud Connector?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Applied"
+  },
+  {
+    "id": "BTP-07",
+    "title": "How do remote transactions differ from local RAP transactions?",
+    "title_ru": "Чем удалённая транзакция отличается от локальной транзакции RAP?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Applied"
+  },
+  {
+    "id": "BTP-08",
+    "title": "What makes event-driven integration reliable?",
+    "title_ru": "Что делает event-driven integration надёжной?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Advanced"
+  },
+  {
+    "id": "BTP-09",
+    "title": "Which tools matter to an ABAP developer on BTP?",
+    "title_ru": "Какие инструменты важны ABAP-разработчику на BTP?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Core"
+  },
+  {
+    "id": "BTP-10",
+    "title": "How would you secure and operate a side-by-side extension?",
+    "title_ru": "Как обеспечить безопасность и эксплуатацию side-by-side extension?",
+    "topic": "Protocols & integration",
+    "section": "BTP services & connectivity",
+    "level": "Advanced"
+  },
+  {
+    "id": "CDS-01",
+    "title": "What does ABAP CDS add to a SQL query?",
+    "title_ru": "Что ABAP CDS добавляет к SQL-запросу?",
+    "topic": "CDS modeling & security",
+    "section": "Entities, keys & relationships",
+    "level": "Core"
+  },
+  {
+    "id": "CDS-02",
+    "title": "What is the difference between a classic CDS view and a CDS view entity?",
+    "title_ru": "Чем classic CDS view отличается от CDS view entity?",
+    "topic": "CDS modeling & security",
+    "section": "Entities, keys & relationships",
+    "level": "Core"
+  },
+  {
+    "id": "CDS-03",
+    "title": "Association or join and how do you select cardinality?",
+    "title_ru": "Association или JOIN: как выбрать cardinality?",
+    "topic": "CDS modeling & security",
+    "section": "Entities, keys & relationships",
+    "level": "Applied"
+  },
+  {
+    "id": "CDS-04",
+    "title": "Association versus composition in RAP?",
+    "title_ru": "Чем association отличается от composition в RAP?",
+    "topic": "CDS modeling & security",
+    "section": "Entities, keys & relationships",
+    "level": "Core"
+  },
+  {
+    "id": "CDS-05",
+    "title": "What do interface composite consumption and projection mean?",
+    "title_ru": "Что означают interface, composite, consumption и projection?",
+    "topic": "CDS modeling & security",
+    "section": "Entities, keys & relationships",
+    "level": "Core"
+  },
+  {
+    "id": "CDS-06",
+    "title": "What are CDS abstract and custom entities?",
+    "title_ru": "Что такое CDS abstract entity и custom entity?",
+    "topic": "CDS modeling & security",
+    "section": "Custom queries & virtual elements",
+    "level": "Core"
+  },
+  {
+    "id": "CDS-07",
+    "title": "Does DCL on a base view automatically protect every higher view?",
+    "title_ru": "Защищает ли DCL базового view все вышестоящие views автоматически?",
+    "topic": "CDS modeling & security",
+    "section": "DCL & authorization boundaries",
+    "level": "Applied"
+  },
+  {
+    "id": "CDS-08",
+    "title": "Where do UI annotations and value helps belong?",
+    "title_ru": "Где размещать аннотации UI и value helps?",
+    "topic": "CDS modeling & security",
+    "section": "Projections, annotations & evolution",
+    "level": "Applied"
+  },
+  {
+    "id": "CDS-09",
+    "title": "What is a virtual element and what are its limits?",
+    "title_ru": "Что такое virtual element и какие у него ограничения?",
+    "topic": "CDS modeling & security",
+    "section": "Custom queries & virtual elements",
+    "level": "Applied"
+  },
+  {
+    "id": "CDS-10",
+    "title": "How do analytical CDS models differ from transactional models?",
+    "title_ru": "Чем аналитические CDS-модели отличаются от транзакционных?",
+    "topic": "CDS modeling & security",
+    "section": "Analytics, amounts & aggregation",
+    "level": "Core"
+  },
+  {
+    "id": "CDS-11",
+    "title": "How do CDS keys and database keys relate?",
+    "title_ru": "Как связаны CDS keys и database keys?",
+    "topic": "CDS modeling & security",
+    "section": "Entities, keys & relationships",
+    "level": "Applied"
+  },
+  {
+    "id": "CDS-12",
+    "title": "Is a maintenance view a RAP view and how are defaults supplied?",
+    "title_ru": "Является ли maintenance view RAP view и как задаются defaults?",
+    "topic": "CDS modeling & security",
+    "section": "Projections, annotations & evolution",
+    "level": "Applied"
+  },
+  {
+    "id": "CLOUD-01",
+    "title": "A new approval extension needs immediate document validation and an external supplier portal. Would you put everything on-stack or on BTP?",
+    "title_ru": "Расширению согласования нужны немедленная проверка документа и внешний портал поставщика. Разместить всё on-stack или на BTP?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Placement & business boundaries",
+    "level": "Advanced"
+  },
+  {
+    "id": "CLOUD-02",
+    "title": "A stakeholder says ABAP Cloud means moving the existing application to SAP BTP ABAP environment. How would you correct the proposal?",
+    "title_ru": "Заказчик считает, что ABAP Cloud означает перенос существующего приложения в SAP BTP ABAP environment. Как поправить предложение?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Placement & business boundaries",
+    "level": "Core"
+  },
+  {
+    "id": "CLOUD-03",
+    "title": "A developer proposes dynamic calls to an unreleased SAP class because static ABAP Cloud checks reject it. What do you do?",
+    "title_ru": "Разработчик предлагает динамически вызывать unreleased SAP-класс, поскольку статическая проверка ABAP Cloud это запрещает. Что делать?",
+    "topic": "ABAP Cloud architecture",
+    "section": "API selection & contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "CLOUD-04",
+    "title": "Two teams want independent releases but share pricing helpers and persistence types. How would you structure packages and software components?",
+    "title_ru": "Две команды хотят независимые выпуски, но используют общие расчёты цен и типы таблиц. Как разделить пакеты и программные компоненты?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Components & lifecycle",
+    "level": "Advanced"
+  },
+  {
+    "id": "CLOUD-05",
+    "title": "The same business capability is exposed through a local released API and a remote service. Which should an on-stack application consume?",
+    "title_ru": "Одна бизнес-возможность доступна через локальный released API и удалённый сервис. Что выбрать приложению on-stack?",
+    "topic": "ABAP Cloud architecture",
+    "section": "API selection & contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "CLOUD-06",
+    "title": "A CDS object compiles in the development system but fails after delivery to an older supported release. How would you prevent recurrence?",
+    "title_ru": "CDS активируется в системе разработки, но не работает после поставки на более старую поддерживаемую версию. Как избежать повторения?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Components & lifecycle",
+    "level": "Applied"
+  },
+  {
+    "id": "CLOUD-07",
+    "title": "Should a request, its approval history, and an external purchase order be one RAP business object?",
+    "title_ru": "Должны ли заявка, история согласований и внешний заказ на закупку входить в один RAP BO?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Placement & business boundaries",
+    "level": "Advanced"
+  },
+  {
+    "id": "CLOUD-08",
+    "title": "A partner wants one ABAP solution to serve several customers. What isolation questions must be answered before calling it multitenant?",
+    "title_ru": "Партнёр хочет одним ABAP-решением обслуживать несколько клиентов. Что проверить, прежде чем обещать multitenancy?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Isolation & identity",
+    "level": "Advanced"
+  },
+  {
+    "id": "CLOUD-09",
+    "title": "A business team requests a new field, a rule, and a custom app. How do you decide between configuration, key-user, and developer extensibility?",
+    "title_ru": "Бизнес просит новое поле, правило и собственное приложение. Как выбрать настройку стандарта, key-user или developer extensibility?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Placement & business boundaries",
+    "level": "Applied"
+  },
+  {
+    "id": "CLOUD-10",
+    "title": "Can you expose the same RAP projection to a Fiori UI and long-lived external consumers?",
+    "title_ru": "Можно ли использовать одну RAP projection для Fiori UI и внешних потребителей с долгим сроком поддержки?",
+    "topic": "ABAP Cloud architecture",
+    "section": "API selection & contracts",
+    "level": "Advanced"
+  },
+  {
+    "id": "CLOUD-11",
+    "title": "A released CDS view contains all required fields. Why might it still be unsuitable for implementing a business command?",
+    "title_ru": "Released CDS view содержит все нужные поля. Почему её может быть недостаточно для бизнес-операции?",
+    "topic": "ABAP Cloud architecture",
+    "section": "API selection & contracts",
+    "level": "Core"
+  },
+  {
+    "id": "CLOUD-12",
+    "title": "A large classic application cannot be replaced in one release. How would you introduce ABAP Cloud without creating two inconsistent applications?",
+    "title_ru": "Большое классическое приложение нельзя заменить за один выпуск. Как внедрять ABAP Cloud без двух несогласованных приложений?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Placement & business boundaries",
+    "level": "Advanced"
+  },
+  {
+    "id": "CLOUD-13",
+    "title": "A shared custom API is widely used but has no named owner. What would you change before accepting another dependency on it?",
+    "title_ru": "Общий собственный API широко используется, но не имеет владельца. Что изменить до добавления новой зависимости?",
+    "topic": "ABAP Cloud architecture",
+    "section": "API selection & contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "CLOUD-14",
+    "title": "A released BAdI exists, but it runs after the point where the requirement must reject a transaction. Is it still the right extension?",
+    "title_ru": "Есть released BAdI, но он выполняется позже момента, когда требование должно отклонять транзакцию. Подходит ли он?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Placement & business boundaries",
+    "level": "Applied"
+  },
+  {
+    "id": "CLOUD-15",
+    "title": "Your domain classes depend on Gateway messages, SQL row types, and HTTP clients. How would you improve the architecture without a wholesale rewrite?",
+    "title_ru": "Классы бизнес-логики зависят от сообщений Gateway, типов строк SQL и HTTP-клиентов. Как улучшить архитектуру без полного переписывания?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Components & lifecycle",
+    "level": "Advanced"
+  },
+  {
+    "id": "CLOUD-16",
+    "title": "A side-by-side service needs to act for users and also run scheduled reconciliation. Would you use one technical identity for both?",
+    "title_ru": "Сервис side-by-side выполняет пользовательские операции и плановую сверку. Стоит ли использовать одну техническую учётную запись?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Isolation & identity",
+    "level": "Advanced"
+  },
+  {
+    "id": "CLOUD-17",
+    "title": "A released dependency is deprecated but still works. How do you decide when and how to replace it?",
+    "title_ru": "Released API помечен deprecated, но работает. Когда и как его заменить?",
+    "topic": "ABAP Cloud architecture",
+    "section": "API selection & contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "CLOUD-18",
+    "title": "What would you require before approving a senior team's ABAP Cloud architecture for production?",
+    "title_ru": "Что проверить перед запуском решения ABAP Cloud в рабочей системе?",
+    "topic": "ABAP Cloud architecture",
+    "section": "Components & lifecycle",
+    "level": "Advanced"
+  },
+  {
+    "id": "CORE-01",
+    "title": "What is Clean Core in a practical ABAP answer?",
+    "title_ru": "Как практически объяснить Clean Core для ABAP?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Core"
+  },
+  {
+    "id": "CORE-02",
+    "title": "What are Clean Core levels A B C and D?",
+    "title_ru": "Что означают уровни Clean Core A, B, C и D?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Core"
+  },
+  {
+    "id": "CORE-03",
+    "title": "How do the levels map to ATC messages?",
+    "title_ru": "Как уровни Clean Core связаны с сообщениями ATC?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Applied"
+  },
+  {
+    "id": "CORE-04",
+    "title": "Why is a classic API Level B rather than Level A?",
+    "title_ru": "Почему классический API может иметь Level B, а не A?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Core"
+  },
+  {
+    "id": "CORE-05",
+    "title": "What does responsible Level C use look like?",
+    "title_ru": "Как ответственно использовать зависимость Level C?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Applied"
+  },
+  {
+    "id": "CORE-06",
+    "title": "What belongs to Level D and what would you do first?",
+    "title_ru": "Что относится к Level D и что исправлять сначала?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Applied"
+  },
+  {
+    "id": "CORE-07",
+    "title": "Are A through D the same as the old three tiers?",
+    "title_ru": "Совпадают ли уровни A–D с прежней моделью трёх tiers?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Core"
+  },
+  {
+    "id": "CORE-08",
+    "title": "Does wrapping an unreleased SAP API make it Level A?",
+    "title_ru": "Делает ли обёртка над unreleased SAP API решение Level A?",
+    "topic": "Clean Core & extensibility",
+    "section": "Released APIs & dependency chains",
+    "level": "Applied"
+  },
+  {
+    "id": "CORE-09",
+    "title": "How do public private and on-premise editions change the answer?",
+    "title_ru": "Как Public Edition, Private Edition и on-premise влияют на выбор?",
+    "topic": "Clean Core & extensibility",
+    "section": "Extension choices & API gaps",
+    "level": "Core"
+  },
+  {
+    "id": "CORE-10",
+    "title": "How do you choose key-user on-stack and side-by-side extensibility?",
+    "title_ru": "Как выбрать key-user, on-stack или side-by-side extensibility?",
+    "topic": "Clean Core & extensibility",
+    "section": "Extension choices & API gaps",
+    "level": "Applied"
+  },
+  {
+    "id": "CORE-11",
+    "title": "Why is side-by-side not automatically Clean Core?",
+    "title_ru": "Почему side-by-side не означает автоматически Clean Core?",
+    "topic": "Clean Core & extensibility",
+    "section": "Extension choices & API gaps",
+    "level": "Applied"
+  },
+  {
+    "id": "CORE-12",
+    "title": "What are release contracts C0 C1 and C2?",
+    "title_ru": "Что означают release contracts C0, C1 и C2?",
+    "topic": "Clean Core & extensibility",
+    "section": "Released APIs & dependency chains",
+    "level": "Core"
+  },
+  {
+    "id": "CORE-13",
+    "title": "Where do you find Classic API, Not Recommended and noAPI classifications, and how do you verify an API choice?",
+    "title_ru": "Где найти Classic API, Not Recommended и noAPI и как проверить выбор API?",
+    "topic": "Clean Core & extensibility",
+    "section": "Released APIs & dependency chains",
+    "level": "Applied"
+  },
+  {
+    "id": "CORE-14",
+    "title": "Can a solution using both A and B dependencies be called entirely A?",
+    "title_ru": "Можно ли назвать решение полностью A, если в нём есть зависимости A и B?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Applied"
+  },
+  {
+    "id": "CORE-15",
+    "title": "What if no released API covers the business requirement?",
+    "title_ru": "Что делать, если released API не покрывает требование?",
+    "topic": "Clean Core & extensibility",
+    "section": "Extension choices & API gaps",
+    "level": "Applied"
+  },
+  {
+    "id": "CORE-16",
+    "title": "What would your Clean Core governance pipeline contain?",
+    "title_ru": "Как включить Clean Core в проверки перед выпуском?",
+    "topic": "Clean Core & extensibility",
+    "section": "Exceptions & delivery governance",
+    "level": "Advanced"
+  },
+  {
+    "id": "CORE-17",
+    "title": "Is Clean ABAP the same thing as Clean Core?",
+    "title_ru": "Clean ABAP и Clean Core — одно и то же?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Core"
+  },
+  {
+    "id": "CORE-18",
+    "title": "How would you modernize a large custom-code portfolio?",
+    "title_ru": "Как модернизировать большой объём собственного кода?",
+    "topic": "Clean Core & extensibility",
+    "section": "Modernization & upgrade planning",
+    "level": "Advanced"
+  },
+  {
+    "id": "DELIV-01",
+    "title": "A pull request passes local linting and its ABAP sources are pushed with abapGit. The team calls the cloud feature deployed. What evidence and delivery steps are missing?",
+    "title_ru": "PR прошёл локальный lint, ABAP-исходники отправлены через abapGit. Достаточно ли назвать функцию развёрнутой?",
+    "topic": "Testing, delivery & operations",
+    "section": "Delivery, compatibility & release evidence",
+    "level": "Applied"
+  },
+  {
+    "id": "DEVCORE-01",
+    "title": "How do roles, authorization objects and AUTHORITY-CHECK work together?",
+    "title_ru": "Как связаны roles, authorization objects и AUTHORITY-CHECK?",
+    "topic": "Testing, delivery & operations",
+    "section": "Security & concurrency tests",
+    "level": "Core"
+  },
+  {
+    "id": "DEVCORE-02",
+    "title": "When are ABAP Shared Objects useful, and how do you access them safely?",
+    "title_ru": "Когда полезны ABAP Shared Objects и как безопасно с ними работать?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Language & values",
+    "level": "Applied"
+  },
+  {
+    "id": "DEVCORE-03",
+    "title": "How do you page through changed records without skipping equal timestamps?",
+    "title_ru": "Как читать изменённые записи страницами, не теряя одинаковые timestamp?",
+    "topic": "SQL & HANA performance",
+    "section": "Selection, joins & result semantics",
+    "level": "Applied"
+  },
+  {
+    "id": "DEVCORE-04",
+    "title": "When do setup, class_setup and teardown run in ABAP Unit?",
+    "title_ru": "Когда в ABAP Unit выполняются setup, class_setup и teardown?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Core"
+  },
+  {
+    "id": "DEVCORE-05",
+    "title": "How do logs, metrics and traces help explain a failing request?",
+    "title_ru": "Как logs, metrics и traces помогают разобраться в сбое запроса?",
+    "topic": "Testing, delivery & operations",
+    "section": "Diagnosis, performance & recovery",
+    "level": "Core"
+  },
+  {
+    "id": "GOV-01",
+    "title": "A project claims Level A because its frontend uses RAP. How would you assess the extension?",
+    "title_ru": "Проект заявляет Level A, потому что frontend использует RAP. Как оценить расширение?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Applied"
+  },
+  {
+    "id": "GOV-02",
+    "title": "An API is released with C1. A team assumes that means Clean Core Level C and permission to expose it remotely. How do you respond?",
+    "title_ru": "API имеет контракт C1. Команда считает это Clean Core Level C и разрешением удалённой публикации. Что ответить?",
+    "topic": "Clean Core & extensibility",
+    "section": "Released APIs & dependency chains",
+    "level": "Core"
+  },
+  {
+    "id": "GOV-03",
+    "title": "A team wraps an internal SAP function module and releases the wrapper. Has the technical debt disappeared?",
+    "title_ru": "Команда обернула внутренний функциональный модуль SAP и выпустила обёртку как released API. Исчез ли технический долг?",
+    "topic": "Clean Core & extensibility",
+    "section": "Released APIs & dependency chains",
+    "level": "Applied"
+  },
+  {
+    "id": "GOV-04",
+    "title": "An urgent release needs an ATC exemption for an internal dependency. What makes the exception governable?",
+    "title_ru": "Для срочного выпуска нужно исключение ATC из-за внутренней зависимости. Как сделать его управляемым?",
+    "topic": "Clean Core & extensibility",
+    "section": "Exceptions & delivery governance",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-05",
+    "title": "A Level B solution works in Private Edition. Can the same approval justify deploying it in Public Edition?",
+    "title_ru": "Решение Level B работает в Private Edition. Достаточно ли того же одобрения для Public Edition?",
+    "topic": "Clean Core & extensibility",
+    "section": "Extension choices & API gaps",
+    "level": "Applied"
+  },
+  {
+    "id": "GOV-06",
+    "title": "You have thousands of custom objects and a limited upgrade budget. How would you prioritize remediation?",
+    "title_ru": "Есть тысячи собственных объектов и ограниченный бюджет обновления. Как расставить приоритеты исправлений?",
+    "topic": "Clean Core & extensibility",
+    "section": "Modernization & upgrade planning",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-07",
+    "title": "No released API supports a required business operation. What would your escalation contain?",
+    "title_ru": "Released API не поддерживает нужную бизнес-операцию. Что включить в запрос поставщику?",
+    "topic": "Clean Core & extensibility",
+    "section": "Extension choices & API gaps",
+    "level": "Applied"
+  },
+  {
+    "id": "GOV-08",
+    "title": "The business asks to reproduce a heavily customized legacy process exactly. How do you challenge that without dismissing the requirement?",
+    "title_ru": "Бизнес просит точно воспроизвести сильно изменённый старый процесс. Как уважительно обсудить альтернативы?",
+    "topic": "Clean Core & extensibility",
+    "section": "Extension choices & API gaps",
+    "level": "Applied"
+  },
+  {
+    "id": "GOV-09",
+    "title": "Your team wants to release a custom API used by three other teams. What must be ready before setting its release state?",
+    "title_ru": "Собственный API используют три команды. Что подготовить до установки release state?",
+    "topic": "Clean Core & extensibility",
+    "section": "Released APIs & dependency chains",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-10",
+    "title": "The direct dependency scan is clean, but an upgrade still breaks the extension. What could the governance model be missing?",
+    "title_ru": "Проверка прямых зависимостей чистая, но обновление всё равно сломало расширение. Чего не хватает в контроле?",
+    "topic": "Clean Core & extensibility",
+    "section": "Released APIs & dependency chains",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-11",
+    "title": "How would you enforce Clean Core in delivery without blocking every legacy transport immediately?",
+    "title_ru": "Как контролировать Clean Core при поставке, не заблокировав сразу все транспортные запросы старого кода?",
+    "topic": "Clean Core & extensibility",
+    "section": "Exceptions & delivery governance",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-12",
+    "title": "A vendor upgrade changes an object used by an approved Level C extension. How do you organize the response?",
+    "title_ru": "Обновление поставщика изменило объект согласованного расширения Level C. Как организовать ответ?",
+    "topic": "Clean Core & extensibility",
+    "section": "Exceptions & delivery governance",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-13",
+    "title": "What would a credible two-year custom-code modernization roadmap look like?",
+    "title_ru": "Как выглядит реалистичный двухлетний план модернизации собственного кода?",
+    "topic": "Clean Core & extensibility",
+    "section": "Modernization & upgrade planning",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-14",
+    "title": "A classified classic API meets the need, while a released API covers only half the operation. Would you accept Level B?",
+    "title_ru": "API, отнесённый к classic, полностью решает задачу, а released API — только половину. Допустим ли Level B?",
+    "topic": "Clean Core & extensibility",
+    "section": "Extension choices & API gaps",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-15",
+    "title": "A required report uses an internal read object with no current replacement. Would you accept Level C, and under what conditions?",
+    "title_ru": "Нужный отчёт читает внутренний объект без доступной замены. Допустим ли Level C и при каких условиях?",
+    "topic": "Clean Core & extensibility",
+    "section": "Exceptions & delivery governance",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-16",
+    "title": "How would you assess a solution that uses a released CDS query, a classified classic BAPI, an internal class, and a modification?",
+    "title_ru": "Как оценить решение с released CDS query, classic BAPI, внутренним классом и модификацией?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Applied"
+  },
+  {
+    "id": "GOV-17",
+    "title": "The sponsor says Clean Core is a developer concern and rejects funding for integration monitoring and data cleanup. How would you negotiate?",
+    "title_ru": "Спонсор считает Clean Core делом разработчиков и не финансирует мониторинг интеграций и очистку данных. Как договориться?",
+    "topic": "Clean Core & extensibility",
+    "section": "Modernization & upgrade planning",
+    "level": "Advanced"
+  },
+  {
+    "id": "GOV-18",
+    "title": "An interview panel shows an A-D chart with ATC priorities. What would you clarify before treating it as a release gate?",
+    "title_ru": "На интервью показали схему A–D с приоритетами ATC. Что уточнить до её использования для допуска к выпуску?",
+    "topic": "Clean Core & extensibility",
+    "section": "Levels & ATC interpretation",
+    "level": "Applied"
+  },
+  {
+    "id": "HTTP-01",
+    "title": "What is the difference between HTTP, REST, OData and a payload format?",
+    "title_ru": "Чем отличаются HTTP, REST, OData и формат данных?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Core"
+  },
+  {
+    "id": "HTTP-02",
+    "title": "What is inside an HTTP request and response?",
+    "title_ru": "Из чего состоят HTTP-запрос и ответ?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Core"
+  },
+  {
+    "id": "HTTP-03",
+    "title": "How do GET, POST, PUT, PATCH and DELETE differ?",
+    "title_ru": "Чем отличаются GET, POST, PUT, PATCH и DELETE?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Core"
+  },
+  {
+    "id": "HTTP-04",
+    "title": "What do safe and idempotent mean, and how do they affect retries?",
+    "title_ru": "Что означают safe и idempotent и как это связано с повторными попытками?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Applied"
+  },
+  {
+    "id": "HTTP-05",
+    "title": "Which HTTP statuses should an ABAP API developer explain?",
+    "title_ru": "Какие HTTP-коды должен уметь объяснить разработчик ABAP API?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Core"
+  },
+  {
+    "id": "HTTP-06",
+    "title": "How do Accept and Content-Type differ?",
+    "title_ru": "Чем отличаются Accept и Content-Type?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Core"
+  },
+  {
+    "id": "HTTP-07",
+    "title": "What must you preserve when mapping JSON to ABAP?",
+    "title_ru": "Что важно сохранить при преобразовании JSON в ABAP?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Applied"
+  },
+  {
+    "id": "HTTP-08",
+    "title": "What XML concepts matter in an integration interview?",
+    "title_ru": "Какие понятия XML важны на интервью по интеграции?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Core"
+  },
+  {
+    "id": "HTTP-09",
+    "title": "How do you choose ABAP JSON and XML processing tools?",
+    "title_ru": "Как выбрать средства обработки JSON и XML в ABAP?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Applied"
+  },
+  {
+    "id": "HTTP-10",
+    "title": "How would you implement and troubleshoot an outbound HTTP call in ABAP?",
+    "title_ru": "Как реализовать и диагностировать исходящий HTTP-вызов в ABAP?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Applied"
+  },
+  {
+    "id": "HTTP-11",
+    "title": "How do authentication, authorization, CORS and CSRF differ?",
+    "title_ru": "Чем отличаются authentication, authorization, CORS и CSRF?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Core"
+  },
+  {
+    "id": "HTTP-12",
+    "title": "How would you test an HTTP integration contract?",
+    "title_ru": "Как протестировать контракт HTTP-интеграции?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Applied"
+  },
+  {
+    "id": "HTTP-13",
+    "title": "How do you send a GET request with released ABAP HTTP APIs?",
+    "title_ru": "Как отправить GET через released HTTP API в ABAP?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Applied"
+  },
+  {
+    "id": "HTTP-14",
+    "title": "How do you change remote data safely with PATCH or POST from ABAP?",
+    "title_ru": "Как безопасно изменить данные на сервере через PATCH или POST из ABAP?",
+    "topic": "Protocols & integration",
+    "section": "HTTP, REST & formats",
+    "level": "Advanced"
+  },
+  {
+    "id": "INTF-01",
+    "title": "What does an IDoc contain, and how do message type, basic type, and extension differ?",
+    "title_ru": "Из чего состоит IDoc и чем отличаются message type, basic type и extension?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Core"
+  },
+  {
+    "id": "INTF-02",
+    "title": "What do ALE distribution models, partner profiles, ports, and process codes do?",
+    "title_ru": "Для чего нужны ALE distribution model, partner profile, port и process code?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Core"
+  },
+  {
+    "id": "INTF-03",
+    "title": "Walk through outbound and inbound IDoc processing.",
+    "title_ru": "Опишите исходящую и входящую обработку IDoc.",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Core"
+  },
+  {
+    "id": "INTF-04",
+    "title": "How do you interpret common IDoc statuses without overstating success?",
+    "title_ru": "Как понимать распространённые IDoc-статусы, не приписывая им лишних гарантий?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Core"
+  },
+  {
+    "id": "INTF-05",
+    "title": "How would you investigate an IDoc that is missing or has failed?",
+    "title_ru": "Как расследовать отсутствие или ошибку IDoc?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Applied"
+  },
+  {
+    "id": "INTF-06",
+    "title": "How do you reprocess an IDoc without creating duplicate business documents?",
+    "title_ru": "Как повторно обработать IDoc без дублирования бизнес-документов?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Applied"
+  },
+  {
+    "id": "INTF-07",
+    "title": "What is SAP Application Interface Framework, and what is it not?",
+    "title_ru": "Что такое SAP Application Interface Framework и чем он не является?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Core"
+  },
+  {
+    "id": "INTF-08",
+    "title": "How do AIF structure mappings, value mappings, checks, and actions work together?",
+    "title_ru": "Как связаны AIF structure mapping, value mapping, checks и actions?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Applied"
+  },
+  {
+    "id": "INTF-09",
+    "title": "How would you configure useful and secure AIF monitoring?",
+    "title_ru": "Как настроить полезный и безопасный AIF monitoring?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Applied"
+  },
+  {
+    "id": "INTF-10",
+    "title": "What must you establish before resubmitting or editing a message in AIF?",
+    "title_ru": "Что выяснить перед повторной отправкой или редактированием сообщения в AIF?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Advanced"
+  },
+  {
+    "id": "INTF-11",
+    "title": "When would you use OData, IDoc, or AIF?",
+    "title_ru": "Когда выбирать OData, IDoc или AIF?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Applied"
+  },
+  {
+    "id": "INTF-12",
+    "title": "What security and end-to-end tests would you require for an IDoc or AIF interface?",
+    "title_ru": "Какие проверки безопасности и end-to-end нужны IDoc- или AIF-интерфейсу?",
+    "topic": "Protocols & integration",
+    "section": "IDoc & AIF",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-01",
+    "title": "A new consumption entity exposes orders outside the user's sales organization. The base CDS has DCL. What do you investigate?",
+    "title_ru": "Новая сущность потребления показывает заказы чужой сбытовой организации, хотя базовый CDS имеет DCL. Что проверить?",
+    "topic": "CDS modeling & security",
+    "section": "DCL & authorization boundaries",
+    "level": "Applied"
+  },
+  {
+    "id": "MODEL-02",
+    "title": "An approver may update organization A. Can an update move an order from A to B using only existing-instance authorization?",
+    "title_ru": "Пользователь может менять заказы организации A. Достаточно ли проверки прав на текущий экземпляр для переноса заказа из A в B?",
+    "topic": "CDS modeling & security",
+    "section": "DCL & authorization boundaries",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-03",
+    "title": "A custom query returns only authorized rows but an unrestricted total count. Is it secure?",
+    "title_ru": "Custom query возвращает только разрешённые строки, но общий count без ограничений. Это безопасно?",
+    "topic": "CDS modeling & security",
+    "section": "Custom queries & virtual elements",
+    "level": "Applied"
+  },
+  {
+    "id": "MODEL-04",
+    "title": "A query-provider filter cannot be converted to simple ranges. A developer catches the exception and returns everything. What is the correction?",
+    "title_ru": "Фильтр query provider нельзя преобразовать в простые ranges. Разработчик подавил исключение и вернул всё. Как исправить?",
+    "topic": "CDS modeling & security",
+    "section": "Custom queries & virtual elements",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-05",
+    "title": "A paged custom entity repeats some rows after an insertion. How would you make the contract predictable?",
+    "title_ru": "Custom entity с постраничным чтением повторяет строки после вставки. Как сделать поведение предсказуемым?",
+    "topic": "CDS modeling & security",
+    "section": "Custom queries & virtual elements",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-06",
+    "title": "Adding a language-dependent text association doubles order totals. Would DISTINCT be a good fix?",
+    "title_ru": "Association к языковым текстам удвоила суммы заказов. Хорошее ли решение DISTINCT?",
+    "topic": "CDS modeling & security",
+    "section": "Entities, keys & relationships",
+    "level": "Applied"
+  },
+  {
+    "id": "MODEL-07",
+    "title": "A CDS report sums 100 EUR and 100 USD into 200. What should the model and service do?",
+    "title_ru": "CDS-отчёт сложил 100 EUR и 100 USD в 200. Что должны делать модель и сервис?",
+    "topic": "CDS modeling & security",
+    "section": "Analytics, amounts & aggregation",
+    "level": "Applied"
+  },
+  {
+    "id": "MODEL-08",
+    "title": "A transactional projection needs a calculated field that its provider contract does not permit. How do you redesign it?",
+    "title_ru": "Transactional projection нужно вычисляемое поле, которое не разрешает её provider contract. Как изменить дизайн?",
+    "topic": "CDS modeling & security",
+    "section": "Projections, annotations & evolution",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-09",
+    "title": "The business wants to sort a million-row list by a virtual element computed through a remote call. What would you propose?",
+    "title_ru": "Бизнес хочет сортировать миллион строк по virtual element, вычисляемому удалённым вызовом. Что предложить?",
+    "topic": "CDS modeling & security",
+    "section": "Custom queries & virtual elements",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-10",
+    "title": "Two rows in a service share the declared CDS key after a join. Why is this more than a display issue?",
+    "title_ru": "После join две строки сервиса имеют одинаковый объявленный CDS key. Почему это не просто ошибка отображения?",
+    "topic": "CDS modeling & security",
+    "section": "Entities, keys & relationships",
+    "level": "Applied"
+  },
+  {
+    "id": "MODEL-11",
+    "title": "A value help reveals customer names that the order list hides. Where should the fix live?",
+    "title_ru": "Value help показывает имена клиентов, скрытые в списке заказов. Где исправлять?",
+    "topic": "CDS modeling & security",
+    "section": "DCL & authorization boundaries",
+    "level": "Applied"
+  },
+  {
+    "id": "MODEL-12",
+    "title": "A batch job asks to use privileged EML because normal authorization rejects it. How do you evaluate the request?",
+    "title_ru": "Фоновое задание просит privileged EML, потому что обычная проверка полномочий отказывает. Как оценить запрос?",
+    "topic": "CDS modeling & security",
+    "section": "DCL & authorization boundaries",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-13",
+    "title": "A developer uses IN LOCAL MODE in a helper to avoid feature checks. What makes the helper safe or unsafe?",
+    "title_ru": "Вспомогательный метод использует IN LOCAL MODE для обхода feature checks. Что делает его безопасным или опасным?",
+    "topic": "CDS modeling & security",
+    "section": "DCL & authorization boundaries",
+    "level": "Applied"
+  },
+  {
+    "id": "MODEL-14",
+    "title": "A CDS unit test passes, but the same entity leaks data for a restricted user. What may the test be missing?",
+    "title_ru": "CDS Unit Test проходит, но пользователь с ограниченными правами видит лишние данные. Чего может не быть в тесте?",
+    "topic": "CDS modeling & security",
+    "section": "DCL & authorization boundaries",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-15",
+    "title": "An integration user can access all tenants or clients through a custom read provider. What boundaries must be reviewed?",
+    "title_ru": "Интеграционный пользователь видит все tenant и манданты через собственный read provider. Какие границы проверить?",
+    "topic": "CDS modeling & security",
+    "section": "DCL & authorization boundaries",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-16",
+    "title": "A projection hides an operation, but another consumer can still call the base BO. Is hiding sufficient?",
+    "title_ru": "Projection скрывает операцию, но другой потребитель вызывает базовый BO. Достаточно ли скрытия?",
+    "topic": "CDS modeling & security",
+    "section": "DCL & authorization boundaries",
+    "level": "Applied"
+  },
+  {
+    "id": "MODEL-17",
+    "title": "A released entity gains a new field that is expensive and sensitive. Is an additive change automatically safe?",
+    "title_ru": "В released-сущность добавляют дорогое и чувствительное поле. Безопасно ли любое добавление?",
+    "topic": "CDS modeling & security",
+    "section": "Projections, annotations & evolution",
+    "level": "Advanced"
+  },
+  {
+    "id": "MODEL-18",
+    "title": "An analytical requirement is added to a transactional BO. Would you put every aggregate into its projection?",
+    "title_ru": "К транзакционному BO добавили аналитику. Стоит ли поместить все агрегаты в его projection?",
+    "topic": "CDS modeling & security",
+    "section": "Analytics, amounts & aggregation",
+    "level": "Advanced"
+  },
+  {
+    "id": "ODATA-01",
+    "title": "OData V2 vs V4: what really changes, and what are the benefits of each?",
+    "title_ru": "OData V2 и V4: в чём реальная разница и преимущества каждой версии?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Core"
+  },
+  {
+    "id": "ODATA-02",
+    "title": "What does $metadata describe?",
+    "title_ru": "Что описывает $metadata?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Core"
+  },
+  {
+    "id": "ODATA-03",
+    "title": "What are the main query options?",
+    "title_ru": "Какие основные query options есть в OData?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Core"
+  },
+  {
+    "id": "ODATA-04",
+    "title": "How do paging and total count work in V2 and V4?",
+    "title_ru": "Как работают paging и total count в V2 и V4?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Applied"
+  },
+  {
+    "id": "ODATA-05",
+    "title": "What is the difference between actions and functions?",
+    "title_ru": "Чем actions отличаются от functions?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Core"
+  },
+  {
+    "id": "ODATA-06",
+    "title": "How do ETags prevent lost updates?",
+    "title_ru": "Как ETags предотвращают потерю изменений?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Applied"
+  },
+  {
+    "id": "ODATA-07",
+    "title": "Is a batch request one database transaction?",
+    "title_ru": "Является ли batch request одной транзакцией базы данных?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Applied"
+  },
+  {
+    "id": "ODATA-08",
+    "title": "What are MPC_EXT and DPC_EXT in classic Gateway?",
+    "title_ru": "Что такое MPC_EXT и DPC_EXT в classic Gateway?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Core"
+  },
+  {
+    "id": "ODATA-09",
+    "title": "How do authentication authorization and CSRF differ?",
+    "title_ru": "Чем отличаются authentication, authorization и CSRF?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Core"
+  },
+  {
+    "id": "ODATA-10",
+    "title": "How do you design dates media and errors?",
+    "title_ru": "Как проектировать даты, файлы и ошибки в OData?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Applied"
+  },
+  {
+    "id": "ODATA-11",
+    "title": "How do you troubleshoot a slow or failing Fiori request?",
+    "title_ru": "Как исследовать медленный или ошибочный запрос Fiori?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Applied"
+  },
+  {
+    "id": "ODATA-12",
+    "title": "How do you evolve an existing API safely?",
+    "title_ru": "Как безопасно развивать существующий API?",
+    "topic": "Protocols & integration",
+    "section": "OData & Fiori",
+    "level": "Advanced"
+  },
+  {
+    "id": "OO-01",
+    "title": "Explain abstraction, encapsulation, inheritance, and polymorphism with one example.",
+    "title_ru": "Объясните абстракцию, инкапсуляцию, наследование и полиморфизм на одном примере.",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Core"
+  },
+  {
+    "id": "OO-02",
+    "title": "What can an ABAP interface contain, and when would you use one?",
+    "title_ru": "Что может содержать интерфейс ABAP и когда он нужен?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Core"
+  },
+  {
+    "id": "OO-03",
+    "title": "How do ABSTRACT and FINAL affect classes and methods?",
+    "title_ru": "Как ABSTRACT и FINAL влияют на классы и методы?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Core"
+  },
+  {
+    "id": "OO-04",
+    "title": "How do upcasting and downcasting work in ABAP Objects?",
+    "title_ru": "Как работают приведение к общему типу (upcasting) и к конкретному типу (downcasting) в ABAP Objects?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Core"
+  },
+  {
+    "id": "OO-05",
+    "title": "What is the difference between instance and static methods and constructors?",
+    "title_ru": "Чем отличаются методы экземпляра и статические методы, конструктор экземпляра и конструктор класса?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Core"
+  },
+  {
+    "id": "OO-06",
+    "title": "When do you prefer composition over inheritance?",
+    "title_ru": "Когда лучше композиция, а когда наследование?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OO-07",
+    "title": "How do dependency injection and dependency inversion differ?",
+    "title_ru": "Чем dependency injection отличается от dependency inversion?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OO-08",
+    "title": "How would you apply SOLID without overengineering?",
+    "title_ru": "Как применять SOLID без лишнего усложнения?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OO-09",
+    "title": "What is a Factory, when do you use it, and how does it work with Strategy?",
+    "title_ru": "Что такое Factory, когда она нужна и как работает вместе со Strategy?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Core"
+  },
+  {
+    "id": "OO-10",
+    "title": "What is a Facade, when is it useful, and how does it differ from Adapter?",
+    "title_ru": "Что такое Facade, когда он полезен и чем отличается от Adapter?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Core"
+  },
+  {
+    "id": "OO-11",
+    "title": "What is Singleton in ABAP, how do you implement it, and when would you use it?",
+    "title_ru": "Что такое Singleton в ABAP, как его реализовать и когда использовать?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Core"
+  },
+  {
+    "id": "OO-12",
+    "title": "How do ABAP OO events differ from durable business events?",
+    "title_ru": "Чем события ABAP OO отличаются от надёжно доставляемых бизнес-событий?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "OO-13",
+    "title": "What would you change first in a difficult legacy ABAP method?",
+    "title_ru": "Что сначала изменить в сложном старом методе ABAP?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OO-14",
+    "title": "How do you make an OO design testable, and what should ABAP Unit assert?",
+    "title_ru": "Как сделать объектно-ориентированное решение тестируемым и что должен проверять ABAP Unit?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OO-15",
+    "title": "How does MVC separate responsibilities?",
+    "title_ru": "Как MVC разделяет обязанности?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Core"
+  },
+  {
+    "id": "OO-16",
+    "title": "Singleton, Factory or Facade: how do you choose with a simple example?",
+    "title_ru": "Singleton, Factory или Facade: как выбрать на простом примере?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Core"
+  },
+  {
+    "id": "OO-17",
+    "title": "Two NEW calls create two objects. How often do constructor and class_constructor run, and in what order?",
+    "title_ru": "Два вызова NEW создают два объекта. Сколько раз выполняются constructor и class_constructor и в каком порядке?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-01",
+    "title": "A method named reserve returns a reservation ID. Which promises must be explicit beyond its parameter types?",
+    "title_ru": "Метод reserve возвращает ID резервирования. Что нужно определить помимо типов параметров?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-02",
+    "title": "A new price-provider implementation rejects quantities below ten although the interface accepts any positive quantity. Is it a valid substitute?",
+    "title_ru": "Новый поставщик цены отклоняет количество меньше десяти, хотя интерфейс разрешает любое положительное. Это корректная замена?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-03",
+    "title": "Two unrelated services share a capability and some validation code. Should their callers depend on an abstract superclass?",
+    "title_ru": "Два несвязанных сервиса имеют общую возможность и часть проверок. Должны ли потребители зависеть от абстрактного суперкласса?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-04",
+    "title": "A subclass needs a different implementation and an extra mandatory input for an inherited method. Can REDEFINITION add it?",
+    "title_ru": "Подклассу нужен новый обязательный параметр унаследованного метода. Можно добавить его через REDEFINITION?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-05",
+    "title": "A local test class needs access to private state. What does granting friendship expose, and what does it not imply?",
+    "title_ru": "Локальному тестовому классу нужно закрытое состояние. Что даёт friendship и чего она не означает?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-06",
+    "title": "Two references point to one resource-owning object. Does clearing one reference close the resource or destroy the object?",
+    "title_ru": "Две ссылки ведут к объекту, владеющему ресурсом. CLEAR одной закроет ресурс или уничтожит объект?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-07",
+    "title": "An object can be created with a missing repository and fails much later on its first business call. What would you change?",
+    "title_ru": "Объект создаётся без обязательного репозитория и падает намного позже. Что изменить?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-08",
+    "title": "A test passes alone but fails after another test changes CLASS-DATA. Why does NEW not reliably isolate it?",
+    "title_ru": "Тест проходит отдельно, но падает после изменения CLASS-DATA другим тестом. Почему NEW не изолирует его?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-09",
+    "title": "A repository raises a low-level exception. Should a business service catch CX_ROOT and return an empty result?",
+    "title_ru": "Репозиторий вызвал техническое исключение. Стоит ли перехватить CX_ROOT и вернуть пустой результат?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-10",
+    "title": "A getter returns a reference to a mutable internal collection. Has private visibility protected the object's invariants?",
+    "title_ru": "Метод чтения возвращает ссылку на изменяемую внутреннюю коллекцию. Защищает ли PRIVATE инварианты?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OODEEP-11",
+    "title": "A widely used provider interface needs an optional new capability. How do you avoid forcing unrelated implementations into fake behavior?",
+    "title_ru": "Широко используемому интерфейсу нужна необязательная новая возможность. Как не заставить все реализации имитировать её?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Advanced"
+  },
+  {
+    "id": "OODEEP-12",
+    "title": "An OO unit test mocks calculate_total and then asserts the mocked total. What behavior has it proved?",
+    "title_ru": "Модульный тест подменяет calculate_total и проверяет подставленный итог. Что он доказал?",
+    "topic": "ABAP, OO & patterns",
+    "section": "OO contracts",
+    "level": "Applied"
+  },
+  {
+    "id": "OPS-01",
+    "title": "How would you test a Submit action without replacing the business object you are supposed to verify?",
+    "title_ru": "Как протестировать action Submit, не подменив сам проверяемый BO?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Applied"
+  },
+  {
+    "id": "OPS-02",
+    "title": "When would SQL doubles, CDS doubles and RAP BO doubles give misleading confidence?",
+    "title_ru": "Когда SQL doubles, CDS doubles и RAP BO doubles дают ложную уверенность?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Applied"
+  },
+  {
+    "id": "OPS-03",
+    "title": "A bulk EML action processes ten requests and rejects two. What should its test assert?",
+    "title_ru": "Массовая EML action обрабатывает десять запросов и отклоняет два. Что проверяет тест?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Applied"
+  },
+  {
+    "id": "OPS-04",
+    "title": "A draft test passes when run alone but fails after another test. What would you inspect?",
+    "title_ru": "Тест draft проходит отдельно, но падает после другого теста. Что искать?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Applied"
+  },
+  {
+    "id": "OPS-05",
+    "title": "How do you prove optimistic concurrency rather than merely calling the same update twice?",
+    "title_ru": "Как доказать оптимистическую защиту от конкурирующих изменений, а не просто дважды вызвать update?",
+    "topic": "Testing, delivery & operations",
+    "section": "Security & concurrency tests",
+    "level": "Advanced"
+  },
+  {
+    "id": "OPS-06",
+    "title": "Fiori still displays an old total after a successful action. How do you separate UI refresh from backend correctness?",
+    "title_ru": "Fiori показывает старый итог после успешной action. Как отделить обновление UI от ошибки backend?",
+    "topic": "Testing, delivery & operations",
+    "section": "Diagnosis, performance & recovery",
+    "level": "Applied"
+  },
+  {
+    "id": "OPS-07",
+    "title": "A RAP list becomes slow after enabling count and expanding children. What do you measure first?",
+    "title_ru": "Список RAP замедлился после добавления count и expand дочерних записей. Что измерить первым?",
+    "topic": "Testing, delivery & operations",
+    "section": "Diagnosis, performance & recovery",
+    "level": "Advanced"
+  },
+  {
+    "id": "OPS-08",
+    "title": "A custom entity calls a remote API once for every returned row. How would you remove the N+1 pattern?",
+    "title_ru": "Custom entity вызывает удалённый API для каждой строки. Как убрать N+1?",
+    "topic": "Testing, delivery & operations",
+    "section": "Diagnosis, performance & recovery",
+    "level": "Advanced"
+  },
+  {
+    "id": "OPS-09",
+    "title": "A service works in development but fails after transport. What evidence should the handoff have included?",
+    "title_ru": "Сервис работает в системе разработки, но не работает после переноса. Что должна была содержать инструкция поставки?",
+    "topic": "Testing, delivery & operations",
+    "section": "Delivery, compatibility & release evidence",
+    "level": "Applied"
+  },
+  {
+    "id": "OPS-10",
+    "title": "How would you evolve a released RAP service when an action needs a new mandatory input?",
+    "title_ru": "Как изменить released RAP service, если action нужен новый обязательный параметр?",
+    "topic": "Testing, delivery & operations",
+    "section": "Delivery, compatibility & release evidence",
+    "level": "Advanced"
+  },
+  {
+    "id": "OPS-11",
+    "title": "A remote approval succeeded, but the RAP caller timed out. How should an operator recover?",
+    "title_ru": "Удалённое согласование прошло, но RAP-потребитель получил тайм-аут. Как восстанавливать?",
+    "topic": "Testing, delivery & operations",
+    "section": "Diagnosis, performance & recovery",
+    "level": "Advanced"
+  },
+  {
+    "id": "OPS-12",
+    "title": "A failed save leaves no business record, but support still needs diagnostics. How would you log it safely?",
+    "title_ru": "Неудачное сохранение не оставило бизнес-записи, но поддержке нужна диагностика. Как безопасно вести журнал?",
+    "topic": "Testing, delivery & operations",
+    "section": "Diagnosis, performance & recovery",
+    "level": "Advanced"
+  },
+  {
+    "id": "OPS-13",
+    "title": "A production incident starts after a release. How do you contain it without making the data worse?",
+    "title_ru": "После выпуска возник сбой в рабочей системе. Как остановить ущерб, не ухудшив данные?",
+    "topic": "Testing, delivery & operations",
+    "section": "Diagnosis, performance & recovery",
+    "level": "Advanced"
+  },
+  {
+    "id": "OPS-14",
+    "title": "What belongs in a RAP release gate beyond a passing ATC run?",
+    "title_ru": "Что нужно для допуска RAP-изменения к выпуску кроме успешного ATC?",
+    "topic": "Testing, delivery & operations",
+    "section": "Delivery, compatibility & release evidence",
+    "level": "Applied"
+  },
+  {
+    "id": "OPS-15",
+    "title": "A team advertises 95% coverage while never asserting FAILED or persisted state. How would you improve it?",
+    "title_ru": "Команда заявляет 95% покрытия, но не проверяет FAILED и сохранённое состояние. Как улучшить тесты?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Applied"
+  },
+  {
+    "id": "OPS-16",
+    "title": "How would you prepare an extension for a platform upgrade?",
+    "title_ru": "Как подготовить расширение к обновлению платформы?",
+    "topic": "Testing, delivery & operations",
+    "section": "Delivery, compatibility & release evidence",
+    "level": "Advanced"
+  },
+  {
+    "id": "OPS-17",
+    "title": "A cloud job processes 500,000 records and times out. How would you redesign it?",
+    "title_ru": "Облачное фоновое задание обрабатывает 500 000 записей и не укладывается в тайм-аут. Как переделать?",
+    "topic": "Testing, delivery & operations",
+    "section": "Diagnosis, performance & recovery",
+    "level": "Advanced"
+  },
+  {
+    "id": "OPS-18",
+    "title": "How would you communicate senior readiness when you can review code locally but cannot run SAP checks?",
+    "title_ru": "Как описать готовность решения, если доступно только ревью локального кода, а SAP-проверки ещё не запускались?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Core"
+  },
+  {
+    "id": "PAT-01",
+    "title": "Approval rules vary by country, while the application workflow should remain stable. Strategy or Template Method?",
+    "title_ru": "Правила согласования зависят от страны, а процесс должен оставаться стабильным. Strategy или Template Method?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "PAT-02",
+    "title": "A posting integration needs matching serializer and sender implementations for each provider. Is one static factory sufficient?",
+    "title_ru": "Для каждого внешнего поставщика нужны совместимые сериализатор и отправитель. Достаточно статической фабрики?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Advanced"
+  },
+  {
+    "id": "PAT-03",
+    "title": "A legacy posting API has awkward parameters and a three-step prepare/check/post sequence. Would you build an Adapter, a Facade, or both?",
+    "title_ru": "Старый API имеет неудобные параметры и шаги prepare/check/post. Нужны Adapter, Facade или оба?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "PAT-04",
+    "title": "You want timing, diagnostic logging and retries around an outbound service. Would stacked Decorators be safe?",
+    "title_ru": "Для внешнего сервиса нужны измерение времени, журналирование и повторные попытки. Безопасна ли цепочка Decorator?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Advanced"
+  },
+  {
+    "id": "PAT-05",
+    "title": "Three handlers can route a request to an approver. The first matching rule should win. How would you implement and test Chain of Responsibility?",
+    "title_ru": "Три обработчика выбирают согласующего; должно победить первое совпавшее правило. Как применить Chain of Responsibility?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "PAT-06",
+    "title": "A local ABAP event updates an ALV, and the team proposes another handler to start an external workflow. What boundary has changed?",
+    "title_ru": "Локальное событие ABAP обновляет ALV, а новый обработчик должен запускать внешний workflow. Какая граница изменилась?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "PAT-07",
+    "title": "A command object represents Submit and can be queued or retried. Does using Command make execution idempotent or undoable?",
+    "title_ru": "Command представляет Submit и может попасть в очередь или выполняться повторно. Даёт ли паттерн идемпотентность и отмену?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Advanced"
+  },
+  {
+    "id": "PAT-08",
+    "title": "A repository interface improves testability, but its RAP implementation reads managed persistence directly. What can go wrong?",
+    "title_ru": "Интерфейс Repository упрощает тесты, но его RAP-реализация читает managed-таблицы напрямую. Что может пойти не так?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "PAT-09",
+    "title": "A singleton caches the current approver and makes tests pass alone but fail as a suite. How do you redesign its lifetime?",
+    "title_ru": "Singleton кеширует текущего согласующего; тесты проходят отдельно, но падают вместе. Как изменить срок жизни?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "PAT-10",
+    "title": "A service obtains every dependency from a global factory inside its methods. How would you introduce dependency injection without building a framework?",
+    "title_ru": "Сервис получает все зависимости из глобальной фабрики внутри методов. Как добавить внедрение зависимостей без отдельного фреймворка?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "PAT-11",
+    "title": "A small report has one stable calculation. A reviewer requests Strategy, Abstract Factory and Repository 'for clean architecture'. How do you respond?",
+    "title_ru": "В небольшом отчёте один стабильный расчёт. Ревьюер просит Strategy, Abstract Factory и Repository ради чистой архитектуры. Что ответить?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "PAT-12",
+    "title": "A factory selects country approval Strategies from configuration. How do you keep that combination safe, explainable and testable?",
+    "title_ru": "Factory выбирает стратегии согласования по стране из настройки. Как сделать выбор безопасным и объяснимым?",
+    "topic": "ABAP, OO & patterns",
+    "section": "Patterns",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-01",
+    "title": "What are the building blocks of a RAP application?",
+    "title_ru": "Из каких частей состоит RAP-приложение?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Core"
+  },
+  {
+    "id": "RAP-02",
+    "title": "How do you choose managed versus unmanaged RAP?",
+    "title_ru": "Как выбрать managed или unmanaged RAP?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-03",
+    "title": "What is the transactional buffer?",
+    "title_ru": "Что такое transactional buffer?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Core"
+  },
+  {
+    "id": "RAP-04",
+    "title": "Where may COMMIT ENTITIES be called?",
+    "title_ru": "Где разрешено вызывать COMMIT ENTITIES?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-05",
+    "title": "What are the steps of the RAP save sequence, and where is the point of no return?",
+    "title_ru": "Каковы шаги RAP save sequence и где находится point of no return?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-06",
+    "title": "Determination validation action or precheck?",
+    "title_ru": "Когда использовать determination, validation, action или precheck?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Core"
+  },
+  {
+    "id": "RAP-07",
+    "title": "How do FAILED REPORTED and MAPPED differ?",
+    "title_ru": "Чем отличаются FAILED, REPORTED и MAPPED?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-08",
+    "title": "What is EML and when do you use it instead of SQL?",
+    "title_ru": "Что такое EML и когда использовать его вместо SQL?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Core"
+  },
+  {
+    "id": "RAP-09",
+    "title": "What does IN LOCAL MODE mean?",
+    "title_ru": "Что означает IN LOCAL MODE?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-10",
+    "title": "What do %cid %cid_ref %tky and %pid mean?",
+    "title_ru": "Что означают %cid, %cid_ref, %tky и %pid?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-11",
+    "title": "Early numbering versus late numbering?",
+    "title_ru": "Чем early numbering отличается от late numbering?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-12",
+    "title": "What problem does draft solve?",
+    "title_ru": "Какую проблему решает draft?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Core"
+  },
+  {
+    "id": "RAP-13",
+    "title": "Can you rely on determination and validation order?",
+    "title_ru": "Можно ли полагаться на порядок determinations и validations?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-14",
+    "title": "How does persistent field mapping work?",
+    "title_ru": "Как работает persistent field mapping?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Core"
+  },
+  {
+    "id": "RAP-15",
+    "title": "Can you call a BAPI from RAP, and what happens if it executes COMMIT?",
+    "title_ru": "Можно ли вызвать BAPI из RAP и что будет, если он выполнит COMMIT?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-16",
+    "title": "How do you group a multi-select Fiori action into one changeset with InvocationGrouping?",
+    "title_ru": "Как объединить Fiori action для нескольких выбранных строк в один changeset через InvocationGrouping?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-17",
+    "title": "Do BRFplus, bgPF or bgRFC make an internally committing BAPI safe in RAP?",
+    "title_ru": "Делают ли BRFplus, bgPF или bgRFC безопасным BAPI с внутренним COMMIT в RAP?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Advanced"
+  },
+  {
+    "id": "RAP-18",
+    "title": "How do you enable and use create, update, and delete in managed RAP?",
+    "title_ru": "Как включить и использовать create, update и delete в managed RAP?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Core"
+  },
+  {
+    "id": "RAP-19",
+    "title": "How do an order and its items form one managed RAP business object?",
+    "title_ru": "Как заказ и его позиции образуют один managed RAP business object?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Core"
+  },
+  {
+    "id": "RAP-20",
+    "title": "Create or an action exists in the BO but is missing in the service. What do you check?",
+    "title_ru": "Create или action есть в BO, но отсутствует в сервисе. Что проверить?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-21",
+    "title": "How do you read an order's items with EML, and what do RESULT and LINK contain?",
+    "title_ru": "Как прочитать позиции заказа через EML и что содержат RESULT и LINK?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-22",
+    "title": "Why does EML need derived types and %control instead of a database-table row?",
+    "title_ru": "Зачем EML нужны derived types и %control вместо строки таблицы базы данных?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Core"
+  },
+  {
+    "id": "RAP-23",
+    "title": "What must change when a managed RAP BO becomes draft-enabled?",
+    "title_ru": "Что нужно изменить, чтобы managed RAP BO поддерживал draft?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Applied"
+  },
+  {
+    "id": "RAP-24",
+    "title": "What is a determine action, and how does it differ from a determination or ordinary action?",
+    "title_ru": "Что такое determine action и чем она отличается от determination и обычной action?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Applied"
+  },
+  {
+    "id": "RFC-01",
+    "title": "How does a function module differ from an ABAP method?",
+    "title_ru": "Чем function module отличается от метода ABAP?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Core"
+  },
+  {
+    "id": "RFC-02",
+    "title": "How do synchronous, asynchronous, transactional, queued, and background RFC differ?",
+    "title_ru": "Чем отличаются synchronous, asynchronous, transactional, queued и background RFC?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Core"
+  },
+  {
+    "id": "RFC-03",
+    "title": "What is the difference between a BAPI and an RFC-enabled function module?",
+    "title_ru": "Чем BAPI отличается от RFC-enabled function module?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Core"
+  },
+  {
+    "id": "RFC-04",
+    "title": "When should BAPI_TRANSACTION_COMMIT or BAPI_TRANSACTION_ROLLBACK be called, and what does WAIT mean?",
+    "title_ru": "Когда вызывают BAPI_TRANSACTION_COMMIT или BAPI_TRANSACTION_ROLLBACK и что означает WAIT?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Applied"
+  },
+  {
+    "id": "RFC-05",
+    "title": "Does a remote call participate in the caller's local SAP LUW?",
+    "title_ru": "Участвует ли удалённый вызов в локальной SAP LUW вызывающей программы?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Applied"
+  },
+  {
+    "id": "RFC-06",
+    "title": "How would you collect results from CALL FUNCTION STARTING NEW TASK?",
+    "title_ru": "Как получить результаты CALL FUNCTION STARTING NEW TASK?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Applied"
+  },
+  {
+    "id": "RFC-07",
+    "title": "How do you prevent parallel RFC processing from exhausting resources?",
+    "title_ru": "Как не исчерпать ресурсы при параллельном RFC?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Advanced"
+  },
+  {
+    "id": "RFC-08",
+    "title": "Why are WAIT and implicit database commits important in parallel processing?",
+    "title_ru": "Почему WAIT и неявные database COMMIT важны при параллельной обработке?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Advanced"
+  },
+  {
+    "id": "RFC-09",
+    "title": "How would you design parallel workers that can be restarted safely?",
+    "title_ru": "Как спроектировать workers с безопасным перезапуском?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Advanced"
+  },
+  {
+    "id": "RFC-10",
+    "title": "How do you schedule and troubleshoot a classic background job?",
+    "title_ru": "Как запланировать и диагностировать classic background job?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Applied"
+  },
+  {
+    "id": "RFC-11",
+    "title": "How do application jobs differ from classic report scheduling in ABAP Cloud?",
+    "title_ru": "Чем application jobs отличаются от classic report scheduling в ABAP Cloud?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Applied"
+  },
+  {
+    "id": "RFC-12",
+    "title": "Which operational and security checks make RFC or job processing production-ready?",
+    "title_ru": "Какие проверки эксплуатации и безопасности нужны RFC или job перед production?",
+    "topic": "Protocols & integration",
+    "section": "RFC, BAPI & jobs",
+    "level": "Advanced"
+  },
+  {
+    "id": "RICEFW-01",
+    "title": "What does RICEFW mean, and how would you scope a deliverable?",
+    "title_ru": "Что означает RICEFW и как определить объём результата?",
+    "topic": "Enhancements & workflow",
+    "section": "Scoping, interfaces & migration",
+    "level": "Core"
+  },
+  {
+    "id": "RICEFW-02",
+    "title": "How do you choose between a standard API, IDoc, migration tooling, and BDC?",
+    "title_ru": "Как выбрать стандартный API, IDoc, инструменты миграции или BDC?",
+    "topic": "Enhancements & workflow",
+    "section": "Scoping, interfaces & migration",
+    "level": "Applied"
+  },
+  {
+    "id": "RICEFW-03",
+    "title": "How do BAdIs, customer exits, and user exits differ?",
+    "title_ru": "Чем отличаются BAdI, customer exit и user exit?",
+    "topic": "Enhancements & workflow",
+    "section": "Enhancements & forms",
+    "level": "Core"
+  },
+  {
+    "id": "RICEFW-04",
+    "title": "What is the difference between implicit and explicit enhancement options?",
+    "title_ru": "Чем неявные точки расширения (implicit enhancement options) отличаются от явных (explicit)?",
+    "topic": "Enhancements & workflow",
+    "section": "Enhancements & forms",
+    "level": "Core"
+  },
+  {
+    "id": "RICEFW-05",
+    "title": "How would you design a reliable interface?",
+    "title_ru": "Как спроектировать надёжный интерфейс интеграции?",
+    "topic": "Enhancements & workflow",
+    "section": "Scoping, interfaces & migration",
+    "level": "Advanced"
+  },
+  {
+    "id": "RICEFW-06",
+    "title": "How would you troubleshoot a failed IDoc in a classic system?",
+    "title_ru": "Как исследовать ошибочный IDoc в классической системе?",
+    "topic": "Enhancements & workflow",
+    "section": "Scoping, interfaces & migration",
+    "level": "Applied"
+  },
+  {
+    "id": "RICEFW-07",
+    "title": "What makes a data conversion safe and supportable?",
+    "title_ru": "Что делает перенос данных безопасным и удобным в сопровождении?",
+    "topic": "Enhancements & workflow",
+    "section": "Scoping, interfaces & migration",
+    "level": "Advanced"
+  },
+  {
+    "id": "RICEFW-08",
+    "title": "How do you choose between SAPscript, Smart Forms, and Adobe output forms?",
+    "title_ru": "Как выбрать SAPscript, Smart Forms или печатные формы Adobe?",
+    "topic": "Enhancements & workflow",
+    "section": "Enhancements & forms",
+    "level": "Applied"
+  },
+  {
+    "id": "RICEFW-09",
+    "title": "How do classic Workflow, Flexible Workflow, and SAP Build Process Automation differ?",
+    "title_ru": "Чем отличаются classic Workflow, Flexible Workflow и SAP Build Process Automation?",
+    "topic": "Enhancements & workflow",
+    "section": "Workflow & approval lifecycle",
+    "level": "Core"
+  },
+  {
+    "id": "RICEFW-10",
+    "title": "What are a workflow container, task, work item, and agent?",
+    "title_ru": "Что такое workflow container, task, work item и agent?",
+    "topic": "Enhancements & workflow",
+    "section": "Workflow & approval lifecycle",
+    "level": "Core"
+  },
+  {
+    "id": "RICEFW-11",
+    "title": "How should a RAP submit action start an approval process reliably?",
+    "title_ru": "Как действие RAP Submit должно надёжно запускать процесс согласования?",
+    "topic": "Enhancements & workflow",
+    "section": "Workflow & approval lifecycle",
+    "level": "Advanced"
+  },
+  {
+    "id": "RICEFW-12",
+    "title": "How do you handle duplicate events, stale approvals, and callback retries?",
+    "title_ru": "Как обработать дубли событий, устаревшие решения согласования и повторные обратные вызовы?",
+    "topic": "Enhancements & workflow",
+    "section": "Workflow & approval lifecycle",
+    "level": "Advanced"
+  },
+  {
+    "id": "RICEFW-13",
+    "title": "How would you diagnose a workflow that did not start or is stuck?",
+    "title_ru": "Как исследовать workflow, который не стартовал или завис?",
+    "topic": "Enhancements & workflow",
+    "section": "Workflow & approval lifecycle",
+    "level": "Applied"
+  },
+  {
+    "id": "RICEFW-14",
+    "title": "How would you test a workflow or enhancement end to end?",
+    "title_ru": "Как проверить workflow или расширение целиком?",
+    "topic": "Enhancements & workflow",
+    "section": "Workflow & approval lifecycle",
+    "level": "Advanced"
+  },
+  {
+    "id": "RICEFW-15",
+    "title": "Which S/4HANA changes can affect existing ABAP developments?",
+    "title_ru": "Какие изменения S/4HANA могут повлиять на существующий ABAP?",
+    "topic": "Enhancements & workflow",
+    "section": "Scoping, interfaces & migration",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-01",
+    "title": "How do ABAP SQL, Native SQL, CDS, and AMDP differ?",
+    "title_ru": "Чем отличаются ABAP SQL, Native SQL, CDS и AMDP?",
+    "topic": "SQL & HANA performance",
+    "section": "CDS, AMDP & pushdown",
+    "level": "Core"
+  },
+  {
+    "id": "SQL-02",
+    "title": "What is the empty-table trap in FOR ALL ENTRIES?",
+    "title_ru": "В чём опасность пустой таблицы в FOR ALL ENTRIES?",
+    "topic": "SQL & HANA performance",
+    "section": "Selection, joins & result semantics",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-03",
+    "title": "When would you use a join instead of FOR ALL ENTRIES?",
+    "title_ru": "Когда выбрать JOIN вместо FOR ALL ENTRIES?",
+    "topic": "SQL & HANA performance",
+    "section": "Selection, joins & result semantics",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-04",
+    "title": "How can a LEFT OUTER JOIN accidentally behave like an inner join?",
+    "title_ru": "Как LEFT OUTER JOIN может случайно превратиться по поведению в INNER JOIN?",
+    "topic": "SQL & HANA performance",
+    "section": "Selection, joins & result semantics",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-05",
+    "title": "What is the difference between SQL NULL and an ABAP initial value?",
+    "title_ru": "Чем SQL NULL отличается от ABAP initial value?",
+    "topic": "SQL & HANA performance",
+    "section": "Selection, joins & result semantics",
+    "level": "Core"
+  },
+  {
+    "id": "SQL-06",
+    "title": "How do GROUP BY, WHERE, and HAVING work together?",
+    "title_ru": "Как вместе работают GROUP BY, WHERE и HAVING?",
+    "topic": "SQL & HANA performance",
+    "section": "Selection, joins & result semantics",
+    "level": "Core"
+  },
+  {
+    "id": "SQL-07",
+    "title": "What do cardinality and uniqueness mean for join correctness?",
+    "title_ru": "Что cardinality и uniqueness означают для правильного JOIN?",
+    "topic": "SQL & HANA performance",
+    "section": "Selection, joins & result semantics",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-08",
+    "title": "Does SELECT SINGLE return a predictable first row?",
+    "title_ru": "Возвращает ли SELECT SINGLE предсказуемую первую строку?",
+    "topic": "SQL & HANA performance",
+    "section": "Selection, joins & result semantics",
+    "level": "Core"
+  },
+  {
+    "id": "SQL-09",
+    "title": "What do you optimize first in a slow data selection?",
+    "title_ru": "С чего начать оптимизацию медленной выборки?",
+    "topic": "SQL & HANA performance",
+    "section": "Measurement, buffering & data design",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-10",
+    "title": "Which tools help locate ABAP, database, and memory performance problems?",
+    "title_ru": "Какие инструменты помогают найти проблемы производительности ABAP, базы и памяти?",
+    "topic": "SQL & HANA performance",
+    "section": "Measurement, buffering & data design",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-11",
+    "title": "Does SAP HANA remove the need for indexes and performance tuning?",
+    "title_ru": "Устраняет ли SAP HANA необходимость в индексах и оптимизации?",
+    "topic": "SQL & HANA performance",
+    "section": "Measurement, buffering & data design",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-12",
+    "title": "When is table buffering appropriate?",
+    "title_ru": "Когда уместен ABAP table buffering?",
+    "topic": "SQL & HANA performance",
+    "section": "Measurement, buffering & data design",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-13",
+    "title": "What are normalization and denormalization, and how do they affect ABAP design?",
+    "title_ru": "Что такое normalization и denormalization и как они влияют на проектирование данных?",
+    "topic": "SQL & HANA performance",
+    "section": "Measurement, buffering & data design",
+    "level": "Core"
+  },
+  {
+    "id": "SQL-14",
+    "title": "When is AMDP justified, and what risks must you address?",
+    "title_ru": "Когда AMDP оправдан и какие риски нужно учесть?",
+    "topic": "SQL & HANA performance",
+    "section": "CDS, AMDP & pushdown",
+    "level": "Advanced"
+  },
+  {
+    "id": "SQL-15",
+    "title": "AMDP procedure or CDS table function: what is the difference, and when would you use each?",
+    "title_ru": "AMDP procedure или CDS table function: в чём разница и когда что использовать?",
+    "topic": "SQL & HANA performance",
+    "section": "CDS, AMDP & pushdown",
+    "level": "Applied"
+  },
+  {
+    "id": "SQL-16",
+    "title": "What do window functions do in ABAP SQL, and when are they useful?",
+    "title_ru": "Что делают window functions в ABAP SQL и когда они полезны?",
+    "topic": "SQL & HANA performance",
+    "section": "Selection, joins & result semantics",
+    "level": "Core"
+  },
+  {
+    "id": "SQL-17",
+    "title": "A large report still runs out of memory with PACKAGE SIZE. What do you check?",
+    "title_ru": "Большой отчёт исчерпывает память даже с PACKAGE SIZE. Что проверить?",
+    "topic": "SQL & HANA performance",
+    "section": "Measurement, buffering & data design",
+    "level": "Applied"
+  },
+  {
+    "id": "SQLX-01",
+    "title": "A CDS table function joins client-dependent purchasing data in SQLScript, writes a helper table, and assumes the outer CDS DCL protects every internal read. Would you approve it?",
+    "title_ru": "CDS table function соединяет данные закупок разных мандантов в SQLScript, пишет вспомогательную таблицу и рассчитывает на внешний DCL. Одобрите такой код?",
+    "topic": "SQL & HANA performance",
+    "section": "CDS, AMDP & pushdown",
+    "level": "Advanced"
+  },
+  {
+    "id": "SQLX-02",
+    "title": "A report transfers one million item rows to ABAP to calculate totals. A rewrite uses AMDP but doubles amounts after a text join. Which implementation would you recommend?",
+    "title_ru": "Отчёт переносит миллион позиций в ABAP для итогов. AMDP-замена удваивает суммы после JOIN текста. Что выбрать?",
+    "topic": "SQL & HANA performance",
+    "section": "CDS, AMDP & pushdown",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-01",
+    "title": "A new approval app has custom persistence, while its posting step must reuse an existing transactional API. Which RAP implementation type would you choose?",
+    "title_ru": "Новому приложению согласования нужны собственные таблицы, а проведение должно использовать существующий API проведения. Какой тип RAP выбрать?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-02",
+    "title": "An audit record must be saved with every managed order change. Should you use a determination, additional save, or unmanaged save?",
+    "title_ru": "При каждом изменении managed-заказа нужна запись аудита. Выбрать determination, additional save или unmanaged save?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-03",
+    "title": "A developer puts ordinary business validation in SAVE because the final data is available there. What would you change?",
+    "title_ru": "Разработчик поместил обычную бизнес-проверку в SAVE, потому что там есть окончательные данные. Что изменить?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-04",
+    "title": "One action updates two local RAP BOs and then calls a remote payment service. Can the whole action be atomic?",
+    "title_ru": "Action изменяет два локальных RAP BO и вызывает удалённую оплату. Может ли вся action быть атомарной?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-05",
+    "title": "A bulk EML update contains 200 instances, including missing keys and unauthorized changes. How do you report and process the result?",
+    "title_ru": "Массовое обновление через EML содержит 200 экземпляров, отсутствующие ключи и запрещённые изменения. Как обработать результаты?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-06",
+    "title": "An API consumer sends an empty comment to clear it, but the previous text remains. What do you investigate?",
+    "title_ru": "Потребитель отправляет пустой комментарий для очищения, но старый текст остаётся. Что проверить?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-07",
+    "title": "You must create three new orders with items in one EML request before final order numbers exist. How do you correlate the tree?",
+    "title_ru": "Нужно создать три заказа с позициями в одном EML-запросе до появления окончательных номеров. Как связать дерево?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-08",
+    "title": "A posting API returns the final document number only when called. How would you integrate numbering without publishing incorrect keys?",
+    "title_ru": "API проведения возвращает окончательный номер документа только при вызове. Как встроить назначение номеров без неверных опубликованных ключей?",
+    "topic": "RAP business objects",
+    "section": "EML, responses & numbering",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-09",
+    "title": "A user saves a draft, closes the browser, returns, and presses Activate. What state transitions and failures would you explain?",
+    "title_ru": "Пользователь сохраняет draft, закрывает браузер, возвращается и нажимает Activate. Какие переходы и ошибки объяснить?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-10",
+    "title": "A draft lock expires, another process changes an active child, and the first user resumes editing. How do you prevent silent loss of the child change?",
+    "title_ru": "Блокировка draft истекла, другой процесс изменил активную дочернюю запись, а первый пользователь продолжил редактирование. Как не потерять изменение дочерней записи?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-11",
+    "title": "Two determinations calculate discount and total. Production results depend on which one executes first. How would you redesign them?",
+    "title_ru": "Две determinations считают скидку и итог. Результат зависит от порядка выполнения. Как переделать?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-12",
+    "title": "A request changes CompanyCode to an unauthorized value and also makes its dates inconsistent. Would you use prechecks or validations?",
+    "title_ru": "Запрос меняет CompanyCode на запрещённый и делает даты несогласованными. Использовать prechecks или validations?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-13",
+    "title": "A CopyOrder action creates an order, but the UI stays on the source and the consumer cannot identify the copy. How do you review the action contract?",
+    "title_ru": "CopyOrder создаёт заказ, но UI остаётся на исходном, а потребитель не знает ID копии. Как проверить контракт action?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-14",
+    "title": "A projection accepts a convenience field that must enrich an underlying create. Why might augmentation fit, and what are its boundaries?",
+    "title_ru": "Projection принимает удобное дополнительное поле для дополнения базовой операции создания. Чем поможет augmentation и где её границы?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-15",
+    "title": "A legacy function module issues COMMIT WORK internally. Can you make it safe by wrapping it in a RAP action?",
+    "title_ru": "Старый функциональный модуль делает внутренний COMMIT WORK. Сделает ли обёртка в RAP action его безопасным?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-16",
+    "title": "An older RAP BO works without strict mode. The team wants to release it for cloud consumption by adding strict(2). Is that sufficient?",
+    "title_ru": "Старый RAP BO работает без strict mode. Достаточно ли добавить strict(2), чтобы выпустить API для использования в ABAP Cloud?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-17",
+    "title": "An unmanaged BO passes isolated tests but a second request reads leftovers after an earlier save rejection. Where do you look?",
+    "title_ru": "Unmanaged BO проходит отдельные тесты, но второй запрос читает остатки после отклонённого сохранения. Где искать?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-18",
+    "title": "An Approved event should trigger an external workflow. Why is calling its HTTP endpoint from an on-save determination unreliable?",
+    "title_ru": "Событие Approved должно запускать внешний workflow. Почему HTTP из on-save determination ненадёжен?",
+    "topic": "RAP business objects",
+    "section": "Messages, side effects & events",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-19",
+    "title": "A credit-limit check runs successfully on a draft, but active data is later saved through another consumer with an invalid amount. What is missing?",
+    "title_ru": "Проверка кредитного лимита прошла на draft, но другой потребитель позже сохранил активные данные с неверной суммой. Чего не хватает?",
+    "topic": "RAP business objects",
+    "section": "Rules, actions & augmentation",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-20",
+    "title": "In a mass approval request, one instance fails. Must all other approvals be rolled back?",
+    "title_ru": "При массовом согласовании один экземпляр не прошёл. Обязателен ли откат остальных?",
+    "topic": "RAP business objects",
+    "section": "Transactions & save ownership",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-21",
+    "title": "After a quantity change, the backend total is correct but the Fiori page displays the old value. Is this a transaction bug?",
+    "title_ru": "После изменения количества итог на backend правильный, а Fiori показывает старый. Это ошибка транзакции?",
+    "topic": "RAP business objects",
+    "section": "Messages, side effects & events",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-22",
+    "title": "Your team finds a useful SAP RAP base BO in ADT, but only a narrower BO interface is released. Which layer should your application consume?",
+    "title_ru": "В ADT найден полезный базовый SAP RAP BO, но released только его узкий BO interface. Какой слой использовать?",
+    "topic": "RAP business objects",
+    "section": "Model, implementation & exposure",
+    "level": "Applied"
+  },
+  {
+    "id": "SRAP-23",
+    "title": "Two requests execute Submit for the same order, and one client retries after a timeout. How do you prevent duplicate business effects?",
+    "title_ru": "Два запроса делают Submit одного заказа, а один клиент повторяет вызов после тайм-аута. Как избежать дублей?",
+    "topic": "RAP business objects",
+    "section": "Draft, concurrency & access",
+    "level": "Advanced"
+  },
+  {
+    "id": "SRAP-24",
+    "title": "A validation reports the right error once, but the message remains after correction or appears on the wrong child. How would you debug it?",
+    "title_ru": "Validation показывает правильную ошибку, но после исправления она остаётся или появляется у другого дочернего объекта. Как искать причину?",
+    "topic": "RAP business objects",
+    "section": "Messages, side effects & events",
+    "level": "Applied"
+  },
+  {
+    "id": "STORY-01",
+    "title": "How would you introduce yourself for an ABAP role?",
+    "title_ru": "Как представить себя на интервью на ABAP-позицию?",
+    "topic": "Interview stories & judgment",
+    "section": "Project stories & results",
+    "level": "Core"
+  },
+  {
+    "id": "STORY-02",
+    "title": "How do you explain a project you owned?",
+    "title_ru": "Как рассказать о проекте, за который вы отвечали?",
+    "topic": "Interview stories & judgment",
+    "section": "Project stories & results",
+    "level": "Applied"
+  },
+  {
+    "id": "STORY-03",
+    "title": "How do you answer a question when the SAP release is unknown?",
+    "title_ru": "Как отвечать, если релиз SAP неизвестен?",
+    "topic": "Interview stories & judgment",
+    "section": "Decisions & interviewer questions",
+    "level": "Core"
+  },
+  {
+    "id": "STORY-04",
+    "title": "How do you discuss a performance improvement?",
+    "title_ru": "Как рассказать об улучшении производительности?",
+    "topic": "Interview stories & judgment",
+    "section": "Project stories & results",
+    "level": "Applied"
+  },
+  {
+    "id": "STORY-05",
+    "title": "How would you defend an architecture trade-off?",
+    "title_ru": "Как обосновать архитектурный компромисс?",
+    "topic": "Interview stories & judgment",
+    "section": "Decisions & interviewer questions",
+    "level": "Advanced"
+  },
+  {
+    "id": "STORY-06",
+    "title": "What should you ask the interviewer?",
+    "title_ru": "Какие вопросы задать интервьюеру?",
+    "topic": "Interview stories & judgment",
+    "section": "Decisions & interviewer questions",
+    "level": "Core"
+  },
+  {
+    "id": "STORY-07",
+    "title": "How do you estimate an ABAP or RAP task when some requirements are still unclear?",
+    "title_ru": "Как оценить задачу на ABAP или RAP, если часть требований ещё неясна?",
+    "topic": "Interview stories & judgment",
+    "section": "Decisions & interviewer questions",
+    "level": "Applied"
+  },
+  {
+    "id": "TEST-01",
+    "title": "What makes a useful ABAP Unit test?",
+    "title_ru": "Что делает тест ABAP Unit полезным?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Core"
+  },
+  {
+    "id": "TEST-02",
+    "title": "How does dependency injection help?",
+    "title_ru": "Как помогает внедрение зависимостей (dependency injection)?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Core"
+  },
+  {
+    "id": "TEST-03",
+    "title": "How would you test a RAP business object?",
+    "title_ru": "Как тестировать бизнес-объект RAP?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Applied"
+  },
+  {
+    "id": "TEST-04",
+    "title": "How do SQL and CDS test doubles help?",
+    "title_ru": "Чем помогают SQL и CDS test doubles?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Applied"
+  },
+  {
+    "id": "TEST-05",
+    "title": "What does ATC cover and what remains outside it?",
+    "title_ru": "Что проверяет ATC и что остаётся вне его?",
+    "topic": "Testing, delivery & operations",
+    "section": "Delivery, compatibility & release evidence",
+    "level": "Core"
+  },
+  {
+    "id": "TEST-06",
+    "title": "What security tests would you include?",
+    "title_ru": "Какие проверки безопасности нужно включить?",
+    "topic": "Testing, delivery & operations",
+    "section": "Security & concurrency tests",
+    "level": "Applied"
+  },
+  {
+    "id": "TEST-07",
+    "title": "How do you test concurrency and rollback?",
+    "title_ru": "Как тестировать конкурентные изменения и ROLLBACK?",
+    "topic": "Testing, delivery & operations",
+    "section": "Security & concurrency tests",
+    "level": "Advanced"
+  },
+  {
+    "id": "TEST-08",
+    "title": "What would you include in a transport and deployment handoff?",
+    "title_ru": "Что передать команде для переноса и развёртывания?",
+    "topic": "Testing, delivery & operations",
+    "section": "Delivery, compatibility & release evidence",
+    "level": "Applied"
+  },
+  {
+    "id": "TEST-09",
+    "title": "How would you investigate a production defect?",
+    "title_ru": "Как исследовать ошибку в рабочей системе?",
+    "topic": "Testing, delivery & operations",
+    "section": "Diagnosis, performance & recovery",
+    "level": "Applied"
+  },
+  {
+    "id": "TEST-10",
+    "title": "How should you describe tests you have not run?",
+    "title_ru": "Как описывать тесты, которые ещё не запускались?",
+    "topic": "Testing, delivery & operations",
+    "section": "Test design & doubles",
+    "level": "Core"
+  }
+]

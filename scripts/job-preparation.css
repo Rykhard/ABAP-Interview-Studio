@@ -1,0 +1,32 @@
+/* The optional assistant stays visually secondary to reading and practice. */
+.modes .job-entry{margin-left:auto;background:transparent;color:var(--green);font-size:13px}
+.job-session-entry{display:none}
+main.in-session .job-session-entry{display:inline-flex;font-size:13px;color:var(--green);background:transparent}
+#jobDialog{width:min(760px,calc(100% - 32px));box-sizing:border-box;overscroll-behavior:contain}
+#jobDialog .dialog-heading{position:sticky;top:0;z-index:1;background:var(--surface);padding:8px 0}
+#jobDescription:focus-visible,#jobCount:focus-visible{outline:2px solid var(--link);outline-offset:3px}
+#jobDialog .job-intro{margin:8px 0 20px;color:var(--muted)}
+#jobForm>label,.job-form-actions label{display:grid;gap:7px;font-weight:650;font-size:14px}
+#jobDescription{display:block;box-sizing:border-box;width:100%;min-height:150px;max-height:40vh;resize:vertical;margin:8px 0;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;font:inherit;font-size:15px;line-height:1.6}
+#jobPrivacy{line-height:1.6;margin:10px 0 18px}
+.job-form-actions{display:flex;gap:20px;align-items:end;justify-content:space-between;flex-wrap:wrap}
+#jobCount{box-sizing:border-box;width:100px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}
+#jobStatus{line-height:1.6;font-size:14px;margin:20px 0 0}
+#jobStatus:empty{display:none}
+#jobStatus[data-error=true]{border-left:3px solid var(--warm-line);background:var(--warm);padding:12px 16px;border-radius:4px}
+#jobPreview{border-top:1px solid var(--line);margin-top:24px;padding-top:18px}
+#jobPreview h3{margin:0 0 8px}
+#jobMatches{list-style:none;padding:0;margin:18px 0;display:grid;gap:14px}
+.job-match{padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow-wrap:anywhere}
+.job-match label{display:flex;gap:12px;align-items:start;cursor:pointer}
+.job-match input{flex:none;width:18px;height:18px;margin-top:4px;accent-color:var(--green)}
+.job-match label>span{display:grid;gap:6px}
+.job-match-meta{color:var(--green);font-size:12px;font-weight:600}
+.job-match strong{font-size:16px;line-height:1.5}
+.job-match-reason{font-size:14px;line-height:1.6;margin:12px 0 10px 30px}
+.job-match blockquote{margin:0 0 0 30px;border-left:2px solid var(--line);padding:5px 12px;color:var(--muted);font-size:13px;line-height:1.6;white-space:pre-wrap}
+.job-apply{border-top:1px solid var(--line);padding-top:12px}
+#jobSelection{font-weight:650}
+@media(max-width:700px){.job-session-entry{grid-column:1 / -1;justify-self:end}}
+@media(max-width:570px){.modes .job-entry{flex-basis:100%;margin-left:0;text-align:left;padding-left:0;border-color:transparent}#jobDialog{padding:18px;max-height:92vh}.job-form-actions{gap:14px}.job-form-actions>button{width:100%}.job-match{padding:12px}.job-match-reason,.job-match blockquote{margin-left:0}}
+@media print{#prepareJob,#prepareJobSession,#jobDialog{display:none!important}}

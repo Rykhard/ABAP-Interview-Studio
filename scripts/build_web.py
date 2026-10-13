@@ -8,9 +8,11 @@ from theme_visuals import build_dark_visuals
 from diagram_assets import build_diagram_assets, diagram_theme_css
 from guided_lessons import load_lessons, write_lesson_guide
 from localization import localized_payloads, read_json, translate_app
+from job_catalog import write_catalog
 
 
 def write_studio(root, modules, visual_metadata, quiz_items):
+    write_catalog(root, modules)
     build_dark_visuals(root, visual_metadata)
     diagrams=build_diagram_assets(root, visual_metadata)
     def payload(data):
@@ -31,6 +33,9 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     ui_translations=read_json(root/'locales/ru/ui.json')
     app+='\n'+(root/'scripts/studio-language.js').read_text(encoding='utf-8')
     ru_app=translate_app(app, root, ui_translations)
+    job_app=(root/'scripts/studio-job.js').read_text(encoding='utf-8')
+    app+='\n'+job_app
+    ru_app+='\n'+job_app
     bootstrap=(root/'scripts/studio-data.js').read_text(encoding='utf-8')+'\n'+(root/'scripts/studio-locale-bootstrap.js').read_text(encoding='utf-8')
     app=bootstrap+'\nif(studioLocale===\'ru\'){\n'+ru_app+'\n}else{\n'+app+'\n}'
     template=template.replace('__RU_DATA__',payload(russian)).replace('__UI_RU_DATA__',payload(ui_translations))
@@ -40,6 +45,7 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     learning=read_json(root/'curriculum/learning.json')
     values['__LEARNING_DATA__']=payload(learning)
     values['__CALM_CSS__']+='\n'+(root/'scripts/learning.css').read_text(encoding='utf-8')
+    values['__CALM_CSS__']+='\n'+(root/'scripts/job-preparation.css').read_text(encoding='utf-8')
     values['__LESSON_DATA__']=payload(lessons)
     values['__SIMPLIFY_CSS__']=(root/'scripts/simplify.css').read_text(encoding='utf-8')
     values['__SIMPLIFY_CSS__']+='\n'+(root/'scripts/diagrams.css').read_text(encoding='utf-8')+'\n'+diagram_theme_css()

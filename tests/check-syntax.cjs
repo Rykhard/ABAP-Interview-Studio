@@ -2,8 +2,10 @@ const fs = require('node:fs');
 const {spawnSync} = require('node:child_process');
 const vm = require('node:vm');
 
-for (const name of fs.readdirSync('scripts').filter(name => name.endsWith('.js'))) {
-  const result = spawnSync(process.execPath, ['--check', `scripts/${name}`], {stdio: 'inherit'});
+const sources = ['scripts', 'server', 'functions/api'].flatMap(directory =>
+  fs.readdirSync(directory).filter(name => /\.m?js$/.test(name)).map(name => `${directory}/${name}`));
+for (const source of sources) {
+  const result = spawnSync(process.execPath, ['--check', source], {stdio: 'inherit'});
   if (result.status !== 0) process.exit(1);
 }
 // Check both compiled locale branches, including source-expression translations.
