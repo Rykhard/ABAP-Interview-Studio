@@ -91,6 +91,48 @@ test('feature is disabled without complete server configuration and rejects cros
   assert.ok(!JSON.stringify(rows).includes('192.0.2.1')); assert.ok(!JSON.stringify(rows).includes(input.description));
 });
 
+test('invalid requests spend no database quota and every response has restrictive headers', async () => {
+  const [, service] = await modules; let databaseCalls = 0;
+  const db = { prepare() { databaseCalls++; throw new Error('Database must not be touched'); } };
+  const env = environment(db, async () => { throw new Error('AI must not be called'); });
+  const handler = service.createJobHandler(catalog, { log: () => {} });
+  const cases = [
+    [request(input, { Origin: 'https://attacker.example' }), 400],
+    [request(input, { 'Sec-Fetch-Site': 'cross-site' }), 400],
+    [request('x'.repeat(17000)), 400],
+    [request('{"description":"broken'), 400],
+    [request(input, { 'Content-Type': 'text/plain' }), 400],
+    [new Request('https://studio.example/api/prepare-job', { method: 'OPTIONS' }), 405]
+  ];
+  for (const [req, status] of cases) {
+    const result = await handler(req, env);
+    assert.equal(result.status, status);
+    assert.equal(result.headers.get('Cache-Control'), 'no-store');
+    assert.equal(result.headers.get('X-Content-Type-Options'), 'nosniff');
+    assert.equal(result.headers.get('Referrer-Policy'), 'no-referrer');
+    assert.match(result.headers.get('Content-Security-Policy'), /frame-ancestors 'none'/);
+    assert.equal(result.headers.get('Access-Control-Allow-Origin'), null);
+  }
+  assert.equal(databaseCalls, 0);
+});
+
+test('provider errors never expose secrets or job descriptions in responses and logs', async t => {
+  const [, service] = await modules; const db = database(); t.after(() => db.sqlite.close());
+  const secretMarker = 'synthetic-provider-secret-for-leak-test'; const logs = [];
+  const handler = service.createJobHandler(catalog, { log: entry => logs.push(entry) });
+  const env = environment(db, async () => { throw new Error(`${secretMarker}: ${input.description}`); });
+  const result = await handler(request(), env);
+  assert.equal(result.status, 503);
+  const output = await result.text();
+  assert.deepEqual(JSON.parse(output), { error: { code: 'unavailable' } });
+  for (const captured of [output, JSON.stringify(logs)]) {
+    assert.ok(!captured.includes(secretMarker));
+    assert.ok(!captured.includes(input.description));
+    assert.ok(!captured.includes(env.JOB_RATE_SECRET));
+    assert.ok(!captured.includes('192.0.2.1'));
+  }
+});
+
 test('concurrent duplicate requests consume only one reservation and one model call', async t => {
   const [, service] = await modules; const db = database(); t.after(() => db.sqlite.close()); let calls = 0; let release;
   const env = environment(db, () => { calls++; return new Promise(resolve => { release = resolve; }); }); const handler = service.createJobHandler(catalog);

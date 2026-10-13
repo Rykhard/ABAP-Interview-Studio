@@ -8,7 +8,7 @@ The ordinary static/offline studio does not depend on AI. The optional dialog re
 
 The existing Cloudflare Pages Git build remains `python scripts/build_site.py`, with `dist` as the asset directory. Root `functions/api/prepare-job.js` adds a Pages Function; Cloudflare compiles this separately from the static assets. `_routes.json` invokes Functions only for `/api/prepare-job`. The server catalog is generated from the canonical question titles, translations, topic placement and learning level. Answer bodies, source files and server credentials are not public assets.
 
-The portable `dist.zip` is **static only**. Uploading that archive through the dashboard does not install the Function, bindings or database. A Git-integrated Pages deployment or correctly configured Wrangler deployment is required for the optional service. This implementation task does not authorize publication or billing changes.
+The portable `dist.zip` is **static only**. Uploading that archive through the dashboard does not install the Function, bindings or database. A Git-integrated Pages deployment or correctly configured Wrangler deployment is required for the optional service. Production enablement requires a verified free Workers plan and authorized deployment; billing changes and paid upgrades are outside this feature's scope.
 
 ## Configuration before enabling
 
@@ -84,6 +84,16 @@ Final live latency ranged from 1.0 to 14.1 seconds; reported usage across seven 
 Local validation passed the 43-test browser suite, 14 Node tests (including 11 server tests), 11 Python tests, seven retrieval-recall fixtures, source/generated syntax checks, content validation and the Wrangler Pages compilation. The latest job-specific browser checks additionally cover required-before-preferred presentation. Manual browser inspection covered desktop RU and mobile dark-mode quota messaging. A real local Pages runtime returned the expected disabled JSON response. Production bindings, remote D1 integration, production CPU measurements and deployment have not been performed.
 
 ## Privacy, disablement and rollback
+
+### Security boundaries
+
+The deployed application uses an `AI` binding, not a Cloudflare management API token. Never place a management token in Pages build variables, browser assets, source control, or application logs. Deployment credentials should be account-scoped, short-lived and revoked when no longer needed. A credential shared in a conversation should be rotated before long-term use.
+
+Malformed and cross-origin POST requests are rejected before any D1 query. Function responses independently apply `no-store`, `nosniff`, a restrictive content security policy and `no-referrer`; static Pages header rules do not cover Functions. Provider error bodies are not returned or logged. Model output is validated and rendered as text, never executable HTML.
+
+This is a public endpoint. Origin checks prevent cross-origin browser submissions but do not authenticate callers or stop scripts that spoof headers. The atomic site-wide cap bounds AI attempts even across many IP addresses; it cannot prevent an attacker from exhausting the shared allowance. D1 and Workers requests can still reach their free-plan limits. Keep the account on the free Workers plan so exhaustion fails rather than enabling paid overage. App counters alone are not a billing guarantee. Ordinary static learning does not depend on this endpoint.
+
+Before production enablement, verify Pages and D1 permissions, the actual account subscription, separate preview/production bindings, and a synthetic end-to-end request. A successful local test does not establish that these production controls are configured.
 
 Descriptions, reasons and evidence live only in browser/request memory; closing the dialog clears its draft and preview. They are not added to local storage, history or D1. Starting practice retains only selected canonical IDs and the session source/title. The description is sent to Cloudflare Workers AI only on explicit submission; consult Cloudflare's data-usage terms before handling sensitive information.
 

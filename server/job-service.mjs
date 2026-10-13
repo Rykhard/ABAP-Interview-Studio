@@ -71,11 +71,15 @@ export function createJobHandler(catalog, { timeoutMs = 25000, bodyTimeoutMs = 5
     const started = now(); const day = dayKey(started); const db = env.JOB_DB;
     let reservation; let retainLease = false;
     try {
+      let input;
+      if (request.method === 'POST') {
+        // Reject malformed and cross-origin traffic before spending D1 quota.
+        // Origin validation is a browser boundary, not bot authentication.
+        if (request.headers.get('Origin') !== new URL(request.url).origin || request.headers.get('Sec-Fetch-Site') === 'cross-site') return failure('invalid_input');
+        try { input = await readBody(request, bodyTimeoutMs); } catch (error) { return failure(error?.message === 'body_timeout' ? 'timeout' : 'invalid_input'); }
+      }
       if (!await globalAvailable(db, day, dailyCap(env))) return failure('daily_limit', dailyReset(started));
       if (request.method === 'GET') return response({ available: true });
-      if (request.headers.get('Origin') !== new URL(request.url).origin || request.headers.get('Sec-Fetch-Site') === 'cross-site') return failure('invalid_input');
-      let input;
-      try { input = await readBody(request, bodyTimeoutMs); } catch (error) { return failure(error?.message === 'body_timeout' ? 'timeout' : 'invalid_input'); }
       const inference = buildInference(catalog, input);
       metrics.candidateCount = inference.candidates.length;
       if (inference.contextLimited) return failure('context_limit');
@@ -128,6 +132,10 @@ export function createJobHandler(catalog, { timeoutMs = 25000, bodyTimeoutMs = 5
   return async (request, env) => {
     const started = now(); const metrics = {};
     const result = await handleJob(request, env, metrics);
+    // Static Pages _headers rules do not apply to Function responses.
+    result.headers.set('X-Content-Type-Options', 'nosniff');
+    result.headers.set('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
+    result.headers.set('Referrer-Policy', 'no-referrer');
     try { log({ event: 'job_preparation', latencyMs: Math.max(0, now() - started), status: result.status, ...metrics }); } catch { /* Telemetry cannot affect the user response. */ }
     return result;
   };
