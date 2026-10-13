@@ -24,5 +24,5 @@ if(studioLocale==='ru'){
  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
  nodes.forEach(node=>{node.textContent=translate(node.textContent);});
  for(const element of document.body.querySelectorAll('[aria-label],[placeholder],[title]'))for(const name of ['aria-label','placeholder','title'])if(element.hasAttribute(name))element.setAttribute(name,translate(element.getAttribute(name)));
- for(const option of document.querySelectorAll('#scope option'))if(option.value!=='all')option.textContent=({Core:'Базовый',Advanced:'Продвинутый',Senior:'Senior'})[option.value];
+ for(const option of document.querySelectorAll('#scope option'))if(option.value!=='all')option.textContent=({Core:'Core · Основы',Applied:'Applied · Применение',Advanced:'Advanced · Сложные сценарии'})[option.value];
 }

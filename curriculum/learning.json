@@ -1,0 +1,1513 @@
+{
+  "levels": [
+    {
+      "id": "Core",
+      "title": "Core",
+      "titleRu": "Основы",
+      "description": "Understand the essential concepts of this topic and explain a small example. This is a learning stage, not an interview seniority rating.",
+      "descriptionRu": "Понять основные понятия темы и объяснить небольшой пример. Это этап изучения, а не оценка уровня разработчика."
+    },
+    {
+      "id": "Applied",
+      "title": "Applied",
+      "titleRu": "Применение",
+      "description": "Use the concepts to choose an approach, read code or diagnose a typical mistake.",
+      "descriptionRu": "Применить понятия: выбрать подход, разобрать код или найти типичную ошибку."
+    },
+    {
+      "id": "Advanced",
+      "title": "Advanced",
+      "titleRu": "Сложные сценарии",
+      "description": "Reason across interacting mechanisms, failure boundaries and architectural trade-offs.",
+      "descriptionRu": "Разобрать взаимодействие механизмов, границы обработки ошибок и архитектурные компромиссы."
+    }
+  ],
+  "questions": {
+    "ABAP-01": {
+      "level": "Core"
+    },
+    "ABAP-02": {
+      "level": "Applied"
+    },
+    "ABAP-03": {
+      "level": "Applied"
+    },
+    "ABAP-04": {
+      "level": "Core"
+    },
+    "ABAP-05": {
+      "level": "Core"
+    },
+    "ABAP-06": {
+      "level": "Core"
+    },
+    "ABAP-07": {
+      "level": "Core"
+    },
+    "ABAP-08": {
+      "level": "Applied"
+    },
+    "ABAP-09": {
+      "level": "Core"
+    },
+    "ABAP-10": {
+      "level": "Applied"
+    },
+    "ABAP-11": {
+      "level": "Applied"
+    },
+    "ABAP-12": {
+      "level": "Applied"
+    },
+    "ABAP-13": {
+      "level": "Advanced"
+    },
+    "ABAP-14": {
+      "level": "Applied"
+    },
+    "OO-01": {
+      "level": "Core"
+    },
+    "OO-02": {
+      "level": "Core"
+    },
+    "OO-03": {
+      "level": "Core"
+    },
+    "OO-04": {
+      "level": "Core"
+    },
+    "OO-05": {
+      "level": "Core"
+    },
+    "OO-06": {
+      "level": "Applied"
+    },
+    "OO-07": {
+      "level": "Applied"
+    },
+    "OO-08": {
+      "level": "Applied"
+    },
+    "OO-09": {
+      "level": "Core"
+    },
+    "OO-10": {
+      "level": "Core"
+    },
+    "OO-11": {
+      "level": "Core"
+    },
+    "OO-12": {
+      "level": "Applied"
+    },
+    "OO-13": {
+      "level": "Applied"
+    },
+    "OO-14": {
+      "level": "Applied"
+    },
+    "OO-15": {
+      "level": "Core"
+    },
+    "OO-16": {
+      "level": "Core"
+    },
+    "OO-17": {
+      "level": "Applied"
+    },
+    "SQL-01": {
+      "level": "Core"
+    },
+    "SQL-02": {
+      "level": "Applied"
+    },
+    "SQL-03": {
+      "level": "Applied"
+    },
+    "SQL-04": {
+      "level": "Applied"
+    },
+    "SQL-05": {
+      "level": "Core"
+    },
+    "SQL-06": {
+      "level": "Core"
+    },
+    "SQL-07": {
+      "level": "Applied"
+    },
+    "SQL-08": {
+      "level": "Core"
+    },
+    "SQL-09": {
+      "level": "Applied"
+    },
+    "SQL-10": {
+      "level": "Applied"
+    },
+    "SQL-11": {
+      "level": "Applied"
+    },
+    "SQL-12": {
+      "level": "Applied"
+    },
+    "SQL-13": {
+      "level": "Core"
+    },
+    "SQL-14": {
+      "level": "Advanced"
+    },
+    "SQL-15": {
+      "level": "Applied"
+    },
+    "CDS-01": {
+      "level": "Core"
+    },
+    "CDS-02": {
+      "level": "Core"
+    },
+    "CDS-03": {
+      "level": "Applied"
+    },
+    "CDS-04": {
+      "level": "Core"
+    },
+    "CDS-05": {
+      "level": "Core"
+    },
+    "CDS-06": {
+      "level": "Core"
+    },
+    "CDS-07": {
+      "level": "Applied"
+    },
+    "CDS-08": {
+      "level": "Applied"
+    },
+    "CDS-09": {
+      "level": "Applied"
+    },
+    "CDS-10": {
+      "level": "Core"
+    },
+    "CDS-11": {
+      "level": "Applied"
+    },
+    "CDS-12": {
+      "level": "Applied"
+    },
+    "RAP-01": {
+      "level": "Core"
+    },
+    "RAP-02": {
+      "level": "Applied"
+    },
+    "RAP-03": {
+      "level": "Core"
+    },
+    "RAP-04": {
+      "level": "Applied"
+    },
+    "RAP-05": {
+      "level": "Applied"
+    },
+    "RAP-06": {
+      "level": "Core"
+    },
+    "RAP-07": {
+      "level": "Applied"
+    },
+    "RAP-08": {
+      "level": "Core"
+    },
+    "RAP-09": {
+      "level": "Applied"
+    },
+    "RAP-10": {
+      "level": "Applied"
+    },
+    "RAP-11": {
+      "level": "Applied"
+    },
+    "RAP-12": {
+      "level": "Core"
+    },
+    "RAP-13": {
+      "level": "Applied"
+    },
+    "RAP-14": {
+      "level": "Core"
+    },
+    "RAP-15": {
+      "level": "Applied"
+    },
+    "RAP-16": {
+      "level": "Applied"
+    },
+    "RAP-17": {
+      "level": "Advanced"
+    },
+    "ADV-01": {
+      "level": "Applied"
+    },
+    "ADV-02": {
+      "level": "Applied"
+    },
+    "ADV-03": {
+      "level": "Applied"
+    },
+    "ADV-04": {
+      "level": "Applied"
+    },
+    "ADV-05": {
+      "level": "Applied"
+    },
+    "ADV-06": {
+      "level": "Advanced"
+    },
+    "ADV-07": {
+      "level": "Applied"
+    },
+    "ADV-08": {
+      "level": "Applied"
+    },
+    "ADV-09": {
+      "level": "Core"
+    },
+    "ADV-10": {
+      "level": "Advanced"
+    },
+    "ADV-11": {
+      "level": "Advanced"
+    },
+    "ADV-12": {
+      "level": "Advanced"
+    },
+    "ADV-13": {
+      "level": "Applied"
+    },
+    "ADV-14": {
+      "level": "Core"
+    },
+    "ADV-15": {
+      "level": "Applied"
+    },
+    "ODATA-01": {
+      "level": "Core"
+    },
+    "ODATA-02": {
+      "level": "Core"
+    },
+    "ODATA-03": {
+      "level": "Core"
+    },
+    "ODATA-04": {
+      "level": "Applied"
+    },
+    "ODATA-05": {
+      "level": "Core"
+    },
+    "ODATA-06": {
+      "level": "Applied"
+    },
+    "ODATA-07": {
+      "level": "Applied"
+    },
+    "ODATA-08": {
+      "level": "Core"
+    },
+    "ODATA-09": {
+      "level": "Core"
+    },
+    "ODATA-10": {
+      "level": "Applied"
+    },
+    "ODATA-11": {
+      "level": "Applied"
+    },
+    "ODATA-12": {
+      "level": "Advanced"
+    },
+    "CORE-01": {
+      "level": "Core"
+    },
+    "CORE-02": {
+      "level": "Core"
+    },
+    "CORE-03": {
+      "level": "Applied"
+    },
+    "CORE-04": {
+      "level": "Core"
+    },
+    "CORE-05": {
+      "level": "Applied"
+    },
+    "CORE-06": {
+      "level": "Applied"
+    },
+    "CORE-07": {
+      "level": "Core"
+    },
+    "CORE-08": {
+      "level": "Applied"
+    },
+    "CORE-09": {
+      "level": "Core"
+    },
+    "CORE-10": {
+      "level": "Applied"
+    },
+    "CORE-11": {
+      "level": "Applied"
+    },
+    "CORE-12": {
+      "level": "Core"
+    },
+    "CORE-13": {
+      "level": "Applied"
+    },
+    "CORE-14": {
+      "level": "Applied"
+    },
+    "CORE-15": {
+      "level": "Applied"
+    },
+    "CORE-16": {
+      "level": "Advanced"
+    },
+    "CORE-17": {
+      "level": "Core"
+    },
+    "CORE-18": {
+      "level": "Advanced"
+    },
+    "BTP-01": {
+      "level": "Core"
+    },
+    "BTP-02": {
+      "level": "Core"
+    },
+    "BTP-03": {
+      "level": "Core"
+    },
+    "BTP-04": {
+      "level": "Core"
+    },
+    "BTP-05": {
+      "level": "Core"
+    },
+    "BTP-06": {
+      "level": "Applied"
+    },
+    "BTP-07": {
+      "level": "Applied"
+    },
+    "BTP-08": {
+      "level": "Advanced"
+    },
+    "BTP-09": {
+      "level": "Core"
+    },
+    "BTP-10": {
+      "level": "Advanced"
+    },
+    "RICEFW-01": {
+      "level": "Core"
+    },
+    "RICEFW-02": {
+      "level": "Applied"
+    },
+    "RICEFW-03": {
+      "level": "Core"
+    },
+    "RICEFW-04": {
+      "level": "Core"
+    },
+    "RICEFW-05": {
+      "level": "Advanced"
+    },
+    "RICEFW-06": {
+      "level": "Applied"
+    },
+    "RICEFW-07": {
+      "level": "Advanced"
+    },
+    "RICEFW-08": {
+      "level": "Applied"
+    },
+    "RICEFW-09": {
+      "level": "Core"
+    },
+    "RICEFW-10": {
+      "level": "Core"
+    },
+    "RICEFW-11": {
+      "level": "Advanced"
+    },
+    "RICEFW-12": {
+      "level": "Advanced"
+    },
+    "RICEFW-13": {
+      "level": "Applied"
+    },
+    "RICEFW-14": {
+      "level": "Advanced"
+    },
+    "RICEFW-15": {
+      "level": "Applied"
+    },
+    "TEST-01": {
+      "level": "Core"
+    },
+    "TEST-02": {
+      "level": "Core"
+    },
+    "TEST-03": {
+      "level": "Applied"
+    },
+    "TEST-04": {
+      "level": "Applied"
+    },
+    "TEST-05": {
+      "level": "Core"
+    },
+    "TEST-06": {
+      "level": "Applied"
+    },
+    "TEST-07": {
+      "level": "Advanced"
+    },
+    "TEST-08": {
+      "level": "Applied"
+    },
+    "TEST-09": {
+      "level": "Applied"
+    },
+    "TEST-10": {
+      "level": "Core"
+    },
+    "STORY-01": {
+      "level": "Core"
+    },
+    "STORY-02": {
+      "level": "Applied"
+    },
+    "STORY-03": {
+      "level": "Core"
+    },
+    "STORY-04": {
+      "level": "Applied"
+    },
+    "STORY-05": {
+      "level": "Advanced"
+    },
+    "STORY-06": {
+      "level": "Core"
+    },
+    "HTTP-01": {
+      "level": "Core"
+    },
+    "HTTP-02": {
+      "level": "Core"
+    },
+    "HTTP-03": {
+      "level": "Core"
+    },
+    "HTTP-04": {
+      "level": "Applied"
+    },
+    "HTTP-05": {
+      "level": "Core"
+    },
+    "HTTP-06": {
+      "level": "Core"
+    },
+    "HTTP-07": {
+      "level": "Applied"
+    },
+    "HTTP-08": {
+      "level": "Core"
+    },
+    "HTTP-09": {
+      "level": "Applied"
+    },
+    "HTTP-10": {
+      "level": "Applied"
+    },
+    "HTTP-11": {
+      "level": "Core"
+    },
+    "HTTP-12": {
+      "level": "Applied"
+    },
+    "HTTP-13": {
+      "level": "Applied"
+    },
+    "HTTP-14": {
+      "level": "Advanced"
+    },
+    "RFC-01": {
+      "level": "Core"
+    },
+    "RFC-02": {
+      "level": "Core"
+    },
+    "RFC-03": {
+      "level": "Core"
+    },
+    "RFC-04": {
+      "level": "Applied"
+    },
+    "RFC-05": {
+      "level": "Applied"
+    },
+    "RFC-06": {
+      "level": "Applied"
+    },
+    "RFC-07": {
+      "level": "Advanced"
+    },
+    "RFC-08": {
+      "level": "Advanced"
+    },
+    "RFC-09": {
+      "level": "Advanced"
+    },
+    "RFC-10": {
+      "level": "Applied"
+    },
+    "RFC-11": {
+      "level": "Applied"
+    },
+    "RFC-12": {
+      "level": "Advanced"
+    },
+    "INTF-01": {
+      "level": "Core"
+    },
+    "INTF-02": {
+      "level": "Core"
+    },
+    "INTF-03": {
+      "level": "Core"
+    },
+    "INTF-04": {
+      "level": "Core"
+    },
+    "INTF-05": {
+      "level": "Applied"
+    },
+    "INTF-06": {
+      "level": "Applied"
+    },
+    "INTF-07": {
+      "level": "Core"
+    },
+    "INTF-08": {
+      "level": "Applied"
+    },
+    "INTF-09": {
+      "level": "Applied"
+    },
+    "INTF-10": {
+      "level": "Advanced"
+    },
+    "INTF-11": {
+      "level": "Applied"
+    },
+    "INTF-12": {
+      "level": "Advanced"
+    },
+    "CLOUD-01": {
+      "level": "Advanced"
+    },
+    "CLOUD-02": {
+      "level": "Core"
+    },
+    "CLOUD-03": {
+      "level": "Applied"
+    },
+    "CLOUD-04": {
+      "level": "Advanced"
+    },
+    "CLOUD-05": {
+      "level": "Applied"
+    },
+    "CLOUD-06": {
+      "level": "Applied"
+    },
+    "CLOUD-07": {
+      "level": "Advanced"
+    },
+    "CLOUD-08": {
+      "level": "Advanced"
+    },
+    "CLOUD-09": {
+      "level": "Applied"
+    },
+    "CLOUD-10": {
+      "level": "Advanced"
+    },
+    "CLOUD-11": {
+      "level": "Core"
+    },
+    "CLOUD-12": {
+      "level": "Advanced"
+    },
+    "CLOUD-13": {
+      "level": "Applied"
+    },
+    "CLOUD-14": {
+      "level": "Applied"
+    },
+    "CLOUD-15": {
+      "level": "Advanced"
+    },
+    "CLOUD-16": {
+      "level": "Advanced"
+    },
+    "CLOUD-17": {
+      "level": "Applied"
+    },
+    "CLOUD-18": {
+      "level": "Advanced"
+    },
+    "SRAP-01": {
+      "level": "Advanced"
+    },
+    "SRAP-02": {
+      "level": "Applied"
+    },
+    "SRAP-03": {
+      "level": "Applied"
+    },
+    "SRAP-04": {
+      "level": "Advanced"
+    },
+    "SRAP-05": {
+      "level": "Applied"
+    },
+    "SRAP-06": {
+      "level": "Applied"
+    },
+    "SRAP-07": {
+      "level": "Applied"
+    },
+    "SRAP-08": {
+      "level": "Advanced"
+    },
+    "SRAP-09": {
+      "level": "Applied"
+    },
+    "SRAP-10": {
+      "level": "Advanced"
+    },
+    "SRAP-11": {
+      "level": "Applied"
+    },
+    "SRAP-12": {
+      "level": "Advanced"
+    },
+    "SRAP-13": {
+      "level": "Applied"
+    },
+    "SRAP-14": {
+      "level": "Advanced"
+    },
+    "SRAP-15": {
+      "level": "Applied"
+    },
+    "SRAP-16": {
+      "level": "Advanced"
+    },
+    "SRAP-17": {
+      "level": "Advanced"
+    },
+    "SRAP-18": {
+      "level": "Advanced"
+    },
+    "SRAP-19": {
+      "level": "Advanced"
+    },
+    "SRAP-20": {
+      "level": "Advanced"
+    },
+    "SRAP-21": {
+      "level": "Applied"
+    },
+    "SRAP-22": {
+      "level": "Applied"
+    },
+    "SRAP-23": {
+      "level": "Advanced"
+    },
+    "SRAP-24": {
+      "level": "Applied"
+    },
+    "MODEL-01": {
+      "level": "Applied"
+    },
+    "MODEL-02": {
+      "level": "Advanced"
+    },
+    "MODEL-03": {
+      "level": "Applied"
+    },
+    "MODEL-04": {
+      "level": "Advanced"
+    },
+    "MODEL-05": {
+      "level": "Advanced"
+    },
+    "MODEL-06": {
+      "level": "Applied"
+    },
+    "MODEL-07": {
+      "level": "Applied"
+    },
+    "MODEL-08": {
+      "level": "Advanced"
+    },
+    "MODEL-09": {
+      "level": "Advanced"
+    },
+    "MODEL-10": {
+      "level": "Applied"
+    },
+    "MODEL-11": {
+      "level": "Applied"
+    },
+    "MODEL-12": {
+      "level": "Advanced"
+    },
+    "MODEL-13": {
+      "level": "Applied"
+    },
+    "MODEL-14": {
+      "level": "Advanced"
+    },
+    "MODEL-15": {
+      "level": "Advanced"
+    },
+    "MODEL-16": {
+      "level": "Applied"
+    },
+    "MODEL-17": {
+      "level": "Advanced"
+    },
+    "MODEL-18": {
+      "level": "Advanced"
+    },
+    "OPS-01": {
+      "level": "Applied"
+    },
+    "OPS-02": {
+      "level": "Applied"
+    },
+    "OPS-03": {
+      "level": "Applied"
+    },
+    "OPS-04": {
+      "level": "Applied"
+    },
+    "OPS-05": {
+      "level": "Advanced"
+    },
+    "OPS-06": {
+      "level": "Applied"
+    },
+    "OPS-07": {
+      "level": "Advanced"
+    },
+    "OPS-08": {
+      "level": "Advanced"
+    },
+    "OPS-09": {
+      "level": "Applied"
+    },
+    "OPS-10": {
+      "level": "Advanced"
+    },
+    "OPS-11": {
+      "level": "Advanced"
+    },
+    "OPS-12": {
+      "level": "Advanced"
+    },
+    "OPS-13": {
+      "level": "Advanced"
+    },
+    "OPS-14": {
+      "level": "Applied"
+    },
+    "OPS-15": {
+      "level": "Applied"
+    },
+    "OPS-16": {
+      "level": "Advanced"
+    },
+    "OPS-17": {
+      "level": "Advanced"
+    },
+    "OPS-18": {
+      "level": "Core"
+    },
+    "GOV-01": {
+      "level": "Applied"
+    },
+    "GOV-02": {
+      "level": "Core"
+    },
+    "GOV-03": {
+      "level": "Applied"
+    },
+    "GOV-04": {
+      "level": "Advanced"
+    },
+    "GOV-05": {
+      "level": "Applied"
+    },
+    "GOV-06": {
+      "level": "Advanced"
+    },
+    "GOV-07": {
+      "level": "Applied"
+    },
+    "GOV-08": {
+      "level": "Applied"
+    },
+    "GOV-09": {
+      "level": "Advanced"
+    },
+    "GOV-10": {
+      "level": "Advanced"
+    },
+    "GOV-11": {
+      "level": "Advanced"
+    },
+    "GOV-12": {
+      "level": "Advanced"
+    },
+    "GOV-13": {
+      "level": "Advanced"
+    },
+    "GOV-14": {
+      "level": "Advanced"
+    },
+    "GOV-15": {
+      "level": "Advanced"
+    },
+    "GOV-16": {
+      "level": "Applied"
+    },
+    "GOV-17": {
+      "level": "Advanced"
+    },
+    "GOV-18": {
+      "level": "Applied"
+    },
+    "BASE-01": {
+      "level": "Applied"
+    },
+    "BASE-02": {
+      "level": "Applied"
+    },
+    "BASE-03": {
+      "level": "Applied"
+    },
+    "BASE-04": {
+      "level": "Applied"
+    },
+    "BASE-05": {
+      "level": "Core"
+    },
+    "BASE-06": {
+      "level": "Applied"
+    },
+    "BASE-07": {
+      "level": "Applied"
+    },
+    "BASE-08": {
+      "level": "Applied"
+    },
+    "BASE-09": {
+      "level": "Applied"
+    },
+    "BASE-10": {
+      "level": "Applied"
+    },
+    "BASE-11": {
+      "level": "Applied"
+    },
+    "BASE-12": {
+      "level": "Advanced"
+    },
+    "BASE-13": {
+      "level": "Advanced"
+    },
+    "BASE-14": {
+      "level": "Core"
+    },
+    "BASE-15": {
+      "level": "Applied"
+    },
+    "BASE-16": {
+      "level": "Applied"
+    },
+    "OODEEP-01": {
+      "level": "Applied"
+    },
+    "OODEEP-02": {
+      "level": "Applied"
+    },
+    "OODEEP-03": {
+      "level": "Applied"
+    },
+    "OODEEP-04": {
+      "level": "Applied"
+    },
+    "OODEEP-05": {
+      "level": "Applied"
+    },
+    "OODEEP-06": {
+      "level": "Applied"
+    },
+    "OODEEP-07": {
+      "level": "Applied"
+    },
+    "OODEEP-08": {
+      "level": "Applied"
+    },
+    "OODEEP-09": {
+      "level": "Applied"
+    },
+    "OODEEP-10": {
+      "level": "Applied"
+    },
+    "OODEEP-11": {
+      "level": "Advanced"
+    },
+    "OODEEP-12": {
+      "level": "Applied"
+    },
+    "PAT-01": {
+      "level": "Applied"
+    },
+    "PAT-02": {
+      "level": "Advanced"
+    },
+    "PAT-03": {
+      "level": "Applied"
+    },
+    "PAT-04": {
+      "level": "Advanced"
+    },
+    "PAT-05": {
+      "level": "Applied"
+    },
+    "PAT-06": {
+      "level": "Applied"
+    },
+    "PAT-07": {
+      "level": "Advanced"
+    },
+    "PAT-08": {
+      "level": "Applied"
+    },
+    "PAT-09": {
+      "level": "Applied"
+    },
+    "PAT-10": {
+      "level": "Applied"
+    },
+    "PAT-11": {
+      "level": "Applied"
+    },
+    "PAT-12": {
+      "level": "Applied"
+    },
+    "SQLX-01": {
+      "level": "Advanced"
+    },
+    "SQLX-02": {
+      "level": "Advanced"
+    },
+    "DELIV-01": {
+      "level": "Applied"
+    }
+  },
+  "paths": [
+    {
+      "topic": "cloud",
+      "title": "ABAP Cloud: model, APIs and placement",
+      "titleRu": "ABAP Cloud: модель, API и размещение",
+      "goal": "Explain the development model, distinguish read and write APIs, and justify where a small extension belongs.",
+      "goalRu": "Объяснить модель разработки, различать API для чтения и изменения и обосновать размещение небольшого расширения.",
+      "questionIds": [
+        "CLOUD-02",
+        "CLOUD-11",
+        "CLOUD-09",
+        "CLOUD-03",
+        "CLOUD-14",
+        "CLOUD-05",
+        "CLOUD-01",
+        "CLOUD-04"
+      ],
+      "prerequisites": {
+        "CLOUD-11": [
+          "CLOUD-02"
+        ],
+        "CLOUD-09": [
+          "CLOUD-02"
+        ],
+        "CLOUD-03": [
+          "CLOUD-02",
+          "CLOUD-11"
+        ],
+        "CLOUD-14": [
+          "CLOUD-09"
+        ],
+        "CLOUD-05": [
+          "CLOUD-11"
+        ],
+        "CLOUD-01": [
+          "CLOUD-14",
+          "CLOUD-05"
+        ],
+        "CLOUD-04": [
+          "CLOUD-05"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "CLOUD-04",
+        "prompt": "Two teams place their code in separate software components, but each uses the other's database row types. Can they now release independently?",
+        "promptRu": "Две команды разместили код в разных software components, но каждая использует типы строк БД другой команды. Теперь они могут выпускать изменения независимо?",
+        "answer": "Not just because the components are separate. Shared persistence types still couple changes. Define a narrow, owned interface and verify compatibility with existing consumers; coordinated releases may still be necessary.",
+        "answerRu": "Самого разделения компонентов недостаточно. Общие типы БД по-прежнему связывают изменения. Нужен небольшой интерфейс с владельцем и проверкой совместимости с существующими потребителями; согласованные релизы всё ещё могут быть необходимы."
+      }
+    },
+    {
+      "topic": "rap",
+      "title": "RAP: from working changes to safe saving",
+      "titleRu": "RAP: от изменений в буфере до сохранения",
+      "goal": "Trace a change through the RAP buffer and save sequence, then distinguish draft, version checks and operation permissions.",
+      "goalRu": "Проследить изменение через RAP buffer и save sequence, затем различать draft, проверку версии и права на операции.",
+      "questionIds": [
+        "RAP-01",
+        "RAP-03",
+        "RAP-08",
+        "RAP-06",
+        "RAP-05",
+        "RAP-12",
+        "ADV-01",
+        "ADV-02"
+      ],
+      "prerequisites": {
+        "RAP-03": [
+          "RAP-01"
+        ],
+        "RAP-08": [
+          "RAP-03"
+        ],
+        "RAP-06": [
+          "RAP-03"
+        ],
+        "RAP-05": [
+          "RAP-06"
+        ],
+        "RAP-12": [
+          "RAP-05"
+        ],
+        "ADV-01": [
+          "RAP-12"
+        ],
+        "ADV-02": [
+          "RAP-06",
+          "RAP-08"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "ADV-02",
+        "prompt": "Global authorization permits Update. The user may change projects in Company Code 1000, but the selected project belongs to 2000. Does the global result permit this update?",
+        "promptRu": "Global authorization разрешает Update. Пользователь может изменять проекты Company Code 1000, но выбранный проект относится к 2000. Разрешает ли общий результат это изменение?",
+        "answer": "No. The global result permits the operation in general. Instance authorization must check the selected record. Proposed changes to CompanyCode also need the appropriate incoming-value check; permission on the old record does not grant permission on the new value.",
+        "answerRu": "Нет. Global authorization разрешает операцию в целом. Instance authorization должна проверить выбранную запись. Изменение CompanyCode также требует соответствующей проверки нового значения: право на старую запись не даёт права на новое значение."
+      }
+    },
+    {
+      "topic": "clean-core",
+      "title": "Clean Core: assess an extension choice",
+      "titleRu": "Clean Core: оценить вариант расширения",
+      "goal": "Distinguish Clean Core levels from release contracts and explain how to assess an API gap without hiding dependencies.",
+      "goalRu": "Различать уровни Clean Core и release contracts и объяснить, как оценивать отсутствие нужного API, не скрывая зависимости.",
+      "questionIds": [
+        "CORE-01",
+        "CORE-17",
+        "CORE-02",
+        "CORE-12",
+        "CORE-08",
+        "CORE-13",
+        "CORE-10",
+        "CORE-15"
+      ],
+      "prerequisites": {
+        "CORE-17": [
+          "CORE-01"
+        ],
+        "CORE-02": [
+          "CORE-01"
+        ],
+        "CORE-12": [
+          "CORE-02"
+        ],
+        "CORE-08": [
+          "CORE-02",
+          "CORE-12"
+        ],
+        "CORE-13": [
+          "CORE-02",
+          "CORE-12"
+        ],
+        "CORE-10": [
+          "CORE-01"
+        ],
+        "CORE-15": [
+          "CORE-13",
+          "CORE-10"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "CORE-15",
+        "prompt": "No released API appears to support a required write. Does an approved exception make any classic workaround available in Public Edition?",
+        "promptRu": "Кажется, released API для нужного изменения нет. Делает ли согласованное исключение любой классический обходной путь доступным в Public Edition?",
+        "answer": "No. First verify the missing operation and supported standard or extension alternatives. An exception does not override the product's language and API restrictions. Revisit the process or placement if necessary.",
+        "answerRu": "Нет. Сначала уточни, какой операции не хватает, и проверь стандартные возможности и поддерживаемые расширения. Исключение не отменяет ограничения продукта на язык и API. При необходимости пересмотри процесс или размещение."
+      }
+    },
+    {
+      "topic": "cds",
+      "title": "CDS: model rows, relationships and read access",
+      "titleRu": "CDS: записи, связи и доступ к чтению",
+      "goal": "Explain a CDS model's identity and relationships, then check read access at the entity a consumer actually uses.",
+      "goalRu": "Объяснить идентичность записей и связи CDS-модели, затем проверить доступ к сущности, которую действительно читает потребитель.",
+      "questionIds": [
+        "CDS-01",
+        "CDS-02",
+        "CDS-11",
+        "CDS-03",
+        "CDS-04",
+        "CDS-05",
+        "CDS-08",
+        "CDS-07"
+      ],
+      "prerequisites": {
+        "CDS-02": [
+          "CDS-01"
+        ],
+        "CDS-11": [
+          "CDS-01"
+        ],
+        "CDS-03": [
+          "CDS-11"
+        ],
+        "CDS-04": [
+          "CDS-03"
+        ],
+        "CDS-05": [
+          "CDS-01"
+        ],
+        "CDS-08": [
+          "CDS-05"
+        ],
+        "CDS-07": [
+          "CDS-05"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "CDS-07",
+        "prompt": "Lea may read sales organization A. A base CDS view has DCL, but the exposed consumption view also returns order B1 from organization B. Is the base DCL enough?",
+        "promptRu": "Лея может читать данные sales organization A. У базового CDS view есть DCL, но опубликованный consumption view возвращает и заказ B1 организации B. Достаточно ли DCL базового view?",
+        "answer": "No. Inspect the access rules on the actual read entry point and any supported inheritance and mappings. Test the exposed entity and value helps with restricted users. Read protection does not replace RAP operation authorization.",
+        "answerRu": "Нет. Проверь правила на фактической точке чтения, а также поддерживаемое наследование и сопоставление условий. Протестируй опубликованную сущность и value helps с ограниченными правами. Защита чтения не заменяет RAP authorization для операций."
+      }
+    },
+    {
+      "topic": "abap",
+      "title": "ABAP foundations: values, tables and objects",
+      "titleRu": "Основы ABAP: значения, таблицы и объекты",
+      "goal": "Choose a basic data representation, explain object initialization and distinguish the problems solved by Factory, Facade and Singleton.",
+      "goalRu": "Выбрать базовое представление данных, объяснить инициализацию объектов и различать задачи Factory, Facade и Singleton.",
+      "questionIds": [
+        "ABAP-05",
+        "ABAP-04",
+        "ABAP-01",
+        "OO-01",
+        "OO-02",
+        "OO-05",
+        "OO-17",
+        "OO-16"
+      ],
+      "prerequisites": {
+        "ABAP-04": [
+          "ABAP-05"
+        ],
+        "ABAP-01": [
+          "ABAP-05"
+        ],
+        "OO-02": [
+          "OO-01"
+        ],
+        "OO-05": [
+          "OO-01"
+        ],
+        "OO-17": [
+          "OO-05"
+        ],
+        "OO-16": [
+          "OO-02",
+          "OO-05"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "OO-16",
+        "prompt": "A delivery preview must choose a carrier calculator and coordinate reading the order, calculating package sizes and requesting a price. Which jobs suit Factory and Facade? Is Singleton required?",
+        "promptRu": "Для предварительного расчёта доставки нужно выбрать калькулятор перевозчика, прочитать заказ, рассчитать размеры посылки и запросить цену. Какие задачи подходят Factory и Facade? Обязателен ли Singleton?",
+        "answer": "A Factory can choose and create the calculator. A Facade can provide one entry point for the multi-step preview. Singleton is a separate lifetime choice and is not required by either job.",
+        "answerRu": "Factory может выбрать и создать калькулятор. Facade может дать одну точку входа для нескольких шагов расчёта. Singleton — отдельное решение о времени жизни объекта; для этих задач он не обязателен."
+      }
+    },
+    {
+      "topic": "sql",
+      "title": "SQL foundations: correct results before speed",
+      "titleRu": "Основы SQL: сначала результат, затем скорость",
+      "goal": "Reason about NULL, grouping and joins, then choose measurements before considering a more complex database implementation.",
+      "goalRu": "Разобраться с NULL, группировкой и joins, затем выбрать измерения перед переходом к более сложной реализации в БД.",
+      "questionIds": [
+        "SQL-01",
+        "SQL-05",
+        "SQL-06",
+        "SQL-04",
+        "SQL-07",
+        "SQL-09",
+        "SQL-10",
+        "SQL-14"
+      ],
+      "prerequisites": {
+        "SQL-05": [
+          "SQL-01"
+        ],
+        "SQL-06": [
+          "SQL-01"
+        ],
+        "SQL-04": [
+          "SQL-05"
+        ],
+        "SQL-07": [
+          "SQL-04"
+        ],
+        "SQL-09": [
+          "SQL-06",
+          "SQL-07"
+        ],
+        "SQL-10": [
+          "SQL-09"
+        ],
+        "SQL-14": [
+          "SQL-01",
+          "SQL-10"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "SQL-14",
+        "prompt": "A calculation transfers a large dataset to ABAP and back. Is rewriting it in AMDP enough to prove an improvement?",
+        "promptRu": "Расчёт передаёт большой набор данных из БД в ABAP и обратно. Достаточно ли переписать его на AMDP, чтобы доказать улучшение?",
+        "answer": "No. Compare simpler supported ABAP SQL or CDS options first, then measure the full operation and verify the same correct results. Check access rules, client handling and target support before choosing AMDP.",
+        "answerRu": "Нет. Сначала сравни более простые поддерживаемые варианты ABAP SQL или CDS, затем измерь всю операцию и проверь правильность результата. Перед выбором AMDP проверь права доступа, обработку клиента и поддержку целевой системой."
+      }
+    },
+    {
+      "topic": "integration",
+      "title": "HTTP foundations: from request to safe update",
+      "titleRu": "Основы HTTP: от запроса к безопасному изменению",
+      "goal": "Read an HTTP or OData request contract, explain a basic ABAP GET and reason about a failed or conflicting remote update.",
+      "goalRu": "Разобрать контракт HTTP- или OData-запроса, объяснить простой GET из ABAP и разобрать сбой или конфликт удалённого изменения.",
+      "questionIds": [
+        "HTTP-01",
+        "HTTP-02",
+        "HTTP-03",
+        "HTTP-05",
+        "ODATA-02",
+        "ODATA-03",
+        "HTTP-13",
+        "HTTP-14"
+      ],
+      "prerequisites": {
+        "HTTP-02": [
+          "HTTP-01"
+        ],
+        "HTTP-03": [
+          "HTTP-02"
+        ],
+        "HTTP-05": [
+          "HTTP-02"
+        ],
+        "ODATA-02": [
+          "HTTP-01"
+        ],
+        "ODATA-03": [
+          "ODATA-02"
+        ],
+        "HTTP-13": [
+          "HTTP-03",
+          "HTTP-05"
+        ],
+        "HTTP-14": [
+          "HTTP-13"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "HTTP-14",
+        "prompt": "A PATCH of order 4711 sends the ETag read earlier and receives HTTP 412. Should the client retry with If-Match: *?",
+        "promptRu": "PATCH заказа 4711 отправляет ранее прочитанный ETag и получает HTTP 412. Нужно ли повторить запрос с If-Match: *?",
+        "answer": "No. Read the current version and resolve the conflict instead of bypassing the version check. If the response is lost rather than rejected, the outcome is unknown and must be reconciled before repeating a business change.",
+        "answerRu": "Нет. Прочитай текущую версию и разреши конфликт, вместо того чтобы обходить проверку версии. Если ответ потерян, а не отклонён, результат неизвестен: перед повторным изменением нужно выяснить, что произошло."
+      }
+    },
+    {
+      "topic": "quality",
+      "title": "Testing foundations: claims and evidence",
+      "titleRu": "Основы тестирования: утверждения и доказательства",
+      "goal": "Choose useful assertions and test boundaries, then describe which runtime and delivery checks still need real-system evidence.",
+      "goalRu": "Выбрать полезные проверки и границы тестов, затем назвать проверки работы и доставки, которым нужны результаты из реальной системы.",
+      "questionIds": [
+        "TEST-01",
+        "TEST-10",
+        "TEST-02",
+        "TEST-04",
+        "TEST-03",
+        "TEST-06",
+        "TEST-07",
+        "TEST-08"
+      ],
+      "prerequisites": {
+        "TEST-10": [
+          "TEST-01"
+        ],
+        "TEST-02": [
+          "TEST-01"
+        ],
+        "TEST-04": [
+          "TEST-02"
+        ],
+        "TEST-03": [
+          "TEST-01",
+          "TEST-04"
+        ],
+        "TEST-06": [
+          "TEST-03"
+        ],
+        "TEST-07": [
+          "TEST-03"
+        ],
+        "TEST-08": [
+          "TEST-10",
+          "TEST-06"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "TEST-08",
+        "prompt": "A RAP transport imports successfully, but the intended user cannot open the service. What has the successful import proved, and what remains?",
+        "promptRu": "Transport с RAP успешно импортирован, но нужный пользователь не может открыть сервис. Что доказал успешный импорт и что ещё проверить?",
+        "answer": "Import success is only one delivery step. Verify target dependencies, roles, service and communication setup, then run the agreed business flow as a representative user. Record the revision, environment and checks actually run.",
+        "answerRu": "Успешный импорт — лишь один этап доставки. Проверь зависимости, роли, настройку сервиса и коммуникаций в целевой системе, затем выполни согласованный бизнес-сценарий с типичными правами пользователя. Запиши версию, окружение и реально выполненные проверки."
+      }
+    },
+    {
+      "topic": "extensions",
+      "title": "Enhancement and workflow foundations",
+      "titleRu": "Основы enhancements и workflow",
+      "goal": "Distinguish extension mechanisms and workflow building blocks, then explain a reliable submission and a meaningful end-to-end test.",
+      "goalRu": "Различать механизмы расширения и элементы workflow, затем объяснить надёжную отправку на согласование и полезный end-to-end тест.",
+      "questionIds": [
+        "RICEFW-01",
+        "RICEFW-03",
+        "RICEFW-04",
+        "RICEFW-09",
+        "RICEFW-10",
+        "RICEFW-13",
+        "RICEFW-11",
+        "RICEFW-14"
+      ],
+      "prerequisites": {
+        "RICEFW-03": [
+          "RICEFW-01"
+        ],
+        "RICEFW-04": [
+          "RICEFW-03"
+        ],
+        "RICEFW-09": [
+          "RICEFW-01"
+        ],
+        "RICEFW-10": [
+          "RICEFW-09"
+        ],
+        "RICEFW-13": [
+          "RICEFW-10"
+        ],
+        "RICEFW-11": [
+          "RICEFW-10"
+        ],
+        "RICEFW-14": [
+          "RICEFW-11",
+          "RICEFW-13"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "RICEFW-14",
+        "prompt": "A request is submitted, then changed before the manager answers. The old approval callback arrives. What should an end-to-end test verify?",
+        "promptRu": "Заявку отправили на согласование, затем изменили до ответа руководителя. Приходит callback со старым решением. Что должен проверить end-to-end тест?",
+        "answer": "The old decision must not silently approve the new request version. Inspect the resulting business state and audit history, and cover safe callback retries. A mock response alone does not prove real identity, delivery or callback behavior.",
+        "answerRu": "Старое решение не должно незаметно согласовать новую версию заявки. Проверь итоговое бизнес-состояние и историю аудита, а также безопасные повторы callback. Ответ mock сам по себе не доказывает работу реальных прав, доставки и callback."
+      }
+    },
+    {
+      "topic": "interview",
+      "title": "Prepare an evidence-based interview story",
+      "titleRu": "Подготовить рассказ для интервью на основе своего опыта",
+      "goal": "Explain your own contribution, support one decision with evidence and ask focused questions about the role.",
+      "goalRu": "Объяснить свой вклад, подкрепить одно решение фактами и задать конкретные вопросы о роли.",
+      "questionIds": [
+        "STORY-01",
+        "STORY-02",
+        "STORY-03",
+        "STORY-04",
+        "STORY-05",
+        "STORY-06"
+      ],
+      "prerequisites": {
+        "STORY-02": [
+          "STORY-01"
+        ],
+        "STORY-04": [
+          "STORY-02"
+        ],
+        "STORY-05": [
+          "STORY-02",
+          "STORY-03"
+        ],
+        "STORY-06": [
+          "STORY-03"
+        ]
+      },
+      "checkpoint": {
+        "questionId": "STORY-06",
+        "prompt": "The job title is ABAP Developer. What three questions would reveal the actual work better than asking for a list of technologies?",
+        "promptRu": "Вакансия называется ABAP Developer. Какие три вопроса лучше прояснят реальную работу, чем просьба перечислить технологии?",
+        "answer": "Ask which editions and releases the team supports, what you would build or maintain in the first months, and how changes reach production. Follow up on one answer with a real example of ownership, review or testing.",
+        "answerRu": "Спроси, какие editions и releases поддерживает команда, что предстоит создавать или сопровождать в первые месяцы и как изменения попадают в production. Уточни один ответ на реальном примере распределения ответственности, ревью или тестирования."
+      }
+    }
+  ]
+}

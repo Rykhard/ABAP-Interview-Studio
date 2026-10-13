@@ -10,6 +10,7 @@ Question IDs are durable keys for bookmarks, progress, routing and translations.
 | Layer | Source of truth | Responsibility |
 | --- | --- | --- |
 | Curriculum | `content/`, `quiz/`, `examples/`, `lessons/`, `visuals/` | Authored teaching records and primary references |
+| Learning design | `curriculum/learning.json`, `scripts/studio-learning.js` | Independent learning levels, optional ordered paths, prerequisites and checkpoints |
 | Translation | `locales/ru/` | Reviewed text; preserve technical IDs and code |
 | Data access | `scripts/studio-data.js` | Parse each embedded payload once, select locale by reference, index question associations |
 | Navigation/state | `scripts/studio.js`, `studio-calm.js`, `studio-language.js` | Routes, filters, saved preferences and session handoff |

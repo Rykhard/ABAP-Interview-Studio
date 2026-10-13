@@ -45,7 +45,7 @@ __SIMPLIFY_CSS__
 <div class="modes" role="group" aria-label="Workspace mode"><button id="learnTab" class="active" aria-pressed="true">Learn</button><button id="trainTab" aria-pressed="false">Practice</button></div>
 
 <div id="notice" role="status" aria-live="polite"></div>
-<details id="learnFilters"><summary>Filter questions <span id="filterSummary"></span></summary><div id="learnFiltersHost"><div id="filters" class="toolbar"><input id="search" type="search" aria-label="Filter questions in the selected topic" placeholder="Filter this view by text or ID"><select id="topic" aria-label="Topic"><option value="">All topics</option></select><select id="section" aria-label="Subtopic"><option value="">All subtopics</option></select><button id="clearFilters" class="utility">Reset filters</button></div></div></details>
+<details id="learnFilters"><summary>Filter questions <span id="filterSummary"></span></summary><div id="learnFiltersHost"><div id="filters" class="toolbar"><input id="search" type="search" aria-label="Filter questions in the selected topic" placeholder="Filter this view by text or ID"><select id="topic" aria-label="Topic"><option value="">All topics</option></select><select id="section" aria-label="Subtopic"><option value="">All subtopics</option></select><div id="learningFilter"><label for="scope">Learning level</label><select id="scope"><option value="all">All levels</option><option value="Core">Core · Basics</option><option value="Applied">Applied · Application</option><option value="Advanced">Advanced · Complex scenarios</option></select></div><div id="learningSortField"><label for="learningSort">Order</label><select id="learningSort"><option value="recommended">Recommended</option><option value="id">Question ID</option></select></div><button id="clearFilters" class="utility">Reset filters</button></div></div></details>
 <section id="practiceSetup" class="practice-setup" aria-label="Practice session setup" hidden>
 <div class="practice-intro"><h3>Choose your practice</h3><p id="practiceContext"></p></div>
 <div class="format-picker" role="group" aria-label="Practice format"><button id="recallKind" class="format-card" aria-pressed="true"><strong>Interview practice</strong><small>Explain aloud, reveal the answer, rate yourself.</small></button><button id="quizKind" class="format-card" aria-pressed="false"><strong>Multiple-choice quiz</strong><small>Choose an answer and get explained feedback.</small></button></div>
@@ -53,7 +53,7 @@ __SIMPLIFY_CSS__
 <div class="practice-fields"><div><label for="selection">Questions</label><select id="selection"><option value="all">All questions</option><option value="new">New questions</option><option value="retry">Retry mistakes</option></select></div><div><label for="sessionLength">Session length</label><select id="sessionLength"><option value="5">5 questions</option><option value="10" selected>10 questions</option><option value="20">20 questions</option><option value="all">All available</option></select></div></div>
 
 <details id="advancedSettings"><summary id="advancedLabel">More settings</summary><div class="practice-coverage"><span id="coverageText"></span> <button id="useAllQuestions" class="utility" hidden></button></div>
-<div class="advanced-fields"><div><label for="search">Find a concept or question ID</label><div id="practiceSearchHost"></div></div><div><label for="scope">Difficulty</label><select id="scope"><option value="all">All levels</option><option value="Core">Core</option><option value="Advanced">Advanced</option><option value="Senior">Senior</option></select></div></div><p id="practiceHelpText" class="small subtle"></p></details>
+<div class="advanced-fields"><div><label for="search">Find a concept or question ID</label><div id="practiceSearchHost"></div></div></div><p id="practiceHelpText" class="small subtle"></p></details>
 <div class="practice-start"><button id="startPractice" class="primary">Start session</button><span id="practiceSummary" class="small subtle" role="status"></span></div>
 
 </section>
@@ -73,6 +73,7 @@ __SIMPLIFY_CSS__
 <script id="diagram-data" type="application/json">__DIAGRAM_DATA__</script>
 <script id="visual-data" type="application/json">__VISUALS__</script>
 <script id="quiz-data" type="application/json">__QUIZ__</script>
+<script id="learning-data" type="application/json">__LEARNING_DATA__</script>
 <script id="topic-data" type="application/json">__TOPICS__</script>
 <script id="track-data" type="application/json">__TRACKS__</script>
 <script>

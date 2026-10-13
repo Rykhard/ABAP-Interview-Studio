@@ -12,7 +12,8 @@ for (const locale of ['en', 'ru']) for (const width of [390, 1440]) {
     // Instrumentation confirms diagrams are not parsed on the catalog screen.
     expect(await page.evaluate(() => studioDataCache.has('diagram-data'))).toBe(false);
     await page.locator('.topic-card[data-open=rap]').click();
-    await expect(page.locator('.topic-start [data-open-question]')).toHaveCount(3);
+    await expect(page.locator('.topic-start [data-start-path]')).toBeVisible();
+    expect(await page.locator('.topic-start [data-open-question]').count()).toBeGreaterThanOrEqual(6);
     await page.keyboard.press('Control+k');
     await page.locator('#globalSearchInput').fill('save sequence');
     await expect(page.locator('[data-search-result]').first()).toHaveAttribute('data-search-result', 'RAP-05');
@@ -62,5 +63,6 @@ test('offline file works without network and reduced motion disables navigation 
   await expect(page.locator('.code-window')).toContainText('AUTHORITY-CHECK');
   await page.evaluate(() => document.querySelector('#segments .nav-topic[data-topic=cds]').click());
   await expect(page.locator('.nav-motion-indicator')).toHaveCount(0);
-  await expect(page.locator('.topic-start [data-open-question]')).toHaveCount(3);
+  await expect(page.locator('.topic-start [data-start-path]')).toBeVisible();
+  expect(await page.locator('.topic-start [data-open-question]').count()).toBeGreaterThanOrEqual(6);
 });

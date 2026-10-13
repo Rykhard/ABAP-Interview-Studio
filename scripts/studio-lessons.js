@@ -83,7 +83,7 @@ $('view').addEventListener('click',event=>{
  animateLessonStep(next);
  const stage=next.querySelector('.save-flow,.lesson-stage');if(stage.getBoundingClientRect().top<0||stage.getBoundingClientRect().top>innerHeight*.6)stage.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 });
-function openLessonLibrary(){
+function openLessonLibrary(){activeLearningPath='';
  storeFilters();mode='learn';lessonLibrary=true;savedOnly=false;libraryList=false;questionFromSearch=false;
  prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};restoreFilters();
  document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');

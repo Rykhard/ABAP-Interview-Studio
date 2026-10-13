@@ -13,7 +13,7 @@ For offline use, download this repository, keep its folders together and open `S
 ## Learn and practice
 
 - Switch EN/RU in the top bar. Questions, explanations, practice choices, worked-example steps and interface text are authored in both languages. Technical identifiers and executable code stay unchanged. Language switching preserves the current question, lesson step and ongoing practice session. See [Localization](docs/Localization.md) for scope and maintenance.
-- Browse subjects and subtopics as compact question lists with all difficulty levels together. Open a question to read its explanation immediately; return to the same list position and filters.
+- Choose Learn the basics or Prepare for an interview. Filter the library by Core, Applied or Advanced learning level and choose recommended order or question ID. Ten optional topic paths provide goals, prerequisite links, named next steps and a final checkpoint. Opened questions are tracked separately from readiness. See [Learning design](docs/Learning.md).
 - Open a question's code example, select a step to highlight its lines, and read what happens. Use the larger code view or copy the excerpt. Explanation shows a compact diagram preview with an enlarged viewer. Teaching fragments state their prerequisites and link to primary sources.
 - Switch between light and dark with the animated sun/moon control. Reading preferences include system appearance, larger answer text and a focus mode that hides topic navigation. Theme and reading choices stay in this browser.
 - Save questions into a personal collection, resume the last opened question and move between neighboring questions in a subtopic.

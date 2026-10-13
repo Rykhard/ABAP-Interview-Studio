@@ -1,4 +1,4 @@
-﻿"""Build only the offline web app; preserve existing printable artifacts."""
+"""Build only the offline web app; preserve existing printable artifacts."""
 import json,re
 from pathlib import Path
 from study_catalog import ordered_modules, catalog
@@ -20,6 +20,7 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     app=app.replace('__CODE_APP__', (root/'scripts/studio-code.js').read_text(encoding='utf-8'))
     app=app.replace('__MOTION_APP__', (root/'scripts/studio-motion.js').read_text(encoding='utf-8'))
     app=app.replace('__CALM_APP__', (root/'scripts/studio-calm.js').read_text(encoding='utf-8'))
+    app=app.replace('__LEARNING_APP__', (root/'scripts/studio-learning.js').read_text(encoding='utf-8'))
     lessons=load_lessons(root, {q['id'] for module in modules for q in module['questions']})
     write_lesson_guide(root, lessons)
     app=app.replace('__LESSON_APP__', (root/'scripts/studio-lessons.js').read_text(encoding='utf-8')+'\n'+(root/'scripts/studio-scenes.js').read_text(encoding='utf-8'))
@@ -36,6 +37,9 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     template=template.replace('__LANGUAGE_CSS__',(root/'scripts/language.css').read_text(encoding='utf-8'))
     values={'__MOTION_CSS__':(root/'scripts/motion.css').read_text(encoding='utf-8'),'__CODE_CSS__':(root/'scripts/code-examples.css').read_text(encoding='utf-8'),'__CODE_DATA__':payload(examples),'__USABILITY_CSS__':(root/'scripts/usability.css').read_text(encoding='utf-8'),'__PRACTICE_CSS__':(root/'scripts/practice.css').read_text(encoding='utf-8'),'__APP__':app,'__DATA__':payload(modules),'__VISUALS__':payload(visual_metadata),'__QUIZ__':payload(quiz_items),'__TRACKS__':payload(catalog(modules)),'__TOPICS__':payload(topic_catalog(modules))}
     values['__CALM_CSS__']=(root/'scripts/calm.css').read_text(encoding='utf-8')
+    learning=read_json(root/'curriculum/learning.json')
+    values['__LEARNING_DATA__']=payload(learning)
+    values['__CALM_CSS__']+='\n'+(root/'scripts/learning.css').read_text(encoding='utf-8')
     values['__LESSON_DATA__']=payload(lessons)
     values['__SIMPLIFY_CSS__']=(root/'scripts/simplify.css').read_text(encoding='utf-8')
     values['__SIMPLIFY_CSS__']+='\n'+(root/'scripts/diagrams.css').read_text(encoding='utf-8')+'\n'+diagram_theme_css()
@@ -46,9 +50,9 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     for token,value in values.items():template=template.replace(token,value)
     if re.search(r'__(?!INSTANCE__)[A-Z][A-Z_]+__', template):
         raise ValueError('Unresolved application template token')
-    (root/'START_HERE.html').write_text(template,encoding='utf-8')
+    (root/'START_HERE.html').write_text(template,encoding='utf-8',newline='\n')
     questions={q['id']:(m,q) for m in modules for q in m['questions']}
-    lines=['# Study topic map', '', 'The studio groups questions by subject. Core, Advanced and Senior levels stay inside each topic. Source documents keep their stable module names for printable exports.', '']
+    lines=['# Study topic map', '', 'Learning levels describe the task: Core (basics), Applied (application), Advanced (complex scenarios). They are independent of the original interview rubric. The app offers optional topic paths; source documents keep their stable names for printable exports.', '']
     for topic in topic_catalog(modules):
         count=sum(len(section['questionIds']) for section in topic['sections'])
         lines.extend([f"## {topic['title']}", '', f"{count} questions. {topic['description']}", ''])
@@ -58,7 +62,7 @@ def write_studio(root, modules, visual_metadata, quiz_items):
                 module,question=questions[ident]
                 label=(ident+' - '+question['question']).replace('|', r'\|')
                 anchor=re.sub(r'[^\w -]', '', ident+' '+question['question']).lower().replace(' ','-')
-                lines.append(f"| [{label}](../topics/{module['id']}.md#{anchor}) | {question['level']} |")
+                lines.append(f"| [{label}](../topics/{module['id']}.md#{anchor}) | {learning['questions'][ident]['level']} |")
             lines.append('')
     (root/'study/Topic_Map.md').write_text('\n'.join(lines),encoding='utf-8')
 

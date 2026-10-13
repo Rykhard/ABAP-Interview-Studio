@@ -22,7 +22,7 @@ function practiceContext(){const t=topicById.get($('topic').value),sub=t?.sectio
 function plannedCount(count){return $('sessionLength').value==='all'?count:Math.min(count,Number($('sessionLength').value));}
 function setPracticeKind(kind){if(activeSession)return;practiceKind=kind;render();routeSelection();}
 function practiceSetup(){
- const training=mode==='train',host=training?$('practiceFiltersHost'):$('learnFiltersHost');
+ const training=mode==='train';$('learningSortField').hidden=training;const host=training?$('practiceFiltersHost'):$('learnFiltersHost');
  if($('filters').parentElement!==host)host.append($('filters'));
  if(training){if($('search').parentElement!==$('practiceSearchHost'))$('practiceSearchHost').append($('search'));}
  else if($('search').parentElement!==$('filters'))$('filters').prepend($('search'));
