@@ -60,7 +60,9 @@ function nav(animate=true){
   output+=`<div class="nav-topic-row ${current?'is-current-topic':''}"><button data-topic="${t.id}" class="nav-topic ${active?'active':''}" ${active?'aria-current="page"':''}>${icon(t.icon)}<span class="nav-title">${esc(t.title)}</span><span class="nav-count">${topicQuestions(t).length}</span></button><button class="nav-disclosure" data-expand-topic="${t.id}" aria-expanded="${expanded}" aria-controls="subtopics-${t.id}" aria-label="Subtopics: ${esc(t.title)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button></div><div class="nav-subtopics" id="subtopics-${t.id}" ${expanded?'':'hidden'}>${t.sections.map(x=>`<button data-topic="${t.id}" data-section="${x.id}" class="nav-section ${current&&section===x.id?'active':''}" ${current&&section===x.id&&expanded?'aria-current="page"':''}>${esc(x.title)} <span class="nav-count">${x.questionIds.length}</span></button>`).join('')}</div>`;
  }
  const sidebar=document.querySelector('aside'),scrollTop=sidebar.scrollTop;
+ const subtopicScroll=new Map([...$('segments').querySelectorAll('.nav-subtopics')].map(group=>[group.id,group.scrollTop]));
  $('segments').innerHTML=output;
+ $('segments').querySelectorAll('.nav-subtopics').forEach(group=>{group.scrollTop=subtopicScroll.get(group.id)||0;});
  document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{selectTopic(b.dataset.topic,b.dataset.section||'');document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');});
  $('segments').querySelectorAll('[data-expand-topic]').forEach(button=>button.onclick=()=>{
   expandedNavTopic=expandedNavTopic===button.dataset.expandTopic?'':button.dataset.expandTopic;

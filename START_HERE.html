@@ -1255,6 +1255,15 @@ aside nav .nav-disclosure{display:grid;place-items:center;width:32px;min-width:3
 @media(max-width:1000px){.topic-start ol{grid-template-columns:1fr}.topic-start{padding:16px}.topic-start a{min-height:44px}}
 @media(prefers-reduced-motion:reduce){.nav-disclosure svg{transition:none}}
 
+/* Stable text metrics and a single moving highlight prevent navigation jumps. */
+#segments button[data-topic],#segments .nav-saved{border:0;border-left:3px solid transparent;font-weight:600;transition:color 180ms ease}
+#segments .nav-section{border-left-color:var(--line)}
+#segments button.active{border-left-color:var(--green)}
+#segments .nav-motion-indicator{position:absolute;z-index:0;pointer-events:none;background:var(--soft);border-left:3px solid var(--green);border-radius:7px;box-sizing:border-box}
+#segments button.nav-motion-current{background:transparent;border-left-color:transparent!important;transition:none}
+#segments .nav-subtopics>button{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){#segments button[data-topic],#segments .nav-saved{transition:none}}
+
 /* Native SVG text remains selectable; opening the viewer is a separate action. */
 .diagram-canvas{position:relative;min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;padding:8px 8px 48px;background:var(--paper)}
 .selectable-diagram{display:block;width:100%;height:auto;user-select:text;-webkit-user-select:text}
@@ -1894,7 +1903,9 @@ function nav(animate=true){
   output+=`<div class="nav-topic-row ${current?'is-current-topic':''}"><button data-topic="${t.id}" class="nav-topic ${active?'active':''}" ${active?'aria-current="page"':''}>${icon(t.icon)}<span class="nav-title">${esc(t.title)}</span><span class="nav-count">${topicQuestions(t).length}</span></button><button class="nav-disclosure" data-expand-topic="${t.id}" aria-expanded="${expanded}" aria-controls="subtopics-${t.id}" aria-label="Подтемы: ${esc(t.title)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button></div><div class="nav-subtopics" id="subtopics-${t.id}" ${expanded?'':'hidden'}>${t.sections.map(x=>`<button data-topic="${t.id}" data-section="${x.id}" class="nav-section ${current&&section===x.id?'active':''}" ${current&&section===x.id&&expanded?'aria-current="page"':''}>${esc(x.title)} <span class="nav-count">${x.questionIds.length}</span></button>`).join('')}</div>`;
  }
  const sidebar=document.querySelector('aside'),scrollTop=sidebar.scrollTop;
+ const subtopicScroll=new Map([...$('segments').querySelectorAll('.nav-subtopics')].map(group=>[group.id,group.scrollTop]));
  $('segments').innerHTML=output;
+ $('segments').querySelectorAll('.nav-subtopics').forEach(group=>{group.scrollTop=subtopicScroll.get(group.id)||0;});
  document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{selectTopic(b.dataset.topic,b.dataset.section||'');document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');});
  $('segments').querySelectorAll('[data-expand-topic]').forEach(button=>button.onclick=()=>{
   expandedNavTopic=expandedNavTopic===button.dataset.expandTopic?'':button.dataset.expandTopic;
@@ -2128,24 +2139,27 @@ function playMotion(element,frames,duration=180,cleanup=()=>{}){
  return animation;
 }
 function navMotionSnapshot(){
- const active=$('segments').querySelector('[aria-current=page]');
- return active?{key:active.id||active.dataset.topic+':'+(active.dataset.section||''),rect:active.getBoundingClientRect(),sections:new Set([...$('segments').querySelectorAll('[data-section]')].map(b=>b.dataset.section))}:null;
+ const nav=$('segments'),active=nav.querySelector('[aria-current=page]'),marker=nav.querySelector('.nav-motion-indicator');
+ const snapshot=active?{key:active.id||active.dataset.topic+':'+(active.dataset.section||''),rect:(marker||active).getBoundingClientRect(),moving:!!marker}:null;
+ // Retarget from the visible position, not the previous animation's destination.
+ marker?.getAnimations().forEach(animation=>animation.cancel());
+ return snapshot;
 }
 function animateNavSelection(before){
  if(!before||reducedMotion.matches)return;
  const nav=$('segments'),active=nav.querySelector('[aria-current=page]');
  if(!active)return;
  const key=active.id||active.dataset.topic+':'+(active.dataset.section||'');
- if(key===before.key)return;
- animateTopicIcon(active.querySelector('[data-topic-icon]'));
- const rect=active.getBoundingClientRect(),base=nav.getBoundingClientRect();
+ if(key===before.key&&!before.moving)return;
+ if(key!==before.key)animateTopicIcon(active.querySelector('[data-topic-icon]'));
+ const rect=active.getBoundingClientRect(),container=active.closest('.nav-subtopics')||nav,base=container.getBoundingClientRect();
  if(!rect.height||!before.rect.height)return;
  const marker=document.createElement('span');marker.className='nav-motion-indicator';marker.setAttribute('aria-hidden','true');
- Object.assign(marker.style,{left:rect.left-base.left+'px',top:rect.top-base.top+'px',width:rect.width+'px',height:rect.height+'px'});
- nav.append(marker);active.classList.add('nav-motion-current');
- playMotion(marker,[{transform:`translate(${before.rect.left-rect.left}px,${before.rect.top-rect.top}px) scale(${before.rect.width/rect.width},${before.rect.height/rect.height})`},{transform:'none'}],200,()=>{marker.remove();active.classList.remove('nav-motion-current');});
- const fresh=[...nav.querySelectorAll('[data-section]')].filter(b=>!before.sections.has(b.dataset.section));
- fresh.forEach(button=>playMotion(button,[{opacity:0,transform:'translateY(-4px)'},{opacity:1,transform:'none'}],180));
+ const position=r=>({left:r.left-base.left+container.scrollLeft+'px',top:r.top-base.top+container.scrollTop+'px',width:r.width+'px',height:r.height+'px'});
+ Object.assign(marker.style,position(rect));
+ container.append(marker);active.classList.add('nav-motion-current');
+ // Animate bounds without scaling the border or stretching the highlight.
+ playMotion(marker,[position(before.rect),position(rect)],360,()=>{marker.remove();active.classList.remove('nav-motion-current');});
 }
 function replaceStudyContent(current,next){
  const height=current.getBoundingClientRect().height;
@@ -2189,7 +2203,10 @@ function animateEntrance(element){
  const release=()=>entranceAnimations.delete(animation);
  animation.onfinish=release;animation.oncancel=release;
 }
-function animateDestination(){animateEntrance($('view'));}
+function animateDestination(){
+ const view=$('view');view.getAnimations().forEach(animation=>animation.cancel());
+ playMotion(view,[{opacity:.72},{opacity:1}],280);
+}
 reducedMotion.addEventListener('change',()=>{
  if(reducedMotion.matches)for(const animation of entranceAnimations)animation.cancel();
 });
@@ -2959,7 +2976,9 @@ function nav(animate=true){
   output+=`<div class="nav-topic-row ${current?'is-current-topic':''}"><button data-topic="${t.id}" class="nav-topic ${active?'active':''}" ${active?'aria-current="page"':''}>${icon(t.icon)}<span class="nav-title">${esc(t.title)}</span><span class="nav-count">${topicQuestions(t).length}</span></button><button class="nav-disclosure" data-expand-topic="${t.id}" aria-expanded="${expanded}" aria-controls="subtopics-${t.id}" aria-label="Subtopics: ${esc(t.title)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button></div><div class="nav-subtopics" id="subtopics-${t.id}" ${expanded?'':'hidden'}>${t.sections.map(x=>`<button data-topic="${t.id}" data-section="${x.id}" class="nav-section ${current&&section===x.id?'active':''}" ${current&&section===x.id&&expanded?'aria-current="page"':''}>${esc(x.title)} <span class="nav-count">${x.questionIds.length}</span></button>`).join('')}</div>`;
  }
  const sidebar=document.querySelector('aside'),scrollTop=sidebar.scrollTop;
+ const subtopicScroll=new Map([...$('segments').querySelectorAll('.nav-subtopics')].map(group=>[group.id,group.scrollTop]));
  $('segments').innerHTML=output;
+ $('segments').querySelectorAll('.nav-subtopics').forEach(group=>{group.scrollTop=subtopicScroll.get(group.id)||0;});
  document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{selectTopic(b.dataset.topic,b.dataset.section||'');document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');});
  $('segments').querySelectorAll('[data-expand-topic]').forEach(button=>button.onclick=()=>{
   expandedNavTopic=expandedNavTopic===button.dataset.expandTopic?'':button.dataset.expandTopic;
@@ -3193,24 +3212,27 @@ function playMotion(element,frames,duration=180,cleanup=()=>{}){
  return animation;
 }
 function navMotionSnapshot(){
- const active=$('segments').querySelector('[aria-current=page]');
- return active?{key:active.id||active.dataset.topic+':'+(active.dataset.section||''),rect:active.getBoundingClientRect(),sections:new Set([...$('segments').querySelectorAll('[data-section]')].map(b=>b.dataset.section))}:null;
+ const nav=$('segments'),active=nav.querySelector('[aria-current=page]'),marker=nav.querySelector('.nav-motion-indicator');
+ const snapshot=active?{key:active.id||active.dataset.topic+':'+(active.dataset.section||''),rect:(marker||active).getBoundingClientRect(),moving:!!marker}:null;
+ // Retarget from the visible position, not the previous animation's destination.
+ marker?.getAnimations().forEach(animation=>animation.cancel());
+ return snapshot;
 }
 function animateNavSelection(before){
  if(!before||reducedMotion.matches)return;
  const nav=$('segments'),active=nav.querySelector('[aria-current=page]');
  if(!active)return;
  const key=active.id||active.dataset.topic+':'+(active.dataset.section||'');
- if(key===before.key)return;
- animateTopicIcon(active.querySelector('[data-topic-icon]'));
- const rect=active.getBoundingClientRect(),base=nav.getBoundingClientRect();
+ if(key===before.key&&!before.moving)return;
+ if(key!==before.key)animateTopicIcon(active.querySelector('[data-topic-icon]'));
+ const rect=active.getBoundingClientRect(),container=active.closest('.nav-subtopics')||nav,base=container.getBoundingClientRect();
  if(!rect.height||!before.rect.height)return;
  const marker=document.createElement('span');marker.className='nav-motion-indicator';marker.setAttribute('aria-hidden','true');
- Object.assign(marker.style,{left:rect.left-base.left+'px',top:rect.top-base.top+'px',width:rect.width+'px',height:rect.height+'px'});
- nav.append(marker);active.classList.add('nav-motion-current');
- playMotion(marker,[{transform:`translate(${before.rect.left-rect.left}px,${before.rect.top-rect.top}px) scale(${before.rect.width/rect.width},${before.rect.height/rect.height})`},{transform:'none'}],200,()=>{marker.remove();active.classList.remove('nav-motion-current');});
- const fresh=[...nav.querySelectorAll('[data-section]')].filter(b=>!before.sections.has(b.dataset.section));
- fresh.forEach(button=>playMotion(button,[{opacity:0,transform:'translateY(-4px)'},{opacity:1,transform:'none'}],180));
+ const position=r=>({left:r.left-base.left+container.scrollLeft+'px',top:r.top-base.top+container.scrollTop+'px',width:r.width+'px',height:r.height+'px'});
+ Object.assign(marker.style,position(rect));
+ container.append(marker);active.classList.add('nav-motion-current');
+ // Animate bounds without scaling the border or stretching the highlight.
+ playMotion(marker,[position(before.rect),position(rect)],360,()=>{marker.remove();active.classList.remove('nav-motion-current');});
 }
 function replaceStudyContent(current,next){
  const height=current.getBoundingClientRect().height;
@@ -3254,7 +3276,10 @@ function animateEntrance(element){
  const release=()=>entranceAnimations.delete(animation);
  animation.onfinish=release;animation.oncancel=release;
 }
-function animateDestination(){animateEntrance($('view'));}
+function animateDestination(){
+ const view=$('view');view.getAnimations().forEach(animation=>animation.cancel());
+ playMotion(view,[{opacity:.72},{opacity:1}],280);
+}
 reducedMotion.addEventListener('change',()=>{
  if(reducedMotion.matches)for(const animation of entranceAnimations)animation.cancel();
 });

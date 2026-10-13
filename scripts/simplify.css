@@ -165,3 +165,12 @@ aside nav .nav-disclosure{display:grid;place-items:center;width:32px;min-width:3
 .code-context>summary{min-height:36px;padding:6px 0}
 @media(max-width:1000px){.topic-start ol{grid-template-columns:1fr}.topic-start{padding:16px}.topic-start a{min-height:44px}}
 @media(prefers-reduced-motion:reduce){.nav-disclosure svg{transition:none}}
+
+/* Stable text metrics and a single moving highlight prevent navigation jumps. */
+#segments button[data-topic],#segments .nav-saved{border:0;border-left:3px solid transparent;font-weight:600;transition:color 180ms ease}
+#segments .nav-section{border-left-color:var(--line)}
+#segments button.active{border-left-color:var(--green)}
+#segments .nav-motion-indicator{position:absolute;z-index:0;pointer-events:none;background:var(--soft);border-left:3px solid var(--green);border-radius:7px;box-sizing:border-box}
+#segments button.nav-motion-current{background:transparent;border-left-color:transparent!important;transition:none}
+#segments .nav-subtopics>button{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){#segments button[data-topic],#segments .nav-saved{transition:none}}

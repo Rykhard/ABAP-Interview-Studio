@@ -10,24 +10,27 @@ function playMotion(element,frames,duration=180,cleanup=()=>{}){
  return animation;
 }
 function navMotionSnapshot(){
- const active=$('segments').querySelector('[aria-current=page]');
- return active?{key:active.id||active.dataset.topic+':'+(active.dataset.section||''),rect:active.getBoundingClientRect(),sections:new Set([...$('segments').querySelectorAll('[data-section]')].map(b=>b.dataset.section))}:null;
+ const nav=$('segments'),active=nav.querySelector('[aria-current=page]'),marker=nav.querySelector('.nav-motion-indicator');
+ const snapshot=active?{key:active.id||active.dataset.topic+':'+(active.dataset.section||''),rect:(marker||active).getBoundingClientRect(),moving:!!marker}:null;
+ // Retarget from the visible position, not the previous animation's destination.
+ marker?.getAnimations().forEach(animation=>animation.cancel());
+ return snapshot;
 }
 function animateNavSelection(before){
  if(!before||reducedMotion.matches)return;
  const nav=$('segments'),active=nav.querySelector('[aria-current=page]');
  if(!active)return;
  const key=active.id||active.dataset.topic+':'+(active.dataset.section||'');
- if(key===before.key)return;
- animateTopicIcon(active.querySelector('[data-topic-icon]'));
- const rect=active.getBoundingClientRect(),base=nav.getBoundingClientRect();
+ if(key===before.key&&!before.moving)return;
+ if(key!==before.key)animateTopicIcon(active.querySelector('[data-topic-icon]'));
+ const rect=active.getBoundingClientRect(),container=active.closest('.nav-subtopics')||nav,base=container.getBoundingClientRect();
  if(!rect.height||!before.rect.height)return;
  const marker=document.createElement('span');marker.className='nav-motion-indicator';marker.setAttribute('aria-hidden','true');
- Object.assign(marker.style,{left:rect.left-base.left+'px',top:rect.top-base.top+'px',width:rect.width+'px',height:rect.height+'px'});
- nav.append(marker);active.classList.add('nav-motion-current');
- playMotion(marker,[{transform:`translate(${before.rect.left-rect.left}px,${before.rect.top-rect.top}px) scale(${before.rect.width/rect.width},${before.rect.height/rect.height})`},{transform:'none'}],200,()=>{marker.remove();active.classList.remove('nav-motion-current');});
- const fresh=[...nav.querySelectorAll('[data-section]')].filter(b=>!before.sections.has(b.dataset.section));
- fresh.forEach(button=>playMotion(button,[{opacity:0,transform:'translateY(-4px)'},{opacity:1,transform:'none'}],180));
+ const position=r=>({left:r.left-base.left+container.scrollLeft+'px',top:r.top-base.top+container.scrollTop+'px',width:r.width+'px',height:r.height+'px'});
+ Object.assign(marker.style,position(rect));
+ container.append(marker);active.classList.add('nav-motion-current');
+ // Animate bounds without scaling the border or stretching the highlight.
+ playMotion(marker,[position(before.rect),position(rect)],360,()=>{marker.remove();active.classList.remove('nav-motion-current');});
 }
 function replaceStudyContent(current,next){
  const height=current.getBoundingClientRect().height;
@@ -71,7 +74,10 @@ function animateEntrance(element){
  const release=()=>entranceAnimations.delete(animation);
  animation.onfinish=release;animation.oncancel=release;
 }
-function animateDestination(){animateEntrance($('view'));}
+function animateDestination(){
+ const view=$('view');view.getAnimations().forEach(animation=>animation.cancel());
+ playMotion(view,[{opacity:.72},{opacity:1}],280);
+}
 reducedMotion.addEventListener('change',()=>{
  if(reducedMotion.matches)for(const animation of entranceAnimations)animation.cancel();
 });
