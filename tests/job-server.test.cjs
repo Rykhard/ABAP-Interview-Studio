@@ -131,7 +131,7 @@ test('indexed evidence restores exact quotations and derives priority from job s
   for (const evidence_index of [-1, 999, '01', 1.5]) assert.throws(()=>matching.decodeMatches({matches:[{...wire,selection:`RAP-01@${evidence_index}`}]},input,built));
   assert.throws(()=>matching.decodeMatches({matches:[{...wire,selection:'RAP-01@0'}]},input,built));
   assert.throws(()=>matching.decodeMatches({matches:[{...wire,requirement_type:'required'}]},input,built));
-  assert.throws(()=>matching.decodeMatches({matches:[wire,wire]},input,built));
+  assert.equal(matching.decodeMatches({matches:[wire,wire]},input,built).matches.length,1);
 });
 
 test('logistics and general development cannot authorize unrelated technology evidence pairs', async () => {

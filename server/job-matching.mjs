@@ -176,14 +176,21 @@ export function evidencePriority(description, excerpt) {
 
 // Translate only exact indexed evidence. The public/UI contract remains stable.
 export function decodeMatches(value, input, inference) {
-  if (!exactKeys(value, ['matches']) || !Array.isArray(value.matches)) throw new Error('invalid_output');
+  if (!exactKeys(value, ['matches']) || !Array.isArray(value.matches) || value.matches.length > (input.count ?? LIMITS.count)) throw new Error('invalid_output');
   const matches = value.matches.map(match => {
     if (!exactKeys(match, ['selection', 'relevance_reason']) || !inference.selections.includes(match.selection)) throw new Error('invalid_output');
     const [id, index] = match.selection.split('@');
     const evidence = inference.evidence[Number(index)];
     return { id, requirement_evidence: evidence.text, relevance_reason: match.relevance_reason, requirement_type: evidence.priority };
   });
-  return validateMatches({ matches }, input, inference.candidates);
+  const unique = new Map();
+  for (const match of matches) {
+    // Every row must validate, including duplicates. Multiple supported excerpts
+    // for one canonical question are consolidated, never shown twice.
+    validateMatches({matches:[match]},input,inference.candidates);
+    if (!unique.has(match.id) || (unique.get(match.id).requirement_type === 'preferred' && match.requirement_type === 'required')) unique.set(match.id,match);
+  }
+  return validateMatches({ matches:[...unique.values()] }, input, inference.candidates);
 }
 
 export function buildInference(catalog, input) {
