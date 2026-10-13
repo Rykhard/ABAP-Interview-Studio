@@ -76,7 +76,8 @@
   margin: 0 0 15px;
 }
 
-#practiceSetup #practiceFiltersHost #filters select {
+#practiceSetup #practiceFiltersHost #filters > select,
+#practiceSetup #practiceFiltersHost #learningFilter {
   min-width: 0;
   width: 100%;
   max-width: none;
@@ -542,7 +543,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  #practiceSetup #practiceFiltersHost #filters select {
+  #practiceSetup #practiceFiltersHost #filters > select,
+  #practiceSetup #practiceFiltersHost #learningFilter {
     flex-basis: 100%;
   }
 

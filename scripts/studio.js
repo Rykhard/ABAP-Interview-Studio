@@ -7,6 +7,9 @@ const quizzes=readStudioData('quiz-data'),quizByQuestion=new Map(quizzes.map(q=>
 const all=modules.flatMap(m=>m.questions.map(q=>({...q,module:m.id,...placement.get(q.id),moduleTitle:placement.get(q.id).topicTitle+' / '+placement.get(q.id).sectionTitle}))),byId=new Map(all.map(q=>[q.id,q]));
 const topicQuestions=t=>t.sections.flatMap(section=>section.questionIds.map(id=>byId.get(id)));
 let state={},ratings={},mode='learn',libraryList=false,restoringRoute=false,savedOnly=false,lessonLibrary=false;
+const answerWindows=new Map();
+let listedQuestionIds=[];
+const isPlainLinkClick=event=>event.button===0&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.altKey;
 let answerDefault='questions';const answerOverrides=new Map();
 try{const saved=localStorage.getItem('abap-studio-answer-view-v2');if(['questions','answers'].includes(saved))answerDefault=saved;}catch{/* View selection also works without storage. */}
 __LEARNING_APP__
@@ -51,21 +54,24 @@ __CODE_APP__
 __LESSON_APP__
 __READING_APP__
 function references(m){return `<details class="references"><summary>Official references for this topic</summary><ul class="small">${m.sources.map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('')||'<li>Rehearsal prompts: use your own truthful experience.</li>'}</ul></details>`;}
-let expandedNavTopic='';
+let expandedNavTopic='',lastNavOutput='';
 try{expandedNavTopic=localStorage.getItem('abap-studio-subtopics-v1')||'';}catch{/* Navigation remains usable without storage. */}
 function nav(animate=true){
- const previousNav=animate?navMotionSnapshot():null,selected=$('topic').value,section=$('section').value;
+ const selected=$('topic').value,section=$('section').value;
  let output=`<div class="nav-library"><button class="nav-home ${!selected&&!savedOnly&&!lessonLibrary?'active':''}" data-topic="" ${!selected&&!savedOnly&&!lessonLibrary?'aria-current="page"':''}>All topics</button><button id="savedQuestionsNav" class="nav-saved ${savedOnly?'active':''}" ${savedOnly?'aria-current="page"':''}>Saved questions <span class="nav-count">${savedQuestions.size}</span></button><button id="guidedLessonsNav" class="nav-saved ${lessonLibrary?'active':''}" ${lessonLibrary?'aria-current="page"':''}>Guided lessons <span class="nav-count">${lessons.length}</span></button></div>`;
  for(const t of topics){
   const expanded=expandedNavTopic===t.id,current=selected===t.id,active=current&&(!section||!expanded);
-  output+=`<div class="nav-topic-row ${current?'is-current-topic':''}"><button data-topic="${t.id}" class="nav-topic ${active?'active':''}" ${active?'aria-current="page"':''}>${icon(t.icon)}<span class="nav-title">${esc(t.title)}</span><span class="nav-count">${topicQuestions(t).length}</span></button><button class="nav-disclosure" data-expand-topic="${t.id}" aria-expanded="${expanded}" aria-controls="subtopics-${t.id}" aria-label="Subtopics: ${esc(t.title)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button></div><div class="nav-subtopics" id="subtopics-${t.id}" ${expanded?'':'hidden'}>${t.sections.map(x=>`<button data-topic="${t.id}" data-section="${x.id}" class="nav-section ${current&&section===x.id?'active':''}" ${current&&section===x.id&&expanded?'aria-current="page"':''}>${esc(x.title)} <span class="nav-count">${x.questionIds.length}</span></button>`).join('')}</div>`;
+  output+=`<div class="nav-topic-row ${current?'is-current-topic':''}"><button data-topic="${t.id}" class="nav-topic ${active?'active':''}" ${active?'aria-current="page"':''}>${icon(t.icon)}<span class="nav-title">${esc(t.title)}</span><span class="nav-count">${topicQuestions(t).length}</span></button><button class="nav-disclosure" data-expand-topic="${t.id}" aria-expanded="${expanded}" aria-controls="subtopics-${t.id}" aria-label="Subtopics: ${esc(t.title)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button></div><div class="nav-subtopics" id="subtopics-${t.id}" ${expanded?'':'hidden'}>${t.sections.map(x=>`<button data-topic="${t.id}" data-section="${x.id}" class="nav-section ${current&&section===x.id?'active':''}" ${current&&section===x.id&&expanded?'aria-current="page"':''}><span class="nav-section-title">${esc(x.title)}</span><span class="nav-count">${x.questionIds.length}</span></button>`).join('')}</div>`;
  }
+ // Preserve DOM, keyboard focus and scroll when only the main content changes.
+ if(output===lastNavOutput)return;
+ const previousNav=animate?navMotionSnapshot():null;
  const sidebar=document.querySelector('aside'),scrollTop=sidebar.scrollTop;
  const subtopicScroll=new Map([...$('segments').querySelectorAll('.nav-subtopics')].map(group=>[group.id,group.scrollTop]));
- $('segments').innerHTML=output;
+ $('segments').innerHTML=output;lastNavOutput=output;
  $('savedQuestionsNav').onclick=openSavedQuestions;$('guidedLessonsNav').onclick=openLessonLibrary;
  $('segments').querySelectorAll('.nav-subtopics').forEach(group=>{group.scrollTop=subtopicScroll.get(group.id)||0;});
- document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{selectTopic(b.dataset.topic,b.dataset.section||'');document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');});
+ $('segments').querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{selectTopic(b.dataset.topic,b.dataset.section||'');document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');});
  $('segments').querySelectorAll('[data-expand-topic]').forEach(button=>button.onclick=()=>{
   expandedNavTopic=expandedNavTopic===button.dataset.expandTopic?'':button.dataset.expandTopic;
   saveOptional('abap-studio-subtopics-v1',expandedNavTopic);nav(false);
@@ -88,6 +94,7 @@ function questionListRow(q){
  return `<article class="question-row" id="q-${q.id}"><a class="question-row-link" href="#q-${q.id}" data-open-question="${q.id}"><span class="question-row-id">${q.id}${learningBadge(q)}</span><span>${esc(q.question)}</span><span aria-hidden="true">&rarr;</span></a>${questionActions(q)}</article>`;
 }
 function learn(){
+ listedQuestionIds=[];
  if(lessonLibrary){renderLessonLibrary();return;}
  const qs=filtered(),topic=topicById.get($('topic').value),showList=savedOnly||libraryList||topic||$('search').value.trim();
  if(!showList){
@@ -97,7 +104,17 @@ function learn(){
  const groups=[];for(const t of topics)for(const section of t.sections){const members=qs.filter(q=>q.topic===t.id&&q.section===section.id);if(members.length)groups.push({topic:t,section,questions:orderedLearningQuestions(members)});}
  const exact=qs.length===1&&byId.has($('search').value.trim().toUpperCase())?qs[0]:null;
  if(exact){$('view').innerHTML=focusedQuestion(exact);bindFocusedQuestion(exact);return;}
- $('view').innerHTML=(topic&&!$('section').value&&!$('search').value.trim()&&!savedOnly?topicStartingPath(topic):'')+`<div class="answer-toolbar"><div class="answer-toggle" role="group" aria-label="Question display"><button id="collapseAll" aria-pressed="false">Question list</button><button id="expandAll" aria-pressed="false">All answers</button></div><span class="list-count">${qs.length} ${qs.length===1?'question':'questions'}</span><button id="practiceSelection">Practice this selection</button></div>`+(qs.length?groups.map(g=>`<section class="question-group"><div class="section-heading"><h3>${topic?'':esc(g.topic.title)+' / '}${esc(g.section.title)}</h3><p class="small subtle">${g.questions.length} questions</p></div>${g.questions.map(q=>answerDefault==='questions'?questionListRow(q):`<article class="card" id="q-${q.id}"><div class="meta"><a class="question-id" href="#q-${q.id}" data-open-question="${q.id}">${q.id} &nearr;</a>${learningBadge(q)}${questionActions(q)}</div><h3 tabindex="-1"><a href="#q-${q.id}" data-open-question="${q.id}">${esc(q.question)}</a></h3>${questionReferences(q)}${answer(q)}</article>`).join('')}</section>`).join(''):'<div class="card empty"><h3>No questions in this view</h3><p>Clear the text filter, choose another topic, or use the global search above to search every topic.</p></div>');
+ listedQuestionIds=groups.flatMap(group=>group.questions.map(q=>q.id));
+ const windowKey=listedQuestionIds.join(','),limit=answerWindows.get(windowKey)||20;
+ let remaining=answerDefault==='answers'?limit:qs.length;
+ const visibleGroups=groups.map(group=>{const questions=group.questions.slice(0,remaining);remaining=Math.max(0,remaining-questions.length);return {...group,totalQuestions:group.questions.length,questions};}).filter(group=>group.questions.length);
+ const moreAnswers=answerDefault==='answers'&&qs.length>limit;
+
+ $('view').innerHTML=(topic&&!$('section').value&&!$('search').value.trim()&&!savedOnly?topicStartingPath(topic):'')+`<div class="answer-toolbar"><div class="answer-toggle" role="group" aria-label="Question display"><button id="collapseAll" aria-pressed="false">Question list</button><button id="expandAll" aria-pressed="false">All answers</button></div><span class="list-count">${qs.length} ${qs.length===1?'question':'questions'}</span><button id="practiceSelection">Practice this selection</button></div>`+(qs.length?visibleGroups.map(g=>`<section class="question-group"><div class="section-heading"><h3>${topic?'':esc(g.topic.title)+' / '}${esc(g.section.title)}</h3><p class="small subtle">${g.totalQuestions} questions</p></div>${g.questions.map(q=>answerDefault==='questions'?questionListRow(q):`<article class="card" id="q-${q.id}"><div class="meta"><a class="question-id" href="#q-${q.id}" data-open-question="${q.id}">${q.id} &nearr;</a>${learningBadge(q)}${questionActions(q)}</div><h3 tabindex="-1"><a href="#q-${q.id}" data-open-question="${q.id}">${esc(q.question)}</a></h3>${questionReferences(q)}${answer(q)}</article>`).join('')}</section>`).join(''):'<div class="card empty"><h3>No questions in this view</h3><p>Clear the text filter, choose another topic, or use the global search above to search every topic.</p></div>');
+ if(moreAnswers){
+  $('view').insertAdjacentHTML('beforeend',`<div class="answer-pagination controls"><span><span>Answers shown</span> ${limit} / ${qs.length}</span><button id="moreAnswers">Load more answers</button></div>`);
+  $('moreAnswers').onclick=()=>{const nextId=listedQuestionIds[limit];answerWindows.set(windowKey,limit+20);render();const next=document.querySelector(`#q-${nextId} [data-open-question]`);next?.focus({preventScroll:true});next?.scrollIntoView({block:'start'});};
+ }
  $('expandAll').onclick=()=>setAnswerDisplay('answers');$('collapseAll').onclick=()=>setAnswerDisplay('questions');syncAnswerDisplay();
  $('practiceSelection').onclick=()=>{storeFilters();const ids=filtered().map(q=>q.id);prefs.train={...prefs.learn};activeSession=null;practiceKind='recall';if(savedOnly){savedOnly=false;mode='train';restoreFilters();beginPractice(ids,'recall');}else setMode('train');};
 }
@@ -113,12 +130,12 @@ __SEARCH_APP__
 __QUIZ_APP__
 __MOTION_APP__
 __CALM_APP__
-restoreFilters();render();
+restoreFilters();
 function loadRoute(focus=false){
  restoringRoute=true;
  try{
   if($('searchDialog').open){searchRouteClosing=true;$('searchDialog').close();}
-  const hash=location.hash;if(hash.startsWith('#q-')){try{const [ident,...options]=hash.slice(3).split('&');activeLearningPath=new URLSearchParams(options.join('&')).get('path')||'';openQuestion(decodeURIComponent(ident));}catch{/* Ignore malformed external fragments. */}return;}
+  const hash=location.hash;if(hash.startsWith('#q-')){try{const [ident,...options]=hash.slice(3).split('&');activeLearningPath=new URLSearchParams(options.join('&')).get('path')||'';const id=decodeURIComponent(ident);if(byId.has(id)){openQuestion(id);return;}}catch{/* Fall back to a usable view for malformed external fragments. */}}
   const params=new URLSearchParams(hash.slice(1));if(!hash||['topic','mode','search','scope','view'].some(key=>params.has(key))){
    const topic=topicById.get(params.get('topic')),section=topic?.sections.some(x=>x.id===params.get('section'))?params.get('section'):'';
    const nextMode=params.get('mode')==='train'?'train':'learn',nextPrefs={topic:topic?.id||'',section,search:params.get('search')||'',scope:params.get('scope')==='Senior'?'Advanced':learningLevels.has(params.get('scope'))?params.get('scope'):params.has('scope')?'all':learningSettings.level,selection:['new','retry'].includes(params.get('selection'))?params.get('selection'):'all'},nextKind=params.get('kind')==='quiz'?'quiz':'recall';
@@ -126,7 +143,7 @@ function loadRoute(focus=false){
    mode=nextMode;savedOnly=mode==='learn'&&params.get('view')==='saved';lessonLibrary=mode==='learn'&&params.get('view')==='lessons';prefs[mode]=nextPrefs;questionFromSearch=false;
    activeLearningPath='';if(mode==='learn'){prefs.learn.selection='all';}else practiceKind=nextKind;
    restoreFilters();$('sessionLength').value=['5','10','20','all'].includes(params.get('size'))?params.get('size'):'10';$('advancedSettings').open=mode==='train'&&(prefs.train.scope!=='all'||!!prefs.train.search);libraryList=!!topic||params.get('view')==='list';render();if(focus)focusDestination();
-  }
+  }else{render();if(focus)focusDestination();}
  }finally{restoringRoute=false;}
 }
 loadRoute();let routeFrame=0;function locationChanged(){cancelAnimationFrame(routeFrame);routeFrame=requestAnimationFrame(()=>loadRoute(true));}

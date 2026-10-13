@@ -39,13 +39,15 @@ function questionActions(q){return `<div class="question-toolbar"><button data-s
 let questionReturn=null;
 function captureQuestionReturn(){
  if(restoringRoute||mode!=='learn'||document.querySelector('main.single-question'))return;
- const ids=[...$('view').querySelectorAll('.question-group article[id^="q-"]')].map(card=>card.id.slice(2));
+ const ids=[...listedQuestionIds];
  storeFilters();questionReturn={prefs:{...prefs.learn},libraryList,savedOnly,lessonLibrary,ids,scrollY:window.scrollY};
 }
 function returnToQuestions(q){
  activeLearningPath='';
  if(!questionReturn){openTopic(q.topic,q.section);focusDestination(q.id);return;}
  const origin=questionReturn;mode='learn';prefs.learn={...origin.prefs};libraryList=origin.libraryList;savedOnly=origin.savedOnly;lessonLibrary=origin.lessonLibrary;questionFromSearch=false;
+ const index=origin.ids.indexOf(q.id),windowKey=origin.ids.join(',');
+ if(answerDefault==='answers'&&index>=0)answerWindows.set(windowKey,Math.max(answerWindows.get(windowKey)||20,Math.ceil((index+1)/20)*20));
  restoreFilters();render();routeSelection();
  const target=document.querySelector(`#q-${q.id} .question-row-link, #q-${q.id} h3`)||$('heading');target.focus({preventScroll:true});window.scrollTo({top:origin.scrollY,behavior:'instant'});
 }
@@ -70,7 +72,7 @@ function syncCalmView(){
  $('filterSummary').textContent=[$('search').value&&!exact?$('search').value:'',$('scope').value!=='all'?learningText(learningLevels.get($('scope').value),'title'):''].filter(Boolean).join(' · ');
  if(lessonLibrary&&mode==='learn'){$('heading').textContent='Guided lessons';$('intro').textContent='Follow a concrete example. See the process stage and data change at each step.';}
  if(savedOnly&&mode==='learn'){$('heading').textContent='Saved questions';$('intro').textContent='Your personal collection. Open a question to read, or practice the collection aloud.';}
- document.querySelectorAll('[data-open-question]').forEach(a=>a.onclick=e=>{e.preventDefault();activeLearningPath='';openQuestion(a.dataset.openQuestion);});
+ document.querySelectorAll('[data-open-question]').forEach(a=>a.onclick=e=>{if(!isPlainLinkClick(e))return;e.preventDefault();activeLearningPath='';openQuestion(a.dataset.openQuestion);});
  if($('continueReading'))$('continueReading').onclick=()=>openQuestion(lastQuestion);
  bindLearningControls();
 }

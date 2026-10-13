@@ -157,7 +157,9 @@ aside nav .nav-disclosure{display:grid;place-items:center;width:32px;min-width:3
 .nav-topic-row.is-current-topic .nav-disclosure{color:var(--green)}
 .nav-subtopics{position:relative;z-index:1;max-height:230px;overflow:auto;overscroll-behavior:contain;margin-bottom:8px;scrollbar-width:thin}
 .nav-subtopics[hidden]{display:none}
-.nav-subtopics .nav-section{width:calc(100% - 21px)}
+.nav-subtopics .nav-section{display:grid;grid-template-columns:minmax(0,1fr) 3ch;align-items:center;gap:8px;width:calc(100% - 21px);min-width:0}
+.nav-section-title{min-width:0;overflow-wrap:anywhere;hyphens:auto}
+.nav-section>.nav-count{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .topic-start{margin:20px 0 28px;padding:20px;background:var(--soft);border-radius:12px}
 .topic-start-heading h3{font-size:18px;margin:0 0 4px}.topic-start-heading p{font-size:13px;color:var(--muted);margin:0 0 14px}
 .topic-start ol{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0;padding:0}

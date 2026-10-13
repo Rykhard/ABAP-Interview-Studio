@@ -60,8 +60,8 @@ function bindLearningControls(){
   learningSettings.level='all';prefs.learn.scope='all';saveLearningSettings();restoreFilters();render();routeSelection();$('heading').focus({preventScroll:true});
  });
  document.querySelectorAll('[data-start-path]').forEach(button=>button.onclick=()=>{activeLearningPath=button.dataset.startPath;openQuestion(button.dataset.pathQuestion);});
- document.querySelectorAll('[data-learning-path]').forEach(link=>link.onclick=event=>{event.preventDefault();activeLearningPath=link.dataset.learningPath;openQuestion(link.dataset.openQuestion);});
- document.querySelectorAll('[data-prerequisite]').forEach(link=>link.onclick=event=>{event.preventDefault();activeLearningPath='';openQuestion(link.dataset.openQuestion);});
+ document.querySelectorAll('[data-learning-path]').forEach(link=>link.onclick=event=>{if(!isPlainLinkClick(event))return;event.preventDefault();activeLearningPath=link.dataset.learningPath;openQuestion(link.dataset.openQuestion);});
+ document.querySelectorAll('[data-prerequisite]').forEach(link=>link.onclick=event=>{if(!isPlainLinkClick(event))return;event.preventDefault();activeLearningPath='';openQuestion(link.dataset.openQuestion);});
  document.querySelector('[data-exit-path]')?.addEventListener('click',()=>{activeLearningPath='';openTopic($('topic').value);});
  document.querySelectorAll('[data-learning-entry]').forEach(button=>button.onclick=()=>{
   if(button.dataset.learningEntry==='basics'){learningSettings.level='Core';learningSettings.sort='recommended';$('learningSort').value='recommended';saveLearningSettings();openTopic('abap');}

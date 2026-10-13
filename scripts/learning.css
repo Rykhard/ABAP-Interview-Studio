@@ -8,5 +8,7 @@
 .learning-checkpoint{margin:28px 0;padding:22px;background:var(--soft);border-radius:12px}.learning-checkpoint h4{margin:0 0 10px}.learning-checkpoint summary{cursor:pointer}.learning-checkpoint details{padding:12px 0}
 #learningFilter{display:flex;flex:1;min-width:160px;flex-direction:column;gap:5px}#learningFilter label,#learningSortField label{font-size:12px;color:var(--muted)}#learningSortField{display:flex;flex:1;min-width:160px;flex-direction:column;gap:5px}#learningSortField[hidden]{display:none}
 #filters{align-items:flex-end}
+/* Width distribution belongs to the field wrapper, never its vertical child. */
+#learningFilter>select,#learningSortField>select{flex:0 0 auto;width:100%;min-width:0}
 .question-next-actions .route-controls{flex-wrap:wrap}.question-next-actions #nextQuestion{max-width:420px;text-align:left}.learning-level-help{font-size:12px;color:var(--muted);margin-top:8px}.learning-level-help p{margin:8px 0}
 @media(max-width:700px){.topic-start.learning-path ol{grid-template-columns:1fr}.learning-entry>span{flex-basis:100%}.learning-entry button{flex:1}.learning-path-actions{gap:10px}.question-next-actions #nextQuestion{max-width:100%;font-size:14px}.learning-checkpoint{padding:16px}}
