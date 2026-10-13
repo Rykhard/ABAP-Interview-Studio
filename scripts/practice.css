@@ -86,7 +86,7 @@
 }
 
 #practiceSetup #practiceFiltersHost #clearFilters {
-  align-self: center;
+  align-self: flex-end;
   flex: 0 0 auto;
   padding: 7px 10px;
   font-size: 12px;

@@ -43,7 +43,7 @@ test('irrelevant content updates preserve sidebar nodes and malformed links rema
     await expect(page.locator('.topic-card').first()).toBeVisible();
   }
   await page.goto('/?lang=en#topic=rap');
-  await page.locator('[data-expand-topic=rap]').click();
+  await expect(page.locator('[data-expand-topic=rap]')).toHaveAttribute('aria-expanded', 'true');
   const original = await page.locator('#subtopics-rap .nav-section').first().elementHandle();
   await page.locator('#learnFilters > summary').click();
   await page.locator('#search').fill('authorization');
@@ -63,6 +63,10 @@ for (const locale of ['en', 'ru']) for (const width of [390, 1440]) {
       for (const level of ['all', 'Advanced']) {
         await page.locator('#scope').selectOption(level);
         const before = await page.locator('#scope').boundingBox();
+        if (width >= 900) {
+          const reset = await page.locator('#clearFilters').boundingBox();
+          expect(Math.abs(reset.y + reset.height - before.y - before.height)).toBeLessThan(1);
+        }
         expect(before.height).toBeLessThan(90);
         expect(before.height).toBeGreaterThanOrEqual(44);
         await page.locator('#scope').click();
@@ -122,6 +126,24 @@ for (const locale of ['en', 'ru']) for (const width of [390, 1440]) {
 }
 
 for (const locale of ['en', 'ru']) {
+  test(`${locale}: selecting a topic reveals its subtopics without undoing manual collapse`, async ({page}) => {
+    await page.goto(`/?lang=${locale}#topic=rap`);
+    await expect(page.locator('#subtopics-rap')).toBeVisible();
+    await page.locator('.nav-topic[data-topic=abap]').click();
+    await expect(page.locator('#subtopics-abap')).toBeVisible();
+    await expect(page.locator('#subtopics-rap')).toBeHidden();
+    await page.locator('[data-expand-topic=abap]').click();
+    await page.locator('#expandAll').click();
+    await expect(page.locator('#subtopics-abap')).toBeHidden();
+    await page.locator('.nav-topic[data-topic=abap]').click();
+    await expect(page.locator('#subtopics-abap')).toBeVisible();
+    await page.locator('#trainTab').click();
+    await page.locator('#topic').selectOption('sql');
+    await expect(page.locator('#subtopics-sql')).toBeVisible();
+    await expect(page.locator('#subtopics-abap')).toBeHidden();
+    await page.reload();
+    await expect(page.locator('#subtopics-sql')).toBeVisible();
+  });
   test(`${locale}: home exposes its active level and accurate catalog totals`, async ({page}) => {
     await page.setViewportSize({width: 390, height: 844});
     await page.goto(`/?lang=${locale}`);

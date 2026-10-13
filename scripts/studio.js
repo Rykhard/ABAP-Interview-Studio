@@ -32,8 +32,8 @@ function focusDestination(id){const target=id?document.querySelector('#q-'+id+' 
 function setMode(next,resume=false){storeFilters();if(next==='train'&&mode==='learn'&&!resume){prefs.train={...prefs.learn};activeSession=null;}mode=next;if(next==='train'){savedOnly=false;lessonLibrary=false;}restoreFilters();render();routeSelection();focusDestination();}
 function route(hash,replace=false){if(restoringRoute)return;const next=hash||location.pathname+location.search;if((hash&&location.hash===hash)||(!hash&&!location.hash))return;try{history[replace?'replaceState':'pushState'](null,'',next);}catch{/* Local file contexts may restrict history updates. */}}
 function routeSelection(replace=false){const params=new URLSearchParams();if(mode==='train'){params.set('mode','train');params.set('kind',practiceKind);params.set('size',$('sessionLength').value);}else if(lessonLibrary)params.set('view','lessons');else if(savedOnly)params.set('view','saved');else if(libraryList&&!$('topic').value)params.set('view','list');for(const key of (mode==='train'?['topic','section','scope','selection','search']:['topic','section','scope','search'])){const value=$(key).value;if(value&&(value!=='all'||key==='scope'&&learningSettings.level!=='all'))params.set(key,value);}route(params.size?'#'+params:'',replace);}
-function openTopic(id,section=''){activeLearningPath='';lessonLibrary=false;savedOnly=false;if(!topicById.has(id))id='';storeFilters();questionFromSearch=false;mode='learn';prefs.learn={search:'',topic:id,section,scope:learningSettings.level,selection:'all'};restoreFilters();libraryList=!!id;render();routeSelection();focusDestination();}
-function selectTopic(id,section=''){if(mode==='learn'){openTopic(id,section);return;}storeFilters();prefs.train={...prefs.train,search:'',topic:id,section};activeSession=null;restoreFilters();render();routeSelection();focusDestination();}
+function openTopic(id,section=''){expandSelectedTopic(id);activeLearningPath='';lessonLibrary=false;savedOnly=false;if(!topicById.has(id))id='';storeFilters();questionFromSearch=false;mode='learn';prefs.learn={search:'',topic:id,section,scope:learningSettings.level,selection:'all'};restoreFilters();libraryList=!!id;render();routeSelection();focusDestination();}
+function selectTopic(id,section=''){expandSelectedTopic(id);if(mode==='learn'){openTopic(id,section);return;}storeFilters();prefs.train={...prefs.train,search:'',topic:id,section};activeSession=null;restoreFilters();render();routeSelection();focusDestination();}
 function openQuestion(id,fromSearch=false){if(!byId.has(id))return;if(fromSearch||!learningPaths.get(activeLearningPath)?.questionIds.includes(id))activeLearningPath='';markQuestionVisited(id);captureQuestionReturn();lessonLibrary=false;savedOnly=false;rememberQuestion(id);const q=byId.get(id);storeFilters();questionFromSearch=fromSearch;mode='learn';prefs.learn={search:id,topic:q.topic,section:q.section,scope:'all',selection:'all'};answerOverrides.set(id,true);restoreFilters();libraryList=true;render();route('#q-'+id+(activeLearningPath?'&path='+activeLearningPath:''));focusDestination(id);}
 for(const t of topics){const option=document.createElement('option');option.value=t.id;option.textContent=t.title;$('topic').append(option);}
 // Original topic glyphs: one 24px grid, consistent strokes and recognizable SAP/ABAP concepts.
@@ -54,10 +54,16 @@ __CODE_APP__
 __LESSON_APP__
 __READING_APP__
 function references(m){return `<details class="references"><summary>Official references for this topic</summary><ul class="small">${m.sources.map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('')||'<li>Rehearsal prompts: use your own truthful experience.</li>'}</ul></details>`;}
-let expandedNavTopic='',lastNavOutput='';
+let expandedNavTopic='',lastNavOutput='',lastNavTopic=null;
 try{expandedNavTopic=localStorage.getItem('abap-studio-subtopics-v1')||'';}catch{/* Navigation remains usable without storage. */}
+function expandSelectedTopic(id){
+ if(!topicById.has(id)||expandedNavTopic===id)return;
+ expandedNavTopic=id;saveOptional('abap-studio-subtopics-v1',id);
+}
 function nav(animate=true){
  const selected=$('topic').value,section=$('section').value;
+ // Topic changes reveal their sections; manual collapse survives unrelated renders.
+ if(selected!==lastNavTopic){lastNavTopic=selected;expandSelectedTopic(selected);}
  let output=`<div class="nav-library"><button class="nav-home ${!selected&&!savedOnly&&!lessonLibrary?'active':''}" data-topic="" ${!selected&&!savedOnly&&!lessonLibrary?'aria-current="page"':''}>All topics</button><button id="savedQuestionsNav" class="nav-saved ${savedOnly?'active':''}" ${savedOnly?'aria-current="page"':''}>Saved questions <span class="nav-count">${savedQuestions.size}</span></button><button id="guidedLessonsNav" class="nav-saved ${lessonLibrary?'active':''}" ${lessonLibrary?'aria-current="page"':''}>Guided lessons <span class="nav-count">${lessons.length}</span></button></div>`;
  for(const t of topics){
   const expanded=expandedNavTopic===t.id,current=selected===t.id,active=current&&(!section||!expanded);
