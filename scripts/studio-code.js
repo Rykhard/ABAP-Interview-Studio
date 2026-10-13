@@ -1,5 +1,6 @@
 // Worked examples share the same question IDs in Learn, recall and quiz feedback.
-const codeExamples=JSON.parse($('code-data').textContent);
+const codeExamples=readStudioData('code-data');
+const examplesByQuestion=indexByQuestion(codeExamples);
 const codeById=new Map(codeExamples.map(example=>[example.id,example]));
 const exampleChoices=new Map(),explanationModes=new Map(),codeSteps=new Map();
 const codeKeywords=new Set('define root view entity as select from association composition of on projection provider contract transactional_query expose service extend with managed implementation in class unique strict persistent table draft lock master dependent by authorization instance global etag total create update delete field readonly mandatory numbering mapping validation determination save modify action result side effects affects use internal unmanaged additional static factory features precheck abstract privileged mode read entities local fields all failed reported mapped data final value corresponding for if else endif loop at into assigning endloop append to return commit rollback work import response type request set result check method endmethod constants'.split(' '));

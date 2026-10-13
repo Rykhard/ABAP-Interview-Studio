@@ -1,0 +1,12 @@
+{
+  "name": "abap-interview-studio",
+  "private": true,
+  "description": "Development checks for the dependency-free offline study app",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "test:browser": "playwright test",
+    "check:syntax": "node tests/check-syntax.cjs"
+  },
+  "engines": { "node": ">=22" },
+  "devDependencies": { "@playwright/test": "1.64.0" }
+}

@@ -14,7 +14,7 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     build_dark_visuals(root, visual_metadata)
     diagrams=build_diagram_assets(root, visual_metadata)
     def payload(data):
-        return json.dumps(data,ensure_ascii=False).replace('<','\\u003c')
+        return json.dumps(data,ensure_ascii=False,separators=(',', ':')).replace('<','\\u003c')
     template=(root/'scripts/study-template.html').read_text(encoding='utf-8-sig')
     app=(root/'scripts/studio.js').read_text(encoding='utf-8-sig').replace('__READING_APP__',(root/'scripts/studio-reading.js').read_text(encoding='utf-8-sig')).replace('__SEARCH_APP__',(root/'scripts/studio-search.js').read_text(encoding='utf-8-sig')).replace('__QUIZ_APP__',(root/'scripts/studio-quiz.js').read_text(encoding='utf-8-sig'))
     app=app.replace('__CODE_APP__', (root/'scripts/studio-code.js').read_text(encoding='utf-8'))
@@ -30,7 +30,7 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     ui_translations=read_json(root/'locales/ru/ui.json')
     app+='\n'+(root/'scripts/studio-language.js').read_text(encoding='utf-8')
     ru_app=translate_app(app, root, ui_translations)
-    bootstrap=(root/'scripts/studio-locale-bootstrap.js').read_text(encoding='utf-8')
+    bootstrap=(root/'scripts/studio-data.js').read_text(encoding='utf-8')+'\n'+(root/'scripts/studio-locale-bootstrap.js').read_text(encoding='utf-8')
     app=bootstrap+'\nif(studioLocale===\'ru\'){\n'+ru_app+'\n}else{\n'+app+'\n}'
     template=template.replace('__RU_DATA__',payload(russian)).replace('__UI_RU_DATA__',payload(ui_translations))
     template=template.replace('__LANGUAGE_CSS__',(root/'scripts/language.css').read_text(encoding='utf-8'))
@@ -44,6 +44,8 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     values['__LESSON_CSS__']=(root/'scripts/lessons.css').read_text(encoding='utf-8')+'\n'+(root/'scripts/scenes.css').read_text(encoding='utf-8')
     values['__INTERACTIVE_DATA__']=payload({'en':read_json(root/'visuals/interactive-scenes.json'),'ru':read_json(root/'locales/ru/interactive-scenes.json')})
     for token,value in values.items():template=template.replace(token,value)
+    if re.search(r'__(?!INSTANCE__)[A-Z][A-Z_]+__', template):
+        raise ValueError('Unresolved application template token')
     (root/'START_HERE.html').write_text(template,encoding='utf-8')
     questions={q['id']:(m,q) for m in modules for q in m['questions']}
     lines=['# Study topic map', '', 'The studio groups questions by subject. Core, Advanced and Senior levels stay inside each topic. Source documents keep their stable module names for printable exports.', '']

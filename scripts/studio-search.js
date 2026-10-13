@@ -3,7 +3,8 @@ let searchShowBroader=false;
 let searchQuery='',searchLimit=20,searchOpener=null,searchDestination=null,questionFromSearch=false,searchRouteClosing=false;
 const normalized=s=>String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const alternateSearchQuestions=new Map((studioLocale==='ru'?englishStudyModules:otherLocalePayloads['study-data']).flatMap(module=>module.questions.map(q=>[q.id,q])));
-const searchIndex=all.map(q=>{
+let searchIndex;
+function getSearchIndex(){return searchIndex??=all.map(q=>{
  const alternate=alternateSearchQuestions.get(q.id)||{};
  const fields=[
   ['Question',q.question,150],['Answer',q.answer,120],['Example',q.detail,95],['Common mistake',q.pitfall,65],
@@ -11,16 +12,17 @@ const searchIndex=all.map(q=>{
   ['Topic',q.moduleTitle,20,false],['Follow-up',[...q.followups||[],...q.signals||[],q.evidence||''].join(' '),45],
   ['Reference',(q.references||[]).map(r=>r.title+' '+r.note).join(' '),10,false],
   ['Guided lesson',(lessonsByQuestion.get(q.id)||[]).map(lesson=>[lesson.title,lesson.scenario,lesson.goal,...lesson.steps.map(step=>step.title+' '+step.explanation)].join(' ')).join(' '),80],
-  ['Diagram',visuals.filter(v=>v.questions.includes(q.id)).map(v=>v.title+' '+v.caption).join(' '),60]
+  ['Diagram',(visualsByQuestion.get(q.id)||[]).map(v=>v.title+' '+v.caption).join(' '),60]
  ].map(([label,text,weight,substantive=true])=>{const value=normalized(text);return {label,text,weight,substantive,normalized:value,words:value.split(' ')};});
  return {q,fields,words:[...new Set([normalized(q.id),...fields.flatMap(field=>field.words)])]};
-});
+});}
 function globalMatches(query){
  const term=normalized(query),terms=[...new Set(term.split(' ').filter(Boolean))];if(!terms.length)return [];
- const exact=searchIndex.find(item=>normalized(item.q.id).replace(/ /g,'')===term.replace(/ /g,''));
+ const index=getSearchIndex();
+ const exact=index.find(item=>normalized(item.q.id).replace(/ /g,'')===term.replace(/ /g,''));
  // Short technical terms such as API must not match a substring of BAPI.
  const covers=(words,word)=>words.some(token=>token===word||(word.length>=4&&token.startsWith(word)));
- return searchIndex.map(entry=>{
+ return index.map(entry=>{
   if(exact)return entry===exact?{q:entry.q,match:entry.fields[1],score:1000,tier:0,terms}:null;
   if(!terms.every(word=>covers(entry.words,word)))return null;
   const candidates=entry.fields.map(field=>{

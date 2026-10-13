@@ -12,3 +12,6 @@ node_modules/
 abap-study-progress.json
 originals/
 tasks/
+
+playwright-report/
+test-results/

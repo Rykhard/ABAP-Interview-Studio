@@ -1,5 +1,5 @@
 // Each scene is a deterministic teaching model. It never sends a business request.
-const sceneCopy=JSON.parse($('interactive-data').textContent)[studioLocale];
+const sceneCopy=readStudioData('interactive-data')[studioLocale];
 const interactiveSceneStates=new Map();
 const interactiveSceneKinds={
  'lesson-rap-etag':'etag','lesson-internal-tables':'tables',

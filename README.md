@@ -64,6 +64,10 @@ Choose one full Anki edition; the senior deck is a subset rather than extra uniq
 
 Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [October content and reading review](review/Content_Review_2026_10.md), [plain-language revision](review/Plain_Language_Review.md), [earlier content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
 
+## Development
+
+See [Architecture](docs/Architecture.md) for module boundaries and remaining technical debt, and [Development](docs/Development.md) for setup, automated checks and contribution workflow. GitHub Actions validates changes on PRs and pushes to `main`.
+
 ## Build and deploy
 
 Run `python scripts/build_site.py` to create the static `dist` directory and `dist.zip`. The hosting build needs Python's standard library only. For Cloudflare Pages use project `abap-interview-studio`, production branch `main`, build command `python scripts/build_site.py` and output directory `dist`. See the [deployment guide](docs/Deployment.md).

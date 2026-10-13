@@ -9,13 +9,13 @@ function localeCount(count,kind){
  const category=new Intl.PluralRules('ru').select(count),index=category==='one'?0:category==='few'?1:2;
  return count+' '+forms[index];
 }
-const englishStudyModules=JSON.parse(document.getElementById('study-data').textContent);
+const englishStudyModules=readStudioData('study-data');
 const englishQuestionText=new Map(englishStudyModules.flatMap(m=>m.questions.map(q=>[q.id,[q.question,q.answer,q.detail,q.pitfall].join(' ')])));
-const otherLocalePayloads=JSON.parse(document.getElementById('ru-data').textContent);
+const otherLocalePayloads=readStudioData('ru-data');
 const russianQuestionText=new Map(otherLocalePayloads['study-data'].flatMap(m=>m.questions.map(q=>[q.id,[q.question,q.answer,q.detail,q.pitfall].join(' ')])));
 if(studioLocale==='ru'){
- for(const [id,data] of Object.entries(otherLocalePayloads))document.getElementById(id).textContent=JSON.stringify(data);
- const dictionary=JSON.parse(document.getElementById('ui-ru-data').textContent);
+ selectStudioData(otherLocalePayloads);
+ const dictionary=readStudioData('ui-ru-data');
  for(const [key,value] of Object.entries(dictionary)){const decoder=document.createElement('textarea');decoder.innerHTML=key;dictionary[decoder.value]=value;}
  const keys=Object.keys(dictionary).sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
  const pattern=new RegExp('(?<![\\w.\\-/])(?:'+keys.join('|')+')(?![\\w.\\-/])','g');

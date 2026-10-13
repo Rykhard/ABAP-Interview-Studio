@@ -1,9 +1,9 @@
 'use strict';
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const modules=JSON.parse($('study-data').textContent),visuals=JSON.parse($('visual-data').textContent),tracks=JSON.parse($('track-data').textContent);
-const topics=JSON.parse($('topic-data').textContent),topicById=new Map(topics.map(t=>[t.id,t]));
+const modules=readStudioData('study-data'),visuals=readStudioData('visual-data'),tracks=readStudioData('track-data');
+const topics=readStudioData('topic-data'),topicById=new Map(topics.map(t=>[t.id,t]));
 const placement=new Map(topics.flatMap(t=>t.sections.flatMap(section=>section.questionIds.map(id=>[id,{topic:t.id,section:section.id,topicTitle:t.title,sectionTitle:section.title}]))));
-const quizzes=JSON.parse($('quiz-data').textContent),quizByQuestion=new Map(quizzes.map(q=>[q.questionId,q]));
+const quizzes=readStudioData('quiz-data'),quizByQuestion=new Map(quizzes.map(q=>[q.questionId,q]));
 const all=modules.flatMap(m=>m.questions.map(q=>({...q,module:m.id,...placement.get(q.id),moduleTitle:placement.get(q.id).topicTitle+' / '+placement.get(q.id).sectionTitle}))),byId=new Map(all.map(q=>[q.id,q]));
 const topicQuestions=t=>t.sections.flatMap(section=>section.questionIds.map(id=>byId.get(id)));
 let state={},ratings={},mode='learn',libraryList=false,restoringRoute=false,savedOnly=false,lessonLibrary=false;

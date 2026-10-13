@@ -1,15 +1,16 @@
 // Shared reading layout for learning cards, revealed recall, and quiz feedback.
 const visualById=new Map(visuals.map(v=>[v.id,v]));
 const visualChoices=new Map();
-const diagramAssets=JSON.parse($('diagram-data').textContent)[studioLocale];
+const visualsByQuestion=indexByQuestion(visuals);
+function diagramAsset(id){return readStudioData('diagram-data')[studioLocale][id];}
 let diagramInstance=0;
 function diagramMarkup(v){
- const asset=diagramAssets[v.id];
+ const asset=diagramAsset(v.id);
  if(asset.panels.length)return `<div class="diagram-story ${asset.kind}">${asset.panels.map((panel,index)=>`<section><span class="story-number" aria-hidden="true">${index+1}</span><h5>${esc(panel.title)}</h5><p>${esc(panel.body)}</p></section>`).join('')}</div>`;
  return asset.svg.replaceAll('__INSTANCE__','diagram-'+(++diagramInstance));
 }
-function diagramDescription(v){return `<details class="diagram-text"><summary>Read text explanation</summary>${readingParagraphs(diagramAssets[v.id].description)}</details>`;}
-function diagramDownload(v){return diagramAssets[v.id].downloads[document.documentElement.dataset.theme==='dark'?'dark':'light'];}
+function diagramDescription(v){return `<details class="diagram-text"><summary>Read text explanation</summary>${readingParagraphs(diagramAsset(v.id).description)}</details>`;}
+function diagramDownload(v){return diagramAsset(v.id).downloads[document.documentElement.dataset.theme==='dark'?'dark':'light'];}
 function questionReferences(q){
  if(!q.references?.length)return '<p class="question-sources personal-source">Use evidence from your own projects.</p>';
  const first=q.references[0],link=r=>`<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)} &#8599;</a>`;
@@ -21,7 +22,7 @@ function diagramPanel(q,related){
  return `<figure class="diagram-preview">${related.length>1?`<select class="diagram-picker" data-diagram-select data-question="${q.id}" aria-label="Choose a diagram">${related.map(v=>`<option value="${v.id}" ${v.id===visual.id?'selected':''}>${esc(v.title)}</option>`).join('')}</select>`:`<h4 class="diagram-title">${esc(visual.title)}</h4>`}<div class="diagram-canvas">${diagramMarkup(visual)}<button class="diagram-enlarge" data-open-visual="${visual.id}" aria-haspopup="dialog" aria-label="Open readable diagram: ${esc(visual.title)}"><span aria-hidden="true">&#x2922;</span></button></div><figcaption>${esc(visual.caption)}</figcaption>${diagramDescription(visual)}</figure>`;
 }
 function visualPanel(q,preferCode=false){
- const related=visuals.filter(v=>v.questions.includes(q.id)),examples=codeExamples.filter(example=>example.questions.includes(q.id));
+ const related=(visualsByQuestion.get(q.id)||[]),examples=(examplesByQuestion.get(q.id)||[]);
  const code=preferCode||selectedStudyView(q)==='developer';
  if(code&&!examples.length||!code&&!related.length)return '';
  return `<div class="visual-panel ${code?'code-panel':'diagram-panel'}" data-visual-panel="${q.id}">${code?codePanel(q,examples):diagramPanel(q,related)}</div>`;
@@ -55,7 +56,7 @@ function answer(q){
 }
 let visualZoom=1,visualOpener=null;
 function sizeVisual(){const svg=$('visualCanvas').querySelector('svg'),stage=$('visualStage');if(!svg||!stage.clientWidth)return;const box=svg.viewBox.baseVal,fit=Math.min(stage.clientWidth/box.width,stage.clientHeight/box.height,1);svg.style.width=Math.round(box.width*fit*visualZoom)+'px';svg.style.height=Math.round(box.height*fit*visualZoom)+'px';$('visualZoomLabel').textContent=visualZoom===1?'Fit':Math.round(visualZoom*100)+'% of fit';$('visualZoomOut').disabled=visualZoom===1;$('visualZoomIn').disabled=visualZoom===4;}
-function openVisual(id,opener){const v=visualById.get(id);if(!v)return;visualOpener=opener;visualZoom=1;$('visualDialog').dataset.visualId=id;$('visualTitle').textContent=v.title;$('visualCaption').textContent=v.caption;$('visualRecall').textContent=v.recall;$('visualLimit').textContent=v.limit;$('visualOriginal').href=diagramDownload(v);$('visualDownload').href=diagramDownload(v);$('visualCanvas').innerHTML=diagramMarkup(v);$('visualDescription').innerHTML=diagramDescription(v);$('visualStage').classList.toggle('text-story',diagramAssets[id].kind!=='svg');['visualZoomOut','visualZoomLabel','visualZoomIn','visualFit'].forEach(key=>$(key).hidden=diagramAssets[id].kind!=='svg');$('visualDetails').open=false;$('visualDialog').showModal();$('visualStage').scrollTo(0,0);sizeVisual();$('closeVisual').focus();}
+function openVisual(id,opener){const v=visualById.get(id);if(!v)return;visualOpener=opener;visualZoom=1;$('visualDialog').dataset.visualId=id;$('visualTitle').textContent=v.title;$('visualCaption').textContent=v.caption;$('visualRecall').textContent=v.recall;$('visualLimit').textContent=v.limit;$('visualOriginal').href=diagramDownload(v);$('visualDownload').href=diagramDownload(v);$('visualCanvas').innerHTML=diagramMarkup(v);$('visualDescription').innerHTML=diagramDescription(v);$('visualStage').classList.toggle('text-story',diagramAsset(id).kind!=='svg');['visualZoomOut','visualZoomLabel','visualZoomIn','visualFit'].forEach(key=>$(key).hidden=diagramAsset(id).kind!=='svg');$('visualDetails').open=false;$('visualDialog').showModal();$('visualStage').scrollTo(0,0);sizeVisual();$('closeVisual').focus();}
 $('view').addEventListener('click',event=>{const opener=event.target.closest('[data-open-visual]');if(opener){openVisual(opener.dataset.openVisual,opener);return;}const choice=event.target.closest('[data-visual-choice]');if(choice){const q=byId.get(choice.dataset.question);visualChoices.set(q.id,choice.dataset.visualChoice);const panel=choice.closest('[data-visual-panel]');panel.outerHTML=visualPanel(q);document.querySelector(`[data-visual-panel="${q.id}"] [data-visual-choice="${choice.dataset.visualChoice}"]`)?.focus();}});
 $('closeVisual').onclick=()=>$('visualDialog').close();
 $('view').addEventListener('change',event=>{const select=event.target.closest('[data-diagram-select]');if(!select)return;const q=byId.get(select.dataset.question);visualChoices.set(q.id,select.value);const panel=select.closest('[data-visual-panel]');panel.outerHTML=visualPanel(q);document.querySelector(`[data-visual-panel="${q.id}"] [data-diagram-select]`)?.focus({preventScroll:true});});

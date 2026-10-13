@@ -1,5 +1,5 @@
 // Authored worked examples change the explanation, process stage and visible data together.
-const lessons=JSON.parse($('lesson-data').textContent);
+const lessons=readStudioData('lesson-data');
 const lessonById=new Map(lessons.map(lesson=>[lesson.id,lesson]));
 const lessonsByQuestion=new Map();
 for(const lesson of lessons)for(const id of lesson.questions){if(!lessonsByQuestion.has(id))lessonsByQuestion.set(id,[]);lessonsByQuestion.get(id).push(lesson);}
@@ -7,7 +7,7 @@ const lessonPositions=new Map(),lessonChoices=new Map(),studyViewChoices=new Map
 try{const stored=JSON.parse(localStorage.getItem('abap-studio-study-views-v1')||'{}');if(stored&&typeof stored==='object'&&!Array.isArray(stored))for(const [id,value] of Object.entries(stored))if(byId.has(id)&&['calm','developer','guided'].includes(value))studyViewChoices.set(id,value);}catch{/* Optional view preferences must not block learning. */}
 function availableStudyViews(q){
  const views=[['calm','Explanation']];
- if(codeExamples.some(x=>x.questions.includes(q.id)))views.push(['developer','Code']);
+ if(examplesByQuestion.has(q.id))views.push(['developer','Code']);
  if(lessonsByQuestion.has(q.id))views.push(['guided','Step by step']);
  return views;
 }

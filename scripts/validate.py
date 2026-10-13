@@ -10,6 +10,7 @@ from code_examples import load_examples
 from guided_lessons import load_lessons
 from study_catalog import ordered_modules, is_cloud, catalog, track_key
 from localization import localized_payloads
+from publication import publication_files
 
 root=Path(__file__).resolve().parents[1]
 errors=[]
@@ -171,8 +172,8 @@ def check_link(base,target):
     if target.startswith(('http:','https:','mailto:','#','data:')):return
     target=unquote(target.split('#')[0].split('?')[0])
     if target and not (base/target).exists():errors.append(f'Broken local link {base}: {target}')
-for path in root.rglob('*.md'):
-    if 'originals' in path.parts:continue
+for path in set(publication_files(root).values()):
+    if path.suffix != '.md':continue
     for target in re.findall(r'\]\(([^)]+)\)',path.read_text(encoding='utf-8')):check_link(path.parent,target)
 for target in re.findall(r'(?:href|src)="([^"{}]+)"',html):
     if '${' not in target:check_link(root,target)
