@@ -29,7 +29,7 @@
       "id": "SQL-01",
       "question": "How do ABAP SQL, Native SQL, CDS, and AMDP differ?",
       "answer": "ABAP SQL is the usual way to read and change database data from ABAP. CDS defines reusable data models and queries. Native SQL uses database-specific SQL, so the developer must handle more details. AMDP manages HANA database procedures and functions written in SQLScript through ABAP classes. I start with the simplest supported option and check client, authorization and release rules.",
-      "detail": "A report needs totals for one company and month. ABAP SQL may express the whole selection and sum clearly. CDS becomes useful when the same data model should be reused by several consumers. Neither requirement automatically needs a database procedure.\n\nIf a necessary calculation cannot be expressed well in supported ABAP SQL or CDS, I consider AMDP and measure the result. I also check which dependencies are allowed in the target environment. Writing SQLScript inside an ABAP-managed method does not turn it into ABAP SQL. In particular, direct table reads must not be assumed to apply the access control of a CDS entity that would otherwise protect those records.",
+      "detail": "A report needs totals for one company and month. ABAP SQL may express the whole selection and sum clearly. CDS becomes useful when the same data model should be reused by several consumers. Neither requirement automatically needs a database procedure.\n\nIf a necessary calculation cannot be expressed well in supported ABAP SQL or CDS, I consider AMDP and measure the result. I also check which dependencies are allowed in the target environment. Writing SQLScript inside an ABAP-managed method does not turn it into ABAP SQL. In particular, direct table reads must not be assumed to apply the access control of a CDS entity that would otherwise protect those records.\n\nADBC is an ABAP API for Native SQL, useful when a permitted database-specific operation cannot be expressed through ABAP SQL. It does not add ABAP SQL client handling: a client-dependent table needs the correct explicit client restriction. Bind data values, allowlist any configurable identifiers, and perform the required authorization checks. Native SQL also does not inherit a CDS entity's DCL just because it reads the same tables. ABAP Cloud requires the language and released APIs allowed in the target environment.",
       "pitfall": "ABAP syntax around an AMDP method does not turn its SQLScript body into ABAP SQL or automatically apply CDS access control.",
       "level": "Core",
       "references": [
@@ -42,6 +42,11 @@
           "title": "SAP AMDP use and selection guidance",
           "url": "https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/example-amdp-procedure-implementations",
           "note": "Check what the query returns and measure it in the target system before choosing a performance change."
+        },
+        {
+          "title": "SAP: client handling guidelines",
+          "url": "https://help.sap.com/doc/abapdocu_816_index_htm/8.16/en-US/ABENCLIENT_HANDLING_GUIDL.html",
+          "note": "Native SQL requires explicit client handling; database access and business authorization are separate concerns."
         }
       ]
     },

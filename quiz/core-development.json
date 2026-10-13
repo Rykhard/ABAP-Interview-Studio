@@ -1,0 +1,86 @@
+[
+  {
+    "id": "QUIZ-DEVCORE-AUTH",
+    "questionId": "DEVCORE-01",
+    "correctOption": "a",
+    "prompt": "AUTHORITY-CHECK returned a nonzero sy-subrc for changing company 1000. What must happen next?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reject the protected change immediately.",
+        "explanation": "The application must enforce the failed result before protected work."
+      },
+      {
+        "id": "b",
+        "text": "Read another table, then check sy-subrc.",
+        "explanation": "The read may overwrite sy-subrc and hide the authorization result."
+      },
+      {
+        "id": "c",
+        "text": "Continue because the user could open the page.",
+        "explanation": "Authentication and UI access do not grant this business permission."
+      },
+      {
+        "id": "d",
+        "text": "Treat only sy-subrc 12 as a denial.",
+        "explanation": "Other nonzero results also fail the check. Fail closed instead of granting access for an unhandled result."
+      }
+    ]
+  },
+  {
+    "id": "QUIZ-DEVCORE-PAGING",
+    "questionId": "DEVCORE-03",
+    "correctOption": "a",
+    "prompt": "A page ended at (09:00, 7). Another visible row is (09:00, 9). What must the next-page condition allow?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The same timestamp with an ID greater than 7.",
+        "explanation": "The tie-breaker keeps row 9 while continuing after row 7."
+      },
+      {
+        "id": "b",
+        "text": "Only timestamps later than 09:00.",
+        "explanation": "That loses visible row 9, which shares the checkpoint timestamp."
+      },
+      {
+        "id": "c",
+        "text": "Every row from 09:00 without a tie-breaker or page limit.",
+        "explanation": "This neither identifies a stable continuation point nor bounds the page."
+      },
+      {
+        "id": "d",
+        "text": "Use only the last ID and ignore the timestamp order.",
+        "explanation": "The checkpoint must match the complete ordering; IDs alone need not increase with changed_at."
+      }
+    ]
+  },
+  {
+    "id": "QUIZ-DEVCORE-FIXTURE",
+    "questionId": "DEVCORE-04",
+    "correctOption": "a",
+    "prompt": "One test clears its input table. What keeps another test independent of that mutation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Recreate the required input in setup before each test.",
+        "explanation": "Each test receives the same known starting state, regardless of order."
+      },
+      {
+        "id": "b",
+        "text": "Run the clearing test last by convention.",
+        "explanation": "Test order is not a sound fixture contract."
+      },
+      {
+        "id": "c",
+        "text": "Mark the class RISK LEVEL HARMLESS.",
+        "explanation": "The risk label does not restore changed data or isolate dependencies."
+      },
+      {
+        "id": "d",
+        "text": "Initialize mutable input only once in class_setup.",
+        "explanation": "A shared mutable fixture still needs per-test reset; once-per-class initialization alone does not prevent interference."
+      }
+    ]
+  }
+]

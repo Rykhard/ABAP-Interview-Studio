@@ -30,7 +30,7 @@ from visual_save_sequence import build_save_sequence_visuals
 from study_catalog import ordered_modules, is_cloud, catalog
 
 ROOT = Path(__file__).resolve().parents[1]
-DATE = '12 October 2026'
+DATE = '13 October 2026'
 INK = colors.HexColor('#122b3e')
 MUTED = colors.HexColor('#536b7c')
 TEAL = colors.HexColor('#126554')
@@ -364,7 +364,7 @@ sources=[];seen=set()
 for m in modules:
     for s in m['sources']+[ref for q in m['questions'] for ref in q.get('references',[])]:
         if s['url'] not in seen:sources.append(s);seen.add(s['url'])
-register='# Official source register\n\nReviewed on 11 October 2026. Use the target product and version in SAP Help before applying exact syntax or API classifications. The references are primary SAP, SAP sample, Cloud Foundry, OASIS, IETF, W3C, MDN and original REST research documentation. Older SAP library pages are retained only for stable classic concepts; they do not establish cloud availability. SAP Notes mentioned in the material may require a customer login and were not treated as publicly inspected full text.\n\n'
+register='# Official source register\n\nMaintained on 13 October 2026. See the dated review reports for the scope of each content pass. Use the target product and version in SAP Help before applying exact syntax or API classifications. References include primary SAP, SAP samples, standards documentation and publisher engineering guidance such as AWS, OWASP and OpenTelemetry. Older SAP library pages are retained only for stable classic concepts; they do not establish cloud availability. SAP Notes mentioned in the material may require a customer login and were not treated as publicly inspected full text.\n\n'
 register+=''.join(f'- [{s["title"]}]({s["url"]})\n' for s in sources)
 (ROOT/'review'/'Sources.md').write_text(register,encoding='utf-8')
 

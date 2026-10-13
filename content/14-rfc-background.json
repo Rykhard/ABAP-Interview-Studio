@@ -168,7 +168,7 @@
       "id": "RFC-09",
       "question": "How would you design parallel workers that can be restarted safely?",
       "answer": "Each worker needs a clear package, transaction boundary and restart rule. I use stable business keys so a retry can find work already completed. Different workers should avoid changing the same locked object at the same time. After a timeout, I check the actual business result rather than assume the package failed and run everything again.",
-      "detail": "Six workers process six packages. Five report success and the sixth times out. Restarting all six could repeat work that already committed. I record completed, pending and uncertain outcomes and use stable references to locate each package's business documents. Independent worker commits mean the overall job can be partly complete.\n\nThere is a harder case: the sixth worker saved its document but failed before recording completion. A package status alone cannot prove that nothing happened. Recovery must check the business effect or use a documented idempotent operation. I also test two packages that accidentally contain the same object, because lock contention can remove the benefit of parallel processing.",
+      "detail": "Six workers process six packages. Five report success and the sixth times out. Restarting all six could repeat work that already committed. I record completed, pending and uncertain outcomes and use stable references to locate each package's business documents. Independent worker commits mean the overall job can be partly complete.\n\nThere is a harder case: the sixth worker saved its document but failed before recording completion. A package status alone cannot prove that nothing happened. Recovery must check the business effect or use a documented idempotent operation. I also test two packages that accidentally contain the same object, because lock contention can remove the benefit of parallel processing.\n\nFor a custom work queue, define how two workers claim one item atomically. One design is to lock the item, re-read its pending state, record the owner and claim, then release the lock under a documented transaction boundary. Every worker must follow that protocol. Recovery of an abandoned claim must check whether the original worker is still active and whether its business effect already exists; an expired timer alone must not authorize duplicate processing.",
       "pitfall": "Separately committed workers are not one all-or-nothing transaction. Extra workers can also make lock contention worse.",
       "level": "Advanced",
       "references": [
@@ -181,6 +181,11 @@
           "title": "SAP classic background scheduling and monitoring",
           "url": "https://help.sap.com/saphelp_em700_ehp01/helpdata/en/48/baab96ca960611e10000000a42189b/content.htm",
           "note": "These are classic ABAP runtime rules unless the source specifically describes a cloud application job."
+        },
+        {
+          "title": "SAP: lock ownership",
+          "url": "https://help.sap.com/docs/ABAP_PLATFORM/d0739d980ecf42ae9f3b4c19e21a4b6e/47d8bbf7d68c3c86e10000000a42189c.html",
+          "note": "Lock ownership is documented by SAP; the custom queue claim example is an application design, not a built-in exactly-once guarantee."
         }
       ]
     },

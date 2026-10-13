@@ -174,6 +174,8 @@ Read each card as a separate design question; this is not an execution sequence.
 
 A different action, CalculatePreview, may return estimated totals without saving a new object. Its result type and cardinality should describe that outcome clearly. Test missing or invalid parameters and inspect what the caller actually receives. Do not assume that defining parameters guarantees the same input dialog in every client; metadata and consumer support determine the user experience.
 
+A handler can receive several requested keys. Process all of them, collect failures and messages, and build the declared result for the successful requests. For an instance action returning [1] $self, the result identifies each successful source instance and places its returned entity data in %param. Updating a row and filling result are separate responsibilities; neither proves that the later save succeeded.
+
 **Avoid this mistake:** Parameters are not defined by putting an action inside an abstract entity.
 
 **Read and verify this answer:**
@@ -407,6 +409,8 @@ After implementing the supported changes, enter a value, save the request, and r
 **Reasoning and example:** A generated UUID should not be freely edited by the caller, so a static readonly declaration fits. The request description may be editable while the request is open but readonly after approval, which needs a state-dependent rule. Use the applicable generated feature-control handler to express the supported restriction.
 
 Now test an API call as well as the screen. Permission checks must still prevent an unauthorized user from changing an otherwise editable request. Also validate the business data: mandatory field metadata is not a complete substitute for backend consistency rules. Keeping static restrictions, dynamic availability, authorization, and validation separate makes it easier to explain why a request was rejected.
+
+Compare static field controls: readonly prevents consumer writes; readonly:update permits supplying the field on create but prevents later consumer updates; mandatory declares a required input for supporting consumers. Do not rely on a UI required marker alone to reject invalid persistence: implement the necessary backend validation. Dynamic features may make an operation unavailable for the current business state; authorization independently decides whether the caller is allowed.
 
 **Avoid this mistake:** A dynamic UI state does not prove security, and mandatory metadata does not replace all backend business validations.
 

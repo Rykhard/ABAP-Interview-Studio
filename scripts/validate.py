@@ -163,7 +163,9 @@ for v in catalog:
         if not path.exists():errors.append('Missing visual file '+str(path))
     original=root/'visuals'/(v['id']+'.png');media=root/'flashcards'/'media'/(v['id']+'.png')
     if original.exists() and media.exists() and original.read_bytes()!=media.read_bytes():errors.append('Anki media mismatch '+v['id'])
-new_ids={q['id'] for m in modules if int(m['id'][:2])>=21 for q in m['questions']}
+# Modules 21-24 explicitly promise a diagram and quiz for every question.
+# Later conceptual questions may use textual examples (see docs/Learning.md).
+new_ids={q['id'] for m in modules if m['id'][:2] in {'21','22','23','24'} for q in m['questions']}
 if new_ids-visual_questions:errors.append('New questions missing meaningful visuals: '+str(sorted(new_ids-visual_questions)))
 if new_ids-{item['questionId'] for item in quiz_items}:errors.append('New questions missing curated quizzes')
 illustrated=list(csv.reader((root/'flashcards'/'ABAP_Interview_Illustrated_Anki.tsv').open(encoding='utf-8'),delimiter='\t'))

@@ -1,0 +1,438 @@
+[
+  {
+    "id": "core-order-crud-contract",
+    "questions": [
+      "RAP-18"
+    ],
+    "startFor": [
+      "RAP-18"
+    ],
+    "title": "Объявить managed CRUD contract",
+    "intro": "Во всех трёх вариантах CRUD используется одна небольшая модель.",
+    "language": "BDEF",
+    "context": "Base BDEF существующего non-draft root CDS ZI_Order над zorder. OrderUUID — ключ RAW(16), Comment — символьное бизнес-поле; столбцы persistence — order_uuid и order_comment. Реализуйте сгенерированный global authorization handler и требования strict mode своей версии.",
+    "code": "managed implementation in class zbp_i_order unique;\nstrict ( 2 );\ndefine behavior for ZI_Order alias Order\npersistent table zorder\nlock master\nauthorization master ( global )\n{\n  create;\n  update;\n  delete;\n  field ( numbering : managed, readonly ) OrderUUID;\n  mapping for zorder\n  {\n    OrderUUID = order_uuid;\n    Comment = order_comment;\n  }\n}",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          4,
+          8,
+          9,
+          10
+        ],
+        "label": "Использовать CRUD framework",
+        "explanation": "Здесь объявлены операции; managed RAP предоставляет их реализацию buffer и persistence."
+      },
+      {
+        "lines": [
+          11,
+          14,
+          15
+        ],
+        "label": "Сохранить идентичность и mapping",
+        "explanation": "RAP создаёт OrderUUID; Comment связан с order_comment. EML-варианты используют именно эти имена."
+      }
+    ],
+    "outcome": "Контракт BO поддерживает create, update и delete; вызывающему всё ещё нужны права и успешная транзакция.",
+    "caveat": "Учебный контракт, не полный активированный проект: нужны table, CDS, behavior pool, реализация authorization и при необходимости service/projection.",
+    "references": [
+      {
+        "title": "SAP Learning: business objects and behavior",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-business-objects-and-their-behavior"
+      }
+    ]
+  },
+  {
+    "id": "core-order-create-save",
+    "questions": [
+      "RAP-18"
+    ],
+    "language": "ABAP",
+    "code": "MODIFY ENTITIES OF zi_order\n  ENTITY Order\n  CREATE FIELDS ( Comment )\n  WITH VALUE #( ( %cid = 'new-order' Comment = 'Draft' ) )\n  MAPPED DATA(ls_mapped)\n  FAILED DATA(ls_failed)\n  REPORTED DATA(ls_reported).\nout->write( ls_reported ).\nIF ls_failed IS NOT INITIAL.\n  out->write( ls_failed ).\n  ROLLBACK ENTITIES.\n  RETURN.\nENDIF.\nCOMMIT ENTITIES RESPONSE OF zi_order\n  FAILED DATA(ls_save_failed)\n  REPORTED DATA(ls_save_reported).\nDATA(save_status) = sy-subrc.\nout->write( ls_save_reported ).\nIF save_status <> 0.\n  out->write( ls_save_failed ).\n  ROLLBACK ENTITIES.\n  RETURN.\nENDIF.\nout->write( ls_mapped-order ).",
+    "title": "Создать заказ и проверить save",
+    "intro": "Две проверки ответа отличают принятый запрос от завершённой транзакции.",
+    "context": "Учебный внешний метод IF_OO_ADT_CLASSRUN~main; out — его объект вывода. Существующий non-draft managed ZI_Order имеет alias Order, генерируемый RAW(16) OrderUUID, изменяемый Comment и операции create/update/delete. Права выданы. Программа владеет отдельной пустой LUW. Литералы — входные данные примера.",
+    "outcome": "Окончательный вывод идентичности из MAPPED выполняется только при успешном save.",
+    "caveat": "Нужны реальные CDS/table/BDEF и проверки прав. Вывод служит диагностике примера. COMMIT/ROLLBACK нельзя переносить в behavior handler.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3,
+          4
+        ],
+        "label": "Запросить создание",
+        "explanation": "Comment передан; managed numbering создаёт технический ключ."
+      },
+      {
+        "lines": [
+          6,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "Проверить interaction",
+        "explanation": "FAILED указывает отклонённые операции; REPORTED содержит сообщения, не обязательно ошибки."
+      },
+      {
+        "lines": [
+          14,
+          15,
+          16,
+          17,
+          19
+        ],
+        "label": "Отдельно проверить save",
+        "explanation": "Save может завершиться ошибкой после успешного MODIFY. Сразу сохраните sy-subrc и ответ FAILED/REPORTED."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: RAP implementation lesson",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects"
+      }
+    ]
+  },
+  {
+    "id": "core-order-update-read",
+    "questions": [
+      "RAP-18"
+    ],
+    "language": "ABAP",
+    "code": "MODIFY ENTITIES OF zi_order\n  ENTITY Order UPDATE FIELDS ( Comment )\n  WITH VALUE #( ( OrderUUID = order_uuid Comment = 'Ready' ) )\n  FAILED DATA(ls_failed)\n  REPORTED DATA(ls_reported).\nout->write( ls_reported ).\nIF ls_failed IS NOT INITIAL.\n  out->write( ls_failed ).\n  ROLLBACK ENTITIES.\n  RETURN.\nENDIF.\nREAD ENTITIES OF zi_order\n  ENTITY Order FIELDS ( Comment )\n  WITH VALUE #( ( OrderUUID = order_uuid ) )\n  RESULT DATA(lt_orders)\n  FAILED DATA(ls_read_failed)\n  REPORTED DATA(ls_read_reported).\nout->write( lt_orders ).\nout->write( ls_read_failed ).\nout->write( ls_read_reported ).",
+    "title": "Прочитать значение до save",
+    "intro": "Чтение выполняется после update в той же транзакции.",
+    "context": "Фрагмент внешнего class-run для той же non-draft модели Order. order_uuid — переданный существующий ключ RAW(16). Вызывающий владеет LUW. Ready — данные примера.",
+    "outcome": "После принятого update чтение может вернуть Ready, хотя сохранённое значение ещё прежнее.",
+    "caveat": "Фрагмент намеренно заканчивается до save. При ошибке чтения вызывающий решает выполнить rollback; иначе применяет отдельный шаблон COMMIT ENTITIES с проверкой. Для удаления используется ENTITY Order DELETE с ключом и те же проверки interaction/save.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3
+        ],
+        "label": "Изменить одно поле",
+        "explanation": "FIELDS отмечает Comment как переданный. Остальные поля не изменяются."
+      },
+      {
+        "lines": [
+          12,
+          13,
+          14,
+          15
+        ],
+        "label": "Прочитать состояние транзакции",
+        "explanation": "EML может вернуть незавершённое Ready; запрос к базе не заменяет чтение buffer."
+      },
+      {
+        "lines": [
+          16,
+          17,
+          19,
+          20
+        ],
+        "label": "Сохранить ошибки чтения",
+        "explanation": "До продолжения нужно обработать отсутствующие результаты и сообщения."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: RAP implementation lesson",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects"
+      }
+    ]
+  },
+  {
+    "id": "core-composition-behavior",
+    "questions": [
+      "RAP-19"
+    ],
+    "language": "BDEF",
+    "code": "define behavior for ZI_Order alias Order\npersistent table zorder\nlock master\nauthorization master ( global )\n{\n  create; update; delete;\n  association _Items { create; }\n}\ndefine behavior for ZI_OrderItem alias Item\npersistent table zorder_item\nlock dependent by _Order\nauthorization dependent by _Order\n{\n  update; delete;\n  association _Order;\n}",
+    "title": "Root управляет жизненным циклом позиций",
+    "intro": "Создавайте дочернюю позицию через её заказ.",
+    "context": "Выбранные блоки одного managed base BDEF. CDS ZI_Order включает ZI_OrderItem через composition _Items; у позиции есть association-to-parent _Order. Заголовок, требования strict mode, numbering, поля/mapping и реализация authorization опущены.",
+    "outcome": "Позиция использует границу блокировки и authorization корня; обычные composition children удаляются вместе с root.",
+    "caveat": "Это не полный BDEF для активации. Создание нового родителя и позиций через %cid/%cid_ref описано в RAP-10. Здесь не рассматриваются новые возможности cross-BO associations.",
+    "highlights": [
+      {
+        "lines": [
+          6,
+          7
+        ],
+        "label": "Создавать через владельца",
+        "explanation": "Create корня создаёт заказы; create на _Items — их позиции."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          14,
+          15
+        ],
+        "label": "Зависеть от родителя",
+        "explanation": "Позиции имеют update/delete и используют родителя для lock и authorization."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: RAP implementation lesson",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-composite-business-objects"
+      }
+    ]
+  },
+  {
+    "id": "core-projection-capability",
+    "questions": [
+      "RAP-20"
+    ],
+    "language": "BDEF",
+    "code": "projection;\nstrict ( 2 );\ndefine behavior for ZC_Order alias Order\n{\n  use create;\n  use update;\n  use delete;\n  use action Submit;\n}",
+    "title": "Открыть операции, нужные приложению",
+    "intro": "Projection выбирает существующие возможности, а не реализует Submit.",
+    "context": "Non-draft behavior projection существующего ZC_Order над ZI_Order. Base behavior уже объявляет create/update/delete и Submit с реализованным handler. Сервис открывает ZC_Order.",
+    "outcome": "Projection переиспользует четыре объявленные возможности для этого потребителя.",
+    "caveat": "Проверьте metadata активного binding и требования версии. Переиспользование не обходит права и dynamic availability и не добавляет недостающие UI annotations.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          5,
+          6,
+          7
+        ],
+        "label": "Выбрать контракт потребителя",
+        "explanation": "Поддержка в base не открывает автоматически пропущенные здесь операции."
+      },
+      {
+        "lines": [
+          8
+        ],
+        "label": "Переиспользовать action",
+        "explanation": "Если Submit открыт, но отключён, дальше проверяйте доступность и права."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: RAP implementation lesson",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-business-objects-and-their-behavior"
+      }
+    ]
+  },
+  {
+    "id": "core-order-rba",
+    "questions": [
+      "RAP-21"
+    ],
+    "language": "ABAP",
+    "code": "READ ENTITIES OF zi_order IN LOCAL MODE\n  ENTITY Order BY \\_Items\n  ALL FIELDS WITH CORRESPONDING #( keys )\n  RESULT DATA(lt_items)\n  LINK DATA(lt_links)\n  FAILED DATA(ls_failed)\n  REPORTED DATA(ls_reported).",
+    "title": "Прочитать позиции и связи с родителями",
+    "intro": "Две выходные таблицы отвечают на разные вопросы.",
+    "context": "Внутри реализации этого BO keys содержит сгенерированные транзакционные идентичности Order. У ZI_Order есть alias Order и composition _Items к Item. Окружающая операция должна передать разрешённые её контрактом ошибки и сообщения.",
+    "outcome": "lt_items содержит поля позиций; lt_links связывает исходный и целевой %tky, например A → A1 и B → B1.",
+    "caveat": "Local mode применяется внутри этого BO, а не для обхода прав внешнего вызывающего. Отсутствие позиций само по себе не доказывает ошибку чтения родителя.",
+    "highlights": [
+      {
+        "lines": [
+          2,
+          3
+        ],
+        "label": "Следовать ассоциации",
+        "explanation": "На входе идентичности заказов, а не ключи позиций."
+      },
+      {
+        "lines": [
+          4,
+          5
+        ],
+        "label": "Разделить данные и связи",
+        "explanation": "RESULT возвращает данные позиций; LINK сохраняет связи исходных и целевых экземпляров."
+      },
+      {
+        "lines": [
+          6,
+          7
+        ],
+        "label": "Проверить ответ",
+        "explanation": "Отличайте ошибку исходного чтения от заказа без позиций."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: RAP implementation lesson",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-the-behavior-of-composite-business-objects"
+      }
+    ]
+  },
+  {
+    "id": "core-control-clear-comment",
+    "questions": [
+      "RAP-22"
+    ],
+    "language": "ABAP",
+    "code": "DATA lt_updates TYPE TABLE FOR UPDATE zi_order.\nDATA lt_orders TYPE TABLE FOR READ RESULT zi_order.\nlt_updates = VALUE #( (\n  %tky = ls_order-%tky\n  Comment = ''\n  %control-Comment = if_abap_behv=>mk-on ) ).\nMODIFY ENTITIES OF zi_order\n  ENTITY Order UPDATE FROM lt_updates\n  FAILED DATA(ls_failed)\n  REPORTED DATA(ls_reported).",
+    "title": "Намеренно очистить поле",
+    "intro": "Пустое значение с включённым control flag означает реальное изменение.",
+    "context": "Фрагмент внешнего EML. ls_order — ранее прочитанный Order с сохранённым %tky; Comment доступен для изменения. lt_orders показывает derived type результата чтения, а не вход update. Обработку ответа и save/rollback выполняет вызывающий.",
+    "outcome": "Запрашивается очистка Comment. Если выключить его control flag, поле не изменится.",
+    "caveat": "До продолжения обработайте FAILED/REPORTED и отдельно проверьте save. Это не полная транзакция.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2
+        ],
+        "label": "Выбирать тип по операции",
+        "explanation": "У входа update и результата read разные derived contracts."
+      },
+      {
+        "lines": [
+          4,
+          5,
+          6
+        ],
+        "label": "Сохранить идентичность и намерение",
+        "explanation": "%tky указывает нужный active/draft экземпляр. mk-on означает намеренно переданный пустой Comment."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: RAP implementation lesson",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects"
+      }
+    ]
+  },
+  {
+    "id": "core-static-field-control",
+    "questions": [
+      "ADV-13"
+    ],
+    "language": "BDEF",
+    "code": "field ( readonly ) OrderUUID;\nfield ( readonly : update ) CustomerID;\nfield ( mandatory ) DeliveryDate;",
+    "title": "Три статические настройки с разным смыслом",
+    "intro": "Не считайте каждую настройку поля одной и той же validation.",
+    "context": "Выбранные объявления полей в существующем base Order BDEF с OrderUUID, CustomerID и DeliveryDate. Numbering ключа и бизнес-validations определены отдельно.",
+    "outcome": "OrderUUID не записывается потребителем; CustomerID можно передать при create; DeliveryDate объявлена обязательной.",
+    "caveat": "Для отсутствующей или недопустимой даты нужна backend validation. Static controls не заменяют authorization и динамическую доступность по бизнес-состоянию.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2
+        ],
+        "label": "Сравнить запреты записи",
+        "explanation": "readonly отличается от readonly:update: второй вариант разрешает ввод при create."
+      },
+      {
+        "lines": [
+          3
+        ],
+        "label": "Проверять согласованность",
+        "explanation": "Подсказка об обязательном поле не должна быть единственной защитой от некорректных сохранённых данных."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: RAP implementation lesson",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-static-field-control-and-value-helps"
+      }
+    ]
+  },
+  {
+    "id": "core-determine-check-date",
+    "questions": [
+      "RAP-24"
+    ],
+    "language": "BDEF",
+    "code": "validation ValidateDate on save\n  { create; field DeliveryDate; }\ndetermine action CheckDate\n{\n  validation ValidateDate;\n}",
+    "title": "Переиспользовать validation по запросу",
+    "intro": "Determine action ссылается на правило, а не реализует его второй раз.",
+    "context": "Выбранные объявления в managed Order BDEF с DeliveryDate. Handler ValidateDate реализован и возвращает FAILED и REPORTED для некорректных экземпляров.",
+    "outcome": "Поддерживаемый потребитель может запросить проверку ValidateDate через CheckDate.",
+    "caveat": "Условия запуска и оптимизации сохраняются. Это не COMMIT; из списка нельзя выводить порядок выполнения. Projection и настройка потребителя выполняются отдельно.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2
+        ],
+        "label": "Задать trigger правила",
+        "explanation": "Create или переданное изменение DeliveryDate участвует в trigger этой validation."
+      },
+      {
+        "lines": [
+          3,
+          5
+        ],
+        "label": "Запросить существующую проверку",
+        "explanation": "CheckDate объединяет validation, а не создаёт вторую реализацию обычной action."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: RAP implementation lesson",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-determine-actions-and-side-effect"
+      }
+    ]
+  },
+  {
+    "id": "core-action-all-keys",
+    "questions": [
+      "ADV-05"
+    ],
+    "title": "Обработать каждый экземпляр action",
+    "intro": "Изменить принятые экземпляры, сообщить об ошибках и вернуть только успешные результаты.",
+    "language": "ABAP",
+    "context": "Тело простой instance action SetComment parameter ZI_CommentInput result [1] $self в BO ZI_Order с одной сущностью. Abstract input содержит Comment; BDEF alias — Order. Доступны сгенерированные параметры keys, result, failed и reported. Action разрешает заменить Comment для каждого запрошенного ключа с проверенными правами; предполагаются разные экземпляры.",
+    "code": "MODIFY ENTITIES OF zi_order IN LOCAL MODE\n  ENTITY Order UPDATE FIELDS ( Comment )\n  WITH VALUE #( FOR ls_key IN keys\n    ( %tky = ls_key-%tky Comment = ls_key-%param-Comment ) )\n  FAILED DATA(ls_update_failed)\n  REPORTED DATA(ls_update_reported).\nfailed-order = VALUE #( FOR ls_failure IN ls_update_failed-order\n  ( %tky = ls_failure-%tky\n    %fail-cause = ls_failure-%fail-cause\n    %action-SetComment = if_abap_behv=>mk-on ) ).\nAPPEND LINES OF ls_update_reported-order TO reported-order.\nDATA(lt_successful_keys) = keys.\nLOOP AT ls_update_failed-order INTO DATA(ls_update_failure).\n  DELETE lt_successful_keys WHERE %tky = ls_update_failure-%tky.\nENDLOOP.\nREAD ENTITIES OF zi_order IN LOCAL MODE\n  ENTITY Order ALL FIELDS\n  WITH CORRESPONDING #( lt_successful_keys )\n  RESULT DATA(lt_orders)\n  FAILED DATA(ls_read_failed)\n  REPORTED DATA(ls_read_reported).\nLOOP AT ls_read_failed-order INTO DATA(ls_read_failure).\n  APPEND VALUE #( %tky = ls_read_failure-%tky\n    %fail-cause = ls_read_failure-%fail-cause\n    %action-SetComment = if_abap_behv=>mk-on ) TO failed-order.\nENDLOOP.\nAPPEND LINES OF ls_read_reported-order TO reported-order.\nresult = VALUE #( FOR ls_order IN lt_orders\n  ( %tky = ls_order-%tky %param = ls_order ) ).",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "label": "Прочитать каждый параметр",
+        "explanation": "Handler формирует update для каждого ключа, а не только keys[1]."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10,
+          13,
+          14
+        ],
+        "label": "Исключить отклонённые экземпляры",
+        "explanation": "Ошибки update становятся ошибками action; отклонённые ключи не читаются для result."
+      },
+      {
+        "lines": [
+          22,
+          23,
+          24,
+          25,
+          27,
+          28,
+          29
+        ],
+        "label": "Вернуть объявленный результат",
+        "explanation": "Ошибки чтения и сообщения сохраняются. Каждый успешный заказ передаёт идентичность и данные $self в %param."
+      }
+    ],
+    "outcome": "Запрос для нескольких строк получает отдельные результаты и сведения об ошибках.",
+    "caveat": "Учебный handler простой action, не процесс согласования. IN LOCAL MODE действует внутри BO и обходит определённые access controls; он не заменяет собственные бизнес-предусловия action. Успешный результат action ещё не означает завершённый save.",
+    "references": [
+      {
+        "title": "SAP Learning: actions and messages",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-actions-and-messages"
+      }
+    ]
+  }
+]

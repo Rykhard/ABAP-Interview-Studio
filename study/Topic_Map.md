@@ -46,7 +46,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 
 ## RAP business objects
 
-56 questions. Model behavior and reason through transactional state, consumer contracts and failure.
+63 questions. Model behavior and reason through transactional state, consumer contracts and failure.
 
 ### Model, implementation & exposure
 
@@ -56,8 +56,11 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | [RAP-02 - How do you choose managed versus unmanaged RAP?](../topics/05-rap-foundations.md#rap-02-how-do-you-choose-managed-versus-unmanaged-rap) | Applied |
 | [RAP-14 - How does persistent field mapping work?](../topics/05-rap-foundations.md#rap-14-how-does-persistent-field-mapping-work) | Core |
 | [ADV-09 - Service definition versus binding and UI versus Web API?](../topics/06-rap-advanced.md#adv-09-service-definition-versus-binding-and-ui-versus-web-api) | Core |
+| [RAP-18 - How do you enable and use create, update, and delete in managed RAP?](../topics/05-rap-foundations.md#rap-18-how-do-you-enable-and-use-create-update-and-delete-in-managed-rap) | Core |
+| [RAP-19 - How do an order and its items form one managed RAP business object?](../topics/05-rap-foundations.md#rap-19-how-do-an-order-and-its-items-form-one-managed-rap-business-object) | Core |
 | [ADV-10 - What must a custom query provider implement?](../topics/06-rap-advanced.md#adv-10-what-must-a-custom-query-provider-implement) | Advanced |
 | [ADV-12 - How do you extend an existing RAP BO safely?](../topics/06-rap-advanced.md#adv-12-how-do-you-extend-an-existing-rap-bo-safely) | Advanced |
+| [RAP-20 - Create or an action exists in the BO but is missing in the service. What do you check?](../topics/05-rap-foundations.md#rap-20-create-or-an-action-exists-in-the-bo-but-is-missing-in-the-service-what-do-you-check) | Applied |
 | [SRAP-01 - A new approval app has custom persistence, while its posting step must reuse an existing transactional API. Which RAP implementation type would you choose?](../topics/17-rap-transactions-senior.md#srap-01-a-new-approval-app-has-custom-persistence-while-its-posting-step-must-reuse-an-existing-transactional-api-which-rap-implementation-type-would-you-choose) | Advanced |
 | [SRAP-16 - An older RAP BO works without strict mode. The team wants to release it for cloud consumption by adding strict(2). Is that sufficient?](../topics/17-rap-transactions-senior.md#srap-16-an-older-rap-bo-works-without-strict-mode-the-team-wants-to-release-it-for-cloud-consumption-by-adding-strict2-is-that-sufficient) | Advanced |
 | [SRAP-22 - Your team finds a useful SAP RAP base BO in ADT, but only a narrower BO interface is released. Which layer should your application consume?](../topics/17-rap-transactions-senior.md#srap-22-your-team-finds-a-useful-sap-rap-base-bo-in-adt-but-only-a-narrower-bo-interface-is-released-which-layer-should-your-application-consume) | Applied |
@@ -85,7 +88,9 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | [RAP-07 - How do FAILED REPORTED and MAPPED differ?](../topics/05-rap-foundations.md#rap-07-how-do-failed-reported-and-mapped-differ) | Applied |
 | [RAP-08 - What is EML and when do you use it instead of SQL?](../topics/05-rap-foundations.md#rap-08-what-is-eml-and-when-do-you-use-it-instead-of-sql) | Core |
 | [RAP-10 - What do %cid %cid_ref %tky and %pid mean?](../topics/05-rap-foundations.md#rap-10-what-do-cid-cid_ref-tky-and-pid-mean) | Applied |
+| [RAP-22 - Why does EML need derived types and %control instead of a database-table row?](../topics/05-rap-foundations.md#rap-22-why-does-eml-need-derived-types-and-control-instead-of-a-database-table-row) | Core |
 | [RAP-11 - Early numbering versus late numbering?](../topics/05-rap-foundations.md#rap-11-early-numbering-versus-late-numbering) | Applied |
+| [RAP-21 - How do you read an order's items with EML, and what do RESULT and LINK contain?](../topics/05-rap-foundations.md#rap-21-how-do-you-read-an-orders-items-with-eml-and-what-do-result-and-link-contain) | Applied |
 | [SRAP-05 - A bulk EML update contains 200 instances, including missing keys and unauthorized changes. How do you report and process the result?](../topics/17-rap-transactions-senior.md#srap-05-a-bulk-eml-update-contains-200-instances-including-missing-keys-and-unauthorized-changes-how-do-you-report-and-process-the-result) | Applied |
 | [SRAP-06 - An API consumer sends an empty comment to clear it, but the previous text remains. What do you investigate?](../topics/17-rap-transactions-senior.md#srap-06-an-api-consumer-sends-an-empty-comment-to-clear-it-but-the-previous-text-remains-what-do-you-investigate) | Applied |
 | [SRAP-07 - You must create three new orders with items in one EML request before final order numbers exist. How do you correlate the tree?](../topics/17-rap-transactions-senior.md#srap-07-you-must-create-three-new-orders-with-items-in-one-eml-request-before-final-order-numbers-exist-how-do-you-correlate-the-tree) | Applied |
@@ -103,6 +108,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | [ADV-06 - What is augmentation and how does it differ from additional save?](../topics/06-rap-advanced.md#adv-06-what-is-augmentation-and-how-does-it-differ-from-additional-save) | Advanced |
 | [ADV-14 - What is a normal RAP function, and when should you use it instead of an action?](../topics/06-rap-advanced.md#adv-14-what-is-a-normal-rap-function-and-when-should-you-use-it-instead-of-an-action) | Core |
 | [ADV-15 - How does a default function suggest values for RAP action parameters?](../topics/06-rap-advanced.md#adv-15-how-does-a-default-function-suggest-values-for-rap-action-parameters) | Applied |
+| [RAP-24 - What is a determine action, and how does it differ from a determination or ordinary action?](../topics/05-rap-foundations.md#rap-24-what-is-a-determine-action-and-how-does-it-differ-from-a-determination-or-ordinary-action) | Applied |
 | [SRAP-11 - Two determinations calculate discount and total. Production results depend on which one executes first. How would you redesign them?](../topics/17-rap-transactions-senior.md#srap-11-two-determinations-calculate-discount-and-total-production-results-depend-on-which-one-executes-first-how-would-you-redesign-them) | Applied |
 | [SRAP-13 - A CopyOrder action creates an order, but the UI stays on the source and the consumer cannot identify the copy. How do you review the action contract?](../topics/17-rap-transactions-senior.md#srap-13-a-copyorder-action-creates-an-order-but-the-ui-stays-on-the-source-and-the-consumer-cannot-identify-the-copy-how-do-you-review-the-action-contract) | Applied |
 | [SRAP-14 - A projection accepts a convenience field that must enrich an underlying create. Why might augmentation fit, and what are its boundaries?](../topics/17-rap-transactions-senior.md#srap-14-a-projection-accepts-a-convenience-field-that-must-enrich-an-underlying-create-why-might-augmentation-fit-and-what-are-its-boundaries) | Advanced |
@@ -118,6 +124,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | [ADV-02 - What is the difference between global and instance authorization in RAP, and where do DCL and prechecks fit?](../topics/06-rap-advanced.md#adv-02-what-is-the-difference-between-global-and-instance-authorization-in-rap-and-where-do-dcl-and-prechecks-fit) | Applied |
 | [ADV-03 - What does authorization none on an action mean?](../topics/06-rap-advanced.md#adv-03-what-does-authorization-none-on-an-action-mean) | Applied |
 | [ADV-13 - How do static and dynamic feature controls differ?](../topics/06-rap-advanced.md#adv-13-how-do-static-and-dynamic-feature-controls-differ) | Applied |
+| [RAP-23 - What must change when a managed RAP BO becomes draft-enabled?](../topics/05-rap-foundations.md#rap-23-what-must-change-when-a-managed-rap-bo-becomes-draft-enabled) | Applied |
 | [SRAP-09 - A user saves a draft, closes the browser, returns, and presses Activate. What state transitions and failures would you explain?](../topics/17-rap-transactions-senior.md#srap-09-a-user-saves-a-draft-closes-the-browser-returns-and-presses-activate-what-state-transitions-and-failures-would-you-explain) | Applied |
 | [SRAP-10 - A draft lock expires, another process changes an active child, and the first user resumes editing. How do you prevent silent loss of the child change?](../topics/17-rap-transactions-senior.md#srap-10-a-draft-lock-expires-another-process-changes-an-active-child-and-the-first-user-resumes-editing-how-do-you-prevent-silent-loss-of-the-child-change) | Advanced |
 | [SRAP-12 - A request changes CompanyCode to an unauthorized value and also makes its dates inconsistent. Would you use prechecks or validations?](../topics/17-rap-transactions-senior.md#srap-12-a-request-changes-companycode-to-an-unauthorized-value-and-also-makes-its-dates-inconsistent-would-you-use-prechecks-or-validations) | Advanced |
@@ -260,7 +267,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 
 ## ABAP, OO & patterns
 
-71 questions. Predict language behavior and design clear contracts, lifetimes and replaceable collaborators.
+72 questions. Predict language behavior and design clear contracts, lifetimes and replaceable collaborators.
 
 ### Language & values
 
@@ -280,6 +287,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | [BASE-05 - A READ TABLE fails, yet a later IF sy-subrc = 0 takes the success branch. What do you inspect?](../topics/21-abap-foundations-deep.md#base-05-a-read-table-fails-yet-a-later-if-sy-subrc--0-takes-the-success-branch-what-do-you-inspect) | Core |
 | [BASE-06 - An import must reject precision loss rather than silently round or truncate. Where does EXACT help?](../topics/21-abap-foundations-deep.md#base-06-an-import-must-reject-precision-loss-rather-than-silently-round-or-truncate-where-does-exact-help) | Applied |
 | [BASE-14 - An optional limit parameter is omitted in one call and explicitly set to zero in another. How can a method distinguish them?](../topics/21-abap-foundations-deep.md#base-14-an-optional-limit-parameter-is-omitted-in-one-call-and-explicitly-set-to-zero-in-another-how-can-a-method-distinguish-them) | Core |
+| [DEVCORE-02 - When are ABAP Shared Objects useful, and how do you access them safely?](../topics/25-core-development.md#devcore-02-when-are-abap-shared-objects-useful-and-how-do-you-access-them-safely) | Applied |
 | [BASE-01 - What changes when a method receives a CHANGING parameter by value instead of by reference?](../topics/21-abap-foundations-deep.md#base-01-what-changes-when-a-method-receives-a-changing-parameter-by-value-instead-of-by-reference) | Applied |
 | [BASE-02 - A copied structure contains a string, a nested table, and an object reference. Is it an independent snapshot?](../topics/21-abap-foundations-deep.md#base-02-a-copied-structure-contains-a-string-a-nested-table-and-an-object-reference-is-it-an-independent-snapshot) | Applied |
 | [BASE-07 - Two invoice totals differ by one cent although both use decimal types. How do you diagnose rounding?](../topics/21-abap-foundations-deep.md#base-07-two-invoice-totals-differ-by-one-cent-although-both-use-decimal-types-how-do-you-diagnose-rounding) | Applied |
@@ -355,7 +363,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 
 ## SQL & HANA performance
 
-17 questions. Preserve result semantics, select a database implementation and measure actual cost.
+18 questions. Preserve result semantics, select a database implementation and measure actual cost.
 
 ### Selection, joins & result semantics
 
@@ -368,6 +376,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | [SQL-04 - How can a LEFT OUTER JOIN accidentally behave like an inner join?](../topics/03-sql-performance.md#sql-04-how-can-a-left-outer-join-accidentally-behave-like-an-inner-join) | Applied |
 | [SQL-05 - What is the difference between SQL NULL and an ABAP initial value?](../topics/03-sql-performance.md#sql-05-what-is-the-difference-between-sql-null-and-an-abap-initial-value) | Core |
 | [SQL-07 - What do cardinality and uniqueness mean for join correctness?](../topics/03-sql-performance.md#sql-07-what-do-cardinality-and-uniqueness-mean-for-join-correctness) | Applied |
+| [DEVCORE-03 - How do you page through changed records without skipping equal timestamps?](../topics/25-core-development.md#devcore-03-how-do-you-page-through-changed-records-without-skipping-equal-timestamps) | Applied |
 
 ### Measurement, buffering & data design
 
@@ -480,7 +489,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 
 ## Testing, delivery & operations
 
-29 questions. Turn design claims into test evidence, traceable delivery and recoverable production behavior.
+32 questions. Turn design claims into test evidence, traceable delivery and recoverable production behavior.
 
 ### Test design & doubles
 
@@ -489,6 +498,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | [TEST-01 - What makes a useful ABAP Unit test?](../topics/11-testing-security.md#test-01-what-makes-a-useful-abap-unit-test) | Core |
 | [TEST-02 - How does dependency injection help?](../topics/11-testing-security.md#test-02-how-does-dependency-injection-help) | Core |
 | [TEST-10 - How should you describe tests you have not run?](../topics/11-testing-security.md#test-10-how-should-you-describe-tests-you-have-not-run) | Core |
+| [DEVCORE-04 - When do setup, class_setup and teardown run in ABAP Unit?](../topics/25-core-development.md#devcore-04-when-do-setup-class_setup-and-teardown-run-in-abap-unit) | Core |
 | [TEST-03 - How would you test a RAP business object?](../topics/11-testing-security.md#test-03-how-would-you-test-a-rap-business-object) | Applied |
 | [TEST-04 - How do SQL and CDS test doubles help?](../topics/11-testing-security.md#test-04-how-do-sql-and-cds-test-doubles-help) | Applied |
 | [OPS-01 - How would you test a Submit action without replacing the business object you are supposed to verify?](../topics/19-cloud-production-senior.md#ops-01-how-would-you-test-a-submit-action-without-replacing-the-business-object-you-are-supposed-to-verify) | Applied |
@@ -503,6 +513,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 | Question | Level |
 | --- | --- |
 | [TEST-06 - What security tests would you include?](../topics/11-testing-security.md#test-06-what-security-tests-would-you-include) | Applied |
+| [DEVCORE-01 - What does AUTHORITY-CHECK check, and what must happen when it fails?](../topics/25-core-development.md#devcore-01-what-does-authority-check-check-and-what-must-happen-when-it-fails) | Core |
 | [TEST-07 - How do you test concurrency and rollback?](../topics/11-testing-security.md#test-07-how-do-you-test-concurrency-and-rollback) | Advanced |
 | [OPS-05 - How do you prove optimistic concurrency rather than merely calling the same update twice?](../topics/19-cloud-production-senior.md#ops-05-how-do-you-prove-optimistic-concurrency-rather-than-merely-calling-the-same-update-twice) | Advanced |
 
@@ -510,6 +521,7 @@ Learning levels describe the task: Core (basics), Applied (application), Advance
 
 | Question | Level |
 | --- | --- |
+| [DEVCORE-05 - How do logs, metrics and traces help explain a failing request?](../topics/25-core-development.md#devcore-05-how-do-logs-metrics-and-traces-help-explain-a-failing-request) | Core |
 | [TEST-09 - How would you investigate a production defect?](../topics/11-testing-security.md#test-09-how-would-you-investigate-a-production-defect) | Applied |
 | [OPS-06 - Fiori still displays an old total after a successful action. How do you separate UI refresh from backend correctness?](../topics/19-cloud-production-senior.md#ops-06-fiori-still-displays-an-old-total-after-a-successful-action-how-do-you-separate-ui-refresh-from-backend-correctness) | Applied |
 | [OPS-07 - A RAP list becomes slow after enabling count and expanding children. What do you measure first?](../topics/19-cloud-production-senior.md#ops-07-a-rap-list-becomes-slow-after-enabling-count-and-expanding-children-what-do-you-measure-first) | Advanced |

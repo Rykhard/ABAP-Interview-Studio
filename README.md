@@ -2,7 +2,7 @@
 
 An English/Russian interview preparation app focused on ABAP Cloud, RAP and Clean Core, with classic ABAP, OO patterns, CDS, SQL/HANA, integration and operations.
 
-**338 study questions, 114 authored multiple-choice challenges, 70 teaching visuals and 10 topics.** ABAP Cloud, RAP and Clean Core form the largest curriculum track: 158 questions. Content reviewed 12 October 2026.
+**350 study questions, 121 authored multiple-choice challenges, 70 teaching visuals and 10 topics.** ABAP Cloud, RAP and Clean Core form the largest curriculum track: 165 questions. Content reviewed 13 October 2026.
 
 ## Open the app
 
@@ -18,12 +18,12 @@ For offline use, download this repository, keep its folders together and open `S
 - Switch between light and dark with the animated sun/moon control. Reading preferences include system appearance, larger answer text and a focus mode that hides topic navigation. Theme and reading choices stay in this browser.
 - Save questions into a personal collection, resume the last opened question and move between neighboring questions in a subtopic.
 - Choose Explanation, Code or Step by step where available. The explanation starts with the short answer and one concrete example; extended material is in one optional details section. Visual references open directly in a readable diagram viewer, without tiny previews.
-- Open Guided lessons in the sidebar to browse 27 authored examples linked to 61 questions, covering RAP/CDS/Clean Core, LUW/locks, RFC/workers, HTTP/JSON, IDoc/AIF, patterns, SQL and testing. Each step changes the current process stage and example data. Values illustrate scenarios; they are not a live SAP simulation.
+- Open Guided lessons in the sidebar to browse 28 authored examples linked to 62 questions, covering RAP/CDS/Clean Core, LUW/locks, RFC/workers, HTTP/JSON, IDoc/AIF, patterns, SQL and testing. Each step changes the current process stage and example data. Values illustrate scenarios; they are not a live SAP simulation.
 - Guided views are also available after revealing a practice answer. One step navigator follows changing example data, showing previous values when a state changes. Sources and scope remain available.
 - Question list / All answers has an explicit selected state and remembers your preference. Reading preferences provide a global Explanation/Code default; questions without code fall back to Explanation. Step by step remains a question-specific choice.
 - Search the whole library with Ctrl+K / Cmd+K. The separate text filter narrows the current view.
 - Interview practice covers every question: answer aloud, reveal the model and self-rate 0-3.
-- Multiple-choice practice has four authored options with explanations. First-correct-concept XP stays separate from spoken readiness. RAP contains 56 study questions, of which 29 have multiple-choice challenges.
+- Multiple-choice practice has four authored options with explanations. First-correct-concept XP stays separate from spoken readiness. RAP contains 63 study questions, of which 33 have multiple-choice challenges.
 - Search during practice and use Resume practice to return to the same session within the page. Reload preserves saved progress, not an unfinished session queue.
 - Progress and saved questions stay in this browser; devices do not synchronize automatically. Downloadable study materials remain in the repository.
 
@@ -50,23 +50,19 @@ Choose one full Anki edition; the senior deck is a subset rather than extra uniq
 | Topic | Questions |
 | --- | ---: |
 | ABAP Cloud architecture | 18 |
-| RAP business objects | 56 |
+| RAP business objects | 63 |
 | Clean Core & extensibility | 36 |
 | CDS modeling & security | 30 |
-| ABAP, OO & patterns | 71 |
-| SQL & HANA performance | 17 |
+| ABAP, OO & patterns | 72 |
+| SQL & HANA performance | 18 |
 | Protocols & integration | 60 |
-| Testing, delivery & operations | 29 |
+| Testing, delivery & operations | 32 |
 | Enhancements & workflow | 15 |
 | Interview stories & judgment | 6 |
 
 ## Evidence
 
-Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [October content and reading review](review/Content_Review_2026_10.md), [plain-language revision](review/Plain_Language_Review.md), [earlier content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
-
-## Development
-
-See [Architecture](docs/Architecture.md) for module boundaries and remaining technical debt, and [Development](docs/Development.md) for setup, automated checks and contribution workflow. GitHub Actions validates changes on PRs and pushes to `main`.
+Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [Core and Applied coverage review](review/Core_Applied_Coverage_2026_10_13.md), [180-prompt comparison](review/Attachment_Coverage_2026_10_13.md), [October content and reading review](review/Content_Review_2026_10.md), [plain-language revision](review/Plain_Language_Review.md), [earlier content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
 
 ## Build and deploy
 

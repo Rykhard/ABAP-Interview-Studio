@@ -63,8 +63,11 @@
           "RAP-02",
           "RAP-14",
           "ADV-09",
+          "RAP-18",
+          "RAP-19",
           "ADV-10",
           "ADV-12",
+          "RAP-20",
           "SRAP-01",
           "SRAP-16",
           "SRAP-22"
@@ -94,7 +97,9 @@
           "RAP-07",
           "RAP-08",
           "RAP-10",
+          "RAP-22",
           "RAP-11",
+          "RAP-21",
           "SRAP-05",
           "SRAP-06",
           "SRAP-07",
@@ -113,6 +118,7 @@
           "ADV-06",
           "ADV-14",
           "ADV-15",
+          "RAP-24",
           "SRAP-11",
           "SRAP-13",
           "SRAP-14",
@@ -129,6 +135,7 @@
           "ADV-02",
           "ADV-03",
           "ADV-13",
+          "RAP-23",
           "SRAP-09",
           "SRAP-10",
           "SRAP-12",
@@ -315,6 +322,7 @@
           "BASE-05",
           "BASE-06",
           "BASE-14",
+          "DEVCORE-02",
           "BASE-01",
           "BASE-02",
           "BASE-07",
@@ -410,7 +418,8 @@
           "SQL-08",
           "SQL-04",
           "SQL-05",
-          "SQL-07"
+          "SQL-07",
+          "DEVCORE-03"
         ]
       },
       {
@@ -548,6 +557,7 @@
           "TEST-01",
           "TEST-02",
           "TEST-10",
+          "DEVCORE-04",
           "TEST-03",
           "TEST-04",
           "OPS-01",
@@ -563,6 +573,7 @@
         "title": "Проверки безопасности и параллельных изменений",
         "questionIds": [
           "TEST-06",
+          "DEVCORE-01",
           "TEST-07",
           "OPS-05"
         ]
@@ -571,6 +582,7 @@
         "id": "quality-operations",
         "title": "Диагностика, производительность и восстановление",
         "questionIds": [
+          "DEVCORE-05",
           "TEST-09",
           "OPS-06",
           "OPS-07",

@@ -1762,6 +1762,8 @@ Compare when the identity becomes final and when persistence is confirmed.
 
 Now consider two users saving at the same time. Reading the highest number and adding one can give both users the same result. Use suitable number-range and transaction handling instead. If the business requires no gaps, also examine failed saves, cancellations, and the exact numbering guarantees. Choosing late numbering is only one part of that design, not proof that every possible gap has disappeared.
 
+Start by separating identity from the label a person sees. OrderUUID can be a stable technical key generated immediately, while OrderNumber is a later business number. Late numbering is needed when the actual entity key must be assigned late; a later display number alone does not automatically require it.
+
 **Avoid this mistake:** Late numbering alone does not guarantee a gap-free sequence, and SELECT MAX plus one is unsafe under concurrency.
 
 **Read and verify this answer:**
@@ -1977,6 +1979,8 @@ Locate the input transformation and persistence supplement on the same conceptua
 **Reasoning and example:** A generated UUID should not be freely edited by the caller, so a static readonly declaration fits. The request description may be editable while the request is open but readonly after approval, which needs a state-dependent rule. Use the applicable generated feature-control handler to express the supported restriction.
 
 Now test an API call as well as the screen. Permission checks must still prevent an unauthorized user from changing an otherwise editable request. Also validate the business data: mandatory field metadata is not a complete substitute for backend consistency rules. Keeping static restrictions, dynamic availability, authorization, and validation separate makes it easier to explain why a request was rejected.
+
+Compare static field controls: readonly prevents consumer writes; readonly:update permits supplying the field on create but prevents later consumer updates; mandatory declares a required input for supporting consumers. Do not rely on a UI required marker alone to reject invalid persistence: implement the necessary backend validation. Dynamic features may make an operation unavailable for the current business state; authorization independently decides whether the caller is allowed.
 
 **Avoid this mistake:** A dynamic UI state does not prove security, and mandatory metadata does not replace all backend business validations.
 
@@ -2498,12 +2502,15 @@ Read the method, target, status and headers before interpreting the body. The sa
 
 For DELETE, the first request might report success and the second might report that the resource is absent. That does not contradict idempotency: the intended final state is still that the resource is removed. Safe methods can also cause incidental logging; the key point is that the client did not request a business change.
 
+For retryable failures, use a maximum attempt count, a total time limit and increasing delays with jitter: a small random spread prevents many clients from retrying at once. Respect Retry-After when supplied. Set connection and response time limits using the APIs available on the target platform. A timeout limits waiting; it does not prove that the receiver cancelled its work.
+
 **Avoid this mistake:** Do not blindly retry a potentially committed business creation because the response was lost.
 
 **Read and verify this answer:**
 
 - [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 - [PATCH method: IETF RFC 5789](https://www.rfc-editor.org/rfc/rfc5789.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [AWS Builders Library: timeouts, retries and jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/) - Use bounded retries and explicit timeouts; jitter does not make an unsafe operation idempotent.
 
 ## HTTP-07 What must you preserve when mapping JSON to ABAP?
 

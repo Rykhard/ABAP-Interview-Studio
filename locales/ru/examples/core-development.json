@@ -1,0 +1,156 @@
+[
+  {
+    "id": "core-authority-fail-closed",
+    "questions": [
+      "DEVCORE-01"
+    ],
+    "language": "ABAP",
+    "code": "CONSTANTS co_object TYPE c LENGTH 10 VALUE 'ZORDER'.\nCONSTANTS co_change TYPE c LENGTH 2 VALUE '02'.\nallowed = abap_false.\nAUTHORITY-CHECK OBJECT co_object\n  ID 'ACTVT' FIELD co_change\n  ID 'BUKRS' FIELD company_code.\nIF sy-subrc <> 0.\n  RETURN.\nENDIF.\nallowed = abap_true.",
+    "title": "Проверь право на изменение до выполнения операции",
+    "intro": "При отказе результат остаётся false.",
+    "context": "Тело метода проверки авторизации с IMPORTING company_code TYPE bukrs и RETURNING VALUE(allowed) TYPE abap_bool. Предпосылка: пользовательский объект авторизации ZORDER уже существует, содержит ровно ACTVT и BUKRS, а роли настроены. Вызывающий код обязан отклонить false до защищаемой операции.",
+    "outcome": "При company_code 1000 пользователь с правом только на просмотр получает отказ. Пользователь с разрешённой активностью 02 для компании 1000 проходит эту проверку.",
+    "caveat": "Метод только проверяет разрешение и не изменяет бизнес-данные. Определи компанию по защищаемому объекту, не доверяя входному значению без проверки. Операции фреймворка по-прежнему требуют своего контракта ответа об авторизации.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Проверь нужную операцию",
+        "explanation": "Начальное значение результата — false. ACTVT 02 проверяет право на изменение, а не на просмотр."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Сразу используй результат",
+        "explanation": "Между проверкой и IF нет инструкции, способной перезаписать sy-subrc. Любой ненулевой результат возвращает false."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: AUTHORITY-CHECK",
+        "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/using-the-authority-check-statement_a60b8989-12c1-4764-89b2-e168feae035d"
+      }
+    ]
+  },
+  {
+    "id": "core-keyset-ties",
+    "questions": [
+      "DEVCORE-03"
+    ],
+    "language": "ABAP",
+    "code": "TYPES: BEGIN OF ty_change,\n         changed_at TYPE timestamp,\n         order_id   TYPE i,\n       END OF ty_change.\nDATA lt_changes TYPE SORTED TABLE OF ty_change\n  WITH UNIQUE KEY changed_at order_id.\nlt_changes = VALUE #(\n  ( changed_at = '20261013090000' order_id = 7 )\n  ( changed_at = '20261013090000' order_id = 9 )\n  ( changed_at = '20261013090100' order_id = 10 ) ).\nCONSTANTS co_after_time TYPE timestamp VALUE '20261013090000'.\nCONSTANTS co_after_id TYPE i VALUE 7.\nCONSTANTS co_upper_time TYPE timestamp VALUE '20261013090100'.\nCONSTANTS co_page_size TYPE i VALUE 2.\nDATA lt_page TYPE STANDARD TABLE OF ty_change WITH EMPTY KEY.\nLOOP AT lt_changes INTO DATA(ls_change)\n  WHERE ( changed_at > co_after_time OR\n        ( changed_at = co_after_time AND order_id > co_after_id ) )\n    AND changed_at <= co_upper_time.\n  APPEND ls_change TO lt_page.\n  IF lines( lt_page ) = co_page_size.\n    EXIT.\n  ENDIF.\nENDLOOP.",
+    "title": "Не потеряй вторую запись с тем же timestamp",
+    "intro": "Продолжай после пары timestamp и ID.",
+    "context": "Самодостаточный фрагмент метода с неизменяемыми учебными UTC timestamp во внутренней таблице. Показывает условие продолжения и страницу из двух строк, а не выгрузку из БД или реальный cursor.",
+    "outcome": "lt_page содержит заказы 9 и 10 именно в этом порядке. Заказ 9 не теряется, хотя его timestamp совпадает с timestamp в checkpoint.",
+    "caveat": "Источник зафиксирован в памяти. Для SQL нужны такой же однозначный ORDER BY, ограничение числа строк, подходящие индексы и delta-контракт источника. Пример не решает проблему поздних COMMIT, удалений или параллельных изменений.",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Задай стабильный порядок",
+        "explanation": "Ключ сортирует по changed_at, затем по order_id. У заказов 7 и 9 одинаковый timestamp."
+      },
+      {
+        "lines": [
+          16,
+          17,
+          18,
+          19
+        ],
+        "label": "Продолжай после полной пары",
+        "explanation": "При равном timestamp выбираются ID больше 7. Фиксированное верхнее время ограничивает текущий запуск."
+      },
+      {
+        "lines": [
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "label": "Ограничь страницу",
+        "explanation": "После двух строк — 9 и 10 — цикл заканчивается. Сдвигай checkpoint после атомарного надёжного сохранения страницы и точки продолжения в staging либо после подтверждения получателя, если staging нет. У доставки отдельное состояние."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: ABAP SQL selection and ordering",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      }
+    ]
+  },
+  {
+    "id": "core-unit-fresh-fixture",
+    "questions": [
+      "DEVCORE-04"
+    ],
+    "language": "ABAP",
+    "code": "CLASS lcl_total DEFINITION FINAL.\n  PUBLIC SECTION.\n    TYPES ty_values TYPE STANDARD TABLE OF i WITH EMPTY KEY.\n    CLASS-METHODS calculate IMPORTING lt_values TYPE ty_values\n      RETURNING VALUE(total) TYPE i.\nENDCLASS.\nCLASS lcl_total IMPLEMENTATION.\n  METHOD calculate.\n    total = REDUCE i( INIT sum = 0\n      FOR number IN lt_values NEXT sum = sum + number ).\n  ENDMETHOD.\nENDCLASS.\nCLASS ltc_total DEFINITION FINAL FOR TESTING\n  DURATION SHORT RISK LEVEL HARMLESS.\n  PRIVATE SECTION.\n    DATA lt_values TYPE lcl_total=>ty_values.\n    METHODS setup.\n    METHODS adds_values FOR TESTING.\n    METHODS empty_is_zero FOR TESTING.\nENDCLASS.\nCLASS ltc_total IMPLEMENTATION.\n  METHOD setup.\n    lt_values = VALUE #( ( 40 ) ( 60 ) ).\n  ENDMETHOD.\n  METHOD adds_values.\n    cl_abap_unit_assert=>assert_equals(\n      act = lcl_total=>calculate( lt_values ) exp = 100 ).\n  ENDMETHOD.\n  METHOD empty_is_zero.\n    CLEAR lt_values.\n    cl_abap_unit_assert=>assert_equals(\n      act = lcl_total=>calculate( lt_values ) exp = 0 ).\n  ENDMETHOD.\nENDCLASS.",
+    "title": "Свежие входные данные для каждого теста суммы",
+    "intro": "Результаты должны совпадать при любом порядке тестов.",
+    "context": "Полный учебный локальный класс и класс ABAP Unit для подходящего include локальных классов и тестов. Нужна версия с поддержкой REDUCE и constructor expressions. Целые числа — небольшие учебные значения без единиц измерения.",
+    "outcome": "adds_values ожидает 100, empty_is_zero — 0. setup восстанавливает 40 и 60 перед каждым тестом, поэтому очистка входа одного теста не влияет на другой.",
+    "caveat": "Код не обращается к БД и удалённым системам. Для локальных данных teardown не нужен. HARMLESS описывает этот выбор; если проверяемый код начнёт писать реальные данные, нужно заново оценить изоляцию и риск.",
+    "highlights": [
+      {
+        "lines": [
+          8,
+          9,
+          10,
+          11
+        ],
+        "label": "Проверь реальное вычисление",
+        "explanation": "Для пустого ввода возвращается начальная сумма 0; иначе складываются фактические значения."
+      },
+      {
+        "lines": [
+          22,
+          23,
+          24
+        ],
+        "label": "Сбрасывай данные перед каждым тестом",
+        "explanation": "Тестовый фреймворк отдельно вызывает setup перед обоими тестовыми методами."
+      },
+      {
+        "lines": [
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33
+        ],
+        "label": "Проверь обычный и пустой ввод",
+        "explanation": "Assertions проверяют 100 и 0. Ни один тест не требует предварительного запуска другого."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: ABAP Unit fixtures and examples",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/14_ABAP_Unit_Tests.md"
+      },
+      {
+        "title": "SAP: Test attributes",
+        "url": "https://help.sap.com/saphelp_gbt10/helpdata/EN/49/25667929ac16b7e10000000a42189d/content.htm?no_cache=true"
+      }
+    ]
+  }
+]

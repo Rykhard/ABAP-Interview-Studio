@@ -262,12 +262,15 @@ A coordinator schedules bounded independent work and collects explicit outcomes;
 
 There is a harder case: the sixth worker saved its document but failed before recording completion. A package status alone cannot prove that nothing happened. Recovery must check the business effect or use a documented idempotent operation. I also test two packages that accidentally contain the same object, because lock contention can remove the benefit of parallel processing.
 
+For a custom work queue, define how two workers claim one item atomically. One design is to lock the item, re-read its pending state, record the owner and claim, then release the lock under a documented transaction boundary. Every worker must follow that protocol. Recovery of an abandoned claim must check whether the original worker is still active and whether its business effect already exists; an expired timer alone must not authorize duplicate processing.
+
 **Avoid this mistake:** Separately committed workers are not one all-or-nothing transaction. Extra workers can also make lock contention worse.
 
 **Read and verify this answer:**
 
 - [SAP parallel processing, callbacks, and resource groups](https://help.sap.com/docs/ABAP_PLATFORM_NEW/7bfe8cdcfbb040dcb6702dada8c3e2f0/4d909309eba36e73e10000000a15822b.html) - These are classic ABAP runtime rules unless the source specifically describes a cloud application job.
 - [SAP classic background scheduling and monitoring](https://help.sap.com/saphelp_em700_ehp01/helpdata/en/48/baab96ca960611e10000000a42189b/content.htm) - These are classic ABAP runtime rules unless the source specifically describes a cloud application job.
+- [SAP: lock ownership](https://help.sap.com/docs/ABAP_PLATFORM/d0739d980ecf42ae9f3b4c19e21a4b6e/47d8bbf7d68c3c86e10000000a42189c.html) - Lock ownership is documented by SAP; the custom queue claim example is an application design, not a built-in exactly-once guarantee.
 
 <details>
 <summary>Visual: Parallel processing inside a job</summary>

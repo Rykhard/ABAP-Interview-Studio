@@ -1,0 +1,129 @@
+[
+  {
+    "id": "lesson-first-managed-order",
+    "questions": [
+      "RAP-18"
+    ],
+    "title": "От принятого create до сохранённого заказа",
+    "scenario": "Внешняя ABAP-программа создаёт non-draft managed Order с Comment = Draft, затем меняет Comment на Ready. Она владеет транзакцией. Проследите успешный save и сравните его с отклонённым.",
+    "goal": "Отличить приём запроса, чтение транзакции и реальное сохранение.",
+    "nodes": [
+      {
+        "id": "request",
+        "label": "Запрос"
+      },
+      {
+        "id": "buffer",
+        "label": "Buffer"
+      },
+      {
+        "id": "save",
+        "label": "Проверки save"
+      },
+      {
+        "id": "database",
+        "label": "База данных"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Create принят",
+        "explanation": "MODIFY запрашивает один заказ. Managed numbering выдаёт UUID U1, а MAPPED связывает его с %cid запроса. Проверьте FAILED и REPORTED.",
+        "active": [
+          "request"
+        ],
+        "states": [
+          {
+            "label": "В транзакции",
+            "value": "U1 / Draft"
+          },
+          {
+            "label": "Сохранено",
+            "value": "Нет заказа"
+          }
+        ],
+        "outcome": "Полученный UUID не доказывает, что строка уже сохранена."
+      },
+      {
+        "title": "Изменить и прочитать тот же buffer",
+        "explanation": "Измените Comment на Ready. EML read в той же транзакции может вернуть Ready до save. Обработайте ошибки чтения и изменения, не предполагая успех каждого ключа.",
+        "active": [
+          "buffer"
+        ],
+        "states": [
+          {
+            "label": "В транзакции",
+            "value": "U1 / Ready"
+          },
+          {
+            "label": "Сохранено",
+            "value": "Нет заказа"
+          }
+        ],
+        "outcome": "Результат транзакции может отличаться от состояния базы."
+      },
+      {
+        "title": "Запросить save у RAP",
+        "explanation": "Внешний владелец вызывает COMMIT ENTITIES. RAP выполняет нужные проверки и запись. Сохраните статус save и его отдельный ответ FAILED/REPORTED.",
+        "active": [
+          "save"
+        ],
+        "states": [
+          {
+            "label": "В транзакции",
+            "value": "U1 / Ready"
+          },
+          {
+            "label": "Результат save",
+            "value": "Ещё не установлен"
+          }
+        ],
+        "outcome": "Не сообщайте об успехе до получения результата save."
+      },
+      {
+        "title": "Успешный save",
+        "explanation": "При успехе база содержит U1 с Ready. Следующая транзакция сможет прочитать сохранённый заказ.",
+        "active": [
+          "database"
+        ],
+        "states": [
+          {
+            "label": "Незавершённая работа",
+            "value": "Завершена"
+          },
+          {
+            "label": "Сохранено",
+            "value": "U1 / Ready"
+          }
+        ],
+        "outcome": "Теперь пример может сообщить, что заказ сохранён."
+      },
+      {
+        "title": "Сравнение: save отклонён",
+        "explanation": "Начните заново, без сохранённого заказа. Допустим, бизнес-validation при save отклонила новый заказ. Сохраните сообщения об ошибках и откатите незавершённую транзакцию. Успешного сохранённого create нет.",
+        "active": [
+          "save"
+        ],
+        "states": [
+          {
+            "label": "Другой сценарий",
+            "value": "Validation отклонила"
+          },
+          {
+            "label": "Сохранено в другом сценарии",
+            "value": "Нет заказа"
+          }
+        ],
+        "outcome": "Rollback здесь не удаляет заказ, который уже был сохранён в успешном сценарии."
+      }
+    ],
+    "takeaway": "Принято через MODIFY — ещё не сохранено. Сохранено — отдельный save завершился успешно.",
+    "limitation": "Модель одной сущности, а не выполненная SAP-транзакция. UUID U1 — удобное обозначение. Для сервиса commit/rollback выполняет framework; behavior handlers не должны вызывать их сами.",
+    "references": [
+      {
+        "title": "SAP Learning: EML and transaction ownership",
+        "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects"
+      }
+    ]
+  }
+]

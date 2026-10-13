@@ -14,12 +14,15 @@ Start with correct result semantics, then measure execution cost. Be ready to ex
 
 If a necessary calculation cannot be expressed well in supported ABAP SQL or CDS, I consider AMDP and measure the result. I also check which dependencies are allowed in the target environment. Writing SQLScript inside an ABAP-managed method does not turn it into ABAP SQL. In particular, direct table reads must not be assumed to apply the access control of a CDS entity that would otherwise protect those records.
 
+ADBC is an ABAP API for Native SQL, useful when a permitted database-specific operation cannot be expressed through ABAP SQL. It does not add ABAP SQL client handling: a client-dependent table needs the correct explicit client restriction. Bind data values, allowlist any configurable identifiers, and perform the required authorization checks. Native SQL also does not inherit a CDS entity's DCL just because it reads the same tables. ABAP Cloud requires the language and released APIs allowed in the target environment.
+
 **Avoid this mistake:** ABAP syntax around an AMDP method does not turn its SQLScript body into ABAP SQL or automatically apply CDS access control.
 
 **Read and verify this answer:**
 
 - [SAP ABAP SQL examples and semantics](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md) - Check what the query returns and measure it in the target system before choosing a performance change.
 - [SAP AMDP use and selection guidance](https://help.sap.com/docs/abap-cloud/abap-integration-connectivity/example-amdp-procedure-implementations) - Check what the query returns and measure it in the target system before choosing a performance change.
+- [SAP: client handling guidelines](https://help.sap.com/doc/abapdocu_816_index_htm/8.16/en-US/ABENCLIENT_HANDLING_GUIDL.html) - Native SQL requires explicit client handling; database access and business authorization are separate concerns.
 
 ## SQL-02 What is the empty-table trap in FOR ALL ENTRIES?
 

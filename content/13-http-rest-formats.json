@@ -104,7 +104,7 @@
       "id": "HTTP-04",
       "question": "What do safe and idempotent mean, and how do they affect retries?",
       "answer": "Safe means the requested operation is read-oriented. Idempotent means repeating the same request has the same intended effect as doing it once. PUT and DELETE are idempotent by HTTP semantics, although their responses may differ. POST and PATCH need a specific guarantee before I repeat a business change after a timeout.",
-      "detail": "A client sends CreateOrder and times out before receiving a response. The server may already have saved the order. Sending a new request without checking could create a duplicate. I use a documented idempotency key, which identifies repeated attempts at the same request, or query the result using a stable business reference.\n\nFor DELETE, the first request might report success and the second might report that the resource is absent. That does not contradict idempotency: the intended final state is still that the resource is removed. Safe methods can also cause incidental logging; the key point is that the client did not request a business change.",
+      "detail": "A client sends CreateOrder and times out before receiving a response. The server may already have saved the order. Sending a new request without checking could create a duplicate. I use a documented idempotency key, which identifies repeated attempts at the same request, or query the result using a stable business reference.\n\nFor DELETE, the first request might report success and the second might report that the resource is absent. That does not contradict idempotency: the intended final state is still that the resource is removed. Safe methods can also cause incidental logging; the key point is that the client did not request a business change.\n\nFor retryable failures, use a maximum attempt count, a total time limit and increasing delays with jitter: a small random spread prevents many clients from retrying at once. Respect Retry-After when supplied. Set connection and response time limits using the APIs available on the target platform. A timeout limits waiting; it does not prove that the receiver cancelled its work.",
       "pitfall": "Do not blindly retry a potentially committed business creation because the response was lost.",
       "level": "Advanced",
       "references": [
@@ -117,6 +117,11 @@
           "title": "PATCH method: IETF RFC 5789",
           "url": "https://www.rfc-editor.org/rfc/rfc5789.html",
           "note": "Check the protocol or format rules here, separately from how the ABAP code implements them."
+        },
+        {
+          "title": "AWS Builders Library: timeouts, retries and jitter",
+          "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+          "note": "Use bounded retries and explicit timeouts; jitter does not make an unsafe operation idempotent."
         }
       ]
     },
@@ -124,7 +129,7 @@
       "id": "HTTP-05",
       "question": "Which HTTP statuses should an ABAP API developer explain?",
       "answer": "I distinguish successful completion from acceptance for later processing: 200 is success, 201 creation, 202 accepted and 204 success without content. Common errors are 400 invalid request, 401 missing or invalid authentication, 403 refusal and 404 not found. I also know 409 conflict, 412 failed precondition and 415 unsupported content type.",
-      "detail": "A payment API returns 202. I cannot tell the user that payment has finished; I need the documented status check or callback to learn the final result. If an update returns 412, I investigate the stale version condition instead of treating it as a server outage. The error body often explains more than the status alone.\n\nFor 429 or 503, the contract may allow a delayed, bounded retry, sometimes using Retry-After. I still consider whether the original operation might have succeeded. A 500 needs diagnosis too. I keep a correlation ID for support without logging credentials, and inspect inner results when a batch envelope returns HTTP 200.",
+      "detail": "A payment API returns 202. I cannot tell the user that payment has finished; I need the documented status check or callback to learn the final result. If an update returns 412, I investigate the stale version condition instead of treating it as a server outage. The error body often explains more than the status alone.\n\nFor 429 or 503, the contract may allow a delayed, bounded retry, sometimes using Retry-After. I still consider whether the original operation might have succeeded. A 500 needs diagnosis too. I keep a correlation ID for support without logging credentials, and inspect inner results when a batch envelope returns HTTP 200.\n\nA 413 Content Too Large response means the request content exceeds what the server is willing or able to process. Reduce or split the payload only if the API supports it; sending the same oversized request repeatedly is not a useful default. Distinguish this from 429 Too Many Requests, where the issue is request rate rather than the size of one payload.",
       "pitfall": "HTTP 200 on a batch envelope does not prove every contained operation succeeded.",
       "level": "Core",
       "references": [
@@ -132,6 +137,11 @@
           "title": "HTTP status reference: MDN",
           "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
           "note": "Check the protocol or format rules here, separately from how the ABAP code implements them."
+        },
+        {
+          "title": "IETF RFC 9110: 413 Content Too Large",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-413-content-too-large",
+          "note": "Interpret 413 using the service payload contract and any Retry-After information."
         }
       ]
     },
@@ -219,7 +229,7 @@
       "id": "HTTP-10",
       "question": "How would you implement and troubleshoot an outbound HTTP call in ABAP?",
       "answer": "I use an allowed destination and HTTP client, with credentials stored in configuration. I send the documented request, set a timeout and handle connection failures separately from HTTP error responses. Then I parse and validate the response. Retries need an explicit rule, because the remote system may have saved a change before the connection failed.",
-      "detail": "An outbound supplier call fails. I first locate the failing step: name resolution, TLS trust, destination configuration, authentication or the application request. If I receive HTTP 400 with a useful error body, repeatedly changing the certificate is unlikely to help. I compare the headers and payload with the API contract instead.\n\nIn ABAP Cloud, I use the released client and destination APIs and the communication setup supported by that environment. Classic systems may use different APIs. Logs should help find the request without exposing passwords, tokens or sensitive business data. I also verify the retry policy: rolling back the local transaction does not undo a remote commit.",
+      "detail": "An outbound supplier call fails. I first locate the failing step: name resolution, TLS trust, destination configuration, authentication or the application request. If I receive HTTP 400 with a useful error body, repeatedly changing the certificate is unlikely to help. I compare the headers and payload with the API contract instead.\n\nIn ABAP Cloud, I use the released client and destination APIs and the communication setup supported by that environment. Classic systems may use different APIs. Logs should help find the request without exposing passwords, tokens or sensitive business data. I also verify the retry policy: rolling back the local transaction does not undo a remote commit.\n\nIf users can configure the target URL, also consider SSRF: the server could be tricked into calling an unintended internal or privileged endpoint. Prefer approved destinations and allowlisted targets. Revalidate redirects or disable them as the client permits; validating only the original hostname is insufficient. Keep network restrictions and credential scope aligned with the destination.",
       "pitfall": "Do not hard-code a password, suppress all exceptions, or assume a remote call shares the local rollback.",
       "level": "Advanced",
       "references": [
@@ -227,6 +237,11 @@
           "title": "SAP ABAP integration and connectivity",
           "url": "https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf",
           "note": "Check the protocol or format rules here, separately from how the ABAP code implements them."
+        },
+        {
+          "title": "OWASP: server-side request forgery prevention",
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+          "note": "Apply destination allowlisting and redirect controls to configurable outbound connections."
         }
       ]
     },

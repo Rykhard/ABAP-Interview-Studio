@@ -1,0 +1,114 @@
+[
+  {
+    "id": "QUIZ-CORE-RAP-18",
+    "questionId": "RAP-18",
+    "prompt": "MODIFY принял новый заказ, но validation при save его отклонила. Что должен сообщить внешний владелец транзакции?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Заказ сохранён, потому что MODIFY успешен",
+        "explanation": "MODIFY принял изменение в buffer, но не подтвердил запись."
+      },
+      {
+        "id": "b",
+        "text": "Save не выполнен; сохранить сообщения и обработать незавершённую транзакцию",
+        "explanation": "Результат отдельного save определяет, завершено ли сохранение."
+      },
+      {
+        "id": "c",
+        "text": "Повторить с COMMIT WORK внутри validation",
+        "explanation": "Validation не должна перехватывать управление RAP-транзакцией."
+      },
+      {
+        "id": "d",
+        "text": "Можно сообщить об успехе, потому что MAPPED содержит UUID заказа",
+        "explanation": "Сгенерированная идентичность связывает запрос с экземпляром, но не подтверждает завершение save."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-CORE-RAP-19",
+    "questionId": "RAP-19",
+    "prompt": "У заказа есть composition items и обычная ассоциация с Customer. Что происходит при удалении root в базовой managed-модели?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Позиции следуют жизненному циклу заказа; Customer остаётся самостоятельным",
+        "explanation": "Composition описывает принадлежащие родителю позиции, а не все связанные записи."
+      },
+      {
+        "id": "b",
+        "text": "Customer тоже должен удалиться",
+        "explanation": "Обычная ассоциация не передаёт владение клиентом."
+      },
+      {
+        "id": "c",
+        "text": "Позиции всегда нужно удалять ручным SQL",
+        "explanation": "Managed composition предоставляет стандартное управление дочерним жизненным циклом."
+      },
+      {
+        "id": "d",
+        "text": "Удаление root только убирает связи, оставляя его composition items без изменений",
+        "explanation": "В базовой managed composition принадлежащие корню позиции следуют его удалению; это не просто разрыв связей с самостоятельными записями."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-CORE-RAP-20",
+    "questionId": "RAP-20",
+    "prompt": "Submit есть в base behavior, но отсутствует в metadata сервиса приложения. Что полезно проверить первым?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Переиспользует ли нужная projection Submit и открыт ли именно этот сервис",
+        "explanation": "Проследите возможность через реальную projection и endpoint."
+      },
+      {
+        "id": "b",
+        "text": "Откроет ли добавление action в @UI.lineItem операцию в сервисе",
+        "explanation": "UI annotations могут показать открытую action, но не добавляют отсутствующую операцию в behavior projection."
+      },
+      {
+        "id": "c",
+        "text": "Должна ли global authorization всегда возвращать allowed",
+        "explanation": "Authorization управляет правом на открытую операцию, но не создаёт отсутствующую возможность сервиса."
+      },
+      {
+        "id": "d",
+        "text": "Добавит ли пересоздание service binding все base actions в projection",
+        "explanation": "Новый binding не заменяет явное переиспользование нужной возможности в соответствующей behavior projection."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-CORE-RAP-22",
+    "questionId": "RAP-22",
+    "prompt": "Comment содержит Rush. Update передал пустой Comment с выключенным %control. Каков смысл запроса?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Очистить Comment",
+        "explanation": "Для запроса очистки пустому значению нужен включённый control flag."
+      },
+      {
+        "id": "b",
+        "text": "Не включать Comment в это изменение",
+        "explanation": "Флаг означает, что поле не передано для изменения."
+      },
+      {
+        "id": "c",
+        "text": "Отклонить update, потому что любое initial value недопустимо",
+        "explanation": "Initial value не является ошибкой само по себе. Допустимость определяет бизнес-validation, а %control задаёт участие поля в update."
+      },
+      {
+        "id": "d",
+        "text": "Пустое значение всегда имеет приоритет над флагом и очищает поле",
+        "explanation": "Control flag отличает пропущенное поле от намеренно переданного initial value."
+      }
+    ],
+    "correctOption": "b"
+  }
+]

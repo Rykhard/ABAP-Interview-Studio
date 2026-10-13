@@ -42,7 +42,7 @@
       "level": "Core",
       "question": "What are the building blocks of a RAP application?",
       "answer": "A RAP app has a data model, business rules, and a service. Tables store the data, and CDS describes what that data means. The behavior definition says what users can do; ABAP handlers add your business logic. Projections choose what a particular app exposes. The service definition and binding make those entities available through a chosen protocol.",
-      "detail": "Imagine a purchase-request app with a Submit button. CDS describes the request and its items. The behavior definition declares Submit, and its handler checks or changes the request as the operation requires. The transaction first holds those changes in memory. The RAP save sequence then writes valid changes to the database.\n\nThe projection exposes the fields and operations this app needs. The service definition selects the entities, while the binding chooses, for example, an OData service type. Read-access rules and UI annotations handle other concerns. Keeping these jobs separate makes it easier to find where a missing field, failed operation, or incorrect screen comes from.",
+      "detail": "Imagine a purchase-request app with a Submit button. CDS describes the request and its items. The behavior definition declares Submit, and its handler checks or changes the request as the operation requires. The transaction first holds those changes in memory. The RAP save sequence then writes valid changes to the database.\n\nThe projection exposes the fields and operations this app needs. The service definition selects the entities, while the binding chooses, for example, an OData service type. Read-access rules and UI annotations handle other concerns. Keeping these jobs separate makes it easier to find where a missing field, failed operation, or incorrect screen comes from.\n\nThe behavior definition (BDEF) is the operation contract. The behavior pool is its ABAP implementation container; generated local handler methods implement custom rules and operations. Managed RAP already supplies standard CRUD handling. strict(2) checks modeling requirements, not whether every referenced API is released or every permission is correct.",
       "pitfall": "Behavior is not implemented by the service definition, and a binding alone does not make the endpoint production-ready.",
       "references": [
         {
@@ -183,7 +183,7 @@
       "level": "Core",
       "question": "What is EML and when do you use it instead of SQL?",
       "answer": "EML lets ABAP code work with a RAP business object through its operations. READ ENTITIES reads its transactional state; MODIFY ENTITIES requests changes or actions. SQL reads or changes database data directly. It does not run the object's business behavior. Use EML when you need the business operation, and choose a suitable query interface when you only need database results.",
-      "detail": "Suppose a background program must submit an expense request. Updating its status column with SQL may skip checks, locks, and authorization handling that belong to Submit. Calling the exposed action through EML uses the business object's defined behavior and returns operation responses that the program must inspect.\n\nThe program also needs to handle the eventual save result. A successful action response is not proof of a completed commit. For a read-only report, a suitable CDS or SQL query may be the clearer and faster choice. EML is useful because it follows business behavior, not because every EML read is automatically faster than SQL.",
+      "detail": "Suppose a background program must submit an expense request. Updating its status column with SQL may skip checks, locks, and authorization handling that belong to Submit. Calling the exposed action through EML uses the business object's defined behavior and returns operation responses that the program must inspect.\n\nThe program also needs to handle the eventual save result. A successful action response is not proof of a completed commit. For a read-only report, a suitable CDS or SQL query may be the clearer and faster choice. EML is useful because it follows business behavior, not because every EML read is automatically faster than SQL.\n\nAn EML read normally starts from known entity keys or an association. It is not the managed list query with $filter, $orderby and paging that an OData consumer uses to find orders. Use a suitable query to find the records, then the BO operations to work with their transactional state.",
       "pitfall": "EML does not mean that every read is automatically the best performance choice; use the correct semantic interface.",
       "references": [
         {
@@ -228,7 +228,7 @@
       "level": "Advanced",
       "question": "Early numbering versus late numbering?",
       "answer": "Early numbering gives an instance its final key during interaction. Late numbering keeps a preliminary identity and assigns the final key late in saving. A technical UUID and a business document number can be separate fields with different rules. Late numbering can avoid consuming numbers for some rejected changes. It does not, by itself, promise a gap-free business sequence.",
-      "detail": "A new request can receive a UUID immediately so its items have a stable technical parent. The business may want the visible approval number only when the request is accepted. That number can follow a separate supported numbering design rather than being used as the only technical identity.\n\nNow consider two users saving at the same time. Reading the highest number and adding one can give both users the same result. Use suitable number-range and transaction handling instead. If the business requires no gaps, also examine failed saves, cancellations, and the exact numbering guarantees. Choosing late numbering is only one part of that design, not proof that every possible gap has disappeared.",
+      "detail": "A new request can receive a UUID immediately so its items have a stable technical parent. The business may want the visible approval number only when the request is accepted. That number can follow a separate supported numbering design rather than being used as the only technical identity.\n\nNow consider two users saving at the same time. Reading the highest number and adding one can give both users the same result. Use suitable number-range and transaction handling instead. If the business requires no gaps, also examine failed saves, cancellations, and the exact numbering guarantees. Choosing late numbering is only one part of that design, not proof that every possible gap has disappeared.\n\nStart by separating identity from the label a person sees. OrderUUID can be a stable technical key generated immediately, while OrderNumber is a later business number. Late numbering is needed when the actual entity key must be assigned late; a later display number alone does not automatically require it.",
       "pitfall": "Late numbering alone does not guarantee a gap-free sequence, and SELECT MAX plus one is unsafe under concurrency.",
       "references": [
         {
@@ -380,6 +380,111 @@
           "title": "SAP sample: bgPF controlled and uncontrolled execution",
           "url": "https://github.com/SAP-samples/abap-platform-bgpf-appl-log-events-side-effects/blob/main/src/zbgpfcl_calc_inventory_006.clas.abap",
           "note": "The sample distinguishes the operation interfaces and illustrates registration with set_operation_tx_uncontrolled. Verify the target release and error/retry contract."
+        }
+      ]
+    },
+    {
+      "id": "RAP-18",
+      "level": "Core",
+      "question": "How do you enable and use create, update, and delete in managed RAP?",
+      "answer": "Declare create, update, and delete in the base behavior definition. Managed RAP supplies their standard implementation. A consumer calls those operations through EML or a service; RAP first changes the transactional buffer. Accepted changes are not yet saved. The transaction owner must complete the save successfully.",
+      "detail": "Imagine a small Order with OrderUUID and Comment. RAP generates the UUID on create. An external ABAP program creates an order with Comment = Draft, checks FAILED and REPORTED, and uses MAPPED to find the new UUID. It can then read or update that same order before saving. A pending delete removes an instance from transactional state; it is not a completed database deletion yet.\n\nAn external EML transaction owner uses COMMIT ENTITIES and checks the separate save response. A service request leaves transaction handling to the framework. A behavior handler must not issue its own COMMIT. On a rejected standalone operation, preserve the failure/messages and roll back the pending transaction; do not print a success message merely because MODIFY returned. For a service, also expose the permitted operations through the projection and implement the required permissions and business validations.",
+      "pitfall": "Managed CRUD avoids handwritten basic persistence, not authorization, validation, or checking save errors.",
+      "references": [
+        {
+          "title": "SAP Learning: enable modifying operations",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-static-field-control-and-value-helps",
+          "note": "Follow the linked lesson and verify the feature set in your target ABAP release."
+        }
+      ]
+    },
+    {
+      "id": "RAP-19",
+      "level": "Core",
+      "question": "How do an order and its items form one managed RAP business object?",
+      "answer": "The order is the root; its items are composition children in the same BO. Define behavior for both entities. Create items through the parent association, and declare their supported update and delete operations. Children normally depend on the root for locking and authorization. A shared BO boundary lets RAP save their changes together.",
+      "detail": "For Order A, create two items through Order._Items. The parent connection tells RAP which order owns them. In the ordinary managed composition model, deleting the root also deletes its composition children. An associated Customer is different: it is a separately owned record and must not disappear when the order is deleted.\n\nThe CDS composition and association-to-parent must agree with the behavior aliases and dependencies. Expose the child and redirected associations in the service projection as needed. For a new parent and new children in one request, use the %cid/%cid_ref correlation described in RAP-10; do not guess a parent key that numbering has not supplied.",
+      "pitfall": "A normal association to a customer does not make the customer part of the order lifecycle.",
+      "references": [
+        {
+          "title": "SAP Learning: composite business objects",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-composite-business-objects",
+          "note": "Follow the linked lesson and verify the feature set in your target ABAP release."
+        }
+      ]
+    },
+    {
+      "id": "RAP-20",
+      "level": "Advanced",
+      "question": "Create or an action exists in the BO but is missing in the service. What do you check?",
+      "answer": "Follow the capability from the base behavior to the projection and then to the service actually called. A base operation is not automatically exposed by every projection. Check use create or use action, the projected entity, and the active binding metadata. Then distinguish a missing operation from one disabled by features, denied by authorization, or simply not shown by the UI.",
+      "detail": "Suppose the base Order declares create and action Submit. An app projection reuses update only. Calling a different endpoint or adding a button cannot expose the missing operations: first reuse the intended capability in the correct projection.\n\nIf metadata already contains the action, inspect operation availability, permissions, UI annotations and request responses. A disabled Submit button may be correct for an approved order. A 403 is a permissions issue, not proof that use action is absent. Refresh cached metadata only after confirming which service version the client uses.",
+      "pitfall": "Do not fix missing service behavior by adding a UI button or bypassing authorization.",
+      "references": [
+        {
+          "title": "SAP Learning: expose behavior in a service",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-compositions-in-odata-ui-services",
+          "note": "Follow the linked lesson and verify the feature set in your target ABAP release."
+        }
+      ]
+    },
+    {
+      "id": "RAP-21",
+      "level": "Advanced",
+      "question": "How do you read an order's items with EML, and what do RESULT and LINK contain?",
+      "answer": "Use READ ENTITIES with BY association and the source order keys. RESULT contains the item data you requested. LINK connects each source order identity to a target item identity. It is useful when reading children of several parents. Check FAILED and REPORTED instead of assuming every input produced children.",
+      "detail": "Order A has items A1 and A2; order B has B1. RESULT gives three item rows. LINK says A -> A1, A -> A2 and B -> B1. Use those links when grouping the response by its source, especially when target fields alone are not enough to identify the path. An order with no items has no child result; a failed order read must be diagnosed separately.\n\nInside the BO, this read can include pending child changes from the transaction. Keep the generated %tky identity, including draft state where present. Reading the database directly can miss an item just created in the buffer. RBA follows the declared association; it is not an arbitrary SQL join or a replacement for list-query filtering.",
+      "pitfall": "RESULT is entity data; LINK is the source-to-target relationship, not a second copy of those data fields.",
+      "references": [
+        {
+          "title": "SAP Learning: read by association and links",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-the-behavior-of-composite-business-objects",
+          "note": "Follow the linked lesson and verify the feature set in your target ABAP release."
+        }
+      ]
+    },
+    {
+      "id": "RAP-22",
+      "level": "Core",
+      "question": "Why does EML need derived types and %control instead of a database-table row?",
+      "answer": "An EML request describes an operation, not just stored fields. Derived types come from the CDS and behavior contract and include the identities and flags that operation needs. %control says which fields were supplied. An initial value can therefore mean either leave unchanged or deliberately clear the field, depending on its flag.",
+      "detail": "The stored Comment is Rush. An update sends Comment = an empty string. With %control-Comment = if_abap_behv=>mk-on, it asks to clear Comment. With the flag off, that field is not part of the update. The FIELDS addition can set these flags for listed fields.\n\nUse TYPE TABLE FOR UPDATE for update input and TYPE TABLE FOR READ RESULT for read data. Carry %tky from the generated input or result so draft identity is not lost. %cid correlates a newly requested instance before its final identity is available; it is not a persistent business key. A table row copied from SQL does not express all these operation-specific details.",
+      "pitfall": "Use if_abap_behv=>mk-on for behavior flags. abap_true is not the same flag type.",
+      "references": [
+        {
+          "title": "SAP Learning: EML derived types and flags",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects",
+          "note": "Follow the linked lesson and verify the feature set in your target ABAP release."
+        }
+      ]
+    },
+    {
+      "id": "RAP-23",
+      "level": "Advanced",
+      "question": "What must change when a managed RAP BO becomes draft-enabled?",
+      "answer": "Draft needs coordinated changes across the model, behavior, persistence and projection. Enable draft in the base behavior, provide compatible draft tables and administrative fields, and define the required draft actions. Configure entity ETags and the root total ETag with the correct lock dependencies. Reuse draft in the projection and expose the required associations and operations.",
+      "detail": "An order draft must survive closing the browser. Its draft persistence stores unfinished input separately from the active business record. For a composition, include the child entities and draft-aware associations too. Generate or adjust the draft tables from the actual definitions; do not copy an unrelated table layout.\n\nPrepare should include the relevant validations so the consumer can receive state messages. Activation must transfer a valid state to active persistence. Test create, edit, reopen, discard and activate, plus a competing active change and expired draft lock. Verify both active and draft identities in EML. RAP-12 explains the lifecycle; ADV-01 explains why the total ETag and normal entity ETag protect different situations.",
+      "pitfall": "Adding with draft alone is not a complete draft implementation, and saving a draft is not activating a business record.",
+      "references": [
+        {
+          "title": "SAP Learning: draft behavior implementation",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-the-behavior-of-draft-enabled-business-objects",
+          "note": "Follow the linked lesson and verify the feature set in your target ABAP release."
+        }
+      ]
+    },
+    {
+      "id": "RAP-24",
+      "level": "Advanced",
+      "question": "What is a determine action, and how does it differ from a determination or ordinary action?",
+      "answer": "A determination is a rule that derives data when its trigger applies. A normal action implements a requested business operation, such as Submit. A determine action groups existing determinations and validations so a consumer can request their evaluation. In managed RAP it reuses those rule implementations rather than adding an ordinary action handler.",
+      "detail": "After a delivery date changes, a supported consumer can request a determine action that evaluates the related date validation. This can show feedback before the user chooses final save. Draft Prepare is a draft-specific determine action used in the activation flow.\n\nAssigned rules still follow their trigger and optimization contracts unless an applicable always setting changes that. Listing rules is not a promise that each one runs every time or in the written order. Determinations run before validations; do not build dependencies on arbitrary order within either group. Expose the capability through the supported projection and consumer configuration. Evaluation alone does not mean COMMIT or successful persistence.",
+      "pitfall": "A determine action is not a place to write arbitrary action logic, and it does not replace save-time consistency checks.",
+      "references": [
+        {
+          "title": "SAP Learning: determine actions",
+          "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-determine-actions-and-side-effect",
+          "note": "Follow the linked lesson and verify the feature set in your target ABAP release."
         }
       ]
     }

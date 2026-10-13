@@ -1,0 +1,114 @@
+[
+  {
+    "id": "QUIZ-CORE-RAP-18",
+    "questionId": "RAP-18",
+    "prompt": "MODIFY accepts a new order, but a save validation rejects it. What should the external transaction owner report?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The order is saved because MODIFY succeeded",
+        "explanation": "MODIFY accepted a buffered change; it did not establish persistence."
+      },
+      {
+        "id": "b",
+        "text": "Save failed; retain its messages and handle the pending transaction",
+        "explanation": "The separate save response decides whether persistence completed."
+      },
+      {
+        "id": "c",
+        "text": "Retry with COMMIT WORK inside the validation",
+        "explanation": "A validation must not take over RAP transaction control."
+      },
+      {
+        "id": "d",
+        "text": "The order can be reported as saved because MAPPED contains its UUID",
+        "explanation": "A generated identity correlates the request with an instance; it does not confirm that save completed."
+      }
+    ],
+    "correctOption": "b"
+  },
+  {
+    "id": "QUIZ-CORE-RAP-19",
+    "questionId": "RAP-19",
+    "prompt": "An order has composition items and an ordinary association to Customer. What follows from deleting the root in the basic managed model?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Items follow the order lifecycle; Customer remains independently owned",
+        "explanation": "A composition models owned children, not every associated record."
+      },
+      {
+        "id": "b",
+        "text": "Customer must be deleted too",
+        "explanation": "An ordinary customer association does not transfer ownership."
+      },
+      {
+        "id": "c",
+        "text": "Items must always be deleted by handwritten SQL",
+        "explanation": "Managed composition handling supplies the standard child lifecycle."
+      },
+      {
+        "id": "d",
+        "text": "Deleting the root only removes the association links, leaving its composition items unchanged",
+        "explanation": "In the basic managed composition model, owned children follow the root deletion lifecycle; this is not merely unlinking independent records."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-CORE-RAP-20",
+    "questionId": "RAP-20",
+    "prompt": "Submit exists in base behavior, but is absent from the app service metadata. What is the first useful check?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Whether the correct projection reuses Submit and is exposed by that service",
+        "explanation": "Follow the capability through the actual projection and endpoint."
+      },
+      {
+        "id": "b",
+        "text": "Whether adding the action to @UI.lineItem exposes it in the service",
+        "explanation": "UI annotations can present an exposed action but do not add a missing operation to the behavior projection."
+      },
+      {
+        "id": "c",
+        "text": "Whether global authorization should always return allowed",
+        "explanation": "Authorization controls permission to an exposed operation; it does not create a missing service capability."
+      },
+      {
+        "id": "d",
+        "text": "Whether recreating the service binding alone adds every base action to the projection",
+        "explanation": "A new binding does not substitute for explicitly reusing the intended base capability in the relevant behavior projection."
+      }
+    ],
+    "correctOption": "a"
+  },
+  {
+    "id": "QUIZ-CORE-RAP-22",
+    "questionId": "RAP-22",
+    "prompt": "Comment contains Rush. An update supplies an empty Comment with its %control flag off. What is the intended meaning?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Clear Comment",
+        "explanation": "A supplied empty value needs its active control flag to request clearing."
+      },
+      {
+        "id": "b",
+        "text": "Leave Comment out of this update",
+        "explanation": "The flag says this field was not supplied for modification."
+      },
+      {
+        "id": "c",
+        "text": "Reject the update because every initial value is invalid",
+        "explanation": "An initial value is not automatically invalid. Business validation decides validity; %control specifies whether the field participates in the update."
+      },
+      {
+        "id": "d",
+        "text": "An empty value always overrides the flag and clears the field",
+        "explanation": "The control flag distinguishes an omitted field from a deliberately supplied initial value."
+      }
+    ],
+    "correctOption": "b"
+  }
+]

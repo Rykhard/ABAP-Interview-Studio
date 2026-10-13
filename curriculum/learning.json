@@ -1036,6 +1036,42 @@
     },
     "DELIV-01": {
       "level": "Applied"
+    },
+    "RAP-18": {
+      "level": "Core"
+    },
+    "RAP-19": {
+      "level": "Core"
+    },
+    "RAP-20": {
+      "level": "Applied"
+    },
+    "RAP-21": {
+      "level": "Applied"
+    },
+    "RAP-22": {
+      "level": "Core"
+    },
+    "RAP-23": {
+      "level": "Applied"
+    },
+    "RAP-24": {
+      "level": "Applied"
+    },
+    "DEVCORE-02": {
+      "level": "Applied"
+    },
+    "DEVCORE-03": {
+      "level": "Applied"
+    },
+    "DEVCORE-01": {
+      "level": "Core"
+    },
+    "DEVCORE-04": {
+      "level": "Core"
+    },
+    "DEVCORE-05": {
+      "level": "Core"
     }
   },
   "paths": [
@@ -1098,10 +1134,10 @@
         "RAP-01",
         "RAP-03",
         "RAP-08",
+        "RAP-18",
         "RAP-06",
         "RAP-05",
         "RAP-12",
-        "ADV-01",
         "ADV-02"
       ],
       "prerequisites": {
@@ -1120,11 +1156,11 @@
         "RAP-12": [
           "RAP-05"
         ],
-        "ADV-01": [
-          "RAP-12"
-        ],
         "ADV-02": [
           "RAP-06",
+          "RAP-08"
+        ],
+        "RAP-18": [
           "RAP-08"
         ]
       },

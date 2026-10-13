@@ -12,7 +12,7 @@ Strong candidates explain how they know a solution works. Distinguish isolated u
 
 **Reasoning and example:** For a date-range validator, I prepare a valid range, equal start and end dates, and an end date before the start. The expected result follows the actual business rule: equal dates might be allowed or rejected, so I make that decision explicit. The test name describes the rule that would be broken.
 
-I keep the validator real and control any outside dependency, such as the current date. A failing assertion should explain which result was wrong. High coverage is useful for finding untested areas, but a test can execute every line without checking the right outcome. I therefore review the cases and assertions, not only the percentage.
+I keep the validator real and control any outside dependency, such as the current date. A failing assertion should explain which result was wrong. High coverage is useful for finding untested areas, but a test can execute every line without checking the right outcome. I therefore review the cases and assertions, not only the percentage. Fresh mutable fixtures belong in setup; do not rely on another test having run first.
 
 **Avoid this mistake:** High statement coverage alone does not prove that assertions or business cases are meaningful.
 
@@ -99,7 +99,7 @@ The widening base suggests many focused checks, but there is no mandatory numeri
 
 **Reasoning and example:** For a CDS total, I load a small fixture with two currencies, an order without a matching text and one record that could match several joined rows. Then I check the expected totals and ensure no extra rows appear. This exposes model errors more clearly than testing against whatever data happens to be in a shared system.
 
-The setup must cover the dependencies the tested component actually reads. An incorrect double configuration can test a different situation from production. After each test, the environment must be reset or destroyed appropriately. I still use real-system checks for the execution plan, deployed access control and integration behavior; a passing double-based test is not a HANA benchmark.
+The setup must cover the dependencies the tested component actually reads. An incorrect double configuration can test a different situation from production. After each test, the environment must be reset or destroyed appropriately. I still use real-system checks for the execution plan, deployed access control and integration behavior; a passing double-based test is not a HANA benchmark. A common lifecycle is to create the double environment once in class_setup, clear and load fixture data in setup, and destroy it in class_teardown. Use the actual framework contract; RISK LEVEL HARMLESS does not create the isolation.
 
 **Avoid this mistake:** Passing a double-based test is not a HANA execution-plan benchmark.
 

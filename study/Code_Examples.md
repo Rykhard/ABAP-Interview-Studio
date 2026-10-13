@@ -175,6 +175,149 @@ annotate entity ZC_Order with
 
 - [SAP: UI.lineItem.invocationGrouping](https://help.sap.com/docs/abap-cloud/abap-keyword/ui-lineitem-invocationgrouping?locale=en-US)
 
+## Check the change permission before acting
+
+A denied check leaves the result false.
+
+Questions: [DEVCORE-01](https://abap-interview-studio.pages.dev/#q-DEVCORE-01)
+
+**Where this belongs:** Method body of a boolean authorization helper with IMPORTING company_code TYPE bukrs and RETURNING VALUE(allowed) TYPE abap_bool. Prerequisite: custom authorization object ZORDER already exists with exactly ACTVT and BUKRS and appropriate role values. The caller must reject false before any protected work.
+
+```abap
+CONSTANTS co_object TYPE c LENGTH 10 VALUE 'ZORDER'.
+CONSTANTS co_change TYPE c LENGTH 2 VALUE '02'.
+allowed = abap_false.
+AUTHORITY-CHECK OBJECT co_object
+  ID 'ACTVT' FIELD co_change
+  ID 'BUKRS' FIELD company_code.
+IF sy-subrc <> 0.
+  RETURN.
+ENDIF.
+allowed = abap_true.
+```
+
+**Read it step by step:**
+
+1. **Check the requested operation** (lines 3, 4, 5, 6): The result starts false. ACTVT 02 checks change permission, not display permission.
+2. **Use the result immediately** (lines 7, 8, 9, 10): No intervening statement can overwrite sy-subrc. Every nonzero result returns false.
+
+**What happens:** With company_code 1000, a display-only user remains denied; a user authorized for activity 02 in company 1000 passes this check.
+
+**Scope:** This helper only evaluates permission; it performs no business write. Do not trust a caller-supplied company without resolving it from the protected object. Framework operations still need their own authorization response contract.
+
+**Primary references:**
+
+- [SAP Learning: AUTHORITY-CHECK](https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/using-the-authority-check-statement_a60b8989-12c1-4764-89b2-e168feae035d)
+
+## Keep the second record with the same timestamp
+
+Continue after the timestamp and ID together.
+
+Questions: [DEVCORE-03](https://abap-interview-studio.pages.dev/#q-DEVCORE-03)
+
+**Where this belongs:** Self-contained method-body illustration with fixed UTC timestamp fixtures in an internal table. It demonstrates a continuation predicate and a two-row page, not database extraction or a live cursor.
+
+```abap
+TYPES: BEGIN OF ty_change,
+         changed_at TYPE timestamp,
+         order_id   TYPE i,
+       END OF ty_change.
+DATA lt_changes TYPE SORTED TABLE OF ty_change
+  WITH UNIQUE KEY changed_at order_id.
+lt_changes = VALUE #(
+  ( changed_at = '20261013090000' order_id = 7 )
+  ( changed_at = '20261013090000' order_id = 9 )
+  ( changed_at = '20261013090100' order_id = 10 ) ).
+CONSTANTS co_after_time TYPE timestamp VALUE '20261013090000'.
+CONSTANTS co_after_id TYPE i VALUE 7.
+CONSTANTS co_upper_time TYPE timestamp VALUE '20261013090100'.
+CONSTANTS co_page_size TYPE i VALUE 2.
+DATA lt_page TYPE STANDARD TABLE OF ty_change WITH EMPTY KEY.
+LOOP AT lt_changes INTO DATA(ls_change)
+  WHERE ( changed_at > co_after_time OR
+        ( changed_at = co_after_time AND order_id > co_after_id ) )
+    AND changed_at <= co_upper_time.
+  APPEND ls_change TO lt_page.
+  IF lines( lt_page ) = co_page_size.
+    EXIT.
+  ENDIF.
+ENDLOOP.
+```
+
+**Read it step by step:**
+
+1. **Define a stable order** (lines 5, 6, 7, 8, 9, 10): The key sorts by changed_at, then order_id. Orders 7 and 9 share a timestamp.
+2. **Continue after the complete pair** (lines 16, 17, 18, 19): Equal timestamps are included when their ID exceeds 7. The fixed upper time bounds this run.
+3. **Keep the page bounded** (lines 20, 21, 22, 23, 24): Stop after two rows: 9 and 10. Advance the extraction checkpoint after the page and continuation are durably staged atomically, or after downstream confirmation if there is no durable stage. Delivery has its own state.
+
+**What happens:** lt_page contains orders 9 and 10 in that order. Order 9 is retained even though its timestamp equals the checkpoint timestamp.
+
+**Scope:** The source is frozen in memory. Translating this to SQL requires the same deterministic ORDER BY, a bounded row limit, suitable indexes and a source-specific delta contract. It does not solve late commits, deletes or concurrent changes.
+
+**Primary references:**
+
+- [SAP: ABAP SQL selection and ordering](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md)
+
+## Fresh input for each calculator test
+
+Both test orders must give the same results.
+
+Questions: [DEVCORE-04](https://abap-interview-studio.pages.dev/#q-DEVCORE-04)
+
+**Where this belongs:** Complete local teaching class and ABAP Unit test class, placed in a suitable local class/test include. Requires a release supporting REDUCE and inline constructor expressions. Fixture integers are unitless and deliberately small.
+
+```abap
+CLASS lcl_total DEFINITION FINAL.
+  PUBLIC SECTION.
+    TYPES ty_values TYPE STANDARD TABLE OF i WITH EMPTY KEY.
+    CLASS-METHODS calculate IMPORTING lt_values TYPE ty_values
+      RETURNING VALUE(total) TYPE i.
+ENDCLASS.
+CLASS lcl_total IMPLEMENTATION.
+  METHOD calculate.
+    total = REDUCE i( INIT sum = 0
+      FOR number IN lt_values NEXT sum = sum + number ).
+  ENDMETHOD.
+ENDCLASS.
+CLASS ltc_total DEFINITION FINAL FOR TESTING
+  DURATION SHORT RISK LEVEL HARMLESS.
+  PRIVATE SECTION.
+    DATA lt_values TYPE lcl_total=>ty_values.
+    METHODS setup.
+    METHODS adds_values FOR TESTING.
+    METHODS empty_is_zero FOR TESTING.
+ENDCLASS.
+CLASS ltc_total IMPLEMENTATION.
+  METHOD setup.
+    lt_values = VALUE #( ( 40 ) ( 60 ) ).
+  ENDMETHOD.
+  METHOD adds_values.
+    cl_abap_unit_assert=>assert_equals(
+      act = lcl_total=>calculate( lt_values ) exp = 100 ).
+  ENDMETHOD.
+  METHOD empty_is_zero.
+    CLEAR lt_values.
+    cl_abap_unit_assert=>assert_equals(
+      act = lcl_total=>calculate( lt_values ) exp = 0 ).
+  ENDMETHOD.
+ENDCLASS.
+```
+
+**Read it step by step:**
+
+1. **Test the real calculation** (lines 8, 9, 10, 11): The empty input returns the initial sum 0; otherwise the actual values are added.
+2. **Reset before each test** (lines 22, 23, 24): The test framework runs setup separately before both test methods.
+3. **Check normal and empty input** (lines 25, 26, 27, 28, 29, 30, 31, 32, 33): The assertions verify 100 and 0. Neither test relies on the other running first.
+
+**What happens:** adds_values expects 100. empty_is_zero expects 0. setup restores 40 and 60 before each test, so clearing one test input cannot affect the other.
+
+**Scope:** No database or remote call is made. No teardown is needed for this local-only fixture. HARMLESS describes that design; changing the tested code to write real data would require a new isolation and risk review.
+
+**Primary references:**
+
+- [SAP: ABAP Unit fixtures and examples](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/14_ABAP_Unit_Tests.md)
+- [SAP: Test attributes](https://help.sap.com/saphelp_gbt10/helpdata/EN/49/25667929ac16b7e10000000a42189d/content.htm?no_cache=true)
+
 ## One key, one order
 
 Choose a table that matches the lookup you need.
@@ -3193,6 +3336,391 @@ define role ZC_Order
 
 - [SAP: CDS access control and nonautomatic inheritance](https://help.sap.com/docs/abap-cloud/abap-data-models/cds-authorization-concept)
 - [SAP: implementing inherited read protection](https://help.sap.com/docs/btp/sap-business-technology-platform/implementing-read-protection)
+
+## Declare the managed CRUD contract
+
+One small model is used by all three CRUD variants.
+
+Questions: [RAP-18](https://abap-interview-studio.pages.dev/#q-RAP-18)
+
+**Where this belongs:** Base BDEF for existing non-draft root CDS ZI_Order over table zorder. OrderUUID is a RAW(16) key, Comment is a character business field; persistence columns are order_uuid and order_comment. Complete the generated global authorization handler and target strict-mode requirements.
+
+```abap
+managed implementation in class zbp_i_order unique;
+strict ( 2 );
+define behavior for ZI_Order alias Order
+persistent table zorder
+lock master
+authorization master ( global )
+{
+  create;
+  update;
+  delete;
+  field ( numbering : managed, readonly ) OrderUUID;
+  mapping for zorder
+  {
+    OrderUUID = order_uuid;
+    Comment = order_comment;
+  }
+}
+```
+
+**Read it step by step:**
+
+1. **Use framework CRUD** (lines 1, 4, 8, 9, 10): The operations are declared here; managed RAP supplies their buffer and persistence implementation.
+2. **Keep identity and mapping stable** (lines 11, 14, 15): RAP generates OrderUUID; Comment maps to order_comment. The EML variants use these exact names.
+
+**What happens:** The BO contract admits create, update and delete; the caller still needs permission and a successful transaction.
+
+**Scope:** Teaching contract, not a complete activated project: table, CDS, behavior pool, authorization implementation and service/projection if used are prerequisites.
+
+**Primary references:**
+
+- [SAP Learning: business objects and behavior](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-business-objects-and-their-behavior)
+
+## Create one order, then check the save
+
+Two response checks separate an accepted request from a completed transaction.
+
+Questions: [RAP-18](https://abap-interview-studio.pages.dev/#q-RAP-18)
+
+**Where this belongs:** External IF_OO_ADT_CLASSRUN~main teaching method; out is its output object. Existing non-draft managed ZI_Order has alias Order, generated RAW(16) OrderUUID, writable Comment and enabled create/update/delete. The caller has permissions. This program owns an otherwise empty LUW. Literals are fixture input.
+
+```abap
+MODIFY ENTITIES OF zi_order
+  ENTITY Order
+  CREATE FIELDS ( Comment )
+  WITH VALUE #( ( %cid = 'new-order' Comment = 'Draft' ) )
+  MAPPED DATA(ls_mapped)
+  FAILED DATA(ls_failed)
+  REPORTED DATA(ls_reported).
+out->write( ls_reported ).
+IF ls_failed IS NOT INITIAL.
+  out->write( ls_failed ).
+  ROLLBACK ENTITIES.
+  RETURN.
+ENDIF.
+COMMIT ENTITIES RESPONSE OF zi_order
+  FAILED DATA(ls_save_failed)
+  REPORTED DATA(ls_save_reported).
+DATA(save_status) = sy-subrc.
+out->write( ls_save_reported ).
+IF save_status <> 0.
+  out->write( ls_save_failed ).
+  ROLLBACK ENTITIES.
+  RETURN.
+ENDIF.
+out->write( ls_mapped-order ).
+```
+
+**Read it step by step:**
+
+1. **Request creation** (lines 2, 3, 4): Comment is supplied; managed numbering generates the technical key.
+2. **Handle interaction failure** (lines 6, 8, 9, 10, 11, 12): FAILED identifies rejected operations; REPORTED carries messages and may also contain non-error messages.
+3. **Check the separate save** (lines 14, 15, 16, 17, 19): The save can fail after MODIFY succeeded. Capture sy-subrc immediately and retain its FAILED/REPORTED response.
+
+**What happens:** Only the success path reaches the final output of the mapped order identity.
+
+**Scope:** Requires the actual CDS/table/BDEF and implemented permissions. Output is a teaching diagnostic, not end-user messaging. Never move COMMIT/ROLLBACK into a behavior handler.
+
+**Primary references:**
+
+- [SAP Learning: RAP implementation lesson](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects)
+
+## Read the value before saving
+
+The read follows the update in the same transaction.
+
+Questions: [RAP-18](https://abap-interview-studio.pages.dev/#q-RAP-18)
+
+**Where this belongs:** Standalone external class-run excerpt for the same non-draft Order model. order_uuid is a supplied existing RAW(16) key. The caller owns this LUW. Ready is fixture input.
+
+```abap
+MODIFY ENTITIES OF zi_order
+  ENTITY Order UPDATE FIELDS ( Comment )
+  WITH VALUE #( ( OrderUUID = order_uuid Comment = 'Ready' ) )
+  FAILED DATA(ls_failed)
+  REPORTED DATA(ls_reported).
+out->write( ls_reported ).
+IF ls_failed IS NOT INITIAL.
+  out->write( ls_failed ).
+  ROLLBACK ENTITIES.
+  RETURN.
+ENDIF.
+READ ENTITIES OF zi_order
+  ENTITY Order FIELDS ( Comment )
+  WITH VALUE #( ( OrderUUID = order_uuid ) )
+  RESULT DATA(lt_orders)
+  FAILED DATA(ls_read_failed)
+  REPORTED DATA(ls_read_reported).
+out->write( lt_orders ).
+out->write( ls_read_failed ).
+out->write( ls_read_reported ).
+```
+
+**Read it step by step:**
+
+1. **Change one field** (lines 1, 2, 3): FIELDS marks Comment as supplied. Other fields are not updated.
+2. **Read transactional state** (lines 12, 13, 14, 15): EML can return the pending Ready value; a database query is not an equivalent buffer read.
+3. **Keep read failures visible** (lines 16, 17, 19, 20): Missing results and reported messages must be handled before continuing.
+
+**What happens:** An accepted update can be read as Ready while the stored value is still unchanged.
+
+**Scope:** The excerpt deliberately stops before save. On read failure, the caller must choose to roll back; otherwise use the separate checked COMMIT ENTITIES pattern. For delete, request ENTITY Order DELETE with the key and apply the same interaction/save checks.
+
+**Primary references:**
+
+- [SAP Learning: RAP implementation lesson](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects)
+
+## The root owns the item lifecycle
+
+Create a child through the order that owns it.
+
+Questions: [RAP-19](https://abap-interview-studio.pages.dev/#q-RAP-19)
+
+**Where this belongs:** Selected blocks of one managed base BDEF. CDS ZI_Order composes ZI_OrderItem through _Items; the child has association-to-parent _Order. Header, strict-mode requirements, key numbering, fields/mapping and authorization implementation are omitted.
+
+```abap
+define behavior for ZI_Order alias Order
+persistent table zorder
+lock master
+authorization master ( global )
+{
+  create; update; delete;
+  association _Items { create; }
+}
+define behavior for ZI_OrderItem alias Item
+persistent table zorder_item
+lock dependent by _Order
+authorization dependent by _Order
+{
+  update; delete;
+  association _Order;
+}
+```
+
+**Read it step by step:**
+
+1. **Create through the owner** (lines 6, 7): Root create creates orders; create on _Items creates their children.
+2. **Use parent dependencies** (lines 11, 12, 14, 15): Items have update/delete and refer back to the parent for lock and authorization.
+
+**What happens:** The child uses the root lock and authorization boundary; ordinary composition children follow root deletion.
+
+**Scope:** This is not a complete activatable BDEF. Use RAP-10 for %cid/%cid_ref when creating a new parent and children together. This basic composition model does not describe newer cross-BO association features.
+
+**Primary references:**
+
+- [SAP Learning: RAP implementation lesson](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-composite-business-objects)
+
+## Expose only the operations this app needs
+
+A projection selects existing capabilities; it does not implement Submit.
+
+Questions: [RAP-20](https://abap-interview-studio.pages.dev/#q-RAP-20)
+
+**Where this belongs:** Non-draft behavior projection of existing ZC_Order over ZI_Order. Base behavior already declares create/update/delete and Submit with its implemented handler. The service exposes ZC_Order.
+
+```abap
+projection;
+strict ( 2 );
+define behavior for ZC_Order alias Order
+{
+  use create;
+  use update;
+  use delete;
+  use action Submit;
+}
+```
+
+**Read it step by step:**
+
+1. **Select the consumer contract** (lines 3, 5, 6, 7): Operations omitted here are not automatically exposed just because the base supports them.
+2. **Reuse the base action** (lines 8): If Submit is exposed but disabled, inspect availability and permissions next.
+
+**What happens:** The projection reuses the four declared capabilities for this consumer.
+
+**Scope:** Verify active binding metadata and release requirements. Reuse does not bypass permissions, dynamic availability or supply missing UI annotations.
+
+**Primary references:**
+
+- [SAP Learning: RAP implementation lesson](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-business-objects-and-their-behavior)
+
+## Read children and their parent links
+
+Two output tables answer different questions.
+
+Questions: [RAP-21](https://abap-interview-studio.pages.dev/#q-RAP-21)
+
+**Where this belongs:** Inside this BO implementation, keys holds generated transactional Order identities. ZI_Order has alias Order and composition _Items to Item. The enclosing operation must propagate the allowed failure/message responses.
+
+```abap
+READ ENTITIES OF zi_order IN LOCAL MODE
+  ENTITY Order BY \_Items
+  ALL FIELDS WITH CORRESPONDING #( keys )
+  RESULT DATA(lt_items)
+  LINK DATA(lt_links)
+  FAILED DATA(ls_failed)
+  REPORTED DATA(ls_reported).
+```
+
+**Read it step by step:**
+
+1. **Follow the declared association** (lines 2, 3): The input identities are orders, not item keys.
+2. **Separate data and relationships** (lines 4, 5): RESULT returns item data; LINK preserves the source-to-target relationships.
+3. **Inspect the responses** (lines 6, 7): Diagnose failed source reads separately from an order with no items.
+
+**What happens:** lt_items contains item fields; lt_links connects source %tky to target %tky, such as A → A1 and B → B1.
+
+**Scope:** Local mode is limited to this BO implementation; it is not for bypassing an external caller's permissions. Missing child rows do not by themselves prove that the parent read failed.
+
+**Primary references:**
+
+- [SAP Learning: RAP implementation lesson](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-the-behavior-of-composite-business-objects)
+
+## Clear a field deliberately
+
+An empty value plus an active control flag requests a real change.
+
+Questions: [RAP-22](https://abap-interview-studio.pages.dev/#q-RAP-22)
+
+**Where this belongs:** External EML excerpt. ls_order is a previously read Order result with intact %tky; Comment is writable. lt_orders illustrates a read-result derived type, not update input. The enclosing caller owns response handling and save/rollback.
+
+```abap
+DATA lt_updates TYPE TABLE FOR UPDATE zi_order.
+DATA lt_orders TYPE TABLE FOR READ RESULT zi_order.
+lt_updates = VALUE #( (
+  %tky = ls_order-%tky
+  Comment = ''
+  %control-Comment = if_abap_behv=>mk-on ) ).
+MODIFY ENTITIES OF zi_order
+  ENTITY Order UPDATE FROM lt_updates
+  FAILED DATA(ls_failed)
+  REPORTED DATA(ls_reported).
+```
+
+**Read it step by step:**
+
+1. **Choose types by operation** (lines 1, 2): Update input and read results have different derived contracts.
+2. **Preserve identity and intent** (lines 4, 5, 6): %tky identifies the right active/draft instance. mk-on means the initial Comment is intentionally supplied.
+
+**What happens:** Comment is requested to become empty. If its control flag were off, that field would not be changed.
+
+**Scope:** Propagate FAILED/REPORTED before continuing and check the separate save result. This fragment is not a complete transaction.
+
+**Primary references:**
+
+- [SAP Learning: RAP implementation lesson](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects)
+
+## Three static controls, three different meanings
+
+Do not treat every field annotation as the same validation rule.
+
+Questions: [ADV-13](https://abap-interview-studio.pages.dev/#q-ADV-13)
+
+**Where this belongs:** Selected field declarations inside an existing base Order BDEF with OrderUUID, CustomerID and DeliveryDate. Key numbering and business validations are declared elsewhere.
+
+```abap
+field ( readonly ) OrderUUID;
+field ( readonly : update ) CustomerID;
+field ( mandatory ) DeliveryDate;
+```
+
+**Read it step by step:**
+
+1. **Compare write restrictions** (lines 1, 2): readonly differs from readonly:update: the latter still allows create input.
+2. **Validate business consistency** (lines 3): A required-field hint alone must not be the only safeguard against invalid persisted data.
+
+**What happens:** OrderUUID is not consumer-written; CustomerID can be supplied on create; DeliveryDate is declared required.
+
+**Scope:** The application still needs backend validation for required or invalid dates. Static controls do not replace authorization or dynamic business availability.
+
+**Primary references:**
+
+- [SAP Learning: RAP implementation lesson](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-static-field-control-and-value-helps)
+
+## Reuse one validation on request
+
+The determine action names an existing rule instead of implementing it twice.
+
+Questions: [RAP-24](https://abap-interview-studio.pages.dev/#q-RAP-24)
+
+**Where this belongs:** Selected declarations inside a managed Order BDEF with DeliveryDate. ValidateDate has an implemented validation handler returning FAILED and REPORTED for invalid instances.
+
+```abap
+validation ValidateDate on save
+  { create; field DeliveryDate; }
+determine action CheckDate
+{
+  validation ValidateDate;
+}
+```
+
+**Read it step by step:**
+
+1. **Define the rule trigger** (lines 1, 2): Create or a supplied DeliveryDate change participates in this validation trigger.
+2. **Request the existing check** (lines 3, 5): CheckDate groups the validation; it is not a second ordinary action implementation.
+
+**What happens:** A supported consumer can request evaluation of ValidateDate through CheckDate.
+
+**Scope:** Trigger and optimization rules still apply. This is not COMMIT, and no execution order should be inferred from the list. Projection exposure and consumer configuration are separate.
+
+**Primary references:**
+
+- [SAP Learning: RAP implementation lesson](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-determine-actions-and-side-effect)
+
+## Process every requested action instance
+
+Update accepted instances, report failures, and return only successful results.
+
+Questions: [ADV-05](https://abap-interview-studio.pages.dev/#q-ADV-05)
+
+**Where this belongs:** Entire body of a simple instance action SetComment parameter ZI_CommentInput result [1] $self on a single-entity ZI_Order BO. The abstract input has Comment. BDEF alias is Order. Generated handler parameters keys, result, failed and reported are available. The action permits replacing Comment for every authorized requested key; distinct requested instances are assumed.
+
+```abap
+MODIFY ENTITIES OF zi_order IN LOCAL MODE
+  ENTITY Order UPDATE FIELDS ( Comment )
+  WITH VALUE #( FOR ls_key IN keys
+    ( %tky = ls_key-%tky Comment = ls_key-%param-Comment ) )
+  FAILED DATA(ls_update_failed)
+  REPORTED DATA(ls_update_reported).
+failed-order = VALUE #( FOR ls_failure IN ls_update_failed-order
+  ( %tky = ls_failure-%tky
+    %fail-cause = ls_failure-%fail-cause
+    %action-SetComment = if_abap_behv=>mk-on ) ).
+APPEND LINES OF ls_update_reported-order TO reported-order.
+DATA(lt_successful_keys) = keys.
+LOOP AT ls_update_failed-order INTO DATA(ls_update_failure).
+  DELETE lt_successful_keys WHERE %tky = ls_update_failure-%tky.
+ENDLOOP.
+READ ENTITIES OF zi_order IN LOCAL MODE
+  ENTITY Order ALL FIELDS
+  WITH CORRESPONDING #( lt_successful_keys )
+  RESULT DATA(lt_orders)
+  FAILED DATA(ls_read_failed)
+  REPORTED DATA(ls_read_reported).
+LOOP AT ls_read_failed-order INTO DATA(ls_read_failure).
+  APPEND VALUE #( %tky = ls_read_failure-%tky
+    %fail-cause = ls_read_failure-%fail-cause
+    %action-SetComment = if_abap_behv=>mk-on ) TO failed-order.
+ENDLOOP.
+APPEND LINES OF ls_read_reported-order TO reported-order.
+result = VALUE #( FOR ls_order IN lt_orders
+  ( %tky = ls_order-%tky %param = ls_order ) ).
+```
+
+**Read it step by step:**
+
+1. **Read each input parameter** (lines 1, 2, 3, 4): The handler builds one update for each requested key, not just keys[1].
+2. **Keep rejected instances out** (lines 7, 8, 9, 10, 13, 14): Update failures become action failures; rejected keys are excluded from result reads.
+3. **Return the declared result** (lines 22, 23, 24, 25, 27, 28, 29): Read failures and messages remain visible. Each successful order supplies its identity and $self data in %param.
+
+**What happens:** A multi-selection request receives per-instance results and failure information.
+
+**Scope:** Teaching handler for a deliberately simple action, not an approval workflow. IN LOCAL MODE is internal to the BO and bypasses specified access controls; do not use it to skip the action's own business prerequisites. A successful action result is not a completed save.
+
+**Primary references:**
+
+- [SAP Learning: actions and messages](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-actions-and-messages)
 
 ## Declare a read-only calculation
 

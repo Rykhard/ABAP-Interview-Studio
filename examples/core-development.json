@@ -1,0 +1,156 @@
+[
+  {
+    "id": "core-authority-fail-closed",
+    "questions": [
+      "DEVCORE-01"
+    ],
+    "language": "ABAP",
+    "code": "CONSTANTS co_object TYPE c LENGTH 10 VALUE 'ZORDER'.\nCONSTANTS co_change TYPE c LENGTH 2 VALUE '02'.\nallowed = abap_false.\nAUTHORITY-CHECK OBJECT co_object\n  ID 'ACTVT' FIELD co_change\n  ID 'BUKRS' FIELD company_code.\nIF sy-subrc <> 0.\n  RETURN.\nENDIF.\nallowed = abap_true.",
+    "title": "Check the change permission before acting",
+    "intro": "A denied check leaves the result false.",
+    "context": "Method body of a boolean authorization helper with IMPORTING company_code TYPE bukrs and RETURNING VALUE(allowed) TYPE abap_bool. Prerequisite: custom authorization object ZORDER already exists with exactly ACTVT and BUKRS and appropriate role values. The caller must reject false before any protected work.",
+    "outcome": "With company_code 1000, a display-only user remains denied; a user authorized for activity 02 in company 1000 passes this check.",
+    "caveat": "This helper only evaluates permission; it performs no business write. Do not trust a caller-supplied company without resolving it from the protected object. Framework operations still need their own authorization response contract.",
+    "highlights": [
+      {
+        "lines": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "label": "Check the requested operation",
+        "explanation": "The result starts false. ACTVT 02 checks change permission, not display permission."
+      },
+      {
+        "lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Use the result immediately",
+        "explanation": "No intervening statement can overwrite sy-subrc. Every nonzero result returns false."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP Learning: AUTHORITY-CHECK",
+        "url": "https://learning.sap.com/courses/deepening-your-abap-programming-knowledge/using-the-authority-check-statement_a60b8989-12c1-4764-89b2-e168feae035d"
+      }
+    ]
+  },
+  {
+    "id": "core-keyset-ties",
+    "questions": [
+      "DEVCORE-03"
+    ],
+    "language": "ABAP",
+    "code": "TYPES: BEGIN OF ty_change,\n         changed_at TYPE timestamp,\n         order_id   TYPE i,\n       END OF ty_change.\nDATA lt_changes TYPE SORTED TABLE OF ty_change\n  WITH UNIQUE KEY changed_at order_id.\nlt_changes = VALUE #(\n  ( changed_at = '20261013090000' order_id = 7 )\n  ( changed_at = '20261013090000' order_id = 9 )\n  ( changed_at = '20261013090100' order_id = 10 ) ).\nCONSTANTS co_after_time TYPE timestamp VALUE '20261013090000'.\nCONSTANTS co_after_id TYPE i VALUE 7.\nCONSTANTS co_upper_time TYPE timestamp VALUE '20261013090100'.\nCONSTANTS co_page_size TYPE i VALUE 2.\nDATA lt_page TYPE STANDARD TABLE OF ty_change WITH EMPTY KEY.\nLOOP AT lt_changes INTO DATA(ls_change)\n  WHERE ( changed_at > co_after_time OR\n        ( changed_at = co_after_time AND order_id > co_after_id ) )\n    AND changed_at <= co_upper_time.\n  APPEND ls_change TO lt_page.\n  IF lines( lt_page ) = co_page_size.\n    EXIT.\n  ENDIF.\nENDLOOP.",
+    "title": "Keep the second record with the same timestamp",
+    "intro": "Continue after the timestamp and ID together.",
+    "context": "Self-contained method-body illustration with fixed UTC timestamp fixtures in an internal table. It demonstrates a continuation predicate and a two-row page, not database extraction or a live cursor.",
+    "outcome": "lt_page contains orders 9 and 10 in that order. Order 9 is retained even though its timestamp equals the checkpoint timestamp.",
+    "caveat": "The source is frozen in memory. Translating this to SQL requires the same deterministic ORDER BY, a bounded row limit, suitable indexes and a source-specific delta contract. It does not solve late commits, deletes or concurrent changes.",
+    "highlights": [
+      {
+        "lines": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "label": "Define a stable order",
+        "explanation": "The key sorts by changed_at, then order_id. Orders 7 and 9 share a timestamp."
+      },
+      {
+        "lines": [
+          16,
+          17,
+          18,
+          19
+        ],
+        "label": "Continue after the complete pair",
+        "explanation": "Equal timestamps are included when their ID exceeds 7. The fixed upper time bounds this run."
+      },
+      {
+        "lines": [
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "label": "Keep the page bounded",
+        "explanation": "Stop after two rows: 9 and 10. Advance the extraction checkpoint after the page and continuation are durably staged atomically, or after downstream confirmation if there is no durable stage. Delivery has its own state."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: ABAP SQL selection and ordering",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/03_ABAP_SQL.md"
+      }
+    ]
+  },
+  {
+    "id": "core-unit-fresh-fixture",
+    "questions": [
+      "DEVCORE-04"
+    ],
+    "language": "ABAP",
+    "code": "CLASS lcl_total DEFINITION FINAL.\n  PUBLIC SECTION.\n    TYPES ty_values TYPE STANDARD TABLE OF i WITH EMPTY KEY.\n    CLASS-METHODS calculate IMPORTING lt_values TYPE ty_values\n      RETURNING VALUE(total) TYPE i.\nENDCLASS.\nCLASS lcl_total IMPLEMENTATION.\n  METHOD calculate.\n    total = REDUCE i( INIT sum = 0\n      FOR number IN lt_values NEXT sum = sum + number ).\n  ENDMETHOD.\nENDCLASS.\nCLASS ltc_total DEFINITION FINAL FOR TESTING\n  DURATION SHORT RISK LEVEL HARMLESS.\n  PRIVATE SECTION.\n    DATA lt_values TYPE lcl_total=>ty_values.\n    METHODS setup.\n    METHODS adds_values FOR TESTING.\n    METHODS empty_is_zero FOR TESTING.\nENDCLASS.\nCLASS ltc_total IMPLEMENTATION.\n  METHOD setup.\n    lt_values = VALUE #( ( 40 ) ( 60 ) ).\n  ENDMETHOD.\n  METHOD adds_values.\n    cl_abap_unit_assert=>assert_equals(\n      act = lcl_total=>calculate( lt_values ) exp = 100 ).\n  ENDMETHOD.\n  METHOD empty_is_zero.\n    CLEAR lt_values.\n    cl_abap_unit_assert=>assert_equals(\n      act = lcl_total=>calculate( lt_values ) exp = 0 ).\n  ENDMETHOD.\nENDCLASS.",
+    "title": "Fresh input for each calculator test",
+    "intro": "Both test orders must give the same results.",
+    "context": "Complete local teaching class and ABAP Unit test class, placed in a suitable local class/test include. Requires a release supporting REDUCE and inline constructor expressions. Fixture integers are unitless and deliberately small.",
+    "outcome": "adds_values expects 100. empty_is_zero expects 0. setup restores 40 and 60 before each test, so clearing one test input cannot affect the other.",
+    "caveat": "No database or remote call is made. No teardown is needed for this local-only fixture. HARMLESS describes that design; changing the tested code to write real data would require a new isolation and risk review.",
+    "highlights": [
+      {
+        "lines": [
+          8,
+          9,
+          10,
+          11
+        ],
+        "label": "Test the real calculation",
+        "explanation": "The empty input returns the initial sum 0; otherwise the actual values are added."
+      },
+      {
+        "lines": [
+          22,
+          23,
+          24
+        ],
+        "label": "Reset before each test",
+        "explanation": "The test framework runs setup separately before both test methods."
+      },
+      {
+        "lines": [
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33
+        ],
+        "label": "Check normal and empty input",
+        "explanation": "The assertions verify 100 and 0. Neither test relies on the other running first."
+      }
+    ],
+    "references": [
+      {
+        "title": "SAP: ABAP Unit fixtures and examples",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/14_ABAP_Unit_Tests.md"
+      },
+      {
+        "title": "SAP: Test attributes",
+        "url": "https://help.sap.com/saphelp_gbt10/helpdata/EN/49/25667929ac16b7e10000000a42189d/content.htm?no_cache=true"
+      }
+    ]
+  }
+]

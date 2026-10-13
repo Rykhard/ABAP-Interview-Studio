@@ -43,6 +43,8 @@ A free-key linear search, an ordered lookup, and a complete hashed-key lookup fi
 
 When reading by customer, I select the intended secondary key explicitly where required. I check whether faster reads justify maintaining another key during imports and changes. This key belongs to the internal table in ABAP memory. It does not create a database index or make a database query faster.
 
+DELETE ADJACENT DUPLICATES removes only neighboring matches. First SORT by the intended duplicate criteria and any rule for which row to retain, then specify those criteria explicitly with COMPARING. For example, sorting by customer and changed_at descending before COMPARING customer keeps the newest row per customer, provided ties have a defined rule. This deliberately changes the original order.
+
 **Avoid this mistake:** An internal table key is not a database index, and an empty key does not remove the standard table's index.
 
 **Read and verify this answer:**
@@ -70,7 +72,7 @@ A free-key linear search, an ordered lookup, and a complete hashed-key lookup fi
 
 **Reasoning and example:** Suppose I sort orders by customer and order ID. A binary search must use fields in an order compatible with that sort. Sorting by order ID alone and then searching by customer is not safe. A sorted table can make the intended order harder to break accidentally.
 
-For an optional description, VALUE with OPTIONAL can return an initial value when the row is missing. For a required order, that would hide an error, so I report the missing order instead. When I need the row itself, I normally do one lookup and handle its outcome rather than check existence and repeat the same lookup.
+For an optional description, VALUE with OPTIONAL can return an initial value when the row is missing. For a required order, that would hide an error, so I report the missing order instead. When I need the row itself, I normally do one lookup and handle its outcome rather than check existence and repeat the same lookup. line_exists does not set sy-subrc or sy-tabix. Use its boolean result directly; do not inspect those system fields as if READ TABLE had run.
 
 **Avoid this mistake:** Adding BINARY SEARCH to an unsorted table can return incorrect results; modern table-expression syntax does not automatically optimize an unsuitable key.
 
@@ -235,11 +237,14 @@ Several database transactions can serve a single classic SAP business transactio
 
 An enqueue lock only works when programs respect it. An unrelated SQL update can ignore that agreement, so the lock is not a physical barrier around every table write. In classic systems I may inspect SM12 for diagnosis. The exact lock scope and update ownership matter; in cloud applications I use the supported APIs and tools for that environment.
 
+For classic generated ENQUEUE/DEQUEUE modules, _SCOPE controls dialog/update ownership; do not assume every lock ends at the same COMMIT. Initial key fields together with initial X_<field> flags can request a generic lock covering multiple records. Check that breadth deliberately. If an operation needs several locks, acquire them in a consistent order across callers and clean up on failure.
+
 **Avoid this mistake:** An enqueue lock does not physically prevent unrelated SQL code from updating a table if that code ignores the locking protocol.
 
 **Read and verify this answer:**
 
 - [SAP LUW reference and examples](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/17_SAP_LUW.md) - Check how the language feature behaves. A classic example does not prove that its APIs are allowed in ABAP Cloud.
+- [SAP: Function modules for lock requests](https://help.sap.com/saphelp_snc70/helpdata/EN/cf/21eebf446011d189700000e8322d00/content.htm?no_cache=true) - Documents _SCOPE, generic key fields and X_<field> flags. Consistent acquisition order is an application design recommendation.
 
 <details>
 <summary>Visual: SAP LUW and database LUW</summary>

@@ -103,12 +103,15 @@ These are two explicitly designed representations of the same sample values, not
 
 For DELETE, the first request might report success and the second might report that the resource is absent. That does not contradict idempotency: the intended final state is still that the resource is removed. Safe methods can also cause incidental logging; the key point is that the client did not request a business change.
 
+For retryable failures, use a maximum attempt count, a total time limit and increasing delays with jitter: a small random spread prevents many clients from retrying at once. Respect Retry-After when supplied. Set connection and response time limits using the APIs available on the target platform. A timeout limits waiting; it does not prove that the receiver cancelled its work.
+
 **Avoid this mistake:** Do not blindly retry a potentially committed business creation because the response was lost.
 
 **Read and verify this answer:**
 
 - [HTTP semantics: IETF RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
 - [PATCH method: IETF RFC 5789](https://www.rfc-editor.org/rfc/rfc5789.html) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [AWS Builders Library: timeouts, retries and jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/) - Use bounded retries and explicit timeouts; jitter does not make an unsafe operation idempotent.
 
 ## HTTP-05 Which HTTP statuses should an ABAP API developer explain?
 
@@ -120,11 +123,14 @@ For DELETE, the first request might report success and the second might report t
 
 For 429 or 503, the contract may allow a delayed, bounded retry, sometimes using Retry-After. I still consider whether the original operation might have succeeded. A 500 needs diagnosis too. I keep a correlation ID for support without logging credentials, and inspect inner results when a batch envelope returns HTTP 200.
 
+A 413 Content Too Large response means the request content exceeds what the server is willing or able to process. Reduce or split the payload only if the API supports it; sending the same oversized request repeatedly is not a useful default. Distinguish this from 429 Too Many Requests, where the issue is request rate rather than the size of one payload.
+
 **Avoid this mistake:** HTTP 200 on a batch envelope does not prove every contained operation succeeded.
 
 **Read and verify this answer:**
 
 - [HTTP status reference: MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [IETF RFC 9110: 413 Content Too Large](https://www.rfc-editor.org/rfc/rfc9110.html#name-413-content-too-large) - Interpret 413 using the service payload contract and any Retry-After information.
 
 <details>
 <summary>Visual: HTTP request and response anatomy</summary>
@@ -295,11 +301,14 @@ The first two requests carry the same initial ABAP value but differ in update in
 
 In ABAP Cloud, I use the released client and destination APIs and the communication setup supported by that environment. Classic systems may use different APIs. Logs should help find the request without exposing passwords, tokens or sensitive business data. I also verify the retry policy: rolling back the local transaction does not undo a remote commit.
 
+If users can configure the target URL, also consider SSRF: the server could be tricked into calling an unintended internal or privileged endpoint. Prefer approved destinations and allowlisted targets. Revalidate redirects or disable them as the client permits; validating only the original hostname is insufficient. Keep network restrictions and credential scope aligned with the destination.
+
 **Avoid this mistake:** Do not hard-code a password, suppress all exceptions, or assume a remote call shares the local rollback.
 
 **Read and verify this answer:**
 
 - [SAP ABAP integration and connectivity](https://help.sap.com/doc/92f2c1b209a243639a63769070b0dd58/s4hana_cloud/en-US/6e28a25c7dcd4aa395328b1784736547.pdf) - Check the protocol or format rules here, separately from how the ABAP code implements them.
+- [OWASP: server-side request forgery prevention](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html) - Apply destination allowlisting and redirect controls to configurable outbound connections.
 
 <details>
 <summary>Visual: HTTP request and response anatomy</summary>

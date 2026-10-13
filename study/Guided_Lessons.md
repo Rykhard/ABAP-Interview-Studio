@@ -1877,3 +1877,64 @@ The default function did not save anything; the later action and save did.
 **Sources:**
 
 - [SAP: defaulting action input parameters](https://help.sap.com/docs/abap-cloud/abap-rap/defaulting-input-parameters-for-operations)
+
+## From accepted create to a saved order
+
+An external ABAP program creates a non-draft managed Order with Comment = Draft, then changes Comment to Ready. It owns the transaction. Follow one successful save, then compare a rejected save.
+
+**Learn:** Distinguish request acceptance, transactional reads and actual persistence.
+
+Questions: [RAP-18](https://abap-interview-studio.pages.dev/#q-RAP-18)
+
+### 1. Create is accepted
+
+MODIFY requests one order. Managed numbering gives it UUID U1 and MAPPED correlates that identity with the request %cid. Inspect FAILED and REPORTED.
+
+- **Pending order:** U1 / Draft
+- **Saved order:** None
+
+A generated UUID does not prove that a database row is committed.
+
+### 2. Update and read the same buffer
+
+Update Comment to Ready. An EML read in the same transaction can return Ready before saving. Handle read/update failures rather than assuming all keys succeeded.
+
+- **Pending order:** U1 / Ready
+- **Saved order:** None
+
+The transactional result can differ from database state.
+
+### 3. Ask RAP to save
+
+The external owner calls COMMIT ENTITIES. RAP runs the applicable save checks and persistence processing. Capture the save status and its separate FAILED/REPORTED response.
+
+- **Pending order:** U1 / Ready
+- **Save result:** Not yet established
+
+Do not announce success before the save result is known.
+
+### 4. Successful save
+
+In the success path, the database now contains U1 with Ready. A later transaction can read the persisted order.
+
+- **Pending work:** Completed
+- **Saved order:** U1 / Ready
+
+This is the point where this example can report that the order was saved.
+
+### 5. Compare: a rejected save
+
+Start again with no saved order. Suppose an on-save business validation rejects the new order. Retain the failure messages and roll back the pending transaction. No successful create has been committed.
+
+- **Alternative run:** Validation rejected
+- **Alternative run: saved order:** None
+
+Do not confuse rollback with deleting an order that was already committed in the success path.
+
+**Remember:** Accepted by MODIFY means pending. Saved means the separate save completed successfully.
+
+**Scope:** A conceptual single-entity example, not an executed SAP transaction. UUID U1 is a readable label. Service consumers let the framework own commit/rollback; behavior handlers must not issue them.
+
+**Sources:**
+
+- [SAP Learning: EML and transaction ownership](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/using-the-entity-manipulation-language-eml-to-access-business-objects)

@@ -67,7 +67,7 @@ Choose one full Anki edition; the senior deck is a subset rather than extra uniq
     text += """
 ## Evidence
 
-Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [October content and reading review](review/Content_Review_2026_10.md), [plain-language revision](review/Plain_Language_Review.md), [earlier content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
+Technical questions carry primary references and release/context notes. Personal-story prompts require your own truthful project evidence. See the [Core and Applied coverage review](review/Core_Applied_Coverage_2026_10_13.md), [180-prompt comparison](review/Attachment_Coverage_2026_10_13.md), [October content and reading review](review/Content_Review_2026_10.md), [plain-language revision](review/Plain_Language_Review.md), [earlier content review](review/Review_Findings.md), [source register](review/Sources.md), [market research](review/Market_Research.md) and [visual provenance](review/Visual_Provenance.md). Examples are study scenarios; no SAP runtime execution or production performance result is claimed.
 
 ## Build and deploy
 
