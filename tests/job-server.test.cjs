@@ -133,6 +133,17 @@ test('provider errors never expose secrets or job descriptions in responses and 
   }
 });
 
+test('retrieval preserves a short separate requirement alongside a dense topic', async () => {
+  const [matching] = await modules;
+  const canonical = JSON.parse(fs.readFileSync(path.join(__dirname, '../server/catalog.json'), 'utf8'));
+  const description = 'Обязательно: разработка RAP business objects, EML READ ENTITIES и MODIFY ENTITIES. Нужен опыт обработки FAILED и REPORTED. Желательно: использование ABAP Unit.';
+  const built = matching.buildInference(canonical, { description, count: 3, language: 'ru' });
+  const ids = new Set(built.candidates.map(item => item.id));
+  for (const id of ['RAP-07', 'RAP-08', 'TEST-01']) assert.ok(ids.has(id), `${id} is available to the model`);
+  assert.ok(built.candidates.length <= 60);
+  assert.ok(built.contextUpperBound <= matching.LIMITS.contextTokens);
+});
+
 test('concurrent duplicate requests consume only one reservation and one model call', async t => {
   const [, service] = await modules; const db = database(); t.after(() => db.sqlite.close()); let calls = 0; let release;
   const env = environment(db, () => { calls++; return new Promise(resolve => { release = resolve; }); }); const handler = service.createJobHandler(catalog);

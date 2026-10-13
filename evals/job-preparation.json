@@ -1,5 +1,15 @@
 [
   {
+    "name": "mixed-rap-unit-ru",
+    "language": "ru",
+    "count": 3,
+    "description": "Обязательно: разработка RAP business objects, EML READ ENTITIES и MODIFY ENTITIES. Нужен опыт обработки FAILED и REPORTED. Желательно: использование ABAP Unit.",
+    "must_include": ["RAP-07", "RAP-08", "TEST-01"],
+    "preferred_prefixes": ["TEST-"],
+    "forbidden_prefixes": ["HTTP-"],
+    "review": "A dense RAP requirement must not exclude the separate ABAP Unit requirement from retrieval. JSON/XML questions do not cover unit testing."
+  },
+  {
     "name": "specific-rap-en",
     "language": "en",
     "count": 5,

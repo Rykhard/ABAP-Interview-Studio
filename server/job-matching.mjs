@@ -1,7 +1,7 @@
 export const DEFAULT_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
 export const LIMITS = Object.freeze({ descriptionChars: 6000, descriptionBytes: 10000, bodyBytes: 16000, count: 10, outputTokens: 2300, contextTokens: 24000, chatOverhead: 1024 });
 const encoder = new TextEncoder();
-const stopwords = new Set('a an the and or in on to for of with we you our your is are be have has will as at by from this that role experience knowledge required preferred must should developer development years work team sap abap developer job position skills и в на с для по от к у мы вы наш ваши это как или быть опыт знание знания требуется работа разработчик разработка лет'.split(' '));
+const stopwords = new Set('a an the and or in on to for of with we you our your is are be have has will as at by from this that role experience knowledge required preferred must should developer development years work team sap abap developer job position skills и в на с для по от к у мы вы наш ваши это как или быть опыт знание знания требуется работа разработчик разработка лет обязательно желательно нужен нужно использование использования использовать'.split(' '));
 const aliases = { рап: 'rap', цдс: 'cds', ооп: 'oo', оdata: 'odata', амдп: 'amdp', авторизац: 'authorization', полномоч: 'authorization', производительност: 'performance', таблиц: 'table', тестирован: 'testing', блокиров: 'lock', фабрик: 'factory', синглтон: 'singleton' };
 const prefixAliases = Object.entries(aliases).filter(([key]) => key.length > 4);
 const catalogIndexes = new WeakMap();
@@ -27,16 +27,27 @@ export function prepareCatalog(catalog) {
 
 // Retrieval ranks the complete canonical catalog; it never accepts a client catalog.
 export function retrieveCandidates(catalog, description, maximum = 60) {
-  const query = new Set(words(description));
   prepareCatalog(catalog);
   const { rows, postings } = catalogIndexes.get(catalog);
-  const scores = new Float64Array(rows.length);
-  for (const term of query) {
-    const posting = postings.get(term);
-    if (posting) for (const index of posting.indexes) scores[index] += posting.weight;
+  function rank(text) {
+    const scores = new Float64Array(rows.length);
+    for (const term of words(text)) {
+      const posting = postings.get(term);
+      if (posting) for (const index of posting.indexes) scores[index] += posting.weight;
+    }
+    return rows.map((item, index) => ({ item, score: scores[index] }))
+      .filter(row => row.score > 0).sort((a, b) => b.score - a.score || a.item.id.localeCompare(b.item.id)).map(row => row.item);
   }
-  return rows.map((item, index) => ({ item, score: scores[index] }))
-    .filter(row => row.score > 0).sort((a, b) => b.score - a.score || a.item.id.localeCompare(b.item.id)).slice(0, maximum).map(row => row.item);
+  const overall = rank(description);
+  // A dense topic must not crowd a separate short requirement out of the shortlist.
+  // Preserve leading candidates per literal excerpt before filling by total score.
+  // The model still decides exclusions, priority and relevance; these are not matches.
+  const perExcerpt = evidenceChoices(description, catalog).map(rank);
+  const selected = new Map();
+  const add = item => { if (item && selected.size < maximum) selected.set(item.id, item); };
+  for (let depth = 0; depth < 5; depth++) for (const ranked of perExcerpt) add(ranked[depth]);
+  for (const item of overall) add(item);
+  return [...selected.values()];
 }
 
 export function evidenceChoices(description, catalog) {
