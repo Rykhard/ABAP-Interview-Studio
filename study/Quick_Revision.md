@@ -1892,21 +1892,26 @@ Alice and Ben read version 7. Alice updates successfully, producing version 8. B
 
 </details>
 
-## ADV-02 Global authorization instance authorization or feature control?
+## ADV-02 What is the difference between global and instance authorization in RAP, and where do DCL and prechecks fit?
 
 **Level:** Advanced
 
-**Short answer:** Global authorization checks whether a user may perform an operation without looking at one specific object. Instance authorization also considers that object's data. Feature control says whether an operation or field is currently available under business rules. These checks have different jobs. A disabled button helps the user, but it cannot replace permission checks in the backend.
+**Short answer:** Global authorization asks: may this user perform Update in general? Instance authorization asks: may this user update this particular record? Here, instance means a business-object record, not an ABAP class instance. DCL controls which rows a read returns. A precheck can reject incoming values before they enter the transactional buffer.
 
-**Reasoning and example:** A submitted request may be readonly for every user because editing is no longer allowed at that stage. That is a business-availability rule. Approval may additionally require permission for the request's company code or responsibility area. That is a permission decision, even if the UI also disables the Approve button.
+**Reasoning and example:** A user may change projects in Company Code 1000, but not 2000. The global check permits Update as an operation. The instance check permits project A in 1000 and rejects project B in 2000. A global pass is not permission to change every project.
 
-Test both through a direct service or EML consumer using the intended public access path. A user without approval authority must not succeed just by skipping the screen. Also test an authorized approver against a request in a state that cannot be approved. This separates who is allowed to act from whether the action currently makes business sense.
+The BDEF can declare authorization master ( global, instance ). get_global_authorizations receives requested_authorizations without record keys. get_instance_authorizations also receives keys and returns decisions identified by %tky. AUTHORITY-CHECK with BUKRS DUMMY ignores that field; the instance check instead supplies the existing project's CompanyCode.
 
-**Avoid this mistake:** Hiding or disabling a button is not an authorization check.
+Instance authorization checks existing data, not the new values submitted by the current request. For Create, or an Update that changes CompanyCode, check the proposed value in a precheck when that boundary needs protection. Otherwise, being allowed to edit a project in 1000 could be mistaken for permission to move it to 2000. CDS DCL remains responsible for read filtering.
+
+Feature control has another job: availability under business rules. A closed project may be uneditable even for an authorized user. Test both an unauthorized user on an editable project and an authorized user on a closed project through the service, not only through disabled buttons.
+
+**Avoid this mistake:** Global authorization, instance authorization, DCL, prechecks and feature control solve different problems. A global pass or disabled button does not secure every record or incoming value.
 
 **Read and verify this answer:**
 
-- [SAP Learning on authorization](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks) - Check which RAP behavior is supported by the target release and the client that calls it.
+- [SAP: Authorization definition and prechecks](https://help.sap.com/docs/abap-cloud/abap-rap/2a26db5640364b46b843dca786c495d1.html?version=s4_hana) - Global checks are independent of an instance; instance checks use existing instance data; prechecks inspect incoming values.
+- [SAP Learning: implementing authority checks](https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks) - Use CDS access control for reads and RAP authorization for operations. Instance checks do not replace a check of new input values.
 
 <details>
 <summary>Visual: CDS security boundaries</summary>
@@ -2087,6 +2092,8 @@ The outer envelope reduces HTTP packaging overhead; it does not establish one un
 
 The response should match the risk: prefer A where suitable, assess B, give C a named owner and replacement plan, and prioritize fixing D. Do not classify by familiarity or naming. A function module everyone has used for years is not automatically B, and an unreleased object is not automatically D. Look up the actual dependency and supported operation.
 
+Remember: B is a SAP-designated classic API; C is an internal mechanism without a stability promise; D is an explicitly non-recommended object or technique. SAP describes B as Clean Core, C as conditionally Clean Core, and D as not Clean Core. Reading an internal SAP database table and making an unsupported direct write are different uses and can have different levels. CORE-13 shows where to look up noAPI.
+
 **Avoid this mistake:** A familiar API is not automatically B, and every unreleased object is not automatically D.
 
 **Read and verify this answer:**
@@ -2116,11 +2123,14 @@ Read each level as a classification of the actual SAP dependency or extension te
 
 When a priority 2 finding appears, inspect the object and the relevant Clean Core classification rather than treating the number as a universal description of every ATC issue. A security finding with the same priority needs its own interpretation. Use the findings to guide dependency review, and test the application separately for correctness and security. Clean Core classification is not a complete application quality certificate.
 
+Look for Usage of APIs in the Clean Core check group. SAP points to SAP Note 3565942 for the relevant checks; availability depends on the ATC system's updates and configuration. Include applicable Allowed SAP enhancement technologies and Critical statements checks: an API catalog alone does not detect every non-recommended technique.
+
 **Avoid this mistake:** No ATC findings does not prove that the entire application is secure, correct or fully Level A.
 
 **Read and verify this answer:**
 
 - [SAP Clean Core ATC levels and setup](https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad) - Look up the actual dependency classification and check what the target edition permits.
+- [SAP: Clean Core classification catalog and ATC checks](https://github.com/SAP/abap-atc-cr-cv-s4hc/blob/main/README.md) - The README links objectClassifications_SAP.json to the checks introduced by SAP Note 3565942.
 
 <details>
 <summary>Visual: Clean Core levels A-D</summary>

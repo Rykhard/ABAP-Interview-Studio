@@ -5,7 +5,7 @@
  {"from":"${g.questions.length} questions","to":"${localeCount(g.questions.length,'question')}"},
  {"from":"`${matches.length} ${matches.length===1?'question':'questions'} found across all ${topics.length} topics`","to":"`Найдено: ${localeCount(matches.length,'question')}. Поиск по всем темам (${topics.length}).`"},
  {"from":"`Search all ${all.length} questions, answers, guided lessons, examples and references.`","to":"`Поиск по библиотеке: ${localeCount(all.length,'question')}, ответы, уроки, примеры и источники.`"},
- {"from":"Show more results (${shown.length} of ${matches.length})","to":"Ещё результаты (${shown.length} из ${matches.length})"},
+ {"from":"Show more results (${shown.length} of ${pool.length})","to":"Ещё результаты (${shown.length} из ${pool.length})"},
  {"from":"Step ${index+1} of ${lesson.steps.length}","to":"Шаг ${index+1} из ${lesson.steps.length}"},
  {"from":"${lessons.length} worked examples linked to ${coverage} questions. Each example shows one scenario, its changing state and the reason for each step. You can switch back to reading or code at any time.","to":"${localeCount(lessons.length,'lesson')}; связанных вопросов: ${coverage}. Каждый пример показывает сценарий, изменение данных и смысл каждого шага. В любой момент можно вернуться к объяснению или коду."},
  {"from":"${lesson.steps.length} steps · ${lesson.questions.length} related questions","to":"${localeCount(lesson.steps.length,'step')} · связанных вопросов: ${lesson.questions.length}"},

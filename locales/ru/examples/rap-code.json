@@ -713,41 +713,157 @@
     ]
   },
   {
-    "id": "global-update-authorization",
-    "title": "Вернуть решение authorization для Update",
+    "id": "rap-authorization-handler-contracts",
     "questions": [
       "ADV-02"
     ],
-    "intro": "Authorization handler определяет право клиента запросить операцию.",
+    "startFor": [
+      "ADV-02"
+    ],
     "language": "ABAP",
-    "context": "Внутри generated get_global_authorizations Order; BDEF объявляет authorization master ( global ). update_allowed — abap_bool, полученный реальной application authorization check, а не UI flag.",
-    "code": "IF requested_authorizations-%update =\n   if_abap_behv=>mk-on.\n  result-%update = COND #(\n    WHEN update_allowed = abap_true\n    THEN if_abap_behv=>auth-allowed\n    ELSE if_abap_behv=>auth-unauthorized ).\nENDIF.",
+    "code": "\"BDEF header of entity Project:\n\"authorization master ( global, instance )\n\n\"Declarations in the local Project behavior handler:\nMETHODS get_global_authorizations FOR GLOBAL AUTHORIZATION\n  IMPORTING REQUEST requested_authorizations\n  FOR Project RESULT result.\n\nMETHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION\n  IMPORTING keys REQUEST requested_authorizations\n  FOR Project RESULT result.",
+    "title": "Два handler: без ключей и с ключами",
+    "intro": "Оба возвращают права; ключи записей получает только instance handler.",
+    "context": "Фрагменты объявлений существующей RAP-сущности с alias Project. Строку заголовка BDEF поместите в behavior definition, объявления METHODS — в определение локального handler. ADT Quick Fix по BDEF сгенерирует сигнатуры для вашей цели.",
     "highlights": [
       {
         "lines": [
           1,
           2
         ],
-        "label": "Ответить на запрошенную операцию",
-        "explanation": "Framework спрашивает Update authorization. Заполняйте решение, только если оно запрошено."
+        "label": "Включить обе проверки",
+        "explanation": "BDEF выбирает global и instance authorization для этого authorization master."
       },
       {
         "lines": [
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ],
+        "label": "Сравнить входные параметры",
+        "explanation": "Оба метода получают requested_authorizations. Только get_instance_authorizations получает keys; в его результате %tky различает записи."
+      }
+    ],
+    "outcome": "Выберите следующие два примера, чтобы сравнить реальный AUTHORITY-CHECK в global и instance handler.",
+    "caveat": "Это объявления, а не полный BDEF или класс handler. CDS, операции, блокировки и объект полномочий должны существовать. Одно объявление без правильной логики handler не защищает данные.",
+    "references": [
+      {
+        "title": "SAP: реализация instance authorization",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-instance-authorization"
+      },
+      {
+        "title": "SAP: AUTHORITY-CHECK и полномочия RAP",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md"
+      }
+    ]
+  },
+  {
+    "id": "global-update-authorization",
+    "title": "Global: может ли пользователь изменять проекты вообще?",
+    "questions": [
+      "ADV-02"
+    ],
+    "intro": "Проверяем действие, не выбирая конкретный проект.",
+    "language": "ABAP",
+    "context": "Фрагмент только для Update внутри сгенерированного handler get_global_authorizations сущности Project. В BDEF указано authorization master ( global, instance ). Собственный объект полномочий Z_PROJECT должен существовать с полями ACTVT и BUKRS и настроенными ролями. Другим запрошенным операциям нужны отдельные решения.",
+    "code": "CONSTANTS co_change TYPE c LENGTH 2 VALUE '02'.\nIF requested_authorizations-%update = if_abap_behv=>mk-on.\n  AUTHORITY-CHECK OBJECT 'Z_PROJECT'\n    ID 'ACTVT' FIELD co_change\n    ID 'BUKRS' DUMMY.\n  result-%update = COND #(\n    WHEN sy-subrc = 0\n    THEN if_abap_behv=>auth-allowed\n    ELSE if_abap_behv=>auth-unauthorized ).\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "label": "Проверить право на действие",
+        "explanation": "ACTVT 02 означает Change. BUKRS DUMMY пропускает проверку Company Code, а не проверяет доступ ко всем Company Code."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "label": "Вернуть решение RAP",
+        "explanation": "Сразу читаем sy-subrc. Пользователь с правом Change для 1000 может пройти общую проверку; отдельная instance-проверка ещё должна проверить каждый проект."
+      }
+    ],
+    "outcome": "Результат отвечает на вопрос об Update в целом. В нём нет ключа проекта, и он не даёт доступ ко всем проектам.",
+    "caveat": "Это одна операция, а не вся модель полномочий. Отдельно реализуйте instance-проверки, DCL и нужные precheck. Проверьте объект полномочий и настройку проверок в целевой системе.",
+    "references": [
+      {
+        "title": "SAP: AUTHORITY-CHECK и полномочия RAP",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md"
+      },
+      {
+        "title": "SAP: реализация instance authorization",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-instance-authorization"
+      }
+    ]
+  },
+  {
+    "id": "instance-project-authorization",
+    "questions": [
+      "ADV-02"
+    ],
+    "language": "ABAP",
+    "code": "CONSTANTS co_change TYPE c LENGTH 2 VALUE '02'.\nIF requested_authorizations-%update <> if_abap_behv=>mk-on.\n  RETURN.\nENDIF.\nREAD ENTITIES OF zi_project IN LOCAL MODE\n  ENTITY Project FIELDS ( CompanyCode )\n  WITH CORRESPONDING #( keys )\n  RESULT DATA(lt_projects)\n  FAILED DATA(ls_read_failed).\nAPPEND LINES OF ls_read_failed-Project TO failed-Project.\nLOOP AT lt_projects INTO DATA(ls_project).\n  AUTHORITY-CHECK OBJECT 'Z_PROJECT'\n    ID 'ACTVT' FIELD co_change\n    ID 'BUKRS' FIELD ls_project-CompanyCode.\n  APPEND VALUE #(\n    %tky = ls_project-%tky\n    %update = COND #( WHEN sy-subrc = 0\n      THEN if_abap_behv=>auth-allowed\n      ELSE if_abap_behv=>auth-unauthorized ) ) TO result.\nENDLOOP.",
+    "title": "Instance: разрешить 1000, запретить 2000",
+    "intro": "Используем существующий Company Code каждого запрошенного проекта.",
+    "context": "Тело только для Update в сгенерированном handler get_instance_authorizations сущности Project внутри её behavior pool. Нужны root CDS ZI_Project, alias Project, поле CompanyCode, authorization master ( global, instance ) и настроенный Z_PROJECT с ACTVT и BUKRS. IN LOCAL MODE здесь используется для внутреннего чтения перед решением о правах, а не как вариант доступа внешнего клиента.",
+    "highlights": [
+      {
+        "lines": [
+          2,
           3,
           4,
           5,
-          6
+          6,
+          7,
+          8,
+          9,
+          10
         ],
-        "label": "Явно разрешить или запретить",
-        "explanation": "Result использует RAP authorization constants. Отключённая кнопка не заменяет это server-side решение."
+        "label": "Прочитать запрошенные записи",
+        "explanation": "Читаем Company Code одним EML-запросом. Передаём ошибки отсутствующих записей; для непрочитанной записи не придумываем разрешение."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Проверить конкретный Company Code",
+        "explanation": "Если пользователь имеет права только на 1000, проверка проходит для проекта A в 1000 и не проходит для проекта B в 2000."
+      },
+      {
+        "lines": [
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "label": "Связать решение с ключом",
+        "explanation": "%tky сохраняет связь результата с нужным transactional instance. Это не одно общее решение для всего запроса."
       }
     ],
-    "outcome": "Клиент без update permission получает unauthorized decision, даже если обходит экран.",
-    "caveat": "Нужно также реализовать настоящую authority check, draft Edit и остальные запрошенные операции. Action с authorization:none не защищается простым заполнением Update result.",
+    "outcome": "В смешанном запросе A получает allowed, B — unauthorized, согласно настроенным ролям.",
+    "caveat": "Другие операции этот фрагмент не реализует. Instance authorization оценивает существующее состояние, а не новый CompanyCode из входящего payload. Для новых значений используйте подходящий precheck. Отдельно проверьте DCL-чтение, Update, Create и draft в целевом релизе.",
     "references": [
       {
-        "title": "SAP samples: global и instance authorization RAP",
-        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md"
+        "title": "SAP: реализация instance authorization",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-instance-authorization"
+      },
+      {
+        "title": "SAP TechEd: пример проверки прав на изменение",
+        "url": "https://github.com/SAP-samples/teched2025-AD164/blob/main/exercises/ex08/README.md"
       }
     ]
   },

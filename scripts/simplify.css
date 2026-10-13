@@ -142,3 +142,26 @@ main>#progress{display:none}
 .study-view-picker button[aria-pressed=true].study-motion-current{border-bottom-color:transparent}
 .study-content-transition{overflow:clip;overflow-anchor:none;will-change:height,opacity,transform}
 @media(prefers-reduced-motion:reduce){.study-content-transition{will-change:auto}}
+
+/* Topic navigation stays compact until the user deliberately asks for subtopics. */
+.nav-topic-row{display:flex;align-items:stretch;position:relative;z-index:1;min-width:0}
+.nav-topic-row .nav-topic{flex:1;min-width:0;width:auto;padding-right:5px}
+aside nav .nav-disclosure{display:grid;place-items:center;width:32px;min-width:32px;padding:0;min-height:44px;margin:0;border:0;background:transparent;color:var(--muted)}
+.nav-disclosure svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform 180ms ease}
+.nav-disclosure[aria-expanded=true] svg{transform:rotate(180deg)}
+.nav-topic-row.is-current-topic .nav-disclosure{color:var(--green)}
+.nav-subtopics{position:relative;z-index:1;max-height:230px;overflow:auto;overscroll-behavior:contain;margin-bottom:8px;scrollbar-width:thin}
+.nav-subtopics[hidden]{display:none}
+.nav-subtopics .nav-section{width:calc(100% - 21px)}
+.topic-start{margin:20px 0 28px;padding:20px;background:var(--soft);border-radius:12px}
+.topic-start-heading h3{font-size:18px;margin:0 0 4px}.topic-start-heading p{font-size:13px;color:var(--muted);margin:0 0 14px}
+.topic-start ol{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0;padding:0}
+.topic-start a{display:flex;align-items:flex-start;gap:10px;height:100%;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);text-decoration:none;color:var(--ink);font-size:14px;line-height:1.6}
+.topic-start a:hover{border-color:var(--green)}.topic-start a>span:nth-child(2){flex:1}.topic-start small{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
+.topic-start-number{display:grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;color:var(--green);background:var(--soft);font-size:12px;font-weight:650}
+.card-start{display:block;font-size:12px;color:var(--green);margin:10px 0 3px}.topic-card .card-count{margin-top:0}
+.search-match-group>h3{font-size:12px;margin:16px 16px 4px;color:var(--muted);font-weight:600}
+.search-broader{margin:12px 16px 20px;font-size:13px;min-height:44px;background:transparent}
+.code-context>summary{min-height:36px;padding:6px 0}
+@media(max-width:1000px){.topic-start ol{grid-template-columns:1fr}.topic-start{padding:16px}.topic-start a{min-height:44px}}
+@media(prefers-reduced-motion:reduce){.nav-disclosure svg{transition:none}}

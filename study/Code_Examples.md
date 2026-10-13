@@ -1137,7 +1137,7 @@ Input and output parameters carry data across the ABAP/HANA boundary.
 
 Questions: [SQL-15](https://abap-interview-studio.pages.dev/#q-SQL-15), [SQL-14](https://abap-interview-studio.pages.dev/#q-SQL-14)
 
-**Where this belongs:** Two placements: a new global AMDP class zcl_study_sum, then a caller inside an ABAP method. Standard ABAP on HANA with AMDP support is assumed. This is not a local class. No database table is required.
+**Where this belongs:** Global AMDP class for Standard ABAP on HANA. Create zcl_study_sum and place the separate caller inside an ABAP method. This is not a local class. No database table is required.
 
 ```abap
 CLASS zcl_study_sum DEFINITION PUBLIC FINAL CREATE PUBLIC.
@@ -1218,7 +1218,7 @@ FOR TABLE FUNCTION obtains the method contract from the CDS definition.
 
 Questions: [SQL-15](https://abap-interview-studio.pages.dev/#q-SQL-15), [SQLX-01](https://abap-interview-studio.pages.dev/#q-SQLX-01)
 
-**Where this belongs:** New global class plus a separate ABAP caller. Requires the previous CDS definition and an own client-independent database table zt_study_amount with unique order_id INT4 and amount INT4, no client column. Fixture rows are (7,40), (9,60), (11,10). Standard ABAP/HANA sandbox only; objects are illustrative, not delivered SAP APIs.
+**Where this belongs:** Standard ABAP/HANA: requires the preceding CDS table function and own table zt_study_amount. The global class and ABAP caller belong in separate places. The client-independent fixture has unique order_id INT4, amount INT4 and no client column; rows are (7,40), (9,60), (11,10). These are own teaching objects, not SAP APIs.
 
 ```abap
 CLASS zcl_study_amounts DEFINITION PUBLIC FINAL CREATE PUBLIC.
@@ -2842,19 +2842,58 @@ define root view entity ZI_Order
 
 - [SAP sample: parent and child composition model](https://github.com/SAP-samples/abap-platform-rap-opensap/blob/main/week2/unit3.md)
 
-## Return an authorization decision for Update
+## Two handlers: one without keys, one with keys
 
-The authorization handler decides whether the caller may request an operation.
+Both return permissions; only the instance handler receives record keys.
 
 Questions: [ADV-02](https://abap-interview-studio.pages.dev/#q-ADV-02)
 
-**Where this belongs:** Inside Order's generated get_global_authorizations handler; its BDEF declares authorization master ( global ). update_allowed is an abap_bool already obtained from the application's real authorization check, not from a UI flag.
+**Where this belongs:** Declaration excerpts for an existing RAP entity with alias Project. Put the BDEF header line in its behavior definition; put the METHODS declarations in the local handler definition. Use ADT Quick Fix on the BDEF to generate the matching signatures for your target.
 
 ```abap
-IF requested_authorizations-%update =
-   if_abap_behv=>mk-on.
+"BDEF header of entity Project:
+"authorization master ( global, instance )
+
+"Declarations in the local Project behavior handler:
+METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
+  IMPORTING REQUEST requested_authorizations
+  FOR Project RESULT result.
+
+METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+  IMPORTING keys REQUEST requested_authorizations
+  FOR Project RESULT result.
+```
+
+**Read it step by step:**
+
+1. **Enable both checks** (lines 1, 2): The BDEF chooses global and instance authorization for this authorization master.
+2. **Compare the inputs** (lines 5, 6, 7, 9, 10, 11): Both methods receive requested_authorizations. Only get_instance_authorizations receives keys; its result distinguishes records using %tky.
+
+**What happens:** Select the next two examples to compare the actual global and per-record AUTHORITY-CHECK.
+
+**Scope:** These declarations are not a complete BDEF or handler class. CDS, operations, lock handling and the authorization object must already exist. A declaration without correct handler logic does not protect data.
+
+**Primary references:**
+
+- [SAP: implementing instance authorization](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-instance-authorization)
+- [SAP: AUTHORITY-CHECK and RAP authorization](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md)
+
+## Global: may this user update projects at all?
+
+Check the activity without choosing a particular project.
+
+Questions: [ADV-02](https://abap-interview-studio.pages.dev/#q-ADV-02)
+
+**Where this belongs:** Update-only fragment inside Project's generated get_global_authorizations handler. The BDEF declares authorization master ( global, instance ). The own authorization object Z_PROJECT must exist with fields ACTVT and BUKRS and assigned roles. Other requested operations need their own decisions.
+
+```abap
+CONSTANTS co_change TYPE c LENGTH 2 VALUE '02'.
+IF requested_authorizations-%update = if_abap_behv=>mk-on.
+  AUTHORITY-CHECK OBJECT 'Z_PROJECT'
+    ID 'ACTVT' FIELD co_change
+    ID 'BUKRS' DUMMY.
   result-%update = COND #(
-    WHEN update_allowed = abap_true
+    WHEN sy-subrc = 0
     THEN if_abap_behv=>auth-allowed
     ELSE if_abap_behv=>auth-unauthorized ).
 ENDIF.
@@ -2862,16 +2901,63 @@ ENDIF.
 
 **Read it step by step:**
 
-1. **Answer the requested operation** (lines 1, 2): The framework asks for Update authorization. Only fill this decision when it was requested.
-2. **Allow or deny explicitly** (lines 3, 4, 5, 6): The result uses RAP's authorization constants. A disabled button is not this server-side permission decision.
+1. **Check the general activity** (lines 1, 2, 3, 4, 5): ACTVT 02 means Change. BUKRS DUMMY skips the company-code field; it does not test access to every company code.
+2. **Return the RAP decision** (lines 6, 7, 8, 9): Read sy-subrc immediately. A user with Change authority for company 1000 can pass this general check; the separate instance check must still evaluate each project.
 
-**What happens:** A caller without update permission receives an unauthorized decision even if it bypasses the screen.
+**What happens:** The result answers Update globally. It contains no project key and does not grant access to all projects.
 
-**Scope:** The real authority check, draft Edit and other requested operations must be implemented too. An action declared authorization:none is not protected by simply filling this Update result.
+**Scope:** This is one operation, not a complete authorization model. Implement instance checks, DCL and needed prechecks separately. Verify the authorization object and check configuration in the target system.
 
 **Primary references:**
 
-- [SAP samples: RAP global and instance authorization](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md)
+- [SAP: AUTHORITY-CHECK and RAP authorization](https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md)
+- [SAP: implementing instance authorization](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-instance-authorization)
+
+## Instance: permit company 1000, reject company 2000
+
+Use the existing company code of each requested project.
+
+Questions: [ADV-02](https://abap-interview-studio.pages.dev/#q-ADV-02)
+
+**Where this belongs:** Update-only body of Project's generated get_instance_authorizations handler in its own behavior pool. Requires root CDS ZI_Project, alias Project, field CompanyCode, authorization master ( global, instance ), and configured Z_PROJECT with ACTVT and BUKRS. IN LOCAL MODE is an internal read used to make the permission decision, not an external access option.
+
+```abap
+CONSTANTS co_change TYPE c LENGTH 2 VALUE '02'.
+IF requested_authorizations-%update <> if_abap_behv=>mk-on.
+  RETURN.
+ENDIF.
+READ ENTITIES OF zi_project IN LOCAL MODE
+  ENTITY Project FIELDS ( CompanyCode )
+  WITH CORRESPONDING #( keys )
+  RESULT DATA(lt_projects)
+  FAILED DATA(ls_read_failed).
+APPEND LINES OF ls_read_failed-Project TO failed-Project.
+LOOP AT lt_projects INTO DATA(ls_project).
+  AUTHORITY-CHECK OBJECT 'Z_PROJECT'
+    ID 'ACTVT' FIELD co_change
+    ID 'BUKRS' FIELD ls_project-CompanyCode.
+  APPEND VALUE #(
+    %tky = ls_project-%tky
+    %update = COND #( WHEN sy-subrc = 0
+      THEN if_abap_behv=>auth-allowed
+      ELSE if_abap_behv=>auth-unauthorized ) ) TO result.
+ENDLOOP.
+```
+
+**Read it step by step:**
+
+1. **Read the requested records** (lines 2, 3, 4, 5, 6, 7, 8, 9, 10): Read the company code in one EML request. Forward missing-record failures; do not invent an allowed result for an unread record.
+2. **Check this company code** (lines 11, 12, 13, 14): For a user permitted only in 1000, the check succeeds for project A in 1000 and fails for project B in 2000.
+3. **Keep each decision with its key** (lines 15, 16, 17, 18, 19): %tky keeps the result attached to the correct transactional instance. It is not one global result for the entire request.
+
+**What happens:** A mixed request receives an allowed decision for A and an unauthorized decision for B, subject to the configured roles.
+
+**Scope:** No other operation is implemented by this excerpt. Instance authorization evaluates existing state, not a proposed CompanyCode in the incoming payload. Use the appropriate precheck for new values. Test DCL reads, Update, Create and draft behavior separately on the target release.
+
+**Primary references:**
+
+- [SAP: implementing instance authorization](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-instance-authorization)
+- [SAP TechEd: modify authorization example](https://github.com/SAP-samples/teched2025-AD164/blob/main/exercises/ex08/README.md)
 
 ## Return the total count before cutting the page
 

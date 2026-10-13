@@ -59,15 +59,20 @@
     {
       "id": "ADV-02",
       "level": "Advanced",
-      "question": "Global authorization instance authorization or feature control?",
-      "answer": "Global authorization checks whether a user may perform an operation without looking at one specific object. Instance authorization also considers that object's data. Feature control says whether an operation or field is currently available under business rules. These checks have different jobs. A disabled button helps the user, but it cannot replace permission checks in the backend.",
-      "detail": "A submitted request may be readonly for every user because editing is no longer allowed at that stage. That is a business-availability rule. Approval may additionally require permission for the request's company code or responsibility area. That is a permission decision, even if the UI also disables the Approve button.\n\nTest both through a direct service or EML consumer using the intended public access path. A user without approval authority must not succeed just by skipping the screen. Also test an authorized approver against a request in a state that cannot be approved. This separates who is allowed to act from whether the action currently makes business sense.",
-      "pitfall": "Hiding or disabling a button is not an authorization check.",
+      "question": "What is the difference between global and instance authorization in RAP, and where do DCL and prechecks fit?",
+      "answer": "Global authorization asks: may this user perform Update in general? Instance authorization asks: may this user update this particular record? Here, instance means a business-object record, not an ABAP class instance. DCL controls which rows a read returns. A precheck can reject incoming values before they enter the transactional buffer.",
+      "detail": "A user may change projects in Company Code 1000, but not 2000. The global check permits Update as an operation. The instance check permits project A in 1000 and rejects project B in 2000. A global pass is not permission to change every project.\n\nThe BDEF can declare authorization master ( global, instance ). get_global_authorizations receives requested_authorizations without record keys. get_instance_authorizations also receives keys and returns decisions identified by %tky. AUTHORITY-CHECK with BUKRS DUMMY ignores that field; the instance check instead supplies the existing project's CompanyCode.\n\nInstance authorization checks existing data, not the new values submitted by the current request. For Create, or an Update that changes CompanyCode, check the proposed value in a precheck when that boundary needs protection. Otherwise, being allowed to edit a project in 1000 could be mistaken for permission to move it to 2000. CDS DCL remains responsible for read filtering.\n\nFeature control has another job: availability under business rules. A closed project may be uneditable even for an authorized user. Test both an unauthorized user on an editable project and an authorized user on a closed project through the service, not only through disabled buttons.",
+      "pitfall": "Global authorization, instance authorization, DCL, prechecks and feature control solve different problems. A global pass or disabled button does not secure every record or incoming value.",
       "references": [
         {
-          "title": "SAP Learning on authorization",
+          "title": "SAP: Authorization definition and prechecks",
+          "url": "https://help.sap.com/docs/abap-cloud/abap-rap/2a26db5640364b46b843dca786c495d1.html?version=s4_hana",
+          "note": "Global checks are independent of an instance; instance checks use existing instance data; prechecks inspect incoming values."
+        },
+        {
+          "title": "SAP Learning: implementing authority checks",
           "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/implementing-authority-checks",
-          "note": "Check which RAP behavior is supported by the target release and the client that calls it."
+          "note": "Use CDS access control for reads and RAP authorization for operations. Instance checks do not replace a check of new input values."
         }
       ]
     },

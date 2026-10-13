@@ -115,7 +115,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | [RAP-12 - What problem does draft solve?](../topics/05-rap-foundations.md#rap-12-what-problem-does-draft-solve) | Core |
 | [ADV-01 - How do pessimistic locks and ETags complement each other?](../topics/06-rap-advanced.md#adv-01-how-do-pessimistic-locks-and-etags-complement-each-other) | Core |
 | [RAP-09 - What does IN LOCAL MODE mean?](../topics/05-rap-foundations.md#rap-09-what-does-in-local-mode-mean) | Advanced |
-| [ADV-02 - Global authorization instance authorization or feature control?](../topics/06-rap-advanced.md#adv-02-global-authorization-instance-authorization-or-feature-control) | Advanced |
+| [ADV-02 - What is the difference between global and instance authorization in RAP, and where do DCL and prechecks fit?](../topics/06-rap-advanced.md#adv-02-what-is-the-difference-between-global-and-instance-authorization-in-rap-and-where-do-dcl-and-prechecks-fit) | Advanced |
 | [ADV-03 - What does authorization none on an action mean?](../topics/06-rap-advanced.md#adv-03-what-does-authorization-none-on-an-action-mean) | Advanced |
 | [ADV-13 - How do static and dynamic feature controls differ?](../topics/06-rap-advanced.md#adv-13-how-do-static-and-dynamic-feature-controls-differ) | Advanced |
 | [SRAP-09 - A user saves a draft, closes the browser, returns, and presses Activate. What state transitions and failures would you explain?](../topics/17-rap-transactions-senior.md#srap-09-a-user-saves-a-draft-closes-the-browser-returns-and-presses-activate-what-state-transitions-and-failures-would-you-explain) | Senior |
@@ -161,7 +161,7 @@ The studio groups questions by subject. Core, Advanced and Senior levels stay in
 | --- | --- |
 | [CORE-08 - Does wrapping an unreleased SAP API make it Level A?](../topics/08-clean-core.md#core-08-does-wrapping-an-unreleased-sap-api-make-it-level-a) | Advanced |
 | [CORE-12 - What are release contracts C0 C1 and C2?](../topics/08-clean-core.md#core-12-what-are-release-contracts-c0-c1-and-c2) | Advanced |
-| [CORE-13 - How do you verify an API choice rather than guess?](../topics/08-clean-core.md#core-13-how-do-you-verify-an-api-choice-rather-than-guess) | Advanced |
+| [CORE-13 - Where do you find Classic API, Not Recommended and noAPI classifications, and how do you verify an API choice?](../topics/08-clean-core.md#core-13-where-do-you-find-classic-api-not-recommended-and-noapi-classifications-and-how-do-you-verify-an-api-choice) | Advanced |
 | [GOV-02 - An API is released with C1. A team assumes that means Clean Core Level C and permission to expose it remotely. How do you respond?](../topics/20-clean-core-senior.md#gov-02-an-api-is-released-with-c1-a-team-assumes-that-means-clean-core-level-c-and-permission-to-expose-it-remotely-how-do-you-respond) | Senior |
 | [GOV-03 - A team wraps an internal SAP function module and releases the wrapper. Has the technical debt disappeared?](../topics/20-clean-core-senior.md#gov-03-a-team-wraps-an-internal-sap-function-module-and-releases-the-wrapper-has-the-technical-debt-disappeared) | Senior |
 | [GOV-09 - Your team wants to release a custom API used by three other teams. What must be ready before setting its release state?](../topics/20-clean-core-senior.md#gov-09-your-team-wants-to-release-a-custom-api-used-by-three-other-teams-what-must-be-ready-before-setting-its-release-state) | Senior |

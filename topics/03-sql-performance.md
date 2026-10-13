@@ -350,6 +350,8 @@ The declarations differ. A procedure uses IMPORTING/EXPORTING or CHANGING parame
 
 A CDS table function cannot write a helper table. ABAP for Cloud Development also restricts AMDP procedures to read-only, client-safe access and permitted dependencies. Standard ABAP allows broader procedure capabilities, but not an independent COMMIT inside AMDP. Check client handling, authorization, numeric types and empty results explicitly. The small code examples show the different contracts using a trivial calculation; that calculation itself does not require AMDP.
 
+READ-ONLY is not a third kind of AMDP; it restricts database changes. In Code, switch between three parts: a procedure with its ABAP call, the CDS table-function definition, and its implementation with a SELECT consumer. The procedure adds 40 and 60 to produce 100; the table function filters rows by an amount threshold.
+
 **Avoid this mistake:** AMDP is the framework, not a synonym for procedure. Not every AMDP function is a CDS table function, and read-only code is not automatically authorized or client-safe.
 
 **Read and verify this answer:**

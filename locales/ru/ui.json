@@ -249,5 +249,16 @@
   "Point of no return": "Точка невозврата",
   "Correct and retry": "Исправить и повторить",
   "Save stopped before the point of no return.": "Сохранение остановилось до точки невозврата.",
-  "not executed.": "не выполнялись."
+  "not executed.": "не выполнялись.",
+  "Closest matches": "Близкие совпадения",
+  "All search words": "Все слова запроса",
+  "Broader matches": "Более широкие совпадения",
+  "Show broader matches": "Показать более широкие совпадения",
+  "Hide broader matches": "Скрыть более широкие совпадения",
+  "Subtopics:": "Подтемы:",
+  "Suggested starting path": "Рекомендуемый маршрут",
+  "Start here": "С чего начать",
+  "Three starting points. Explore the rest in any order.": "Три вопроса для начала. Остальное изучайте в любом порядке.",
+  "Start with": "Начните с",
+  "Setup, limits &amp; sources": "Условия, ограничения и источники"
 }

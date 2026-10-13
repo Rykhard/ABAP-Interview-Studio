@@ -381,7 +381,7 @@ Start with ordinary classes. Add a Factory when creation logic repeats, a Facade
 
 **Short answer:** constructor prepares each new object, so two successful NEW calls run it twice. class_constructor prepares the class once in an internal session, before its first relevant use. If the first use is creating an object, class initialization happens before instance initialization. Use constructor for each object’s required data and dependencies. Keep class_constructor small: its work happens implicitly.
 
-**Reasoning and example:** Imagine creating one order helper for order 7 and another for order 9. Each constructor stores its own order ID. A class-level counter is shared within this internal session and reaches 2. class_constructor runs once; it is not repeated for the second object or for every COMMIT. A separate internal session has its own class state.
+**Reasoning and example:** Create an order helper for order 7, then another for order 9. Each CONSTRUCTOR receives its own ID through IMPORTING and stores it in that object. If this is the first class use, the order is CLASS_CONSTRUCTOR → CONSTRUCTOR for 7 → CONSTRUCTOR for 9. The example shows a class counter of 1 and an object counter of 2. CLASS_CONSTRUCTOR has no parameters and does not repeat after COMMIT. Once means one internal session, not the whole SAP system.
 
 Calling a static method or accessing a static attribute can initialize the class before any object is created. Merely referring to a type or a constant does not trigger class_constructor. It has no parameters and is called by the runtime, not explicitly by application code.
 

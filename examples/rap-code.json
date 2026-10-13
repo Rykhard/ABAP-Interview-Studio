@@ -713,41 +713,157 @@
     ]
   },
   {
-    "id": "global-update-authorization",
-    "title": "Return an authorization decision for Update",
+    "id": "rap-authorization-handler-contracts",
     "questions": [
       "ADV-02"
     ],
-    "intro": "The authorization handler decides whether the caller may request an operation.",
+    "startFor": [
+      "ADV-02"
+    ],
     "language": "ABAP",
-    "context": "Inside Order's generated get_global_authorizations handler; its BDEF declares authorization master ( global ). update_allowed is an abap_bool already obtained from the application's real authorization check, not from a UI flag.",
-    "code": "IF requested_authorizations-%update =\n   if_abap_behv=>mk-on.\n  result-%update = COND #(\n    WHEN update_allowed = abap_true\n    THEN if_abap_behv=>auth-allowed\n    ELSE if_abap_behv=>auth-unauthorized ).\nENDIF.",
+    "code": "\"BDEF header of entity Project:\n\"authorization master ( global, instance )\n\n\"Declarations in the local Project behavior handler:\nMETHODS get_global_authorizations FOR GLOBAL AUTHORIZATION\n  IMPORTING REQUEST requested_authorizations\n  FOR Project RESULT result.\n\nMETHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION\n  IMPORTING keys REQUEST requested_authorizations\n  FOR Project RESULT result.",
+    "title": "Two handlers: one without keys, one with keys",
+    "intro": "Both return permissions; only the instance handler receives record keys.",
+    "context": "Declaration excerpts for an existing RAP entity with alias Project. Put the BDEF header line in its behavior definition; put the METHODS declarations in the local handler definition. Use ADT Quick Fix on the BDEF to generate the matching signatures for your target.",
     "highlights": [
       {
         "lines": [
           1,
           2
         ],
-        "label": "Answer the requested operation",
-        "explanation": "The framework asks for Update authorization. Only fill this decision when it was requested."
+        "label": "Enable both checks",
+        "explanation": "The BDEF chooses global and instance authorization for this authorization master."
       },
       {
         "lines": [
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ],
+        "label": "Compare the inputs",
+        "explanation": "Both methods receive requested_authorizations. Only get_instance_authorizations receives keys; its result distinguishes records using %tky."
+      }
+    ],
+    "outcome": "Select the next two examples to compare the actual global and per-record AUTHORITY-CHECK.",
+    "caveat": "These declarations are not a complete BDEF or handler class. CDS, operations, lock handling and the authorization object must already exist. A declaration without correct handler logic does not protect data.",
+    "references": [
+      {
+        "title": "SAP: implementing instance authorization",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-instance-authorization"
+      },
+      {
+        "title": "SAP: AUTHORITY-CHECK and RAP authorization",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md"
+      }
+    ]
+  },
+  {
+    "id": "global-update-authorization",
+    "title": "Global: may this user update projects at all?",
+    "questions": [
+      "ADV-02"
+    ],
+    "intro": "Check the activity without choosing a particular project.",
+    "language": "ABAP",
+    "context": "Update-only fragment inside Project's generated get_global_authorizations handler. The BDEF declares authorization master ( global, instance ). The own authorization object Z_PROJECT must exist with fields ACTVT and BUKRS and assigned roles. Other requested operations need their own decisions.",
+    "code": "CONSTANTS co_change TYPE c LENGTH 2 VALUE '02'.\nIF requested_authorizations-%update = if_abap_behv=>mk-on.\n  AUTHORITY-CHECK OBJECT 'Z_PROJECT'\n    ID 'ACTVT' FIELD co_change\n    ID 'BUKRS' DUMMY.\n  result-%update = COND #(\n    WHEN sy-subrc = 0\n    THEN if_abap_behv=>auth-allowed\n    ELSE if_abap_behv=>auth-unauthorized ).\nENDIF.",
+    "highlights": [
+      {
+        "lines": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "label": "Check the general activity",
+        "explanation": "ACTVT 02 means Change. BUKRS DUMMY skips the company-code field; it does not test access to every company code."
+      },
+      {
+        "lines": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "label": "Return the RAP decision",
+        "explanation": "Read sy-subrc immediately. A user with Change authority for company 1000 can pass this general check; the separate instance check must still evaluate each project."
+      }
+    ],
+    "outcome": "The result answers Update globally. It contains no project key and does not grant access to all projects.",
+    "caveat": "This is one operation, not a complete authorization model. Implement instance checks, DCL and needed prechecks separately. Verify the authorization object and check configuration in the target system.",
+    "references": [
+      {
+        "title": "SAP: AUTHORITY-CHECK and RAP authorization",
+        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md"
+      },
+      {
+        "title": "SAP: implementing instance authorization",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-instance-authorization"
+      }
+    ]
+  },
+  {
+    "id": "instance-project-authorization",
+    "questions": [
+      "ADV-02"
+    ],
+    "language": "ABAP",
+    "code": "CONSTANTS co_change TYPE c LENGTH 2 VALUE '02'.\nIF requested_authorizations-%update <> if_abap_behv=>mk-on.\n  RETURN.\nENDIF.\nREAD ENTITIES OF zi_project IN LOCAL MODE\n  ENTITY Project FIELDS ( CompanyCode )\n  WITH CORRESPONDING #( keys )\n  RESULT DATA(lt_projects)\n  FAILED DATA(ls_read_failed).\nAPPEND LINES OF ls_read_failed-Project TO failed-Project.\nLOOP AT lt_projects INTO DATA(ls_project).\n  AUTHORITY-CHECK OBJECT 'Z_PROJECT'\n    ID 'ACTVT' FIELD co_change\n    ID 'BUKRS' FIELD ls_project-CompanyCode.\n  APPEND VALUE #(\n    %tky = ls_project-%tky\n    %update = COND #( WHEN sy-subrc = 0\n      THEN if_abap_behv=>auth-allowed\n      ELSE if_abap_behv=>auth-unauthorized ) ) TO result.\nENDLOOP.",
+    "title": "Instance: permit company 1000, reject company 2000",
+    "intro": "Use the existing company code of each requested project.",
+    "context": "Update-only body of Project's generated get_instance_authorizations handler in its own behavior pool. Requires root CDS ZI_Project, alias Project, field CompanyCode, authorization master ( global, instance ), and configured Z_PROJECT with ACTVT and BUKRS. IN LOCAL MODE is an internal read used to make the permission decision, not an external access option.",
+    "highlights": [
+      {
+        "lines": [
+          2,
           3,
           4,
           5,
-          6
+          6,
+          7,
+          8,
+          9,
+          10
         ],
-        "label": "Allow or deny explicitly",
-        "explanation": "The result uses RAP's authorization constants. A disabled button is not this server-side permission decision."
+        "label": "Read the requested records",
+        "explanation": "Read the company code in one EML request. Forward missing-record failures; do not invent an allowed result for an unread record."
+      },
+      {
+        "lines": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "label": "Check this company code",
+        "explanation": "For a user permitted only in 1000, the check succeeds for project A in 1000 and fails for project B in 2000."
+      },
+      {
+        "lines": [
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "label": "Keep each decision with its key",
+        "explanation": "%tky keeps the result attached to the correct transactional instance. It is not one global result for the entire request."
       }
     ],
-    "outcome": "A caller without update permission receives an unauthorized decision even if it bypasses the screen.",
-    "caveat": "The real authority check, draft Edit and other requested operations must be implemented too. An action declared authorization:none is not protected by simply filling this Update result.",
+    "outcome": "A mixed request receives an allowed decision for A and an unauthorized decision for B, subject to the configured roles.",
+    "caveat": "No other operation is implemented by this excerpt. Instance authorization evaluates existing state, not a proposed CompanyCode in the incoming payload. Use the appropriate precheck for new values. Test DCL reads, Update, Create and draft behavior separately on the target release.",
     "references": [
       {
-        "title": "SAP samples: RAP global and instance authorization",
-        "url": "https://github.com/SAP-samples/abap-cheat-sheets/blob/main/25_Authorization_Checks.md"
+        "title": "SAP: implementing instance authorization",
+        "url": "https://help.sap.com/docs/abap-cloud/abap-rap/implementing-instance-authorization"
+      },
+      {
+        "title": "SAP TechEd: modify authorization example",
+        "url": "https://github.com/SAP-samples/teched2025-AD164/blob/main/exercises/ex08/README.md"
       }
     ]
   },

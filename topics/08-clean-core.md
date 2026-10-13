@@ -43,6 +43,8 @@ Read each level as a classification of the actual SAP dependency or extension te
 
 The response should match the risk: prefer A where suitable, assess B, give C a named owner and replacement plan, and prioritize fixing D. Do not classify by familiarity or naming. A function module everyone has used for years is not automatically B, and an unreleased object is not automatically D. Look up the actual dependency and supported operation.
 
+Remember: B is a SAP-designated classic API; C is an internal mechanism without a stability promise; D is an explicitly non-recommended object or technique. SAP describes B as Clean Core, C as conditionally Clean Core, and D as not Clean Core. Reading an internal SAP database table and making an unsupported direct write are different uses and can have different levels. CORE-13 shows where to look up noAPI.
+
 **Avoid this mistake:** A familiar API is not automatically B, and every unreleased object is not automatically D.
 
 **Read and verify this answer:**
@@ -72,11 +74,14 @@ Read each level as a classification of the actual SAP dependency or extension te
 
 When a priority 2 finding appears, inspect the object and the relevant Clean Core classification rather than treating the number as a universal description of every ATC issue. A security finding with the same priority needs its own interpretation. Use the findings to guide dependency review, and test the application separately for correctness and security. Clean Core classification is not a complete application quality certificate.
 
+Look for Usage of APIs in the Clean Core check group. SAP points to SAP Note 3565942 for the relevant checks; availability depends on the ATC system's updates and configuration. Include applicable Allowed SAP enhancement technologies and Critical statements checks: an API catalog alone does not detect every non-recommended technique.
+
 **Avoid this mistake:** No ATC findings does not prove that the entire application is secure, correct or fully Level A.
 
 **Read and verify this answer:**
 
 - [SAP Clean Core ATC levels and setup](https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/creating-tier-2-cloud-apis_a75bf2cd-815c-42bb-8d3b-2bba4931ecad) - Look up the actual dependency classification and check what the target edition permits.
+- [SAP: Clean Core classification catalog and ATC checks](https://github.com/SAP/abap-atc-cr-cv-s4hc/blob/main/README.md) - The README links objectClassifications_SAP.json to the checks introduced by SAP Note 3565942.
 
 <details>
 <summary>Visual: Clean Core levels A-D</summary>
@@ -380,21 +385,24 @@ For an extension, inspect whether the object actually permits the required kind 
 
 - [SAP API release contracts](https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/released-apis?locale=en-us) - Look up the actual dependency classification and check what the target edition permits.
 
-## CORE-13 How do you verify an API choice rather than guess?
+## CORE-13 Where do you find Classic API, Not Recommended and noAPI classifications, and how do you verify an API choice?
 
 **Level:** Advanced
 
-**Short answer:** Look up the exact API and the operation you need in official documentation. Check its API state and allowed use in the target system. Use applicable Cloudification Repository data and SAP technology guidance for classification. Then run the relevant maintained ATC checks on actual usage. A familiar name or successful syntax check is not enough evidence of supported use.
+**Short answer:** Open the SAP Cloudification Repository Viewer and choose the Classic API Clean Core classification catalog. Search for the exact object; State → No API corresponds to state noAPI in the JSON data. That means Not Recommended, not merely unreleased. Also check the target system's API state and the intended operation, then assess actual usage with maintained ATC checks.
 
-**Reasoning and example:** The requirement is to change a purchase document. A search finds a released CDS view with a matching business name, but that view may only support reading. Confirm that the proposed interface supports the write operation, the needed fields, and the target product version before committing to the design.
+**Reasoning and example:** Try RFC_READ_TABLE in the linked catalog. The checked SAP data identifies objectType FUNC, objectKey RFC_READ_TABLE and state noAPI. This is evidence of an explicitly non-recommended object; the name being familiar or remote-enabled does not make it a suitable API. Recheck current classification data when assessing another release.
 
-Inspect release visibility in the repository and note any restrictions or recommended successor. Use ATC to check the code's actual dependencies with current classification data. A proof of concept can then verify the required behavior. Keeping these steps separate avoids a common mistake: treating the existence of an object as proof that every intended way of using it is supported.
+Not Released is not the same as Not Recommended. An object without an ABAP Cloud release can be a designated Classic API (B) or an internal object (C). D also includes non-recommended techniques such as unsupported direct writes to SAP tables; an object lookup alone cannot assess how your code uses it.
 
-**Avoid this mistake:** A search result, object prefix or successful syntax check alone does not establish support for the intended usage.
+For a purchase-document change, verify that the candidate API supports writes, the required fields and your target product. A released read-only CDS entity with a matching name is not a write API. Run ATC Usage of APIs and the relevant enhancement/critical-statement checks on the actual code. CORE-03 explains the scoped priority mapping; a successful syntax check alone does not establish support.
+
+**Avoid this mistake:** Not Released ≠ Not Recommended. Catalog status, allowed language-version access and support for the intended operation are separate checks.
 
 **Read and verify this answer:**
 
-- [SAP Clean Core best practices](https://learning.sap.com/courses/practicing-clean-core-extensibility-for-sap-s-4hana-cloud/explaining-extensibility-model-best-practices_e290f382-800e-40ef-a203-85a13115f487) - Look up the actual dependency classification and check what the target edition permits.
+- [SAP Cloudification Repository Viewer](https://sap.github.io/abap-atc-cr-cv-s4hc/?version=objectClassifications_SAP.json) - Choose the object-classification catalog and inspect the exact object name and state.
+- [SAP classification data: objectClassifications_SAP.json](https://github.com/SAP/abap-atc-cr-cv-s4hc/blob/main/src/objectClassifications_SAP.json) - RFC_READ_TABLE is listed as objectType FUNC with state noAPI in the checked catalog. Recheck classification for the target assessment.
 
 <details>
 <summary>Visual: Clean Core levels A-D</summary>

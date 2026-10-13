@@ -20,7 +20,7 @@ function sceneChoice(name,label,values,selected){
 function sceneCard(id,title,body,classes=''){
  return `<section class="scene-card ${classes}" data-scene-node="${id}"><h6>${esc(title)}</h6>${body}</section>`;
 }
-function sceneValue(label,value){return `<div class="scene-value"><span>${esc(label)}</span><strong>${esc(String(value))}</strong></div>`;}
+function sceneValue(label,value){return `<div class="scene-value"><span>${esc(label)}</span><strong data-scene-value="${esc(label)}">${esc(String(value))}</strong></div>`;}
 function sceneRoute(from,to,label,reverse=false){return `<div class="scene-route" data-scene-from="${from}" data-scene-to="${to}"><span aria-hidden="true">${reverse?'←':'→'}</span><span>${esc(label)}</span></div>`;}
 function sceneStatus(label,type=''){return `<span class="scene-status ${type}">${esc(label)}</span>`;}
 function etagScene(state,c){
@@ -42,6 +42,17 @@ function etagScene(state,c){
   board:`<div class="scene-participants">${client('ana')}${sceneCard('server',c.server,sceneValue(c.quantity,serverQuantity)+sceneValue(c.version,serverVersion),'is-server')}${client('ben')}</div>${route}`,
   explanation:sceneText(c.explanations[i],values),outcome:i===0?c.initial:i===2?c.rejected:i===3?c.refreshed:i===4?c.retrySaved:c.firstSaved};
 }
+function tableOperationCode(state,c){
+ const key={standard:'STANDARD TABLE OF ty_order WITH EMPTY KEY',sorted:'SORTED TABLE OF ty_order WITH NON-UNIQUE KEY customer id',hashed:'HASHED TABLE OF ty_order WITH UNIQUE KEY id'}[state.type];
+ const operations={
+  find:['READ TABLE lt_orders INTO DATA(ls_order)',state.type==='hashed'?'  WITH TABLE KEY id = 9.':'  WITH KEY id = 9.','DATA(found) = xsdbool( sy-subrc = 0 ).'],
+  customer:["DATA(matches) = 0.","LOOP AT lt_orders INTO DATA(ls_order)","  WHERE customer = 'A'.","  matches += 1.","ENDLOOP."],
+  insert:["INSERT VALUE #( id = 7 customer = 'A' amount = 70 )","  INTO TABLE lt_orders.",'DATA(inserted) = xsdbool( sy-subrc = 0 ).']
+ };
+ const lines=['DATA lt_orders TYPE',`  ${key}.`,...operations[state.task]];
+ const active=state.index===0?[0,1]:state.index===1?[2,3]:state.index===2?lines.map((_,index)=>index).filter(index=>index>=2):[lines.length-1];
+ return `<div class="scene-code" aria-label="${esc(c.code)}"><span class="scene-code-label">ABAP · ${esc(c.code)}</span><pre><code>${lines.map((line,index)=>`<span data-scene-code-line="${index}" class="${active.includes(index)?'is-current':''}"><span aria-hidden="true">${index+1}</span>${esc(line)}</span>`).join('')}</code></pre><p class="scene-note">${esc(c.fixture)}</p></div>`;
+}
 function tablesScene(state,c){
  const i=state.index,type=state.type,task=state.task;
  let rows=[{id:9,customer:'B',amount:90},{id:3,customer:'A',amount:30},{id:5,customer:'A',amount:50}];
@@ -54,7 +65,7 @@ function tablesScene(state,c){
  let access=task==='insert'?c[type+'Insert']:type==='standard'?c.standardAccess:type==='sorted'?(task==='find'?c.sortedFind:c.sortedCustomer):(task==='find'?c.hashedFind:c.hashedCustomer);
  const result=task==='find'?c.found:task==='customer'?c.customerResult:c.insertResult;
  return {controls:sceneChoice('type',c.type,[['standard','STANDARD'],['sorted','SORTED'],['hashed','HASHED']],type)+sceneChoice('task',c.operation,[['find',c.find],['customer',c.customer],['insert',c.insert]],task),
-  board:`<div class="scene-table-layout">${sceneCard('task',c.operation,`<strong>${esc(c[task])}</strong><p class="scene-note">${esc(key)}</p>`)}${sceneCard('storage',c.storage,table,'scene-storage')}</div>${i>=1?sceneRoute('task','storage',c[task]):''}`,
+  board:`<div class="scene-table-layout">${sceneCard('task',c[task],tableOperationCode(state,c))}${sceneCard('storage',c.storage,table+`<div class="scene-code-result">${sceneValue(c.result,i<2?c.notRun:task==='customer'?'matches = 2':task==='find'?'found = abap_true':'inserted = abap_true')}${sceneValue(c.rowCount,rows.length)}</div>`,'scene-storage')}</div><div class="scene-route-slot">${i>=1?sceneRoute('task','storage',c[task]):''}</div>`,
   explanation:i===0?c.initial:i===1?access:i===2?result:access,outcome:i>=2?result:key};
 }
 function joinScene(state,c){
@@ -76,14 +87,16 @@ function httpScene(state,c){
 function groupingScene(state,c){
  const i=state.index,shared=state.grouping==='shared',invalid=state.validity==='invalid',common=sceneCopy.common;
  function item(id){
-  const bad=invalid&&id==='B',failed=i===3&&invalid&&(shared||bad);
-  const status=i<2?common.pending:i===2?(bad?c.invalid:c.valid):failed?(bad?common.rejected:common.notSaved):common.saved;
-  return `<div class="scene-record ${i===3?(failed?'is-rejected':'is-match'):''}" data-scene-node="order-${id}"><strong>${id}</strong>${sceneStatus(status,bad&&i>=2?'is-warning':'')}</div>`;
+  const bad=invalid&&id==='B',failed=i===3&&invalid&&(shared||bad),requested=bad?-1:11;
+  const status=i<2?common.pending:i===2?(bad?c.invalid:c.valid):failed?(bad?common.rejected:c.rolledBack):common.saved;
+  const saved=i===3&&!failed?11:10;
+  return `<div class="scene-record scene-order ${i===3?(failed?'is-rejected':'is-match'):''}" data-scene-node="order-${id}"><strong>${esc(c.order)} ${id}</strong><div class="scene-order-values">${sceneValue(c.savedQuantity,saved)}${sceneValue(c.tentative,i===0?c.notProposed:i===3?c.cleared:requested)}</div>${sceneStatus(status,bad&&i>=2?'is-warning':'')}</div>`;
  }
- const group=ids=>`<section class="scene-changeset ${i===3&&invalid&&(shared||ids.includes('B'))?'is-rejected':''}"><h6>${esc(c.group)} ${shared?'':ids[0]}</h6>${ids.map(item).join('')}</section>`;
- const body=i===0?`<div class="scene-groups">${['A','B','C'].map(item).join('')}</div>`:`<div class="scene-batch"><span>${esc(c.batch)}</span><div class="scene-groups ${shared?'is-shared':''}">${shared?group(['A','B','C']):['A','B','C'].map(id=>group([id])).join('')}</div></div>`;
+ const group=ids=>`<section class="scene-changeset ${i===3&&invalid&&(shared||ids.includes('B'))?'is-rejected':''}" data-scene-group="${ids.join('')}"><h6>${esc(c.group)} ${shared?'':ids[0]}</h6>${ids.map(item).join('')}</section>`;
  const final=invalid?(shared?c.sharedFailure:c.isolatedFailure):c.success;
- return {controls:sceneChoice('grouping',c.grouping,[['isolated','Isolated'],['shared','ChangeSet']],state.grouping)+sceneChoice('validity',c.validity,[['invalid',c.invalid],['valid',c.valid]],state.validity),board:body,explanation:[c.initial,shared?c.shared:c.isolated,invalid?c.validationInvalid:c.validationValid,final][i],outcome:i===3?final:c.steps[i]};
+ const compare=(valid,label)=>`<section class="scene-comparison ${invalid!==valid?'is-current':''}" data-scene-comparison="${valid?'valid':'invalid'}"><h6>${esc(label)}</h6><p>${esc(i<2?c.sameStart:valid?c.branchValid:c.branchInvalid)}</p><strong data-scene-value="comparison">${esc(i<3?c.awaitOutcome:valid?'A 11 · B 11 · C 11':shared?'A 10 · B 10 · C 10':'A 11 · B 10 · C 11')}</strong></section>`;
+ const board=`<div class="scene-batch"><span>${esc(c.batch)}</span><div class="scene-groups ${shared?'is-shared':''}">${shared?group(['A','B','C']):['A','B','C'].map(id=>group([id])).join('')}</div></div><div class="scene-outcome-comparison" aria-label="${esc(c.compare)}">${compare(true,c.validBranch)}${compare(false,c.invalidBranch)}</div><p class="scene-note scene-rollback-note">${esc(i===3&&invalid?c.rollbackNote:c.bufferNote)}</p>`;
+ return {controls:sceneChoice('grouping',c.grouping,[['isolated','Isolated'],['shared','ChangeSet']],state.grouping)+sceneChoice('validity',c.validity,[['invalid',c.invalid],['valid',c.valid]],state.validity),board,explanation:[c.initial,shared?c.shared:c.isolated,invalid?c.validationInvalid:c.validationValid,final][i],outcome:i===3?final:c.steps[i]};
 }
 function dclScene(state,c){
  const i=state.index,isBase=state.entry==='base',protectedEntry=isBase||state.security==='protected';
@@ -112,7 +125,15 @@ function interactiveLesson(q,lesson){
  <details class="lesson-sources"><summary>${esc(common.sources)}</summary><p>${esc(common.scope)} ${esc(c.limits)}</p><ul>${lesson.references.map(ref=>`<li><a href="${esc(ref.url)}" target="_blank" rel="noopener">${esc(ref.title)} ↗</a></li>`).join('')}</ul></details>
  </section>`;
 }
-function interactiveSceneSnapshot(player){return new Map([...player.querySelectorAll('[data-scene-row]')].map(row=>[row.dataset.sceneRow,row.getBoundingClientRect()]));}
+function sceneValueKey(value){
+ const owner=value.closest('[data-scene-node],[data-scene-comparison]');
+ return (owner?.dataset.sceneNode||owner?.dataset.sceneComparison||'scene')+':'+value.dataset.sceneValue;
+}
+function interactiveSceneSnapshot(player){
+ const snapshot=new Map([...player.querySelectorAll('[data-scene-row]')].map(row=>[row.dataset.sceneRow,row.getBoundingClientRect()]));
+ snapshot.valuesBefore=new Map([...player.querySelectorAll('[data-scene-value]')].map(value=>[sceneValueKey(value),value.textContent]));
+ return snapshot;
+}
 function animateInteractiveScene(player,previous){
  if(reducedMotion.matches)return;
  const board=player.querySelector('.scene-board'),bounds=board.getBoundingClientRect();
@@ -131,16 +152,52 @@ function animateInteractiveScene(player,previous){
   const dx=old?old.left-rect.left:0,dy=old?old.top-rect.top:12;
   if(dx||dy||row.matches('.is-match'))playMotion(row,[{transform:`translate(${dx}px,${dy}px)`,backgroundColor:'var(--soft-blue)'},{transform:'translate(0,0)',backgroundColor:row.matches('.is-match')?'var(--soft)':'var(--surface)'}],420);
  }
+ for(const value of player.querySelectorAll('[data-scene-value]')){
+  if(previous?.valuesBefore?.get(sceneValueKey(value))===value.textContent)continue;
+  for(const animation of value.getAnimations())animation.cancel();
+  playMotion(value,[{backgroundColor:'var(--soft-blue)',outline:'3px solid var(--soft-blue)'},{backgroundColor:'transparent',outline:'0 solid transparent'}],500);
+ }
+ for(const line of player.querySelectorAll('.scene-code .is-current')){
+  for(const animation of line.getAnimations())animation.cancel();
+  playMotion(line,[{backgroundColor:'var(--soft-blue)'},{backgroundColor:'var(--soft)'}],500);
+ }
  for(const group of player.querySelectorAll('.scene-changeset')){
+  if(!['1','3'].includes(player.dataset.sceneIndex))continue;
   for(const animation of group.getAnimations())animation.cancel();
   playMotion(group,[{outline:'2px solid var(--green)',outlineOffset:'5px'},{outline:'0px solid transparent',outlineOffset:'0px'}],450);
  }
 }
+// Reconcile the teaching state in place: stable participants keep their identity and focus.
+function sceneNodeKey(node){
+ if(node.nodeType!==1)return '';
+ for(const name of ['data-scene-node','data-scene-row','data-scene-group','data-scene-comparison','data-scene-code-line','data-scene-step','data-scene-option','data-scene-action']){
+  if(node.hasAttribute(name))return name+':'+node.getAttribute(name);
+ }
+ return '';
+}
+function reconcileSceneNode(current,next){
+ if(current.nodeType!==next.nodeType||current.nodeName!==next.nodeName){current.replaceWith(next.cloneNode(true));return;}
+ if(current.nodeType!==1){if(current.textContent!==next.textContent)current.textContent=next.textContent;return;}
+ for(const attr of [...current.attributes])if(!next.hasAttribute(attr.name)&&!(attr.name==='open'&&current.tagName==='DETAILS'))current.removeAttribute(attr.name);
+ for(const attr of [...next.attributes])if(current.getAttribute(attr.name)!==attr.value)current.setAttribute(attr.name,attr.value);
+ const original=[...current.childNodes],used=new Set();
+ [...next.childNodes].forEach((child,index)=>{
+  const key=sceneNodeKey(child);
+  let match=key?original.find(candidate=>!used.has(candidate)&&sceneNodeKey(candidate)===key):original.find(candidate=>!used.has(candidate)&&!sceneNodeKey(candidate)&&candidate.nodeName===child.nodeName);
+  if(match){used.add(match);reconcileSceneNode(match,child);}else{match=child.cloneNode(true);}
+  const position=current.childNodes[index];if(position!==match)current.insertBefore(match,position||null);
+ });
+ for(const child of original)if(!used.has(child)&&child.parentNode===current)child.remove();
+ if(current.tagName==='SELECT')current.value=next.value;
+}
 function replaceInteractiveScene(player,focusSelector,previous){
  const q=byId.get(player.dataset.lessonQuestion),lesson=lessonById.get(player.dataset.lesson),holder=document.createElement('div');
- holder.innerHTML=interactiveLesson(q,lesson);const next=holder.firstElementChild;player.replaceWith(next);
- (next.querySelector(focusSelector)||next.querySelector('[data-scene-action=next],[data-scene-action=restart]'))?.focus({preventScroll:true});
- animateInteractiveScene(next,previous);
+ holder.innerHTML=interactiveLesson(q,lesson);
+ for(const token of player.querySelectorAll('.scene-moving-token')){for(const animation of token.getAnimations())animation.cancel();token.remove();}
+ const focused=document.activeElement;
+ reconcileSceneNode(player,holder.firstElementChild);
+ if(!focused?.isConnected||focused.disabled)(player.querySelector(focusSelector)||player.querySelector('[data-scene-action=next],[data-scene-action=restart]'))?.focus({preventScroll:true});
+ animateInteractiveScene(player,previous);
 }
 $('view').addEventListener('click',event=>{
  const button=event.target.closest('[data-scene-step],[data-scene-action]');if(!button||button.disabled)return;
