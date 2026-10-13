@@ -144,6 +144,9 @@ test('logistics and general development cannot authorize unrelated technology ev
   const rap = built.selections.filter(item => item.startsWith('RAP-01@'));
   assert.ok(rap.length > 0);
   assert.ok(rap.every(item => built.evidence[Number(item.split('@')[1])].priority === 'preferred'));
+  for (const pair of built.selections.filter(item => /^(RAP|SRAP|CDS|ODATA|BTP|CORE)-/.test(item))) {
+    assert.equal(built.evidence[Number(pair.split('@')[1])].priority, 'preferred', pair);
+  }
   const estimation = built.selections.filter(item => item.startsWith('STORY-07@'));
   assert.ok(estimation.length > 0);
   assert.ok(estimation.every(item => built.evidence[Number(item.split('@')[1])].text.includes('Estimate')));
