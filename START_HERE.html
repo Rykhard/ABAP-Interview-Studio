@@ -1110,8 +1110,8 @@ main>#progress{display:none}
 .card>h3>a{color:inherit;text-decoration:none}.card>h3>a:hover{color:var(--green)}
 .study-view-toolbar{margin:24px 0;gap:0}
 .study-view-picker{padding:0;gap:20px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;flex-wrap:nowrap;width:100%}
-.study-view-picker button{border:0;border-bottom:2px solid transparent;border-radius:0;padding:10px 0;min-height:44px;font-size:14px;white-space:nowrap;background:transparent}
-.study-view-picker button[aria-pressed=true]{background:transparent;border:0;border-bottom:2px solid var(--green);box-shadow:none}
+.study-view-picker button{border:0;border-bottom:2px solid transparent;border-radius:0;padding:10px 0;min-height:44px;font-size:14px;font-weight:600;white-space:nowrap;background:transparent}
+.study-view-picker button[aria-pressed=true]{background:transparent;border:0;border-bottom:2px solid var(--green);box-shadow:none;font-weight:600}
 .question-sources{gap:8px 16px;margin-bottom:14px}
 .source-more>summary{font-size:11px;font-weight:400;color:var(--muted)}
 .source-more[open]{flex-basis:100%;padding-bottom:12px}.source-more ul{max-width:80ch;padding-left:18px}.source-more li{margin:12px 0}.source-more li p{color:var(--muted);margin:4px 0}
@@ -1181,7 +1181,7 @@ main>#progress{display:none}
  .reading-flow.has-visual>.answer-example>.answer-reasoning{grid-column:1;grid-row:2}
  .reading-flow.has-visual>.trap{grid-column:1;grid-row:3}
  .reading-flow.has-visual>.answer-details{grid-column:1;grid-row:4}
- .study-experience[data-study-view=developer] .reading-flow.has-visual{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+ .study-experience[data-study-view] .reading-flow.has-visual{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 }
 @media(max-width:900px){
  aside{padding:14px 16px;overflow:visible}aside h1{font-size:18px;padding-right:96px;line-height:1.45}
@@ -1218,6 +1218,12 @@ main>#progress{display:none}
 }
 @media(max-width:350px){.study-view-picker{gap:13px}.study-view-picker button{font-size:12px}.lesson-navigation>span{display:none}.lesson-state-values{grid-template-columns:1fr}}
 @media print{.question-next-actions,.question-row .question-toolbar{display:none}.question-row{break-inside:avoid}.lesson-navigation{display:none}}
+
+/* A stable reading column makes changing the example feel like changing a lens. */
+.study-view-picker button:focus-visible{outline:2px solid var(--focus);outline-offset:4px;border-radius:4px}
+.study-view-picker button[aria-pressed=true].study-motion-current{border-bottom-color:transparent}
+.study-content-transition{overflow:clip;overflow-anchor:none;will-change:height,opacity,transform}
+@media(prefers-reduced-motion:reduce){.study-content-transition{will-change:auto}}
 
 /* Native SVG text remains selectable; opening the viewer is a separate action. */
 .diagram-canvas{position:relative;min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;padding:8px 8px 48px;background:var(--paper)}
@@ -1387,7 +1393,7 @@ const iconPaths={
  performance:'M21 5.5c0 1.7-4 3-9 3s-9-1.3-9-3 4-3 9-3 9 1.3 9 3Z M3 5.5v12c0 1.7 4 3 9 3s9-1.3 9-3v-12 M13.5 10.5l-4 4h5l-4 4',
  integration:'M2.5 6h5v12h-5Z M16.5 6h5v12h-5Z M8 9h8 M13.5 6.5 16 9l-2.5 2.5 M16 15H8 M10.5 12.5 8 15l2.5 2.5',
  quality:'M8 4H5a1 1 0 0 0-1 1v15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-3 M8 2h8v4H8Z M8 13l3 3 6-7',
- extension:'M9 7V5a3 3 0 0 1 6 0v2h6v6h-2a3 3 0 0 0 0 6h2v2H3V7Z',
+ extension:'M9 7H3v14h18v-2h-2a3 3 0 0 1 0-6h2V7h-6 M9 7V5a3 3 0 0 1 6 0v2',
  interview:'M4 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-5 4V4a1 1 0 0 1 1-1Z M8 17h8l5 4V9 M7 7h6 M7 10h3'
 };
 function icon(key){return `<span class="topic-icon" data-topic-icon="${key}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">${(iconPaths[key]||iconPaths.abap).split(/ (?=M)/).map(part=>`<path d="${part}"/>`).join('')}</svg></span>`;}
@@ -1482,12 +1488,25 @@ function guidedLesson(q){
 }
 function replaceStudyExperience(region,q,view){
  if(selectedStudyView(q)===view)return;
- const previousTab=region.querySelector('[data-study-view][aria-pressed=true]')?.getBoundingClientRect();
+ // Keep the actual buttons and reading text in place, including keyboard focus.
+ const marker=region.querySelector('.study-motion-indicator');
+ const previousTab=(marker||region.querySelector('[data-study-view][aria-pressed=true]'))?.getBoundingClientRect();
+ region.querySelectorAll('.study-motion-indicator').forEach(line=>line.getAnimations().forEach(animation=>animation.cancel()));
  studyViewChoices.set(q.id,view);saveOptional('abap-studio-study-views-v1',JSON.stringify(Object.fromEntries(studyViewChoices)));
-
- const holder=document.createElement('div');holder.innerHTML=answer(q);const replacement=holder.firstElementChild;region.replaceWith(replacement);
- replacement.querySelector(`[data-study-view="${view}"]`)?.focus({preventScroll:true});
- animateStudySelection(replacement,previousTab);
+ const holder=document.createElement('div');holder.innerHTML=answer(q);
+ const replacement=holder.firstElementChild;
+ const currentBody=region.querySelector(':scope > .reading-flow,:scope > .lesson-player');
+ const nextBody=replacement.querySelector(':scope > .reading-flow,:scope > .lesson-player');
+ const currentPanel=currentBody?.querySelector('.visual-panel'),nextPanel=nextBody?.querySelector('.visual-panel');
+ region.dataset.studyView=view;
+ region.querySelectorAll('button[data-study-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.studyView===view)));
+ if(currentBody?.matches('.reading-flow')&&nextBody?.matches('.reading-flow')&&currentPanel&&nextPanel){
+  // The shared answer and any expanded details survive a format switch.
+  replaceStudyContent(currentPanel,nextPanel);
+ }else if(currentBody&&nextBody){
+  replaceStudyContent(currentBody,nextBody);
+ }
+ animateStudySelection(region,previousTab);
 }
 $('view').addEventListener('click',event=>{
  const choice=event.target.closest('button[data-study-view]');
@@ -1992,17 +2011,27 @@ function animateNavSelection(before){
  const fresh=[...nav.querySelectorAll('[data-section]')].filter(b=>!before.sections.has(b.dataset.section));
  fresh.forEach(button=>playMotion(button,[{opacity:0,transform:'translateY(-4px)'},{opacity:1,transform:'none'}],180));
 }
+function replaceStudyContent(current,next){
+ const height=current.getBoundingClientRect().height;
+ current.getAnimations({subtree:true}).forEach(animation=>animation.cancel());
+ current.replaceWith(next);
+ if(reducedMotion.matches)return;
+ const targetHeight=next.getBoundingClientRect().height;
+ next.classList.add('study-content-transition');
+ playMotion(next,[
+  {height:height+'px',opacity:0,transform:'translateY(5px)'},
+  {opacity:1,offset:.7},
+  {height:targetHeight+'px',opacity:1,transform:'none'}
+ ],300,()=>next.classList.remove('study-content-transition'));
+}
 function animateStudySelection(region,before){
  const picker=region.querySelector('.study-view-picker'),active=picker?.querySelector('[aria-pressed=true]');
- if(!active)return;
- if(before&&!reducedMotion.matches){
-  const rect=active.getBoundingClientRect(),base=picker.getBoundingClientRect(),line=document.createElement('span');
-  line.className='study-motion-indicator';line.setAttribute('aria-hidden','true');
-  Object.assign(line.style,{left:rect.left-base.left+'px',width:rect.width+'px'});
-  picker.append(line);active.classList.add('study-motion-current');
-  playMotion(line,[{transform:`translateX(${before.left-rect.left}px) scaleX(${before.width/rect.width})`},{transform:'none'}],180,()=>{line.remove();active.classList.remove('study-motion-current');});
- }
- animateEntrance(region.querySelector('.reading-flow,.lesson-player'));
+ if(!active||!before||reducedMotion.matches)return;
+ const rect=active.getBoundingClientRect(),base=picker.getBoundingClientRect(),line=document.createElement('span');
+ line.className='study-motion-indicator';line.setAttribute('aria-hidden','true');
+ Object.assign(line.style,{left:rect.left-base.left+'px',width:rect.width+'px'});
+ picker.append(line);active.classList.add('study-motion-current');
+ playMotion(line,[{transform:`translateX(${before.left-rect.left}px) scaleX(${before.width/rect.width})`},{transform:'none'}],300,()=>{line.remove();active.classList.remove('study-motion-current');});
 }
 function animateLessonStep(player){
  animateSaveFlow(player);
@@ -2066,29 +2095,54 @@ $('view').addEventListener('click',event=>{
  });
 });
 
-// One local gesture per interaction; never a loop or a page-load cascade.
+// Keep the silhouette still. Each accent describes the topic instead of shaking it.
+const topicMotionTimes=new WeakMap(),topicHoverTimers=new WeakMap();
 function animateTopicIcon(icon){
  if(!icon||reducedMotion.matches)return;
- icon.getAnimations({subtree:true}).forEach(animation=>animation.cancel());
+ const now=performance.now();
+ if(now-(topicMotionTimes.get(icon)??-Infinity)<900)return;
+ topicMotionTimes.set(icon,now);
  const paths=[...icon.querySelectorAll('path')],key=icon.dataset.topicIcon;
- const small=!!icon.closest('#segments'),distance=small?.7:1.3,duration=small?320:440;
- const pulse=path=>playMotion(path,[{opacity:1},{opacity:.35,offset:.35},{opacity:1}],duration);
- if(key==='quality'){
-  const tick=paths.at(-1),length=tick.getTotalLength();
-  playMotion(tick,[{strokeDasharray:`${length} ${length}`,strokeDashoffset:length},{strokeDasharray:`${length} ${length}`,strokeDashoffset:0}],duration);
+ const duration=icon.closest('#segments')?500:640;
+ const draw=(path,start=0,end=1)=>{
+  if(!path)return;
+  const length=path.getTotalLength(),dash={strokeDasharray:`${length} ${length}`};
+  const frames=[{...dash,strokeDashoffset:length,offset:0}];
+  if(start)frames.push({...dash,strokeDashoffset:length,offset:start});
+  frames.push({...dash,strokeDashoffset:0,offset:end});
+  if(end<1)frames.push({...dash,strokeDashoffset:0,offset:1});
+  playMotion(path,frames,duration);
+ };
+ const arrive=path=>playMotion(path,[{fill:'transparent'},{fill:'var(--soft)',offset:.65},{fill:'transparent'}],duration);
+ if(key==='rap'){
+  draw(paths[1],0,.4);draw(paths[2],.3,.8);paths.slice(3).forEach(arrive);
+ }else if(key==='cds'){
+  draw(paths[4],0,.8);arrive(paths[1]);
+ }else if(key==='integration'){
+  draw(paths[2],0,.45);draw(paths[3],.15,.5);draw(paths[4],.5,.9);draw(paths[5],.65,1);
  }else if(key==='cloud'||key==='abap'){
-  paths.slice(-2).forEach((path,i)=>playMotion(path,[{transform:'none'},{transform:`translateX(${(i?1:-1)*distance}px)`,offset:.4},{transform:'none'}],duration));
- }else if(key==='rap'||key==='cds'||key==='integration'){
-  paths.forEach((path,i)=>playMotion(path,[{opacity:1},{opacity:.25,offset:.15+i/paths.length*.35},{opacity:1}],duration));
- }else if(key==='extension'){
-  playMotion(paths[0],[{transform:`translate(${distance}px,-${distance}px)`,opacity:.5},{transform:'none',opacity:1}],duration);
- }else pulse(paths.at(-1));
+  paths.slice(-2).forEach(path=>draw(path,0,.85));
+ }else if(key==='interview'){
+  draw(paths[2],0,.5);draw(paths[3],.4,1);
+ }else draw(paths.at(-1));
 }
-for(const name of ['pointerover','focusin'])document.addEventListener(name,event=>{
- if(name==='pointerover'&&event.pointerType!=='mouse')return;
- const target=event.target.closest('.topic-card,.nav-topic');
+document.addEventListener('pointerover',event=>{
+ if(event.pointerType!=='mouse')return;
+ const target=event.target.closest('.topic-card');
  if(!target||target.contains(event.relatedTarget))return;
- animateTopicIcon(target.querySelector('[data-topic-icon]'));
+ // Ignore a pointer crossing cards on its way to another control.
+ topicHoverTimers.set(target,setTimeout(()=>{
+  topicHoverTimers.delete(target);
+  if(target.isConnected&&target.matches(':hover'))animateTopicIcon(target.querySelector('[data-topic-icon]'));
+ },120));
+});
+document.addEventListener('pointerout',event=>{
+ const target=event.target.closest('.topic-card');
+ if(target&&!target.contains(event.relatedTarget)){clearTimeout(topicHoverTimers.get(target));topicHoverTimers.delete(target);}
+});
+document.addEventListener('focusin',event=>{
+ const target=event.target.closest('.topic-card');
+ if(target&&!target.contains(event.relatedTarget)&&event.target.matches(':focus-visible'))animateTopicIcon(target.querySelector('[data-topic-icon]'));
 });
 function animateSaveFlow(player){
  const current=player.querySelector('.save-flow [aria-current=step]');
@@ -2298,7 +2352,7 @@ const iconPaths={
  performance:'M21 5.5c0 1.7-4 3-9 3s-9-1.3-9-3 4-3 9-3 9 1.3 9 3Z M3 5.5v12c0 1.7 4 3 9 3s9-1.3 9-3v-12 M13.5 10.5l-4 4h5l-4 4',
  integration:'M2.5 6h5v12h-5Z M16.5 6h5v12h-5Z M8 9h8 M13.5 6.5 16 9l-2.5 2.5 M16 15H8 M10.5 12.5 8 15l2.5 2.5',
  quality:'M8 4H5a1 1 0 0 0-1 1v15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-3 M8 2h8v4H8Z M8 13l3 3 6-7',
- extension:'M9 7V5a3 3 0 0 1 6 0v2h6v6h-2a3 3 0 0 0 0 6h2v2H3V7Z',
+ extension:'M9 7H3v14h18v-2h-2a3 3 0 0 1 0-6h2V7h-6 M9 7V5a3 3 0 0 1 6 0v2',
  interview:'M4 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-5 4V4a1 1 0 0 1 1-1Z M8 17h8l5 4V9 M7 7h6 M7 10h3'
 };
 function icon(key){return `<span class="topic-icon" data-topic-icon="${key}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">${(iconPaths[key]||iconPaths.abap).split(/ (?=M)/).map(part=>`<path d="${part}"/>`).join('')}</svg></span>`;}
@@ -2393,12 +2447,25 @@ function guidedLesson(q){
 }
 function replaceStudyExperience(region,q,view){
  if(selectedStudyView(q)===view)return;
- const previousTab=region.querySelector('[data-study-view][aria-pressed=true]')?.getBoundingClientRect();
+ // Keep the actual buttons and reading text in place, including keyboard focus.
+ const marker=region.querySelector('.study-motion-indicator');
+ const previousTab=(marker||region.querySelector('[data-study-view][aria-pressed=true]'))?.getBoundingClientRect();
+ region.querySelectorAll('.study-motion-indicator').forEach(line=>line.getAnimations().forEach(animation=>animation.cancel()));
  studyViewChoices.set(q.id,view);saveOptional('abap-studio-study-views-v1',JSON.stringify(Object.fromEntries(studyViewChoices)));
-
- const holder=document.createElement('div');holder.innerHTML=answer(q);const replacement=holder.firstElementChild;region.replaceWith(replacement);
- replacement.querySelector(`[data-study-view="${view}"]`)?.focus({preventScroll:true});
- animateStudySelection(replacement,previousTab);
+ const holder=document.createElement('div');holder.innerHTML=answer(q);
+ const replacement=holder.firstElementChild;
+ const currentBody=region.querySelector(':scope > .reading-flow,:scope > .lesson-player');
+ const nextBody=replacement.querySelector(':scope > .reading-flow,:scope > .lesson-player');
+ const currentPanel=currentBody?.querySelector('.visual-panel'),nextPanel=nextBody?.querySelector('.visual-panel');
+ region.dataset.studyView=view;
+ region.querySelectorAll('button[data-study-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.studyView===view)));
+ if(currentBody?.matches('.reading-flow')&&nextBody?.matches('.reading-flow')&&currentPanel&&nextPanel){
+  // The shared answer and any expanded details survive a format switch.
+  replaceStudyContent(currentPanel,nextPanel);
+ }else if(currentBody&&nextBody){
+  replaceStudyContent(currentBody,nextBody);
+ }
+ animateStudySelection(region,previousTab);
 }
 $('view').addEventListener('click',event=>{
  const choice=event.target.closest('button[data-study-view]');
@@ -2903,17 +2970,27 @@ function animateNavSelection(before){
  const fresh=[...nav.querySelectorAll('[data-section]')].filter(b=>!before.sections.has(b.dataset.section));
  fresh.forEach(button=>playMotion(button,[{opacity:0,transform:'translateY(-4px)'},{opacity:1,transform:'none'}],180));
 }
+function replaceStudyContent(current,next){
+ const height=current.getBoundingClientRect().height;
+ current.getAnimations({subtree:true}).forEach(animation=>animation.cancel());
+ current.replaceWith(next);
+ if(reducedMotion.matches)return;
+ const targetHeight=next.getBoundingClientRect().height;
+ next.classList.add('study-content-transition');
+ playMotion(next,[
+  {height:height+'px',opacity:0,transform:'translateY(5px)'},
+  {opacity:1,offset:.7},
+  {height:targetHeight+'px',opacity:1,transform:'none'}
+ ],300,()=>next.classList.remove('study-content-transition'));
+}
 function animateStudySelection(region,before){
  const picker=region.querySelector('.study-view-picker'),active=picker?.querySelector('[aria-pressed=true]');
- if(!active)return;
- if(before&&!reducedMotion.matches){
-  const rect=active.getBoundingClientRect(),base=picker.getBoundingClientRect(),line=document.createElement('span');
-  line.className='study-motion-indicator';line.setAttribute('aria-hidden','true');
-  Object.assign(line.style,{left:rect.left-base.left+'px',width:rect.width+'px'});
-  picker.append(line);active.classList.add('study-motion-current');
-  playMotion(line,[{transform:`translateX(${before.left-rect.left}px) scaleX(${before.width/rect.width})`},{transform:'none'}],180,()=>{line.remove();active.classList.remove('study-motion-current');});
- }
- animateEntrance(region.querySelector('.reading-flow,.lesson-player'));
+ if(!active||!before||reducedMotion.matches)return;
+ const rect=active.getBoundingClientRect(),base=picker.getBoundingClientRect(),line=document.createElement('span');
+ line.className='study-motion-indicator';line.setAttribute('aria-hidden','true');
+ Object.assign(line.style,{left:rect.left-base.left+'px',width:rect.width+'px'});
+ picker.append(line);active.classList.add('study-motion-current');
+ playMotion(line,[{transform:`translateX(${before.left-rect.left}px) scaleX(${before.width/rect.width})`},{transform:'none'}],300,()=>{line.remove();active.classList.remove('study-motion-current');});
 }
 function animateLessonStep(player){
  animateSaveFlow(player);
@@ -2977,29 +3054,54 @@ $('view').addEventListener('click',event=>{
  });
 });
 
-// One local gesture per interaction; never a loop or a page-load cascade.
+// Keep the silhouette still. Each accent describes the topic instead of shaking it.
+const topicMotionTimes=new WeakMap(),topicHoverTimers=new WeakMap();
 function animateTopicIcon(icon){
  if(!icon||reducedMotion.matches)return;
- icon.getAnimations({subtree:true}).forEach(animation=>animation.cancel());
+ const now=performance.now();
+ if(now-(topicMotionTimes.get(icon)??-Infinity)<900)return;
+ topicMotionTimes.set(icon,now);
  const paths=[...icon.querySelectorAll('path')],key=icon.dataset.topicIcon;
- const small=!!icon.closest('#segments'),distance=small?.7:1.3,duration=small?320:440;
- const pulse=path=>playMotion(path,[{opacity:1},{opacity:.35,offset:.35},{opacity:1}],duration);
- if(key==='quality'){
-  const tick=paths.at(-1),length=tick.getTotalLength();
-  playMotion(tick,[{strokeDasharray:`${length} ${length}`,strokeDashoffset:length},{strokeDasharray:`${length} ${length}`,strokeDashoffset:0}],duration);
+ const duration=icon.closest('#segments')?500:640;
+ const draw=(path,start=0,end=1)=>{
+  if(!path)return;
+  const length=path.getTotalLength(),dash={strokeDasharray:`${length} ${length}`};
+  const frames=[{...dash,strokeDashoffset:length,offset:0}];
+  if(start)frames.push({...dash,strokeDashoffset:length,offset:start});
+  frames.push({...dash,strokeDashoffset:0,offset:end});
+  if(end<1)frames.push({...dash,strokeDashoffset:0,offset:1});
+  playMotion(path,frames,duration);
+ };
+ const arrive=path=>playMotion(path,[{fill:'transparent'},{fill:'var(--soft)',offset:.65},{fill:'transparent'}],duration);
+ if(key==='rap'){
+  draw(paths[1],0,.4);draw(paths[2],.3,.8);paths.slice(3).forEach(arrive);
+ }else if(key==='cds'){
+  draw(paths[4],0,.8);arrive(paths[1]);
+ }else if(key==='integration'){
+  draw(paths[2],0,.45);draw(paths[3],.15,.5);draw(paths[4],.5,.9);draw(paths[5],.65,1);
  }else if(key==='cloud'||key==='abap'){
-  paths.slice(-2).forEach((path,i)=>playMotion(path,[{transform:'none'},{transform:`translateX(${(i?1:-1)*distance}px)`,offset:.4},{transform:'none'}],duration));
- }else if(key==='rap'||key==='cds'||key==='integration'){
-  paths.forEach((path,i)=>playMotion(path,[{opacity:1},{opacity:.25,offset:.15+i/paths.length*.35},{opacity:1}],duration));
- }else if(key==='extension'){
-  playMotion(paths[0],[{transform:`translate(${distance}px,-${distance}px)`,opacity:.5},{transform:'none',opacity:1}],duration);
- }else pulse(paths.at(-1));
+  paths.slice(-2).forEach(path=>draw(path,0,.85));
+ }else if(key==='interview'){
+  draw(paths[2],0,.5);draw(paths[3],.4,1);
+ }else draw(paths.at(-1));
 }
-for(const name of ['pointerover','focusin'])document.addEventListener(name,event=>{
- if(name==='pointerover'&&event.pointerType!=='mouse')return;
- const target=event.target.closest('.topic-card,.nav-topic');
+document.addEventListener('pointerover',event=>{
+ if(event.pointerType!=='mouse')return;
+ const target=event.target.closest('.topic-card');
  if(!target||target.contains(event.relatedTarget))return;
- animateTopicIcon(target.querySelector('[data-topic-icon]'));
+ // Ignore a pointer crossing cards on its way to another control.
+ topicHoverTimers.set(target,setTimeout(()=>{
+  topicHoverTimers.delete(target);
+  if(target.isConnected&&target.matches(':hover'))animateTopicIcon(target.querySelector('[data-topic-icon]'));
+ },120));
+});
+document.addEventListener('pointerout',event=>{
+ const target=event.target.closest('.topic-card');
+ if(target&&!target.contains(event.relatedTarget)){clearTimeout(topicHoverTimers.get(target));topicHoverTimers.delete(target);}
+});
+document.addEventListener('focusin',event=>{
+ const target=event.target.closest('.topic-card');
+ if(target&&!target.contains(event.relatedTarget)&&event.target.matches(':focus-visible'))animateTopicIcon(target.querySelector('[data-topic-icon]'));
 });
 function animateSaveFlow(player){
  const current=player.querySelector('.save-flow [aria-current=step]');

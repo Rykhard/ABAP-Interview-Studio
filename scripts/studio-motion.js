@@ -29,17 +29,27 @@ function animateNavSelection(before){
  const fresh=[...nav.querySelectorAll('[data-section]')].filter(b=>!before.sections.has(b.dataset.section));
  fresh.forEach(button=>playMotion(button,[{opacity:0,transform:'translateY(-4px)'},{opacity:1,transform:'none'}],180));
 }
+function replaceStudyContent(current,next){
+ const height=current.getBoundingClientRect().height;
+ current.getAnimations({subtree:true}).forEach(animation=>animation.cancel());
+ current.replaceWith(next);
+ if(reducedMotion.matches)return;
+ const targetHeight=next.getBoundingClientRect().height;
+ next.classList.add('study-content-transition');
+ playMotion(next,[
+  {height:height+'px',opacity:0,transform:'translateY(5px)'},
+  {opacity:1,offset:.7},
+  {height:targetHeight+'px',opacity:1,transform:'none'}
+ ],300,()=>next.classList.remove('study-content-transition'));
+}
 function animateStudySelection(region,before){
  const picker=region.querySelector('.study-view-picker'),active=picker?.querySelector('[aria-pressed=true]');
- if(!active)return;
- if(before&&!reducedMotion.matches){
-  const rect=active.getBoundingClientRect(),base=picker.getBoundingClientRect(),line=document.createElement('span');
-  line.className='study-motion-indicator';line.setAttribute('aria-hidden','true');
-  Object.assign(line.style,{left:rect.left-base.left+'px',width:rect.width+'px'});
-  picker.append(line);active.classList.add('study-motion-current');
-  playMotion(line,[{transform:`translateX(${before.left-rect.left}px) scaleX(${before.width/rect.width})`},{transform:'none'}],180,()=>{line.remove();active.classList.remove('study-motion-current');});
- }
- animateEntrance(region.querySelector('.reading-flow,.lesson-player'));
+ if(!active||!before||reducedMotion.matches)return;
+ const rect=active.getBoundingClientRect(),base=picker.getBoundingClientRect(),line=document.createElement('span');
+ line.className='study-motion-indicator';line.setAttribute('aria-hidden','true');
+ Object.assign(line.style,{left:rect.left-base.left+'px',width:rect.width+'px'});
+ picker.append(line);active.classList.add('study-motion-current');
+ playMotion(line,[{transform:`translateX(${before.left-rect.left}px) scaleX(${before.width/rect.width})`},{transform:'none'}],300,()=>{line.remove();active.classList.remove('study-motion-current');});
 }
 function animateLessonStep(player){
  animateSaveFlow(player);
@@ -103,29 +113,54 @@ $('view').addEventListener('click',event=>{
  });
 });
 
-// One local gesture per interaction; never a loop or a page-load cascade.
+// Keep the silhouette still. Each accent describes the topic instead of shaking it.
+const topicMotionTimes=new WeakMap(),topicHoverTimers=new WeakMap();
 function animateTopicIcon(icon){
  if(!icon||reducedMotion.matches)return;
- icon.getAnimations({subtree:true}).forEach(animation=>animation.cancel());
+ const now=performance.now();
+ if(now-(topicMotionTimes.get(icon)??-Infinity)<900)return;
+ topicMotionTimes.set(icon,now);
  const paths=[...icon.querySelectorAll('path')],key=icon.dataset.topicIcon;
- const small=!!icon.closest('#segments'),distance=small?.7:1.3,duration=small?320:440;
- const pulse=path=>playMotion(path,[{opacity:1},{opacity:.35,offset:.35},{opacity:1}],duration);
- if(key==='quality'){
-  const tick=paths.at(-1),length=tick.getTotalLength();
-  playMotion(tick,[{strokeDasharray:`${length} ${length}`,strokeDashoffset:length},{strokeDasharray:`${length} ${length}`,strokeDashoffset:0}],duration);
+ const duration=icon.closest('#segments')?500:640;
+ const draw=(path,start=0,end=1)=>{
+  if(!path)return;
+  const length=path.getTotalLength(),dash={strokeDasharray:`${length} ${length}`};
+  const frames=[{...dash,strokeDashoffset:length,offset:0}];
+  if(start)frames.push({...dash,strokeDashoffset:length,offset:start});
+  frames.push({...dash,strokeDashoffset:0,offset:end});
+  if(end<1)frames.push({...dash,strokeDashoffset:0,offset:1});
+  playMotion(path,frames,duration);
+ };
+ const arrive=path=>playMotion(path,[{fill:'transparent'},{fill:'var(--soft)',offset:.65},{fill:'transparent'}],duration);
+ if(key==='rap'){
+  draw(paths[1],0,.4);draw(paths[2],.3,.8);paths.slice(3).forEach(arrive);
+ }else if(key==='cds'){
+  draw(paths[4],0,.8);arrive(paths[1]);
+ }else if(key==='integration'){
+  draw(paths[2],0,.45);draw(paths[3],.15,.5);draw(paths[4],.5,.9);draw(paths[5],.65,1);
  }else if(key==='cloud'||key==='abap'){
-  paths.slice(-2).forEach((path,i)=>playMotion(path,[{transform:'none'},{transform:`translateX(${(i?1:-1)*distance}px)`,offset:.4},{transform:'none'}],duration));
- }else if(key==='rap'||key==='cds'||key==='integration'){
-  paths.forEach((path,i)=>playMotion(path,[{opacity:1},{opacity:.25,offset:.15+i/paths.length*.35},{opacity:1}],duration));
- }else if(key==='extension'){
-  playMotion(paths[0],[{transform:`translate(${distance}px,-${distance}px)`,opacity:.5},{transform:'none',opacity:1}],duration);
- }else pulse(paths.at(-1));
+  paths.slice(-2).forEach(path=>draw(path,0,.85));
+ }else if(key==='interview'){
+  draw(paths[2],0,.5);draw(paths[3],.4,1);
+ }else draw(paths.at(-1));
 }
-for(const name of ['pointerover','focusin'])document.addEventListener(name,event=>{
- if(name==='pointerover'&&event.pointerType!=='mouse')return;
- const target=event.target.closest('.topic-card,.nav-topic');
+document.addEventListener('pointerover',event=>{
+ if(event.pointerType!=='mouse')return;
+ const target=event.target.closest('.topic-card');
  if(!target||target.contains(event.relatedTarget))return;
- animateTopicIcon(target.querySelector('[data-topic-icon]'));
+ // Ignore a pointer crossing cards on its way to another control.
+ topicHoverTimers.set(target,setTimeout(()=>{
+  topicHoverTimers.delete(target);
+  if(target.isConnected&&target.matches(':hover'))animateTopicIcon(target.querySelector('[data-topic-icon]'));
+ },120));
+});
+document.addEventListener('pointerout',event=>{
+ const target=event.target.closest('.topic-card');
+ if(target&&!target.contains(event.relatedTarget)){clearTimeout(topicHoverTimers.get(target));topicHoverTimers.delete(target);}
+});
+document.addEventListener('focusin',event=>{
+ const target=event.target.closest('.topic-card');
+ if(target&&!target.contains(event.relatedTarget)&&event.target.matches(':focus-visible'))animateTopicIcon(target.querySelector('[data-topic-icon]'));
 });
 function animateSaveFlow(player){
  const current=player.querySelector('.save-flow [aria-current=step]');

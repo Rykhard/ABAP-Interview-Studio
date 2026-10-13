@@ -28,8 +28,8 @@ main>#progress{display:none}
 .card>h3>a{color:inherit;text-decoration:none}.card>h3>a:hover{color:var(--green)}
 .study-view-toolbar{margin:24px 0;gap:0}
 .study-view-picker{padding:0;gap:20px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;flex-wrap:nowrap;width:100%}
-.study-view-picker button{border:0;border-bottom:2px solid transparent;border-radius:0;padding:10px 0;min-height:44px;font-size:14px;white-space:nowrap;background:transparent}
-.study-view-picker button[aria-pressed=true]{background:transparent;border:0;border-bottom:2px solid var(--green);box-shadow:none}
+.study-view-picker button{border:0;border-bottom:2px solid transparent;border-radius:0;padding:10px 0;min-height:44px;font-size:14px;font-weight:600;white-space:nowrap;background:transparent}
+.study-view-picker button[aria-pressed=true]{background:transparent;border:0;border-bottom:2px solid var(--green);box-shadow:none;font-weight:600}
 .question-sources{gap:8px 16px;margin-bottom:14px}
 .source-more>summary{font-size:11px;font-weight:400;color:var(--muted)}
 .source-more[open]{flex-basis:100%;padding-bottom:12px}.source-more ul{max-width:80ch;padding-left:18px}.source-more li{margin:12px 0}.source-more li p{color:var(--muted);margin:4px 0}
@@ -99,7 +99,7 @@ main>#progress{display:none}
  .reading-flow.has-visual>.answer-example>.answer-reasoning{grid-column:1;grid-row:2}
  .reading-flow.has-visual>.trap{grid-column:1;grid-row:3}
  .reading-flow.has-visual>.answer-details{grid-column:1;grid-row:4}
- .study-experience[data-study-view=developer] .reading-flow.has-visual{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+ .study-experience[data-study-view] .reading-flow.has-visual{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 }
 @media(max-width:900px){
  aside{padding:14px 16px;overflow:visible}aside h1{font-size:18px;padding-right:96px;line-height:1.45}
@@ -136,3 +136,9 @@ main>#progress{display:none}
 }
 @media(max-width:350px){.study-view-picker{gap:13px}.study-view-picker button{font-size:12px}.lesson-navigation>span{display:none}.lesson-state-values{grid-template-columns:1fr}}
 @media print{.question-next-actions,.question-row .question-toolbar{display:none}.question-row{break-inside:avoid}.lesson-navigation{display:none}}
+
+/* A stable reading column makes changing the example feel like changing a lens. */
+.study-view-picker button:focus-visible{outline:2px solid var(--focus);outline-offset:4px;border-radius:4px}
+.study-view-picker button[aria-pressed=true].study-motion-current{border-bottom-color:transparent}
+.study-content-transition{overflow:clip;overflow-anchor:none;will-change:height,opacity,transform}
+@media(prefers-reduced-motion:reduce){.study-content-transition{will-change:auto}}

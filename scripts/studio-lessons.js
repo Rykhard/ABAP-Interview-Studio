@@ -49,12 +49,25 @@ function guidedLesson(q){
 }
 function replaceStudyExperience(region,q,view){
  if(selectedStudyView(q)===view)return;
- const previousTab=region.querySelector('[data-study-view][aria-pressed=true]')?.getBoundingClientRect();
+ // Keep the actual buttons and reading text in place, including keyboard focus.
+ const marker=region.querySelector('.study-motion-indicator');
+ const previousTab=(marker||region.querySelector('[data-study-view][aria-pressed=true]'))?.getBoundingClientRect();
+ region.querySelectorAll('.study-motion-indicator').forEach(line=>line.getAnimations().forEach(animation=>animation.cancel()));
  studyViewChoices.set(q.id,view);saveOptional('abap-studio-study-views-v1',JSON.stringify(Object.fromEntries(studyViewChoices)));
-
- const holder=document.createElement('div');holder.innerHTML=answer(q);const replacement=holder.firstElementChild;region.replaceWith(replacement);
- replacement.querySelector(`[data-study-view="${view}"]`)?.focus({preventScroll:true});
- animateStudySelection(replacement,previousTab);
+ const holder=document.createElement('div');holder.innerHTML=answer(q);
+ const replacement=holder.firstElementChild;
+ const currentBody=region.querySelector(':scope > .reading-flow,:scope > .lesson-player');
+ const nextBody=replacement.querySelector(':scope > .reading-flow,:scope > .lesson-player');
+ const currentPanel=currentBody?.querySelector('.visual-panel'),nextPanel=nextBody?.querySelector('.visual-panel');
+ region.dataset.studyView=view;
+ region.querySelectorAll('button[data-study-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.studyView===view)));
+ if(currentBody?.matches('.reading-flow')&&nextBody?.matches('.reading-flow')&&currentPanel&&nextPanel){
+  // The shared answer and any expanded details survive a format switch.
+  replaceStudyContent(currentPanel,nextPanel);
+ }else if(currentBody&&nextBody){
+  replaceStudyContent(currentBody,nextBody);
+ }
+ animateStudySelection(region,previousTab);
 }
 $('view').addEventListener('click',event=>{
  const choice=event.target.closest('button[data-study-view]');

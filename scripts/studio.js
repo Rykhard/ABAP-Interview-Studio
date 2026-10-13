@@ -42,7 +42,7 @@ const iconPaths={
  performance:'M21 5.5c0 1.7-4 3-9 3s-9-1.3-9-3 4-3 9-3 9 1.3 9 3Z M3 5.5v12c0 1.7 4 3 9 3s9-1.3 9-3v-12 M13.5 10.5l-4 4h5l-4 4',
  integration:'M2.5 6h5v12h-5Z M16.5 6h5v12h-5Z M8 9h8 M13.5 6.5 16 9l-2.5 2.5 M16 15H8 M10.5 12.5 8 15l2.5 2.5',
  quality:'M8 4H5a1 1 0 0 0-1 1v15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-3 M8 2h8v4H8Z M8 13l3 3 6-7',
- extension:'M9 7V5a3 3 0 0 1 6 0v2h6v6h-2a3 3 0 0 0 0 6h2v2H3V7Z',
+ extension:'M9 7H3v14h18v-2h-2a3 3 0 0 1 0-6h2V7h-6 M9 7V5a3 3 0 0 1 6 0v2',
  interview:'M4 3h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-5 4V4a1 1 0 0 1 1-1Z M8 17h8l5 4V9 M7 7h6 M7 10h3'
 };
 function icon(key){return `<span class="topic-icon" data-topic-icon="${key}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">${(iconPaths[key]||iconPaths.abap).split(/ (?=M)/).map(part=>`<path d="${part}"/>`).join('')}</svg></span>`;}
