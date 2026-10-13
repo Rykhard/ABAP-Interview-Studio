@@ -43,6 +43,7 @@ function captureQuestionReturn(){
  storeFilters();questionReturn={prefs:{...prefs.learn},libraryList,savedOnly,lessonLibrary,ids,scrollY:window.scrollY};
 }
 function returnToQuestions(q){
+ if(learningCollection){jobCollections.study(learningCollection.id,false);focusDestination(q.id);return;}
  activeLearningPath='';
  if(!questionReturn){openTopic(q.topic,q.section);focusDestination(q.id);return;}
  const origin=questionReturn;mode='learn';prefs.learn={...origin.prefs};libraryList=origin.libraryList;savedOnly=origin.savedOnly;lessonLibrary=origin.lessonLibrary;questionFromSearch=false;
@@ -51,7 +52,7 @@ function returnToQuestions(q){
  restoreFilters();render();routeSelection();
  const target=document.querySelector(`#q-${q.id} .question-row-link, #q-${q.id} h3`)||$('heading');target.focus({preventScroll:true});window.scrollTo({top:origin.scrollY,behavior:'instant'});
 }
-function openSavedQuestions(){activeLearningPath='';lessonLibrary=false;storeFilters();mode='learn';savedOnly=true;libraryList=true;questionFromSearch=false;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
+function openSavedQuestions(){learningCollection=null;activeLearningPath='';lessonLibrary=false;storeFilters();mode='learn';savedOnly=true;libraryList=true;questionFromSearch=false;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
 function focusedQuestion(q){
  const sequence=questionSequence(q),position=sequence.indexOf(q.id),next=byId.get(sequence[position+1]);
  return `<div class="question-routebar"><button id="questionTopic">&larr; Back to questions</button>${questionFromSearch?'<button id="backSearch">Search results</button>':''}</div><section class="question-group"><article class="card focused-card" id="q-${q.id}"><div class="meta"><span>${q.id} &middot; ${esc(q.topicTitle)} ${learningBadge(q)}</span>${questionActions(q)}</div><h3 tabindex="-1">${esc(q.question)}</h3>${questionReferences(q)}${learningContext(q)}${answer(q)}${learningCheckpoint(q)}<footer class="question-next-actions"><button data-practice-question="${q.id}">Practice this question</button><div class="route-controls"><button id="previousQuestion" ${position===0?'disabled':''} aria-label="Previous question">&larr;</button><span class="route-position">${position+1} / ${sequence.length}</span><button id="nextQuestion" class="primary" ${position===sequence.length-1?'disabled':''}>${next?'Next question: '+esc(next.question):'End of this sequence'} &rarr;</button></div></footer></article></section>`;
@@ -68,11 +69,12 @@ function syncCalmView(){
  main.classList.toggle('single-question',!!exact);
  document.body.classList.toggle('practice-focus',mode==='train'&&!!activeSession&&!activeSession.done);
  main.classList.toggle('is-catalog',mode==='learn'&&!lessonLibrary&&!savedOnly&&!libraryList&&!$('topic').value&&!$('search').value.trim());
- $('learnFilters').hidden=mode!=='learn'||lessonLibrary;
+ $('learnFilters').hidden=mode!=='learn'||lessonLibrary||!!learningCollection;
  $('filterSummary').textContent=[$('search').value&&!exact?$('search').value:'',$('scope').value!=='all'?learningText(learningLevels.get($('scope').value),'title'):''].filter(Boolean).join(' · ');
  if(lessonLibrary&&mode==='learn'){$('heading').textContent='Guided lessons';$('intro').textContent='Follow a concrete example. See the process stage and data change at each step.';}
+ if(learningCollection&&mode==='learn'){$('heading').textContent=learningCollection.title;$('intro').textContent=studioLocale==='ru'?'Все вопросы подборки по темам. Начните с изучения, затем переходите к практике.':'Your questions grouped by topic. Study first, then practice.';$('breadcrumbs').innerHTML=`<button id=collectionLibraryLink>${studioLocale==='ru'?'Мои подборки':'My collections'}</button><span>/</span><span>${esc(learningCollection.title)}</span>`;$('collectionLibraryLink').onclick=()=>jobCollections.open();document.querySelector('.stat').hidden=true;}
  if(savedOnly&&mode==='learn'){$('heading').textContent='Saved questions';$('intro').textContent='Your personal collection. Open a question to read, or practice the collection aloud.';}
- document.querySelectorAll('[data-open-question]').forEach(a=>a.onclick=e=>{if(!isPlainLinkClick(e))return;e.preventDefault();activeLearningPath='';openQuestion(a.dataset.openQuestion);});
+ document.querySelectorAll('[data-open-question]').forEach(a=>{if(learningCollection)a.href='#q-'+a.dataset.openQuestion+'&collection='+encodeURIComponent(learningCollection.id);a.onclick=e=>{if(!isPlainLinkClick(e))return;e.preventDefault();activeLearningPath='';openQuestion(a.dataset.openQuestion);};});
  if($('continueReading'))$('continueReading').onclick=()=>openQuestion(lastQuestion);
  bindLearningControls();
 }

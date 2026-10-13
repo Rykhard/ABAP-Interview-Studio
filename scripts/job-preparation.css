@@ -19,6 +19,8 @@ main.in-session .job-session-entry{display:inline-flex;font-size:13px;color:var(
 #jobPrivacy{line-height:1.6;margin:10px 0 18px}
 .job-form-actions{display:flex;gap:20px;align-items:end;justify-content:space-between;flex-wrap:wrap}
 #jobCount{box-sizing:border-box;width:100px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}
+.job-count-settings{max-width:390px}.job-form-actions .job-limit-toggle{display:flex;align-items:center;gap:10px;margin-bottom:14px;cursor:pointer}.job-limit-toggle input{appearance:none;width:40px;height:24px;flex:none;border:1px solid var(--line);border-radius:20px;background:var(--muted);position:relative;margin:0;cursor:pointer}.job-limit-toggle input:before{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--surface);transition:transform 180ms ease}.job-limit-toggle input:checked{background:var(--green)}.job-limit-toggle input:checked:before{transform:translateX(16px)}#jobCountLabel[hidden]{display:none}#jobLimitHint{max-width:38ch;line-height:1.5;font-size:12px}
+@media(prefers-reduced-motion:reduce){.job-limit-toggle input:before{transition:none}}
 #jobStatus{line-height:1.6;font-size:14px;margin:20px 0 0}
 #jobStatus:empty{display:none}
 #jobStatus[data-error=true]{border-left:3px solid var(--warm-line);background:var(--warm);padding:12px 16px;border-radius:4px}
@@ -37,7 +39,7 @@ main.in-session .job-session-entry{display:inline-flex;font-size:13px;color:var(
 #jobSelection{font-weight:650}
 @media(max-width:1100px){.app-bar .job-entry small,.app-bar .job-session-entry small{display:none}.app-bar{flex-wrap:wrap}}
 @media(max-width:700px){.app-bar .job-entry,.app-bar .job-session-entry{grid-column:1 / -1;grid-row:5;justify-self:end;margin-left:0}.app-bar .job-entry small,.app-bar .job-session-entry small{display:block}}
-@media(max-width:570px){.modes .job-entry{flex-basis:100%;margin-left:0;text-align:left;padding-left:0;border-color:transparent}#jobDialog{padding:18px;max-height:92vh}.job-form-actions{gap:14px}.job-form-actions>button{width:100%}.job-match{padding:12px}.job-match-reason,.job-match blockquote{margin-left:0}}
+@media(max-width:570px){#jobDialog{padding:18px;max-height:92vh}.job-form-actions{gap:14px}.job-form-actions>button{width:100%}.job-match{padding:12px}.job-match-reason,.job-match blockquote{margin-left:0}}
 @media print{#prepareJob,#prepareJobSession,#jobDialog{display:none!important}}
 #jobProgress{height:5px;border-radius:8px;background:var(--soft);overflow:hidden;margin:16px 0}
 #jobProgress span{display:block;width:35%;height:100%;background:var(--green);border-radius:inherit;animation:job-loading 1800ms ease-in-out infinite alternate}

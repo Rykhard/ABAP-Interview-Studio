@@ -36,6 +36,7 @@ function catalogLevelStatus(){
 }
 function activePathFor(q){const path=learningPaths.get(activeLearningPath);return path?.questionIds.includes(q.id)?path:null;}
 function questionSequence(q){
+ if(learningCollection?.questionIds.includes(q.id))return jobCollections.sequence(learningCollection);
  const path=activePathFor(q);if(path)return path.questionIds;
  const selection=questionReturn?.ids?.filter(id=>byId.has(id));
  if(selection?.includes(q.id))return selection;

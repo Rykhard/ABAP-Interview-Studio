@@ -1090,6 +1090,8 @@ main.in-session .job-session-entry{display:inline-flex;font-size:13px;color:var(
 #jobPrivacy{line-height:1.6;margin:10px 0 18px}
 .job-form-actions{display:flex;gap:20px;align-items:end;justify-content:space-between;flex-wrap:wrap}
 #jobCount{box-sizing:border-box;width:100px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}
+.job-count-settings{max-width:390px}.job-form-actions .job-limit-toggle{display:flex;align-items:center;gap:10px;margin-bottom:14px;cursor:pointer}.job-limit-toggle input{appearance:none;width:40px;height:24px;flex:none;border:1px solid var(--line);border-radius:20px;background:var(--muted);position:relative;margin:0;cursor:pointer}.job-limit-toggle input:before{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--surface);transition:transform 180ms ease}.job-limit-toggle input:checked{background:var(--green)}.job-limit-toggle input:checked:before{transform:translateX(16px)}#jobCountLabel[hidden]{display:none}#jobLimitHint{max-width:38ch;line-height:1.5;font-size:12px}
+@media(prefers-reduced-motion:reduce){.job-limit-toggle input:before{transition:none}}
 #jobStatus{line-height:1.6;font-size:14px;margin:20px 0 0}
 #jobStatus:empty{display:none}
 #jobStatus[data-error=true]{border-left:3px solid var(--warm-line);background:var(--warm);padding:12px 16px;border-radius:4px}
@@ -1108,7 +1110,7 @@ main.in-session .job-session-entry{display:inline-flex;font-size:13px;color:var(
 #jobSelection{font-weight:650}
 @media(max-width:1100px){.app-bar .job-entry small,.app-bar .job-session-entry small{display:none}.app-bar{flex-wrap:wrap}}
 @media(max-width:700px){.app-bar .job-entry,.app-bar .job-session-entry{grid-column:1 / -1;grid-row:5;justify-self:end;margin-left:0}.app-bar .job-entry small,.app-bar .job-session-entry small{display:block}}
-@media(max-width:570px){.modes .job-entry{flex-basis:100%;margin-left:0;text-align:left;padding-left:0;border-color:transparent}#jobDialog{padding:18px;max-height:92vh}.job-form-actions{gap:14px}.job-form-actions>button{width:100%}.job-match{padding:12px}.job-match-reason,.job-match blockquote{margin-left:0}}
+@media(max-width:570px){#jobDialog{padding:18px;max-height:92vh}.job-form-actions{gap:14px}.job-form-actions>button{width:100%}.job-match{padding:12px}.job-match-reason,.job-match blockquote{margin-left:0}}
 @media print{#prepareJob,#prepareJobSession,#jobDialog{display:none!important}}
 #jobProgress{height:5px;border-radius:8px;background:var(--soft);overflow:hidden;margin:16px 0}
 #jobProgress span{display:block;width:35%;height:100%;background:var(--green);border-radius:inherit;animation:job-loading 1800ms ease-in-out infinite alternate}
@@ -1508,7 +1510,7 @@ const all=modules.flatMap(m=>m.questions.map(q=>({...q,module:m.id,...placement.
 const topicQuestions=t=>t.sections.flatMap(section=>section.questionIds.map(id=>byId.get(id)));
 let state={},ratings={},mode='learn',libraryList=false,restoringRoute=false,savedOnly=false,lessonLibrary=false;
 const answerWindows=new Map();
-let listedQuestionIds=[];
+let listedQuestionIds=[],learningCollection=null;
 const isPlainLinkClick=event=>event.button===0&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.altKey;
 let answerDefault='questions';const answerOverrides=new Map();
 try{const saved=localStorage.getItem('abap-studio-answer-view-v2');if(['questions','answers'].includes(saved))answerDefault=saved;}catch{/* View selection also works without storage. */}
@@ -1550,6 +1552,7 @@ function catalogLevelStatus(){
 }
 function activePathFor(q){const path=learningPaths.get(activeLearningPath);return path?.questionIds.includes(q.id)?path:null;}
 function questionSequence(q){
+ if(learningCollection?.questionIds.includes(q.id))return jobCollections.sequence(learningCollection);
  const path=activePathFor(q);if(path)return path.questionIds;
  const selection=questionReturn?.ids?.filter(id=>byId.has(id));
  if(selection?.includes(q.id))return selection;
@@ -1601,15 +1604,15 @@ function questionStatus(q,kind=practiceKind){
 }
 function filtered(includeSelection=true){
  const term=$('search').value.trim().toLowerCase(),topic=$('topic').value,section=$('section').value,scope=$('scope').value,selection=$('selection').value,exactId=byId.has(term.toUpperCase());
- return topics.flatMap(topicQuestions).filter(q=>(mode!=='learn'||!savedOnly||savedQuestions.has(q.id))&&(!topic||topic===q.topic)&&(!section||section===q.section)&&(!term||(exactId?q.id.toLowerCase()===term:[q.id,englishQuestionText.get(q.id)||'',russianQuestionText.get(q.id)||'',q.question,q.answer,q.detail,q.pitfall,q.moduleTitle,...q.followups||[],...q.signals||[],q.evidence||''].join(' ').toLowerCase().includes(term)))&&(scope==='all'||scope===learningLevel(q))&&(mode==='learn'||!includeSelection||selection==='all'||questionStatus(q)===selection));
+ return topics.flatMap(topicQuestions).filter(q=>(mode!=='learn'||!learningCollection||learningCollection.questionIds.includes(q.id))&&(mode!=='learn'||!savedOnly||savedQuestions.has(q.id))&&(!topic||topic===q.topic)&&(!section||section===q.section)&&(!term||(exactId?q.id.toLowerCase()===term:[q.id,englishQuestionText.get(q.id)||'',russianQuestionText.get(q.id)||'',q.question,q.answer,q.detail,q.pitfall,q.moduleTitle,...q.followups||[],...q.signals||[],q.evidence||''].join(' ').toLowerCase().includes(term)))&&(scope==='all'||scope===learningLevel(q))&&(mode==='learn'||!includeSelection||selection==='all'||questionStatus(q)===selection));
 }
 function focusDestination(id){const target=id?document.querySelector('#q-'+id+' h3, #q-'+id+' .question-row-link'):$('heading');if(!target)return;target.tabIndex=-1;target.focus({preventScroll:true});if(id)document.querySelector('#q-'+id).scrollIntoView({block:'start'});else window.scrollTo(0,0);animateDestination();}
-function setMode(next,resume=false){storeFilters();if(next==='train'&&mode==='learn'&&!resume){prefs.train={...prefs.learn};activeSession=null;}mode=next;if(next==='train'){savedOnly=false;lessonLibrary=false;}restoreFilters();render();routeSelection();focusDestination();}
+function setMode(next,resume=false){if(next==='learn'&&mode==='train'&&jobCollections.find(activeSession?.collectionId)){jobCollections.study(activeSession.collectionId);return;}if(next==='train'&&learningCollection&&!resume){const item=learningCollection;learningCollection=null;mode='train';savedOnly=false;lessonLibrary=false;beginPractice(item.questionIds,'recall',item.title,'collection',item.id);return;}storeFilters();if(next==='train'&&mode==='learn'&&!resume){prefs.train={...prefs.learn};activeSession=null;}mode=next;if(next==='train'){savedOnly=false;lessonLibrary=false;}restoreFilters();render();routeSelection();focusDestination();}
 function route(hash,replace=false){if(restoringRoute)return;const next=hash||location.pathname+location.search;if((hash&&location.hash===hash)||(!hash&&!location.hash))return;try{history[replace?'replaceState':'pushState'](null,'',next);}catch{/* Local file contexts may restrict history updates. */}}
-function routeSelection(replace=false){const params=new URLSearchParams();if(mode==='train'){params.set('mode','train');params.set('kind',practiceKind);params.set('size',$('sessionLength').value);}else if(lessonLibrary)params.set('view','lessons');else if(savedOnly)params.set('view','saved');else if(libraryList&&!$('topic').value)params.set('view','list');for(const key of (mode==='train'?['topic','section','scope','selection','search']:['topic','section','scope','search'])){const value=$(key).value;if(value&&(value!=='all'||key==='scope'&&learningSettings.level!=='all'))params.set(key,value);}route(params.size?'#'+params:'',replace);}
-function openTopic(id,section=''){expandSelectedTopic(id);activeLearningPath='';lessonLibrary=false;savedOnly=false;if(!topicById.has(id))id='';storeFilters();questionFromSearch=false;mode='learn';prefs.learn={search:'',topic:id,section,scope:learningSettings.level,selection:'all'};restoreFilters();libraryList=!!id;render();routeSelection();focusDestination();}
+function routeSelection(replace=false){const params=new URLSearchParams();if(mode==='learn'&&learningCollection)params.set('collection',learningCollection.id);if(mode==='train'){params.set('mode','train');params.set('kind',practiceKind);params.set('size',$('sessionLength').value);}else if(lessonLibrary)params.set('view','lessons');else if(savedOnly)params.set('view','saved');else if(libraryList&&!$('topic').value)params.set('view','list');for(const key of (mode==='train'?['topic','section','scope','selection','search']:['topic','section','scope','search'])){const value=$(key).value;if(value&&(value!=='all'||key==='scope'&&learningSettings.level!=='all'))params.set(key,value);}route(params.size?'#'+params:'',replace);}
+function openTopic(id,section=''){learningCollection=null;expandSelectedTopic(id);activeLearningPath='';lessonLibrary=false;savedOnly=false;if(!topicById.has(id))id='';storeFilters();questionFromSearch=false;mode='learn';prefs.learn={search:'',topic:id,section,scope:learningSettings.level,selection:'all'};restoreFilters();libraryList=!!id;render();routeSelection();focusDestination();}
 function selectTopic(id,section=''){expandSelectedTopic(id);if(mode==='learn'){openTopic(id,section);return;}storeFilters();prefs.train={...prefs.train,search:'',topic:id,section};activeSession=null;restoreFilters();render();routeSelection();focusDestination();}
-function openQuestion(id,fromSearch=false){if(!byId.has(id))return;if(fromSearch||!learningPaths.get(activeLearningPath)?.questionIds.includes(id))activeLearningPath='';markQuestionVisited(id);captureQuestionReturn();lessonLibrary=false;savedOnly=false;rememberQuestion(id);const q=byId.get(id);storeFilters();questionFromSearch=fromSearch;mode='learn';prefs.learn={search:id,topic:q.topic,section:q.section,scope:'all',selection:'all'};answerOverrides.set(id,true);restoreFilters();libraryList=true;render();route('#q-'+id+(activeLearningPath?'&path='+activeLearningPath:''));focusDestination(id);}
+function openQuestion(id,fromSearch=false){if(!byId.has(id))return;if(fromSearch||!learningCollection?.questionIds.includes(id))learningCollection=null;if(fromSearch||!learningPaths.get(activeLearningPath)?.questionIds.includes(id))activeLearningPath='';markQuestionVisited(id);captureQuestionReturn();lessonLibrary=false;savedOnly=false;rememberQuestion(id);const q=byId.get(id);storeFilters();questionFromSearch=fromSearch;mode='learn';prefs.learn={search:id,topic:q.topic,section:q.section,scope:'all',selection:'all'};answerOverrides.set(id,true);restoreFilters();libraryList=true;render();route('#q-'+id+(activeLearningPath?'&path='+activeLearningPath:'')+(learningCollection?'&collection='+encodeURIComponent(learningCollection.id):''));focusDestination(id);}
 for(const t of topics){const option=document.createElement('option');option.value=t.id;option.textContent=t.title;$('topic').append(option);}
 // Original topic glyphs: one 24px grid, consistent strokes and recognizable SAP/ABAP concepts.
 const iconPaths={
@@ -1762,7 +1765,7 @@ $('view').addEventListener('click',event=>{
  animateLessonStep(next);
  const stage=next.querySelector('.save-flow,.lesson-stage');if(stage.getBoundingClientRect().top<0||stage.getBoundingClientRect().top>innerHeight*.6)stage.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 });
-function openLessonLibrary(){activeLearningPath='';
+function openLessonLibrary(){learningCollection=null;activeLearningPath='';
  storeFilters();mode='learn';lessonLibrary=true;savedOnly=false;libraryList=false;questionFromSearch=false;
  prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};restoreFilters();
  document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');
@@ -2094,7 +2097,7 @@ function nav(animate=true){
  const selected=$('topic').value,section=$('section').value;
  // Тема changes reveal their sections; manual collapse survives unrelated renders.
  if(selected!==lastNavTopic){lastNavTopic=selected;expandSelectedTopic(selected);}
- let output=`<div class="nav-library"><button class="nav-home ${!selected&&!savedOnly&&!lessonLibrary?'active':''}" data-topic="" ${!selected&&!savedOnly&&!lessonLibrary?'aria-current="page"':''}>Все темы</button><button id="savedQuestionsNav" class="nav-saved ${savedOnly?'active':''}" ${savedOnly?'aria-current="page"':''}>Избранное <span class="nav-count">${savedQuestions.size}</span></button><button id="guidedLessonsNav" class="nav-saved ${lessonLibrary?'active':''}" ${lessonLibrary?'aria-current="page"':''}>Пошаговые уроки <span class="nav-count">${lessons.length}</span></button><button id="jobCollectionsNav" class="nav-saved" aria-haspopup="dialog">${studioLocale==='ru'?'Мои подборки':'My collections'}</button></div>`;
+ let output=`<div class="nav-library"><button class="nav-home ${!selected&&!savedOnly&&!lessonLibrary&&!learningCollection?'active':''}" data-topic="" ${!selected&&!savedOnly&&!lessonLibrary&&!learningCollection?'aria-current="page"':''}>Все темы</button><button id="savedQuestionsNav" class="nav-saved ${savedOnly?'active':''}" ${savedOnly?'aria-current="page"':''}>Избранное <span class="nav-count">${savedQuestions.size}</span></button><button id="guidedLessonsNav" class="nav-saved ${lessonLibrary?'active':''}" ${lessonLibrary?'aria-current="page"':''}>Пошаговые уроки <span class="nav-count">${lessons.length}</span></button><button id="jobCollectionsNav" class="nav-saved ${learningCollection?'active':''}" aria-haspopup="dialog">${studioLocale==='ru'?'Мои подборки':'My collections'}</button></div>`;
  for(const t of topics){
   const expanded=expandedNavTopic===t.id,current=selected===t.id,active=current&&(!section||!expanded);
   output+=`<div class="nav-topic-row ${current?'is-current-topic':''}"><button data-topic="${t.id}" class="nav-topic ${active?'active':''}" ${active?'aria-current="page"':''}>${icon(t.icon)}<span class="nav-title">${esc(t.title)}</span><span class="nav-count">${topicQuestions(t).length}</span></button><button class="nav-disclosure" data-expand-topic="${t.id}" aria-expanded="${expanded}" aria-controls="subtopics-${t.id}" aria-label="Подтемы: ${esc(t.title)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button></div><div class="nav-subtopics" id="subtopics-${t.id}" ${expanded?'':'hidden'}>${t.sections.map(x=>`<button data-topic="${t.id}" data-section="${x.id}" class="nav-section ${current&&section===x.id?'active':''}" ${current&&section===x.id&&expanded?'aria-current="page"':''}><span class="nav-section-title">${esc(x.title)}</span><span class="nav-count">${x.questionIds.length}</span></button>`).join('')}</div>`;
@@ -2152,13 +2155,13 @@ function learn(){
   $('moreAnswers').onclick=()=>{const nextId=listedQuestionIds[limit];answerWindows.set(windowKey,limit+20);render();const next=document.querySelector(`#q-${nextId} [data-open-question]`);next?.focus({preventScroll:true});next?.scrollIntoView({block:'start'});};
  }
  $('expandAll').onclick=()=>setAnswerDisplay('answers');$('collapseAll').onclick=()=>setAnswerDisplay('questions');syncAnswerDisplay();
- $('practiceSelection').onclick=()=>{storeFilters();const ids=filtered().map(q=>q.id);prefs.train={...prefs.learn};activeSession=null;practiceKind='recall';if(savedOnly){savedOnly=false;mode='train';restoreFilters();beginPractice(ids,'recall');}else setMode('train');};
+ $('practiceSelection').onclick=()=>{if(learningCollection){setMode('train');return;}storeFilters();const ids=filtered().map(q=>q.id);prefs.train={...prefs.learn};activeSession=null;practiceKind='recall';if(savedOnly){savedOnly=false;mode='train';restoreFilters();beginPractice(ids,'recall');}else setMode('train');};
 }
 function shuffled(items){const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
 function render(){document.querySelector('main').classList.toggle('in-session',mode==='train'&&!!activeSession);const topic=topicById.get($('topic').value),section=topic?.sections.find(x=>x.id===$('section').value),progressQuestions=topic?topicQuestions(topic):all,ready=progressQuestions.filter(q=>state[q.id]).length;$('readyCount').textContent=ready+' / '+progressQuestions.length;$('progress').value=ready/progressQuestions.length*100;document.querySelector('.stat').hidden=mode!=='learn'||!topic;$('heading').textContent=mode==='learn'?(section?section.title:topic?topic.title:'Выберите тему'):'Практика';$('intro').textContent=mode==='learn'?(topic?topic.description:'Откройте тему, чтобы изучить вопросы, примеры и наглядные объяснения.'):'Выберите формат, пройдите короткую тренировку и повторите сложные вопросы.';practiceSetup();for(const x of ['learn','train']){$(x+'Tab').classList.toggle('active',x===mode);$(x+'Tab').setAttribute('aria-pressed',String(x===mode));}$('resumePractice').hidden=mode!=='learn'||!activeSession||activeSession.done;nav();breadcrumbs();if(mode==='learn')learn();else practice();syncCalmView();}
 for(const key of ['search','topic','section','scope','selection'])$(key).addEventListener(key==='search'?'input':'change',()=>{if(key==='topic'){sectionOptions();libraryList=!!$('topic').value;}if(mode==='train')activeSession=null;questionFromSearch=false;if(key==='scope'){learningSettings.level=$('scope').value;saveLearningSettings();}storeFilters();render();routeSelection(key==='search');});for(const x of ['learn','train'])$(x+'Tab').onclick=()=>setMode(x);
 $('learningSort').value=learningSettings.sort;$('learningSort').onchange=()=>{learningSettings.sort=$('learningSort').value;saveLearningSettings();render();};
-$('clearFilters').onclick=()=>{learningSettings.level='all';learningSettings.sort='recommended';$('learningSort').value='recommended';saveLearningSettings();prefs[mode]={search:'',topic:'',section:'',scope:'all',selection:'all'};restoreFilters();if(mode==='train')activeSession=null;questionFromSearch=false;libraryList=false;savedOnly=false;lessonLibrary=false;$('advancedSettings').open=false;render();routeSelection();};
+$('clearFilters').onclick=()=>{learningCollection=null;learningSettings.level='all';learningSettings.sort='recommended';$('learningSort').value='recommended';saveLearningSettings();prefs[mode]={search:'',topic:'',section:'',scope:'all',selection:'all'};restoreFilters();if(mode==='train')activeSession=null;questionFromSearch=false;libraryList=false;savedOnly=false;lessonLibrary=false;$('advancedSettings').open=false;render();routeSelection();};
 document.querySelector('.skip-link').onclick=e=>{e.preventDefault();$('mainContent').focus({preventScroll:true});window.scrollTo(0,0);};
 $('menuToggle').onclick=()=>{const open=document.querySelector('aside').classList.toggle('nav-open');$('menuToggle').setAttribute('aria-expanded',String(open));};
 document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]')||/INPUT|SELECT|TEXTAREA|BUTTON|SUMMARY|A/.test(e.target.tagName)||mode!=='train'||!activeSession||activeSession.done)return;if(e.key===' '&&activeSession.kind==='recall'&&!activeSession.revealed){e.preventDefault();$('revealPractice')?.click();}});
@@ -2285,9 +2288,9 @@ function practiceSetup(){
  $('practiceSummary').textContent=count?`${localeCount(items.length,'question')}${practiceKind==='quiz'?' с вариантами ответа':' для тренировки'}`:$('selection').value==='retry'?'В этой подборке нет ошибок. Выберите все вопросы или другую тему.':$('selection').value==='new'?'В этой подборке нет новых вопросов. Выберите все вопросы для повторения.':'Вопросы не найдены. Смените тему или сбросьте дополнительные фильтры.';
  $('practiceHelpText').textContent=practiceKind==='quiz'?'Новые — ещё без проверенной попытки. Повторение ошибок учитывает последнюю попытку, даже если раньше ответ был верным. За первый верный ответ на каждый вопрос начисляется 10 XP. Тест не меняет оценку готовности к устному ответу.':'Новые — ещё без самооценки устного ответа. Повторить — последняя оценка 0 или 1. Чтение не считается попыткой. Микрофон не записывается; устный ответ оцениваете вы сами.';
 }
-function beginPractice(ids,kind=practiceKind,title=practiceContext(),source='library'){
+function beginPractice(ids,kind=practiceKind,title=practiceContext(),source='library',collectionId=''){
  const unique=[...new Set(ids)].filter(id=>byId.has(id)&&(kind!=='quiz'||quizByQuestion.has(id)));if(!unique.length)return;
- practiceKind=kind;activeSession={kind,ids:shuffled(unique),index:0,answers:{},orders:{},selected:null,revealed:false,done:false,title,source,earnedXp:0};
+ practiceKind=kind;activeSession={kind,ids:shuffled(unique),index:0,answers:{},orders:{},selected:null,revealed:false,done:false,title,source,collectionId,earnedXp:0};
  if(kind==='quiz')for(const id of activeSession.ids)activeSession.orders[id]=shuffled(quizByQuestion.get(id).options.map(o=>o.id));
  render();routeSelection();focusPractice();
 }
@@ -2306,7 +2309,7 @@ function rateRecall(score){
  const s=activeSession;if(!s||s.done||s.kind!=='recall'||!s.revealed||!Number.isInteger(score)||score<0||score>3)return;const id=s.ids[s.index];if(s.answers[id])return;
  s.answers[id]={score,correct:score>=2};ratings[id]=score;if(score>=2)state[id]=true;else delete state[id];save();render();$('sessionFeedback')?.focus({preventScroll:true});animateEntrance($('sessionFeedback'));
 }
-function sessionProgress(s){return `<div class="session-bar"><div><h3>${s.kind==='quiz'?'Тест с вариантами':'Устный ответ'}</h3><div class="small subtle">${esc(s.title)}</div></div><button id="finishPractice">Завершить тренировку</button></div><div class="session-count">Вопрос ${s.index+1} из ${s.ids.length} · ${s.kind==='quiz'?'Ответов':'Самооценок'}: ${Object.keys(s.answers).length}</div><progress class="session-progress" value="${s.index+(s.answers[s.ids[s.index]]?1:0)}" max="${s.ids.length}" aria-label="Прогресс тренировки"></progress>`;}
+function sessionProgress(s){return `<div class="session-bar"><div><h3>${s.kind==='quiz'?'Тест с вариантами':'Устный ответ'}</h3><div class="small subtle">${esc(s.title)}</div></div>${s.collectionId?`<button data-study-collection="${esc(s.collectionId)}">${studioLocale==='ru'?'К изучению подборки':'Study collection'}</button>`:''}<button id="finishPractice">Завершить тренировку</button></div><div class="session-count">Вопрос ${s.index+1} из ${s.ids.length} · ${s.kind==='quiz'?'Ответов':'Самооценок'}: ${Object.keys(s.answers).length}</div><progress class="session-progress" value="${s.index+(s.answers[s.ids[s.index]]?1:0)}" max="${s.ids.length}" aria-label="Прогресс тренировки"></progress>`;}
 function quizQuestion(s,q){
  const item=quizByQuestion.get(q.id),result=s.answers[q.id],options=s.orders[q.id].map(id=>item.options.find(o=>o.id===id));
  const best=item.options.find(o=>o.id===item.correctOption),chosen=result&&item.options.find(o=>o.id===result.chosen);
@@ -2321,7 +2324,7 @@ function practiceResults(s){
  const answered=s.ids.filter(id=>s.answers[id]),good=answered.filter(id=>s.answers[id].correct),missed=answered.filter(id=>!s.answers[id].correct),unanswered=s.ids.filter(id=>!s.answers[id]);
  const score=s.kind==='quiz'?(answered.length?Math.round(good.length/answered.length*100)+'%':'—'):(answered.length?answered.reduce((n,id)=>n+s.answers[id].score,0)+' / '+answered.length*3:'—');
  $('view').innerHTML=`<section class="session-shell session-results"><h3 id="resultsTitle" tabindex="-1">${unanswered.length?'Тренировка завершена':'Тренировка пройдена'}</h3><p class="subtle">${esc(s.title)} · ${s.kind==='quiz'?'Ответов':'Самооценок'}: ${answered.length} из ${s.ids.length}</p><div class="result-metrics"><div><strong>${score}</strong><span>${s.kind==='quiz'?'верных среди данных ответов':'баллов по самооценке'}</span></div><div><strong>${good.length}</strong><span>${s.kind==='quiz'?'верных ответов':'готовы к устному ответу'}</span></div><div><strong>${missed.length}</strong><span>для повторения</span></div><div><strong>${unanswered.length}</strong><span>без попытки</span></div></div><p class="progress-quiet">${s.kind==='quiz'?`+${s.earnedXp} XP за тренировку · ${quizProgress.mastered.length*10} XP всего. Баллы начисляются только за первый верный ответ на каждый вопрос.`:'Баллы отражают вашу самооценку при сравнении с примером ответа, а не автоматическую проверку.'}</p><div class="result-actions controls"><button id="retrySession" class="primary" ${missed.length?'':'disabled'}>Повторить ${localeCount(missed.length,'question')}</button>${unanswered.length?`<button id="continueUnanswered">Без попытки: ${localeCount(unanswered.length,'question')}</button>`:''}<button id="newSession">Новая тренировка</button></div><details class="result-review"><summary>Разобрать вопросы и ответы (${s.ids.length})</summary><div class="result-list">${s.ids.map(id=>{const q=byId.get(id),result=s.answers[id];return `<details class="result-item"><summary><span class="status ${!result?'':result.correct?'correct':'retry'}">${!result?'Без попытки':result.correct?(s.kind==='quiz'?'Верно':'Готов'):'Повторить'}</span><span>${q.id} — ${esc(q.question)}</span></summary>${questionReferences(q)}${answer(q)}</details>`;}).join('')}</div></details></section>`;
- $('retrySession').onclick=()=>beginPractice(missed,s.kind,s.title,s.source);if(unanswered.length)$('continueUnanswered').onclick=()=>beginPractice(unanswered,s.kind,s.title,s.source);$('newSession').onclick=()=>{activeSession=null;render();($('startPractice').disabled?$('selection'):$('startPractice')).focus();};
+ $('retrySession').onclick=()=>beginPractice(missed,s.kind,s.title,s.source,s.collectionId);if(unanswered.length)$('continueUnanswered').onclick=()=>beginPractice(unanswered,s.kind,s.title,s.source,s.collectionId);$('newSession').onclick=()=>{activeSession=null;render();($('startPractice').disabled?$('selection'):$('startPractice')).focus();};
 }
 function practice(){
  if(!activeSession){$('view').innerHTML='';return;}const s=activeSession;if(s.done){practiceResults(s);return;}const q=byId.get(s.ids[s.index]);
@@ -2559,6 +2562,7 @@ function captureQuestionReturn(){
  storeFilters();questionReturn={prefs:{...prefs.learn},libraryList,savedOnly,lessonLibrary,ids,scrollY:window.scrollY};
 }
 function returnToQuestions(q){
+ if(learningCollection){jobCollections.study(learningCollection.id,false);focusDestination(q.id);return;}
  activeLearningPath='';
  if(!questionReturn){openTopic(q.topic,q.section);focusDestination(q.id);return;}
  const origin=questionReturn;mode='learn';prefs.learn={...origin.prefs};libraryList=origin.libraryList;savedOnly=origin.savedOnly;lessonLibrary=origin.lessonLibrary;questionFromSearch=false;
@@ -2567,7 +2571,7 @@ function returnToQuestions(q){
  restoreFilters();render();routeSelection();
  const target=document.querySelector(`#q-${q.id} .question-row-link, #q-${q.id} h3`)||$('heading');target.focus({preventScroll:true});window.scrollTo({top:origin.scrollY,behavior:'instant'});
 }
-function openSavedQuestions(){activeLearningPath='';lessonLibrary=false;storeFilters();mode='learn';savedOnly=true;libraryList=true;questionFromSearch=false;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
+function openSavedQuestions(){learningCollection=null;activeLearningPath='';lessonLibrary=false;storeFilters();mode='learn';savedOnly=true;libraryList=true;questionFromSearch=false;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
 function focusedQuestion(q){
  const sequence=questionSequence(q),position=sequence.indexOf(q.id),next=byId.get(sequence[position+1]);
  return `<div class="question-routebar"><button id="questionTopic">&larr; К списку вопросов</button>${questionFromSearch?'<button id="backSearch">Результаты поиска</button>':''}</div><section class="question-group"><article class="card focused-card" id="q-${q.id}"><div class="meta"><span>${q.id} &middot; ${esc(q.topicTitle)} ${learningBadge(q)}</span>${questionActions(q)}</div><h3 tabindex="-1">${esc(q.question)}</h3>${questionReferences(q)}${learningContext(q)}${answer(q)}${learningCheckpoint(q)}<footer class="question-next-actions"><button data-practice-question="${q.id}">Тренировать этот вопрос</button><div class="route-controls"><button id="previousQuestion" ${position===0?'disabled':''} aria-label="Предыдущий вопрос">&larr;</button><span class="route-position">${position+1} / ${sequence.length}</span><button id="nextQuestion" class="primary" ${position===sequence.length-1?'disabled':''}>${next?'Следующий вопрос: '+esc(next.question):'Конец этой последовательности'} &rarr;</button></div></footer></article></section>`;
@@ -2584,11 +2588,12 @@ function syncCalmView(){
  main.classList.toggle('single-question',!!exact);
  document.body.classList.toggle('practice-focus',mode==='train'&&!!activeSession&&!activeSession.done);
  main.classList.toggle('is-catalog',mode==='learn'&&!lessonLibrary&&!savedOnly&&!libraryList&&!$('topic').value&&!$('search').value.trim());
- $('learnFilters').hidden=mode!=='learn'||lessonLibrary;
+ $('learnFilters').hidden=mode!=='learn'||lessonLibrary||!!learningCollection;
  $('filterSummary').textContent=[$('search').value&&!exact?$('search').value:'',$('scope').value!=='all'?learningText(learningLevels.get($('scope').value),'title'):''].filter(Boolean).join(' · ');
  if(lessonLibrary&&mode==='learn'){$('heading').textContent='Пошаговые уроки';$('intro').textContent='Разберите конкретный пример: что происходит на каждом этапе и как меняются данные.';}
+ if(learningCollection&&mode==='learn'){$('heading').textContent=learningCollection.title;$('intro').textContent=studioLocale==='ru'?'Все вопросы подборки по темам. Начните с изучения, затем переходите к практике.':'Your questions grouped by topic. Study first, then practice.';$('breadcrumbs').innerHTML=`<button id=collectionLibraryLink>${studioLocale==='ru'?'Мои подборки':'My collections'}</button><span>/</span><span>${esc(learningCollection.title)}</span>`;$('collectionLibraryLink').onclick=()=>jobCollections.open();document.querySelector('.stat').hidden=true;}
  if(savedOnly&&mode==='learn'){$('heading').textContent='Избранное';$('intro').textContent='Ваша подборка. Откройте вопрос для изучения или потренируйтесь отвечать вслух.';}
- document.querySelectorAll('[data-open-question]').forEach(a=>a.onclick=e=>{if(!isPlainLinkClick(e))return;e.preventDefault();activeLearningPath='';openQuestion(a.dataset.openQuestion);});
+ document.querySelectorAll('[data-open-question]').forEach(a=>{if(learningCollection)a.href='#q-'+a.dataset.openQuestion+'&collection='+encodeURIComponent(learningCollection.id);a.onclick=e=>{if(!isPlainLinkClick(e))return;e.preventDefault();activeLearningPath='';openQuestion(a.dataset.openQuestion);};});
  if($('continueReading'))$('continueReading').onclick=()=>openQuestion(lastQuestion);
  bindLearningControls();
 }
@@ -2614,19 +2619,67 @@ $('view').addEventListener('click',event=>{
 });
 applyReading();applyTheme(document.documentElement.dataset.themeChoice||'system');
 
+// Local collections contain only user titles and canonical question IDs, never job text.
+const jobCollections=(()=>{
+ const ru=studioLocale==='ru',key='studio.jobCollections.v1';
+ const t=ru?{title:'Мои подборки',close:'Закрыть',empty:'Сохраните вопросы после ИИ-подбора — они появятся здесь.',privacy:'Подборки хранятся только в этом браузере. Текст вакансии не сохраняется.',practice:'Практика',remove:'Удалить',rename:'Переименовать',save:'Сохранить',undo:'Отменить удаление',error:'Не удалось сохранить. Проверьте доступ к хранилищу браузера.',limit:'Можно сохранить до 50 подборок. Удалите ненужную.',name:'Название подборки',replace:'Новая практика заменит текущую сессию.',questions:'Вопросы'}:{title:'My collections',close:'Close',empty:'Save questions after AI matching to find them here.',privacy:'Collections stay in this browser only. The job description is not saved.',practice:'Practice',remove:'Delete',rename:'Rename',save:'Save',undo:'Undo deletion',error:'Could not save. Check browser storage access.',limit:'You can save up to 50 collections. Delete one you no longer need.',name:'Collection name',replace:'New practice replaces your current session.',questions:'Questions'};
+ let dialog,items=[],deleted=null;
+ function read(){try{const value=JSON.parse(localStorage.getItem(key));return value?.version===1&&Array.isArray(value.collections)?value.collections.slice(0,50).filter(x=>x&&typeof x.id==='string'&&typeof x.title==='string'&&Array.isArray(x.questionIds)).map(x=>({id:x.id.slice(0,80),title:x.title.slice(0,80),questionIds:[...new Set(x.questionIds)].filter(id=>byId.has(id)).slice(0,60),createdAt:typeof x.createdAt==='string'?x.createdAt:''})).filter(x=>x.questionIds.length):[];}catch{return [];}}
+ function write(next){try{localStorage.setItem(key,JSON.stringify({version:1,collections:next}));}catch{return false;}items=next;if(learningCollection){const updated=next.find(x=>x.id===learningCollection.id);if(updated){learningCollection=updated;render();}else openTopic('');}return true;}
+ function save(title,ids){
+  title=title.trim().slice(0,80);ids=[...new Set(ids)].filter(id=>byId.has(id)).slice(0,60);if(!title||!ids.length)return {error:t.name};
+  const current=read();if(current.some(x=>x.title===title&&x.questionIds.length===ids.length&&ids.every(id=>x.questionIds.includes(id))))return {ok:true};
+  if(current.length>=50)return {error:t.limit};
+  return write([{id:crypto.randomUUID(),title,questionIds:ids,createdAt:new Date().toISOString()},...current])?{ok:true}:{error:t.error};
+ }
+ function message(text){$('collectionsStatus').textContent=text;}
+ function groups(ids){return topics.map(topic=>({topic,ids:topicQuestions(topic).map(q=>q.id).filter(id=>ids.includes(id))})).filter(group=>group.ids.length);}
+ function renderLibrary(){
+  $('collectionsList').innerHTML=items.length?items.map(x=>`<article class="collection-card" data-id="${esc(x.id)}"><h3>${esc(x.title)}</h3><div class="collection-actions"><button type="button" class="primary" data-action="learn">${ru?'Изучать подборку':'Study collection'}</button><button type="button" data-action="practice">${ru?'Практика всей подборки':'Practice collection'}</button><button type="button" data-action="rename">${t.rename}</button><button type="button" data-action="delete">${t.remove}</button></div><p class="subtle">${t.questions}: ${x.questionIds.length}</p>${groups(x.questionIds).map(group=>`<details class="collection-topic"><summary>${esc(group.topic.title)} (${group.ids.length})</summary><ul>${group.ids.map(id=>`<li><button type="button" data-question="${esc(id)}">${esc(id)} · ${esc(byId.get(id).question)}</button></li>`).join('')}</ul><button type="button" data-action="practice-topic" data-topic="${esc(group.topic.id)}">${ru?'Практика по теме':'Practice this topic'}</button></details>`).join('')}</article>`).join(''):`<p>${t.empty}</p>`;
+  $('collectionsUndo').hidden=!deleted;$('collectionsReplace').hidden=!activeSession;
+ }
+ function open(){
+  if(!dialog){
+   dialog=document.createElement('dialog');dialog.id='collectionsDialog';dialog.setAttribute('aria-labelledby','collectionsTitle');
+   dialog.innerHTML=`<div class="dialog-heading"><h2 id="collectionsTitle">${t.title}</h2><button id="collectionsClose" type="button">${t.close}</button></div><p class="subtle">${t.privacy}</p><p id="collectionsReplace" class="subtle">${t.replace}</p><div id="collectionsList"></div><p id="collectionsStatus" role="status"></p><button id="collectionsUndo" type="button" hidden>${t.undo}</button>`;
+   document.body.append(dialog);$('collectionsClose').onclick=()=>dialog.close();
+   $('collectionsUndo').onclick=()=>{const current=read();if(!deleted||current.some(x=>x.id===deleted.id))return;if(current.length>=50){message(t.limit);return;}if(write([deleted,...current])){deleted=null;renderLibrary();message('');}else message(t.error);};
+   $('collectionsList').onclick=event=>{
+    const button=event.target.closest('button');if(!button)return;
+    if(button.dataset.question){const id=button.closest('.collection-card').dataset.id;dialog.close();study(id);openQuestion(button.dataset.question);return;}
+    const card=button.closest('.collection-card'),id=card?.dataset.id;items=read();const item=items.find(x=>x.id===id);if(!item){renderLibrary();return;}
+    if(button.dataset.action==='learn'){dialog.close();study(id);return;}
+    if(['practice','practice-topic'].includes(button.dataset.action)){const ids=button.dataset.action==='practice-topic'?item.questionIds.filter(id=>byId.get(id).topic===button.dataset.topic):item.questionIds;dialog.close();learningCollection=null;storeFilters();mode='train';savedOnly=false;lessonLibrary=false;restoreFilters();beginPractice(ids,'recall',item.title,'collection',item.id);}
+    if(button.dataset.action==='delete'){if(write(items.filter(x=>x.id!==id))){deleted=item;renderLibrary();$('collectionsUndo').focus();}else message(t.error);}
+    if(button.dataset.action==='rename'){
+     const form=document.createElement('form');form.className='collection-rename';form.innerHTML=`<label>${t.name}<input required maxlength="80" value="${esc(item.title)}"></label><button type="submit">${t.save}</button>`;
+     button.disabled=true;card.append(form);form.querySelector('input').focus();
+     form.onsubmit=e=>{e.preventDefault();const title=form.querySelector('input').value.trim();if(!title)return;const current=read();if(write(current.map(x=>x.id===id?{...x,title}:x))){renderLibrary();message('');$('collectionsTitle').setAttribute('tabindex','-1');$('collectionsTitle').focus();}else message(t.error);};
+    }
+   };
+  }
+  items=read();deleted=null;renderLibrary();message('');dialog.showModal();$('collectionsClose').focus();
+ }
+ document.addEventListener('click',event=>{if(event.target.closest('#jobCollectionsNav'))open();const back=event.target.closest('[data-study-collection]');if(back)study(back.dataset.studyCollection);});
+ function find(id){return read().find(x=>x.id===id)||null;}
+ function sequence(item){return topics.flatMap(topic=>topic.sections.flatMap(section=>orderedLearningQuestions(section.questionIds.filter(id=>item.questionIds.includes(id)).map(id=>byId.get(id))).map(q=>q.id)));}
+ function study(id,reset=true){const item=find(id);if(!item)return;learningCollection=item;activeLearningPath='';questionReturn=null;questionFromSearch=false;storeFilters();mode='learn';savedOnly=false;lessonLibrary=false;libraryList=true;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};if(reset){answerDefault='questions';answerOverrides.clear();}document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
+ return {save,open,find,sequence,study};
+})();
+
 restoreFilters();
 function loadRoute(focus=false){
  restoringRoute=true;
  try{
   if($('searchDialog').open){searchRouteClosing=true;$('searchDialog').close();}
-  const hash=location.hash;if(hash.startsWith('#q-')){try{const [ident,...options]=hash.slice(3).split('&');activeLearningPath=new URLSearchParams(options.join('&')).get('path')||'';const id=decodeURIComponent(ident);if(byId.has(id)){openQuestion(id);return;}}catch{/* Fall back to a usable view for malformed external fragments. */}}
-  const params=new URLSearchParams(hash.slice(1));if(!hash||['topic','mode','search','scope','view'].some(key=>params.has(key))){
+  const hash=location.hash;const collectionParams=new URLSearchParams(hash.startsWith('#q-')?hash.slice(3).split('&').slice(1).join('&'):hash.slice(1));if(learningCollection||collectionParams.has('collection'))questionReturn=null;learningCollection=jobCollections.find(collectionParams.get('collection'));if(hash.startsWith('#q-')){try{const [ident,...options]=hash.slice(3).split('&');activeLearningPath=new URLSearchParams(options.join('&')).get('path')||'';const id=decodeURIComponent(ident);if(byId.has(id)){openQuestion(id);return;}}catch{/* Fall back to a usable view for malformed external fragments. */}}
+  const params=new URLSearchParams(hash.slice(1));if(!hash||['topic','mode','search','scope','view','collection'].some(key=>params.has(key))){
    const topic=topicById.get(params.get('topic')),section=topic?.sections.some(x=>x.id===params.get('section'))?params.get('section'):'';
    const nextMode=params.get('mode')==='train'?'train':'learn',nextPrefs={topic:topic?.id||'',section,search:params.get('search')||'',scope:params.get('scope')==='Senior'?'Advanced':learningLevels.has(params.get('scope'))?params.get('scope'):params.has('scope')?'all':learningSettings.level,selection:['new','retry'].includes(params.get('selection'))?params.get('selection'):'all'},nextKind=params.get('kind')==='quiz'?'quiz':'recall';
    if(nextMode==='train'&&activeSession&&(activeSession.kind!==nextKind||['topic','section','search','scope','selection'].some(key=>prefs.train[key]!==nextPrefs[key])))activeSession=null;
    mode=nextMode;savedOnly=mode==='learn'&&params.get('view')==='saved';lessonLibrary=mode==='learn'&&params.get('view')==='lessons';prefs[mode]=nextPrefs;questionFromSearch=false;
    activeLearningPath='';if(mode==='learn'){prefs.learn.selection='all';}else practiceKind=nextKind;
-   restoreFilters();$('sessionLength').value=['5','10','20','all'].includes(params.get('size'))?params.get('size'):'10';$('advancedSettings').open=mode==='train'&&(prefs.train.scope!=='all'||!!prefs.train.search);libraryList=!!topic||params.get('view')==='list';render();if(focus)focusDestination();
+   restoreFilters();$('sessionLength').value=['5','10','20','all'].includes(params.get('size'))?params.get('size'):'10';$('advancedSettings').open=mode==='train'&&(prefs.train.scope!=='all'||!!prefs.train.search);libraryList=!!learningCollection||!!topic||params.get('view')==='list';render();if(focus)focusDestination();
   }else{render();if(focus)focusDestination();}
  }finally{restoringRoute=false;}
 }
@@ -2673,50 +2726,6 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
  const clean={...history.state};delete clean.languageSnapshot;history.replaceState(clean,'');
 }
 
-// Local collections contain only user titles and canonical question IDs, never job text.
-const jobCollections=(()=>{
- const ru=studioLocale==='ru',key='studio.jobCollections.v1';
- const t=ru?{title:'Мои подборки',close:'Закрыть',empty:'Сохраните вопросы после ИИ-подбора — они появятся здесь.',privacy:'Подборки хранятся только в этом браузере. Текст вакансии не сохраняется.',practice:'Практика',remove:'Удалить',rename:'Переименовать',save:'Сохранить',undo:'Отменить удаление',error:'Не удалось сохранить. Проверьте доступ к хранилищу браузера.',limit:'Можно сохранить до 50 подборок. Удалите ненужную.',name:'Название подборки',replace:'Новая практика заменит текущую сессию.',questions:'Вопросы'}:{title:'My collections',close:'Close',empty:'Save questions after AI matching to find them here.',privacy:'Collections stay in this browser only. The job description is not saved.',practice:'Practice',remove:'Delete',rename:'Rename',save:'Save',undo:'Undo deletion',error:'Could not save. Check browser storage access.',limit:'You can save up to 50 collections. Delete one you no longer need.',name:'Collection name',replace:'New practice replaces your current session.',questions:'Questions'};
- let dialog,items=[],deleted=null;
- function read(){try{const value=JSON.parse(localStorage.getItem(key));return value?.version===1&&Array.isArray(value.collections)?value.collections.slice(0,50).filter(x=>x&&typeof x.id==='string'&&typeof x.title==='string'&&Array.isArray(x.questionIds)).map(x=>({id:x.id.slice(0,80),title:x.title.slice(0,80),questionIds:[...new Set(x.questionIds)].filter(id=>byId.has(id)).slice(0,10),createdAt:typeof x.createdAt==='string'?x.createdAt:''})).filter(x=>x.questionIds.length):[];}catch{return [];}}
- function write(next){try{localStorage.setItem(key,JSON.stringify({version:1,collections:next}));items=next;return true;}catch{return false;}}
- function save(title,ids){
-  title=title.trim().slice(0,80);ids=[...new Set(ids)].filter(id=>byId.has(id)).slice(0,10);if(!title||!ids.length)return {error:t.name};
-  const current=read();if(current.some(x=>x.title===title&&x.questionIds.length===ids.length&&ids.every(id=>x.questionIds.includes(id))))return {ok:true};
-  if(current.length>=50)return {error:t.limit};
-  return write([{id:crypto.randomUUID(),title,questionIds:ids,createdAt:new Date().toISOString()},...current])?{ok:true}:{error:t.error};
- }
- function message(text){$('collectionsStatus').textContent=text;}
- function groups(ids){return topics.map(topic=>({topic,ids:topicQuestions(topic).map(q=>q.id).filter(id=>ids.includes(id))})).filter(group=>group.ids.length);}
- function render(){
-  $('collectionsList').innerHTML=items.length?items.map(x=>`<article class="collection-card" data-id="${esc(x.id)}"><h3>${esc(x.title)}</h3><p class="subtle">${t.questions}: ${x.questionIds.length}</p>${groups(x.questionIds).map(group=>`<details class="collection-topic"><summary>${esc(group.topic.title)} (${group.ids.length})</summary><ul>${group.ids.map(id=>`<li><button type="button" data-question="${esc(id)}">${esc(id)} · ${esc(byId.get(id).question)}</button></li>`).join('')}</ul><button type="button" data-action="practice-topic" data-topic="${esc(group.topic.id)}">${ru?'Практика по теме':'Practice this topic'}</button></details>`).join('')}<div class="collection-actions"><button type="button" data-action="practice">${ru?'Практика всей подборки':'Practice collection'}</button><button type="button" data-action="rename">${t.rename}</button><button type="button" data-action="delete">${t.remove}</button></div></article>`).join(''):`<p>${t.empty}</p>`;
-  $('collectionsUndo').hidden=!deleted;$('collectionsReplace').hidden=!activeSession;
- }
- function open(){
-  if(!dialog){
-   dialog=document.createElement('dialog');dialog.id='collectionsDialog';dialog.setAttribute('aria-labelledby','collectionsTitle');
-   dialog.innerHTML=`<div class="dialog-heading"><h2 id="collectionsTitle">${t.title}</h2><button id="collectionsClose" type="button">${t.close}</button></div><p class="subtle">${t.privacy}</p><p id="collectionsReplace" class="subtle">${t.replace}</p><div id="collectionsList"></div><p id="collectionsStatus" role="status"></p><button id="collectionsUndo" type="button" hidden>${t.undo}</button>`;
-   document.body.append(dialog);$('collectionsClose').onclick=()=>dialog.close();
-   $('collectionsUndo').onclick=()=>{const current=read();if(!deleted||current.some(x=>x.id===deleted.id))return;if(current.length>=50){message(t.limit);return;}if(write([deleted,...current])){deleted=null;render();message('');}else message(t.error);};
-   $('collectionsList').onclick=event=>{
-    const button=event.target.closest('button');if(!button)return;
-    if(button.dataset.question){dialog.close();openQuestion(button.dataset.question);return;}
-    const card=button.closest('.collection-card'),id=card?.dataset.id;items=read();const item=items.find(x=>x.id===id);if(!item){render();return;}
-    if(['practice','practice-topic'].includes(button.dataset.action)){const ids=button.dataset.action==='practice-topic'?item.questionIds.filter(id=>byId.get(id).topic===button.dataset.topic):item.questionIds;dialog.close();storeFilters();mode='train';savedOnly=false;lessonLibrary=false;restoreFilters();beginPractice(ids,'recall',item.title,'collection');}
-    if(button.dataset.action==='delete'){if(write(items.filter(x=>x.id!==id))){deleted=item;render();$('collectionsUndo').focus();}else message(t.error);}
-    if(button.dataset.action==='rename'){
-     const form=document.createElement('form');form.className='collection-rename';form.innerHTML=`<label>${t.name}<input required maxlength="80" value="${esc(item.title)}"></label><button type="submit">${t.save}</button>`;
-     button.disabled=true;card.append(form);form.querySelector('input').focus();
-     form.onsubmit=e=>{e.preventDefault();const title=form.querySelector('input').value.trim();if(!title)return;const current=read();if(write(current.map(x=>x.id===id?{...x,title}:x))){render();message('');$('collectionsTitle').setAttribute('tabindex','-1');$('collectionsTitle').focus();}else message(t.error);};
-    }
-   };
-  }
-  items=read();deleted=null;render();message('');dialog.showModal();$('collectionsClose').focus();
- }
- document.addEventListener('click',event=>{if(event.target.closest('#jobCollectionsNav'))open();});
- return {save,open};
-})();
-
 // Optional, memory-only job matching. Ordinary practice never depends on this service.
 (() => {
  const ru=studioLocale==='ru';
@@ -2726,7 +2735,7 @@ const jobCollections=(()=>{
   description:'Описание вакансии',count:'Максимум вопросов',find:'Подобрать вопросы',checking:'Проверяем доступность…',loading:'Подбираем вопросы… Это может занять до 30 секунд.',
   preview:'Проверьте подборку',review:'AI может ошибаться. Сопоставьте объяснение с цитатой из вакансии и оставьте подходящие вопросы.',required:'Обязательное требование',preferred:'Желательно',evidence:'Цитата из вакансии',reason:'Почему этот вопрос',
   apply:'Начать практику',replace:'Начало новой практики заменит текущую сессию. Сохранённые оценки останутся.',session:'Подготовка к вакансии',selected:n=>`Выбрано вопросов: ${n}`,empty:'Подходящих вопросов не найдено. Попробуйте описание с конкретными обязанностями и технологиями.',
-  invalid_input:'Описание вакансии должно содержать от 30 до 6 000 символов и не более 10 000 байт. Выберите от 1 до 10 вопросов.',
+  invalid_input:'Описание вакансии должно содержать от 30 до 6 000 символов и не более 10 000 байт. Выберите от 1 до 60 вопросов или отключите ограничение количества.',
   context_limit:'Описание слишком велико для модели. Сократите его до ключевых обязанностей и требований.',
   disabled:'Подбор по вакансии пока отключён. Учебные материалы и обычная практика доступны.',
   daily_limit:'Общий дневной лимит AI-подбора на сайте исчерпан. Учебные материалы и обычная практика доступны.',
@@ -2738,9 +2747,9 @@ const jobCollections=(()=>{
   entry:'Prepare for a job',close:'Close',intro:'Find questions from our library that fit a particular job.',
   privacy:'Selecting “Find relevant questions” sends this text to Cloudflare Workers AI. Remove personal and confidential information. The description is not saved in the app.',
   description:'Job description',count:'Maximum questions',find:'Find relevant questions',checking:'Checking availability…',loading:'Finding questions… This can take up to 30 seconds.',
-  preview:'Review your selection',review:'AI can make mistakes. Compare each reason with the quoted job requirement and keep the questions that fit.',required:'Required',preferred:'Preferred',evidence:'Job requirement',reason:'Why this question',
+  preview:'Review your selection',review:'AI can make mistakes. Compare each reason with the quoted job requirement and keep the questions that fit.',required:'Required',preferred:'Preferred',evidence:'Job requirement',
   apply:'Start interview practice',replace:'Starting new practice replaces your current session. Saved ratings remain.',session:'Job preparation',selected:n=>`${n} questions selected`,empty:'No relevant questions found. Try a description with specific responsibilities and technologies.',
-  invalid_input:'Enter a job description of 30 to 6,000 characters and at most 10,000 bytes. Choose between 1 and 10 questions.',
+  invalid_input:'Enter a job description of 30 to 6,000 characters and at most 10,000 bytes. Choose between 1 and 60 questions or turn off the question limit.',
   context_limit:'This description exceeds the model’s context allowance. Shorten it to the key responsibilities and requirements.',
   disabled:'Job matching is currently disabled. Learning and ordinary practice remain available.',
   daily_limit:'The site’s shared daily AI allowance has been used. Learning and ordinary practice remain available.',
@@ -2798,7 +2807,7 @@ const jobCollections=(()=>{
  }
  function showMatches(result,source,maximum){
   const rows=result?.matches;
-  if(!Array.isArray(rows)||rows.length>maximum||new Set(rows.map(row=>row?.id)).size!==rows.length||rows.some(row=>!row||!byId.has(row.id)||!['required','preferred'].includes(row.requirement_type)||typeof row.relevance_reason!=='string'||!row.relevance_reason.trim()||typeof row.requirement_evidence!=='string'||!row.requirement_evidence.trim()||!source.includes(row.requirement_evidence))){notify(t.invalid_output,true);return;}
+  if(!Array.isArray(rows)||rows.length>(maximum??60)||new Set(rows.map(row=>row?.id)).size!==rows.length||rows.some(row=>!row||!byId.has(row.id)||!['required','preferred'].includes(row.requirement_type)||typeof row.relevance_reason!=='string'||!row.relevance_reason.trim()||typeof row.requirement_evidence!=='string'||!row.requirement_evidence.trim()||!source.includes(row.requirement_evidence))){notify(t.invalid_output,true);return;}
   rows.sort((a,b)=>topics.findIndex(t=>t.id===byId.get(a.id).topic)-topics.findIndex(t=>t.id===byId.get(b.id).topic)||Number(a.requirement_type==='preferred')-Number(b.requirement_type==='preferred'));
   matches=rows;
   if(!rows.length){notify(t.empty);return;}
@@ -2821,7 +2830,7 @@ const jobCollections=(()=>{
  }
  function buildDialog(){
   dialog=document.createElement('dialog');dialog.id='jobDialog';dialog.setAttribute('aria-labelledby','jobTitle');
-  dialog.innerHTML=`<div class="dialog-heading"><h2 id="jobTitle">${esc(t.entry)}</h2><button type="button" id="closeJob">${esc(t.close)}</button></div><p class="job-intro">${esc(t.intro)}</p><form id="jobForm"><label for="jobDescription">${esc(t.description)}</label><textarea id="jobDescription" rows="7" maxlength="6000" required aria-describedby="jobPrivacy" autocomplete="off" spellcheck="false"></textarea><p id="jobPrivacy" class="subtle">${esc(t.privacy)}</p><div class="job-form-actions"><label for="jobCount">${esc(t.count)}<input id="jobCount" type="number" min="1" max="10" value="5" required inputmode="numeric"></label><button id="findJobQuestions" class="primary" type="submit">${esc(t.find)}</button></div></form><p id="jobStatus" role="status" aria-live="polite" aria-atomic="true"></p><section id="jobPreview" hidden aria-labelledby="jobPreviewTitle"><h3 id="jobPreviewTitle" tabindex="-1">${esc(t.preview)}</h3><p class="subtle">${esc(t.review)}</p><ul id="jobMatches"></ul><div class="job-apply"><p id="jobSelection" role="status"></p><p id="jobReplace" class="subtle" hidden>${esc(t.replace)}</p><button id="applyJob" type="button" class="primary">${esc(t.apply)}</button></div></section>`;
+  dialog.innerHTML=`<div class="dialog-heading"><h2 id="jobTitle">${esc(t.entry)}</h2><button type="button" id="closeJob">${esc(t.close)}</button></div><p class="job-intro">${esc(t.intro)}</p><form id="jobForm"><label for="jobDescription">${esc(t.description)}</label><textarea id="jobDescription" rows="7" maxlength="6000" required aria-describedby="jobPrivacy" autocomplete="off" spellcheck="false"></textarea><p id="jobPrivacy" class="subtle">${esc(t.privacy)}</p><div class="job-form-actions"><div class="job-count-settings"><label class="job-limit-toggle"><input id="jobLimitEnabled" type="checkbox" role="switch" checked><span>${ru?'Ограничить количество':'Limit question count'}</span></label><label for="jobCount" id="jobCountLabel">${esc(t.count)}<input id="jobCount" type="number" min="1" max="60" value="5" required inputmode="numeric"></label><p id="jobLimitHint" class="subtle" hidden>${ru?'Без заданного количества: AI выбирает релевантные вопросы. За один запрос анализируется до 60 кандидатов; подборка не гарантирует полного покрытия.':'No chosen count: AI selects relevant questions. Each request reviews up to 60 candidates; the selection is not a guarantee of complete coverage.'}</p></div><button id="findJobQuestions" class="primary" type="submit">${esc(t.find)}</button></div></form><p id="jobStatus" role="status" aria-live="polite" aria-atomic="true"></p><section id="jobPreview" hidden aria-labelledby="jobPreviewTitle"><h3 id="jobPreviewTitle" tabindex="-1">${esc(t.preview)}</h3><p class="subtle">${esc(t.review)}</p><ul id="jobMatches"></ul><div class="job-apply"><p id="jobSelection" role="status"></p><p id="jobReplace" class="subtle" hidden>${esc(t.replace)}</p><button id="applyJob" type="button" class="primary">${esc(t.apply)}</button></div></section>`;
   document.body.append(dialog);
   $('jobTitle').textContent=extra.entry;
   const feedback=document.createElement('div');feedback.innerHTML=`<div id="jobProgress" role="progressbar" aria-label="${esc(t.loading)}" hidden><span></span></div><details id="jobQuotaInfo" hidden><summary id="jobQuota"></summary><p>${esc(extra.quotaNote)}</p></details><details id="jobUsage" hidden><summary>${esc(extra.details)}</summary><p id="jobUsageText"></p></details>`;
@@ -2830,15 +2839,16 @@ const jobCollections=(()=>{
   $('jobMatches').before(saveArea);
   form=$('jobForm');description=$('jobDescription');count=$('jobCount');status=$('jobStatus');find=$('findJobQuestions');preview=$('jobPreview');list=$('jobMatches');apply=$('applyJob');selection=$('jobSelection');replace=$('jobReplace');
   $('closeJob').onclick=()=>dialog.close();
+  $('jobLimitEnabled').onchange=()=>{const limited=$('jobLimitEnabled').checked;count.disabled=!limited;$('jobCountLabel').hidden=!limited;$('jobLimitHint').hidden=limited;discardPreview();};
   $('jobCollectionName').oninput=updateSelection;
   $('saveJobCollection').onclick=()=>{const result=jobCollections.save($('jobCollectionName').value,[...list.querySelectorAll('input:checked')].map(input=>input.value));$('jobSaveStatus').textContent=result.ok?extra.saved:result.error;if(result.ok)$('saveJobCollection').disabled=true;};
   $('openJobCollections').onclick=()=>{dialog.close();jobCollections.open();};
-  dialog.addEventListener('close',()=>{cancel();description.value='';count.value='5';discardPreview();notify('');});
+  dialog.addEventListener('close',()=>{cancel();description.value='';count.value='5';count.disabled=false;$('jobLimitEnabled').checked=true;$('jobCountLabel').hidden=false;$('jobLimitHint').hidden=true;discardPreview();notify('');});
   form.addEventListener('input',()=>{discardPreview();if(pending&&pendingMethod==='POST'){cancel();find.disabled=!available;notify('');}});
   form.addEventListener('submit',async event=>{
    event.preventDefault();if(pending||!available)return;
-   const source=description.value.trim(),maximum=Number(count.value);
-   if(source.length<30||source.length>6000||new TextEncoder().encode(source).length>10000||!Number.isInteger(maximum)||maximum<1||maximum>10){notify(t.invalid_input,true);return;}
+   const source=description.value.trim(),maximum=$('jobLimitEnabled').checked?Number(count.value):null;
+   if(source.length<30||source.length>6000||new TextEncoder().encode(source).length>10000||(maximum!==null&&(!Number.isInteger(maximum)||maximum<1||maximum>60))){notify(t.invalid_input,true);return;}
    discardPreview();notify(t.loading);
    const result=await request('POST',{description:source,count:maximum,language:ru?'ru':'en'});
    if(result){showMatches(result,source,maximum);showUsage(result.usage);}
@@ -2867,7 +2877,7 @@ const all=modules.flatMap(m=>m.questions.map(q=>({...q,module:m.id,...placement.
 const topicQuestions=t=>t.sections.flatMap(section=>section.questionIds.map(id=>byId.get(id)));
 let state={},ratings={},mode='learn',libraryList=false,restoringRoute=false,savedOnly=false,lessonLibrary=false;
 const answerWindows=new Map();
-let listedQuestionIds=[];
+let listedQuestionIds=[],learningCollection=null;
 const isPlainLinkClick=event=>event.button===0&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.altKey;
 let answerDefault='questions';const answerOverrides=new Map();
 try{const saved=localStorage.getItem('abap-studio-answer-view-v2');if(['questions','answers'].includes(saved))answerDefault=saved;}catch{/* View selection also works without storage. */}
@@ -2909,6 +2919,7 @@ function catalogLevelStatus(){
 }
 function activePathFor(q){const path=learningPaths.get(activeLearningPath);return path?.questionIds.includes(q.id)?path:null;}
 function questionSequence(q){
+ if(learningCollection?.questionIds.includes(q.id))return jobCollections.sequence(learningCollection);
  const path=activePathFor(q);if(path)return path.questionIds;
  const selection=questionReturn?.ids?.filter(id=>byId.has(id));
  if(selection?.includes(q.id))return selection;
@@ -2960,15 +2971,15 @@ function questionStatus(q,kind=practiceKind){
 }
 function filtered(includeSelection=true){
  const term=$('search').value.trim().toLowerCase(),topic=$('topic').value,section=$('section').value,scope=$('scope').value,selection=$('selection').value,exactId=byId.has(term.toUpperCase());
- return topics.flatMap(topicQuestions).filter(q=>(mode!=='learn'||!savedOnly||savedQuestions.has(q.id))&&(!topic||topic===q.topic)&&(!section||section===q.section)&&(!term||(exactId?q.id.toLowerCase()===term:[q.id,englishQuestionText.get(q.id)||'',russianQuestionText.get(q.id)||'',q.question,q.answer,q.detail,q.pitfall,q.moduleTitle,...q.followups||[],...q.signals||[],q.evidence||''].join(' ').toLowerCase().includes(term)))&&(scope==='all'||scope===learningLevel(q))&&(mode==='learn'||!includeSelection||selection==='all'||questionStatus(q)===selection));
+ return topics.flatMap(topicQuestions).filter(q=>(mode!=='learn'||!learningCollection||learningCollection.questionIds.includes(q.id))&&(mode!=='learn'||!savedOnly||savedQuestions.has(q.id))&&(!topic||topic===q.topic)&&(!section||section===q.section)&&(!term||(exactId?q.id.toLowerCase()===term:[q.id,englishQuestionText.get(q.id)||'',russianQuestionText.get(q.id)||'',q.question,q.answer,q.detail,q.pitfall,q.moduleTitle,...q.followups||[],...q.signals||[],q.evidence||''].join(' ').toLowerCase().includes(term)))&&(scope==='all'||scope===learningLevel(q))&&(mode==='learn'||!includeSelection||selection==='all'||questionStatus(q)===selection));
 }
 function focusDestination(id){const target=id?document.querySelector('#q-'+id+' h3, #q-'+id+' .question-row-link'):$('heading');if(!target)return;target.tabIndex=-1;target.focus({preventScroll:true});if(id)document.querySelector('#q-'+id).scrollIntoView({block:'start'});else window.scrollTo(0,0);animateDestination();}
-function setMode(next,resume=false){storeFilters();if(next==='train'&&mode==='learn'&&!resume){prefs.train={...prefs.learn};activeSession=null;}mode=next;if(next==='train'){savedOnly=false;lessonLibrary=false;}restoreFilters();render();routeSelection();focusDestination();}
+function setMode(next,resume=false){if(next==='learn'&&mode==='train'&&jobCollections.find(activeSession?.collectionId)){jobCollections.study(activeSession.collectionId);return;}if(next==='train'&&learningCollection&&!resume){const item=learningCollection;learningCollection=null;mode='train';savedOnly=false;lessonLibrary=false;beginPractice(item.questionIds,'recall',item.title,'collection',item.id);return;}storeFilters();if(next==='train'&&mode==='learn'&&!resume){prefs.train={...prefs.learn};activeSession=null;}mode=next;if(next==='train'){savedOnly=false;lessonLibrary=false;}restoreFilters();render();routeSelection();focusDestination();}
 function route(hash,replace=false){if(restoringRoute)return;const next=hash||location.pathname+location.search;if((hash&&location.hash===hash)||(!hash&&!location.hash))return;try{history[replace?'replaceState':'pushState'](null,'',next);}catch{/* Local file contexts may restrict history updates. */}}
-function routeSelection(replace=false){const params=new URLSearchParams();if(mode==='train'){params.set('mode','train');params.set('kind',practiceKind);params.set('size',$('sessionLength').value);}else if(lessonLibrary)params.set('view','lessons');else if(savedOnly)params.set('view','saved');else if(libraryList&&!$('topic').value)params.set('view','list');for(const key of (mode==='train'?['topic','section','scope','selection','search']:['topic','section','scope','search'])){const value=$(key).value;if(value&&(value!=='all'||key==='scope'&&learningSettings.level!=='all'))params.set(key,value);}route(params.size?'#'+params:'',replace);}
-function openTopic(id,section=''){expandSelectedTopic(id);activeLearningPath='';lessonLibrary=false;savedOnly=false;if(!topicById.has(id))id='';storeFilters();questionFromSearch=false;mode='learn';prefs.learn={search:'',topic:id,section,scope:learningSettings.level,selection:'all'};restoreFilters();libraryList=!!id;render();routeSelection();focusDestination();}
+function routeSelection(replace=false){const params=new URLSearchParams();if(mode==='learn'&&learningCollection)params.set('collection',learningCollection.id);if(mode==='train'){params.set('mode','train');params.set('kind',practiceKind);params.set('size',$('sessionLength').value);}else if(lessonLibrary)params.set('view','lessons');else if(savedOnly)params.set('view','saved');else if(libraryList&&!$('topic').value)params.set('view','list');for(const key of (mode==='train'?['topic','section','scope','selection','search']:['topic','section','scope','search'])){const value=$(key).value;if(value&&(value!=='all'||key==='scope'&&learningSettings.level!=='all'))params.set(key,value);}route(params.size?'#'+params:'',replace);}
+function openTopic(id,section=''){learningCollection=null;expandSelectedTopic(id);activeLearningPath='';lessonLibrary=false;savedOnly=false;if(!topicById.has(id))id='';storeFilters();questionFromSearch=false;mode='learn';prefs.learn={search:'',topic:id,section,scope:learningSettings.level,selection:'all'};restoreFilters();libraryList=!!id;render();routeSelection();focusDestination();}
 function selectTopic(id,section=''){expandSelectedTopic(id);if(mode==='learn'){openTopic(id,section);return;}storeFilters();prefs.train={...prefs.train,search:'',topic:id,section};activeSession=null;restoreFilters();render();routeSelection();focusDestination();}
-function openQuestion(id,fromSearch=false){if(!byId.has(id))return;if(fromSearch||!learningPaths.get(activeLearningPath)?.questionIds.includes(id))activeLearningPath='';markQuestionVisited(id);captureQuestionReturn();lessonLibrary=false;savedOnly=false;rememberQuestion(id);const q=byId.get(id);storeFilters();questionFromSearch=fromSearch;mode='learn';prefs.learn={search:id,topic:q.topic,section:q.section,scope:'all',selection:'all'};answerOverrides.set(id,true);restoreFilters();libraryList=true;render();route('#q-'+id+(activeLearningPath?'&path='+activeLearningPath:''));focusDestination(id);}
+function openQuestion(id,fromSearch=false){if(!byId.has(id))return;if(fromSearch||!learningCollection?.questionIds.includes(id))learningCollection=null;if(fromSearch||!learningPaths.get(activeLearningPath)?.questionIds.includes(id))activeLearningPath='';markQuestionVisited(id);captureQuestionReturn();lessonLibrary=false;savedOnly=false;rememberQuestion(id);const q=byId.get(id);storeFilters();questionFromSearch=fromSearch;mode='learn';prefs.learn={search:id,topic:q.topic,section:q.section,scope:'all',selection:'all'};answerOverrides.set(id,true);restoreFilters();libraryList=true;render();route('#q-'+id+(activeLearningPath?'&path='+activeLearningPath:'')+(learningCollection?'&collection='+encodeURIComponent(learningCollection.id):''));focusDestination(id);}
 for(const t of topics){const option=document.createElement('option');option.value=t.id;option.textContent=t.title;$('topic').append(option);}
 // Original topic glyphs: one 24px grid, consistent strokes and recognizable SAP/ABAP concepts.
 const iconPaths={
@@ -3121,7 +3132,7 @@ $('view').addEventListener('click',event=>{
  animateLessonStep(next);
  const stage=next.querySelector('.save-flow,.lesson-stage');if(stage.getBoundingClientRect().top<0||stage.getBoundingClientRect().top>innerHeight*.6)stage.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 });
-function openLessonLibrary(){activeLearningPath='';
+function openLessonLibrary(){learningCollection=null;activeLearningPath='';
  storeFilters();mode='learn';lessonLibrary=true;savedOnly=false;libraryList=false;questionFromSearch=false;
  prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};restoreFilters();
  document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');
@@ -3453,7 +3464,7 @@ function nav(animate=true){
  const selected=$('topic').value,section=$('section').value;
  // Topic changes reveal their sections; manual collapse survives unrelated renders.
  if(selected!==lastNavTopic){lastNavTopic=selected;expandSelectedTopic(selected);}
- let output=`<div class="nav-library"><button class="nav-home ${!selected&&!savedOnly&&!lessonLibrary?'active':''}" data-topic="" ${!selected&&!savedOnly&&!lessonLibrary?'aria-current="page"':''}>All topics</button><button id="savedQuestionsNav" class="nav-saved ${savedOnly?'active':''}" ${savedOnly?'aria-current="page"':''}>Saved questions <span class="nav-count">${savedQuestions.size}</span></button><button id="guidedLessonsNav" class="nav-saved ${lessonLibrary?'active':''}" ${lessonLibrary?'aria-current="page"':''}>Guided lessons <span class="nav-count">${lessons.length}</span></button><button id="jobCollectionsNav" class="nav-saved" aria-haspopup="dialog">${studioLocale==='ru'?'Мои подборки':'My collections'}</button></div>`;
+ let output=`<div class="nav-library"><button class="nav-home ${!selected&&!savedOnly&&!lessonLibrary&&!learningCollection?'active':''}" data-topic="" ${!selected&&!savedOnly&&!lessonLibrary&&!learningCollection?'aria-current="page"':''}>All topics</button><button id="savedQuestionsNav" class="nav-saved ${savedOnly?'active':''}" ${savedOnly?'aria-current="page"':''}>Saved questions <span class="nav-count">${savedQuestions.size}</span></button><button id="guidedLessonsNav" class="nav-saved ${lessonLibrary?'active':''}" ${lessonLibrary?'aria-current="page"':''}>Guided lessons <span class="nav-count">${lessons.length}</span></button><button id="jobCollectionsNav" class="nav-saved ${learningCollection?'active':''}" aria-haspopup="dialog">${studioLocale==='ru'?'Мои подборки':'My collections'}</button></div>`;
  for(const t of topics){
   const expanded=expandedNavTopic===t.id,current=selected===t.id,active=current&&(!section||!expanded);
   output+=`<div class="nav-topic-row ${current?'is-current-topic':''}"><button data-topic="${t.id}" class="nav-topic ${active?'active':''}" ${active?'aria-current="page"':''}>${icon(t.icon)}<span class="nav-title">${esc(t.title)}</span><span class="nav-count">${topicQuestions(t).length}</span></button><button class="nav-disclosure" data-expand-topic="${t.id}" aria-expanded="${expanded}" aria-controls="subtopics-${t.id}" aria-label="Subtopics: ${esc(t.title)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button></div><div class="nav-subtopics" id="subtopics-${t.id}" ${expanded?'':'hidden'}>${t.sections.map(x=>`<button data-topic="${t.id}" data-section="${x.id}" class="nav-section ${current&&section===x.id?'active':''}" ${current&&section===x.id&&expanded?'aria-current="page"':''}><span class="nav-section-title">${esc(x.title)}</span><span class="nav-count">${x.questionIds.length}</span></button>`).join('')}</div>`;
@@ -3511,13 +3522,13 @@ function learn(){
   $('moreAnswers').onclick=()=>{const nextId=listedQuestionIds[limit];answerWindows.set(windowKey,limit+20);render();const next=document.querySelector(`#q-${nextId} [data-open-question]`);next?.focus({preventScroll:true});next?.scrollIntoView({block:'start'});};
  }
  $('expandAll').onclick=()=>setAnswerDisplay('answers');$('collapseAll').onclick=()=>setAnswerDisplay('questions');syncAnswerDisplay();
- $('practiceSelection').onclick=()=>{storeFilters();const ids=filtered().map(q=>q.id);prefs.train={...prefs.learn};activeSession=null;practiceKind='recall';if(savedOnly){savedOnly=false;mode='train';restoreFilters();beginPractice(ids,'recall');}else setMode('train');};
+ $('practiceSelection').onclick=()=>{if(learningCollection){setMode('train');return;}storeFilters();const ids=filtered().map(q=>q.id);prefs.train={...prefs.learn};activeSession=null;practiceKind='recall';if(savedOnly){savedOnly=false;mode='train';restoreFilters();beginPractice(ids,'recall');}else setMode('train');};
 }
 function shuffled(items){const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
 function render(){document.querySelector('main').classList.toggle('in-session',mode==='train'&&!!activeSession);const topic=topicById.get($('topic').value),section=topic?.sections.find(x=>x.id===$('section').value),progressQuestions=topic?topicQuestions(topic):all,ready=progressQuestions.filter(q=>state[q.id]).length;$('readyCount').textContent=ready+' / '+progressQuestions.length;$('progress').value=ready/progressQuestions.length*100;document.querySelector('.stat').hidden=mode!=='learn'||!topic;$('heading').textContent=mode==='learn'?(section?section.title:topic?topic.title:'Explore topics'):'Practice';$('intro').textContent=mode==='learn'?(topic?topic.description:'Choose a subject. Explore its questions, examples and visual explanations at any level.'):'Choose a format, practice a short session, then review what needs another attempt.';practiceSetup();for(const x of ['learn','train']){$(x+'Tab').classList.toggle('active',x===mode);$(x+'Tab').setAttribute('aria-pressed',String(x===mode));}$('resumePractice').hidden=mode!=='learn'||!activeSession||activeSession.done;nav();breadcrumbs();if(mode==='learn')learn();else practice();syncCalmView();}
 for(const key of ['search','topic','section','scope','selection'])$(key).addEventListener(key==='search'?'input':'change',()=>{if(key==='topic'){sectionOptions();libraryList=!!$('topic').value;}if(mode==='train')activeSession=null;questionFromSearch=false;if(key==='scope'){learningSettings.level=$('scope').value;saveLearningSettings();}storeFilters();render();routeSelection(key==='search');});for(const x of ['learn','train'])$(x+'Tab').onclick=()=>setMode(x);
 $('learningSort').value=learningSettings.sort;$('learningSort').onchange=()=>{learningSettings.sort=$('learningSort').value;saveLearningSettings();render();};
-$('clearFilters').onclick=()=>{learningSettings.level='all';learningSettings.sort='recommended';$('learningSort').value='recommended';saveLearningSettings();prefs[mode]={search:'',topic:'',section:'',scope:'all',selection:'all'};restoreFilters();if(mode==='train')activeSession=null;questionFromSearch=false;libraryList=false;savedOnly=false;lessonLibrary=false;$('advancedSettings').open=false;render();routeSelection();};
+$('clearFilters').onclick=()=>{learningCollection=null;learningSettings.level='all';learningSettings.sort='recommended';$('learningSort').value='recommended';saveLearningSettings();prefs[mode]={search:'',topic:'',section:'',scope:'all',selection:'all'};restoreFilters();if(mode==='train')activeSession=null;questionFromSearch=false;libraryList=false;savedOnly=false;lessonLibrary=false;$('advancedSettings').open=false;render();routeSelection();};
 document.querySelector('.skip-link').onclick=e=>{e.preventDefault();$('mainContent').focus({preventScroll:true});window.scrollTo(0,0);};
 $('menuToggle').onclick=()=>{const open=document.querySelector('aside').classList.toggle('nav-open');$('menuToggle').setAttribute('aria-expanded',String(open));};
 document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]')||/INPUT|SELECT|TEXTAREA|BUTTON|SUMMARY|A/.test(e.target.tagName)||mode!=='train'||!activeSession||activeSession.done)return;if(e.key===' '&&activeSession.kind==='recall'&&!activeSession.revealed){e.preventDefault();$('revealPractice')?.click();}});
@@ -3644,9 +3655,9 @@ function practiceSetup(){
  $('practiceSummary').textContent=count?`${items.length} questions available${practiceKind==='quiz'?' with answer choices':''}`:$('selection').value==='retry'?'No mistakes to retry in this selection. Choose All questions or another topic.':$('selection').value==='new'?'No new questions in this selection. Choose All questions to repeat them.':'No matching questions. Change the topic or clear the optional filters.';
  $('practiceHelpText').textContent=practiceKind==='quiz'?'New means no submitted quiz attempt. Retry uses your latest incorrect answer, even if an earlier attempt was correct. Earn 10 XP once per correctly answered concept. Quiz scores do not change spoken readiness.':'New means no spoken self-rating. Retry means your latest rating was 0 or 1. Reading alone does not count as an attempt. Your microphone is not recorded and spoken answers are not graded automatically.';
 }
-function beginPractice(ids,kind=practiceKind,title=practiceContext(),source='library'){
+function beginPractice(ids,kind=practiceKind,title=practiceContext(),source='library',collectionId=''){
  const unique=[...new Set(ids)].filter(id=>byId.has(id)&&(kind!=='quiz'||quizByQuestion.has(id)));if(!unique.length)return;
- practiceKind=kind;activeSession={kind,ids:shuffled(unique),index:0,answers:{},orders:{},selected:null,revealed:false,done:false,title,source,earnedXp:0};
+ practiceKind=kind;activeSession={kind,ids:shuffled(unique),index:0,answers:{},orders:{},selected:null,revealed:false,done:false,title,source,collectionId,earnedXp:0};
  if(kind==='quiz')for(const id of activeSession.ids)activeSession.orders[id]=shuffled(quizByQuestion.get(id).options.map(o=>o.id));
  render();routeSelection();focusPractice();
 }
@@ -3665,7 +3676,7 @@ function rateRecall(score){
  const s=activeSession;if(!s||s.done||s.kind!=='recall'||!s.revealed||!Number.isInteger(score)||score<0||score>3)return;const id=s.ids[s.index];if(s.answers[id])return;
  s.answers[id]={score,correct:score>=2};ratings[id]=score;if(score>=2)state[id]=true;else delete state[id];save();render();$('sessionFeedback')?.focus({preventScroll:true});animateEntrance($('sessionFeedback'));
 }
-function sessionProgress(s){return `<div class="session-bar"><div><h3>${s.kind==='quiz'?'Multiple-choice quiz':'Interview practice'}</h3><div class="small subtle">${esc(s.title)}</div></div><button id="finishPractice">Finish session</button></div><div class="session-count">Question ${s.index+1} of ${s.ids.length} · ${Object.keys(s.answers).length} ${s.kind==='quiz'?'answered':'self-rated'}</div><progress class="session-progress" value="${s.index+(s.answers[s.ids[s.index]]?1:0)}" max="${s.ids.length}" aria-label="Session progress"></progress>`;}
+function sessionProgress(s){return `<div class="session-bar"><div><h3>${s.kind==='quiz'?'Multiple-choice quiz':'Interview practice'}</h3><div class="small subtle">${esc(s.title)}</div></div>${s.collectionId?`<button data-study-collection="${esc(s.collectionId)}">${studioLocale==='ru'?'К изучению подборки':'Study collection'}</button>`:''}<button id="finishPractice">Finish session</button></div><div class="session-count">Question ${s.index+1} of ${s.ids.length} · ${Object.keys(s.answers).length} ${s.kind==='quiz'?'answered':'self-rated'}</div><progress class="session-progress" value="${s.index+(s.answers[s.ids[s.index]]?1:0)}" max="${s.ids.length}" aria-label="Session progress"></progress>`;}
 function quizQuestion(s,q){
  const item=quizByQuestion.get(q.id),result=s.answers[q.id],options=s.orders[q.id].map(id=>item.options.find(o=>o.id===id));
  const best=item.options.find(o=>o.id===item.correctOption),chosen=result&&item.options.find(o=>o.id===result.chosen);
@@ -3680,7 +3691,7 @@ function practiceResults(s){
  const answered=s.ids.filter(id=>s.answers[id]),good=answered.filter(id=>s.answers[id].correct),missed=answered.filter(id=>!s.answers[id].correct),unanswered=s.ids.filter(id=>!s.answers[id]);
  const score=s.kind==='quiz'?(answered.length?Math.round(good.length/answered.length*100)+'%':'—'):(answered.length?answered.reduce((n,id)=>n+s.answers[id].score,0)+' / '+answered.length*3:'—');
  $('view').innerHTML=`<section class="session-shell session-results"><h3 id="resultsTitle" tabindex="-1">${unanswered.length?'Session finished':'Session complete'}</h3><p class="subtle">${esc(s.title)} · ${answered.length} of ${s.ids.length} ${s.kind==='quiz'?'answered':'self-rated'}</p><div class="result-metrics"><div><strong>${score}</strong><span>${s.kind==='quiz'?'accuracy on answered questions':'self-rated points'}</span></div><div><strong>${good.length}</strong><span>${s.kind==='quiz'?'correct':'ready to explain'}</span></div><div><strong>${missed.length}</strong><span>to retry</span></div><div><strong>${unanswered.length}</strong><span>not attempted</span></div></div><p class="progress-quiet">${s.kind==='quiz'?`+${s.earnedXp} XP this session · ${quizProgress.mastered.length*10} XP total. Only the first correct answer per concept earns XP.`:'Scores are your own assessment against the model answer; they are not an automatic evaluation.'}</p><div class="result-actions controls"><button id="retrySession" class="primary" ${missed.length?'':'disabled'}>Retry ${missed.length} ${s.kind==='quiz'?(missed.length===1?'mistake':'mistakes'):(missed.length===1?'weak answer':'weak answers')}</button>${unanswered.length?`<button id="continueUnanswered">Practice ${unanswered.length} not attempted</button>`:''}<button id="newSession">New session</button></div><details class="result-review"><summary>Review questions and explanations (${s.ids.length})</summary><div class="result-list">${s.ids.map(id=>{const q=byId.get(id),result=s.answers[id];return `<details class="result-item"><summary><span class="status ${!result?'':result.correct?'correct':'retry'}">${!result?'Not attempted':result.correct?(s.kind==='quiz'?'Correct':'Ready'):'Retry'}</span><span>${q.id} — ${esc(q.question)}</span></summary>${questionReferences(q)}${answer(q)}</details>`;}).join('')}</div></details></section>`;
- $('retrySession').onclick=()=>beginPractice(missed,s.kind,s.title,s.source);if(unanswered.length)$('continueUnanswered').onclick=()=>beginPractice(unanswered,s.kind,s.title,s.source);$('newSession').onclick=()=>{activeSession=null;render();($('startPractice').disabled?$('selection'):$('startPractice')).focus();};
+ $('retrySession').onclick=()=>beginPractice(missed,s.kind,s.title,s.source,s.collectionId);if(unanswered.length)$('continueUnanswered').onclick=()=>beginPractice(unanswered,s.kind,s.title,s.source,s.collectionId);$('newSession').onclick=()=>{activeSession=null;render();($('startPractice').disabled?$('selection'):$('startPractice')).focus();};
 }
 function practice(){
  if(!activeSession){$('view').innerHTML='';return;}const s=activeSession;if(s.done){practiceResults(s);return;}const q=byId.get(s.ids[s.index]);
@@ -3918,6 +3929,7 @@ function captureQuestionReturn(){
  storeFilters();questionReturn={prefs:{...prefs.learn},libraryList,savedOnly,lessonLibrary,ids,scrollY:window.scrollY};
 }
 function returnToQuestions(q){
+ if(learningCollection){jobCollections.study(learningCollection.id,false);focusDestination(q.id);return;}
  activeLearningPath='';
  if(!questionReturn){openTopic(q.topic,q.section);focusDestination(q.id);return;}
  const origin=questionReturn;mode='learn';prefs.learn={...origin.prefs};libraryList=origin.libraryList;savedOnly=origin.savedOnly;lessonLibrary=origin.lessonLibrary;questionFromSearch=false;
@@ -3926,7 +3938,7 @@ function returnToQuestions(q){
  restoreFilters();render();routeSelection();
  const target=document.querySelector(`#q-${q.id} .question-row-link, #q-${q.id} h3`)||$('heading');target.focus({preventScroll:true});window.scrollTo({top:origin.scrollY,behavior:'instant'});
 }
-function openSavedQuestions(){activeLearningPath='';lessonLibrary=false;storeFilters();mode='learn';savedOnly=true;libraryList=true;questionFromSearch=false;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
+function openSavedQuestions(){learningCollection=null;activeLearningPath='';lessonLibrary=false;storeFilters();mode='learn';savedOnly=true;libraryList=true;questionFromSearch=false;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
 function focusedQuestion(q){
  const sequence=questionSequence(q),position=sequence.indexOf(q.id),next=byId.get(sequence[position+1]);
  return `<div class="question-routebar"><button id="questionTopic">&larr; Back to questions</button>${questionFromSearch?'<button id="backSearch">Search results</button>':''}</div><section class="question-group"><article class="card focused-card" id="q-${q.id}"><div class="meta"><span>${q.id} &middot; ${esc(q.topicTitle)} ${learningBadge(q)}</span>${questionActions(q)}</div><h3 tabindex="-1">${esc(q.question)}</h3>${questionReferences(q)}${learningContext(q)}${answer(q)}${learningCheckpoint(q)}<footer class="question-next-actions"><button data-practice-question="${q.id}">Practice this question</button><div class="route-controls"><button id="previousQuestion" ${position===0?'disabled':''} aria-label="Previous question">&larr;</button><span class="route-position">${position+1} / ${sequence.length}</span><button id="nextQuestion" class="primary" ${position===sequence.length-1?'disabled':''}>${next?'Next question: '+esc(next.question):'End of this sequence'} &rarr;</button></div></footer></article></section>`;
@@ -3943,11 +3955,12 @@ function syncCalmView(){
  main.classList.toggle('single-question',!!exact);
  document.body.classList.toggle('practice-focus',mode==='train'&&!!activeSession&&!activeSession.done);
  main.classList.toggle('is-catalog',mode==='learn'&&!lessonLibrary&&!savedOnly&&!libraryList&&!$('topic').value&&!$('search').value.trim());
- $('learnFilters').hidden=mode!=='learn'||lessonLibrary;
+ $('learnFilters').hidden=mode!=='learn'||lessonLibrary||!!learningCollection;
  $('filterSummary').textContent=[$('search').value&&!exact?$('search').value:'',$('scope').value!=='all'?learningText(learningLevels.get($('scope').value),'title'):''].filter(Boolean).join(' · ');
  if(lessonLibrary&&mode==='learn'){$('heading').textContent='Guided lessons';$('intro').textContent='Follow a concrete example. See the process stage and data change at each step.';}
+ if(learningCollection&&mode==='learn'){$('heading').textContent=learningCollection.title;$('intro').textContent=studioLocale==='ru'?'Все вопросы подборки по темам. Начните с изучения, затем переходите к практике.':'Your questions grouped by topic. Study first, then practice.';$('breadcrumbs').innerHTML=`<button id=collectionLibraryLink>${studioLocale==='ru'?'Мои подборки':'My collections'}</button><span>/</span><span>${esc(learningCollection.title)}</span>`;$('collectionLibraryLink').onclick=()=>jobCollections.open();document.querySelector('.stat').hidden=true;}
  if(savedOnly&&mode==='learn'){$('heading').textContent='Saved questions';$('intro').textContent='Your personal collection. Open a question to read, or practice the collection aloud.';}
- document.querySelectorAll('[data-open-question]').forEach(a=>a.onclick=e=>{if(!isPlainLinkClick(e))return;e.preventDefault();activeLearningPath='';openQuestion(a.dataset.openQuestion);});
+ document.querySelectorAll('[data-open-question]').forEach(a=>{if(learningCollection)a.href='#q-'+a.dataset.openQuestion+'&collection='+encodeURIComponent(learningCollection.id);a.onclick=e=>{if(!isPlainLinkClick(e))return;e.preventDefault();activeLearningPath='';openQuestion(a.dataset.openQuestion);};});
  if($('continueReading'))$('continueReading').onclick=()=>openQuestion(lastQuestion);
  bindLearningControls();
 }
@@ -3973,19 +3986,67 @@ $('view').addEventListener('click',event=>{
 });
 applyReading();applyTheme(document.documentElement.dataset.themeChoice||'system');
 
+// Local collections contain only user titles and canonical question IDs, never job text.
+const jobCollections=(()=>{
+ const ru=studioLocale==='ru',key='studio.jobCollections.v1';
+ const t=ru?{title:'Мои подборки',close:'Закрыть',empty:'Сохраните вопросы после ИИ-подбора — они появятся здесь.',privacy:'Подборки хранятся только в этом браузере. Текст вакансии не сохраняется.',practice:'Практика',remove:'Удалить',rename:'Переименовать',save:'Сохранить',undo:'Отменить удаление',error:'Не удалось сохранить. Проверьте доступ к хранилищу браузера.',limit:'Можно сохранить до 50 подборок. Удалите ненужную.',name:'Название подборки',replace:'Новая практика заменит текущую сессию.',questions:'Вопросы'}:{title:'My collections',close:'Close',empty:'Save questions after AI matching to find them here.',privacy:'Collections stay in this browser only. The job description is not saved.',practice:'Practice',remove:'Delete',rename:'Rename',save:'Save',undo:'Undo deletion',error:'Could not save. Check browser storage access.',limit:'You can save up to 50 collections. Delete one you no longer need.',name:'Collection name',replace:'New practice replaces your current session.',questions:'Questions'};
+ let dialog,items=[],deleted=null;
+ function read(){try{const value=JSON.parse(localStorage.getItem(key));return value?.version===1&&Array.isArray(value.collections)?value.collections.slice(0,50).filter(x=>x&&typeof x.id==='string'&&typeof x.title==='string'&&Array.isArray(x.questionIds)).map(x=>({id:x.id.slice(0,80),title:x.title.slice(0,80),questionIds:[...new Set(x.questionIds)].filter(id=>byId.has(id)).slice(0,60),createdAt:typeof x.createdAt==='string'?x.createdAt:''})).filter(x=>x.questionIds.length):[];}catch{return [];}}
+ function write(next){try{localStorage.setItem(key,JSON.stringify({version:1,collections:next}));}catch{return false;}items=next;if(learningCollection){const updated=next.find(x=>x.id===learningCollection.id);if(updated){learningCollection=updated;render();}else openTopic('');}return true;}
+ function save(title,ids){
+  title=title.trim().slice(0,80);ids=[...new Set(ids)].filter(id=>byId.has(id)).slice(0,60);if(!title||!ids.length)return {error:t.name};
+  const current=read();if(current.some(x=>x.title===title&&x.questionIds.length===ids.length&&ids.every(id=>x.questionIds.includes(id))))return {ok:true};
+  if(current.length>=50)return {error:t.limit};
+  return write([{id:crypto.randomUUID(),title,questionIds:ids,createdAt:new Date().toISOString()},...current])?{ok:true}:{error:t.error};
+ }
+ function message(text){$('collectionsStatus').textContent=text;}
+ function groups(ids){return topics.map(topic=>({topic,ids:topicQuestions(topic).map(q=>q.id).filter(id=>ids.includes(id))})).filter(group=>group.ids.length);}
+ function renderLibrary(){
+  $('collectionsList').innerHTML=items.length?items.map(x=>`<article class="collection-card" data-id="${esc(x.id)}"><h3>${esc(x.title)}</h3><div class="collection-actions"><button type="button" class="primary" data-action="learn">${ru?'Изучать подборку':'Study collection'}</button><button type="button" data-action="practice">${ru?'Практика всей подборки':'Practice collection'}</button><button type="button" data-action="rename">${t.rename}</button><button type="button" data-action="delete">${t.remove}</button></div><p class="subtle">${t.questions}: ${x.questionIds.length}</p>${groups(x.questionIds).map(group=>`<details class="collection-topic"><summary>${esc(group.topic.title)} (${group.ids.length})</summary><ul>${group.ids.map(id=>`<li><button type="button" data-question="${esc(id)}">${esc(id)} · ${esc(byId.get(id).question)}</button></li>`).join('')}</ul><button type="button" data-action="practice-topic" data-topic="${esc(group.topic.id)}">${ru?'Практика по теме':'Practice this topic'}</button></details>`).join('')}</article>`).join(''):`<p>${t.empty}</p>`;
+  $('collectionsUndo').hidden=!deleted;$('collectionsReplace').hidden=!activeSession;
+ }
+ function open(){
+  if(!dialog){
+   dialog=document.createElement('dialog');dialog.id='collectionsDialog';dialog.setAttribute('aria-labelledby','collectionsTitle');
+   dialog.innerHTML=`<div class="dialog-heading"><h2 id="collectionsTitle">${t.title}</h2><button id="collectionsClose" type="button">${t.close}</button></div><p class="subtle">${t.privacy}</p><p id="collectionsReplace" class="subtle">${t.replace}</p><div id="collectionsList"></div><p id="collectionsStatus" role="status"></p><button id="collectionsUndo" type="button" hidden>${t.undo}</button>`;
+   document.body.append(dialog);$('collectionsClose').onclick=()=>dialog.close();
+   $('collectionsUndo').onclick=()=>{const current=read();if(!deleted||current.some(x=>x.id===deleted.id))return;if(current.length>=50){message(t.limit);return;}if(write([deleted,...current])){deleted=null;renderLibrary();message('');}else message(t.error);};
+   $('collectionsList').onclick=event=>{
+    const button=event.target.closest('button');if(!button)return;
+    if(button.dataset.question){const id=button.closest('.collection-card').dataset.id;dialog.close();study(id);openQuestion(button.dataset.question);return;}
+    const card=button.closest('.collection-card'),id=card?.dataset.id;items=read();const item=items.find(x=>x.id===id);if(!item){renderLibrary();return;}
+    if(button.dataset.action==='learn'){dialog.close();study(id);return;}
+    if(['practice','practice-topic'].includes(button.dataset.action)){const ids=button.dataset.action==='practice-topic'?item.questionIds.filter(id=>byId.get(id).topic===button.dataset.topic):item.questionIds;dialog.close();learningCollection=null;storeFilters();mode='train';savedOnly=false;lessonLibrary=false;restoreFilters();beginPractice(ids,'recall',item.title,'collection',item.id);}
+    if(button.dataset.action==='delete'){if(write(items.filter(x=>x.id!==id))){deleted=item;renderLibrary();$('collectionsUndo').focus();}else message(t.error);}
+    if(button.dataset.action==='rename'){
+     const form=document.createElement('form');form.className='collection-rename';form.innerHTML=`<label>${t.name}<input required maxlength="80" value="${esc(item.title)}"></label><button type="submit">${t.save}</button>`;
+     button.disabled=true;card.append(form);form.querySelector('input').focus();
+     form.onsubmit=e=>{e.preventDefault();const title=form.querySelector('input').value.trim();if(!title)return;const current=read();if(write(current.map(x=>x.id===id?{...x,title}:x))){renderLibrary();message('');$('collectionsTitle').setAttribute('tabindex','-1');$('collectionsTitle').focus();}else message(t.error);};
+    }
+   };
+  }
+  items=read();deleted=null;renderLibrary();message('');dialog.showModal();$('collectionsClose').focus();
+ }
+ document.addEventListener('click',event=>{if(event.target.closest('#jobCollectionsNav'))open();const back=event.target.closest('[data-study-collection]');if(back)study(back.dataset.studyCollection);});
+ function find(id){return read().find(x=>x.id===id)||null;}
+ function sequence(item){return topics.flatMap(topic=>topic.sections.flatMap(section=>orderedLearningQuestions(section.questionIds.filter(id=>item.questionIds.includes(id)).map(id=>byId.get(id))).map(q=>q.id)));}
+ function study(id,reset=true){const item=find(id);if(!item)return;learningCollection=item;activeLearningPath='';questionReturn=null;questionFromSearch=false;storeFilters();mode='learn';savedOnly=false;lessonLibrary=false;libraryList=true;prefs.learn={search:'',topic:'',section:'',scope:'all',selection:'all'};if(reset){answerDefault='questions';answerOverrides.clear();}document.querySelector('aside').classList.remove('nav-open');$('menuToggle').setAttribute('aria-expanded','false');restoreFilters();render();routeSelection();focusDestination();}
+ return {save,open,find,sequence,study};
+})();
+
 restoreFilters();
 function loadRoute(focus=false){
  restoringRoute=true;
  try{
   if($('searchDialog').open){searchRouteClosing=true;$('searchDialog').close();}
-  const hash=location.hash;if(hash.startsWith('#q-')){try{const [ident,...options]=hash.slice(3).split('&');activeLearningPath=new URLSearchParams(options.join('&')).get('path')||'';const id=decodeURIComponent(ident);if(byId.has(id)){openQuestion(id);return;}}catch{/* Fall back to a usable view for malformed external fragments. */}}
-  const params=new URLSearchParams(hash.slice(1));if(!hash||['topic','mode','search','scope','view'].some(key=>params.has(key))){
+  const hash=location.hash;const collectionParams=new URLSearchParams(hash.startsWith('#q-')?hash.slice(3).split('&').slice(1).join('&'):hash.slice(1));if(learningCollection||collectionParams.has('collection'))questionReturn=null;learningCollection=jobCollections.find(collectionParams.get('collection'));if(hash.startsWith('#q-')){try{const [ident,...options]=hash.slice(3).split('&');activeLearningPath=new URLSearchParams(options.join('&')).get('path')||'';const id=decodeURIComponent(ident);if(byId.has(id)){openQuestion(id);return;}}catch{/* Fall back to a usable view for malformed external fragments. */}}
+  const params=new URLSearchParams(hash.slice(1));if(!hash||['topic','mode','search','scope','view','collection'].some(key=>params.has(key))){
    const topic=topicById.get(params.get('topic')),section=topic?.sections.some(x=>x.id===params.get('section'))?params.get('section'):'';
    const nextMode=params.get('mode')==='train'?'train':'learn',nextPrefs={topic:topic?.id||'',section,search:params.get('search')||'',scope:params.get('scope')==='Senior'?'Advanced':learningLevels.has(params.get('scope'))?params.get('scope'):params.has('scope')?'all':learningSettings.level,selection:['new','retry'].includes(params.get('selection'))?params.get('selection'):'all'},nextKind=params.get('kind')==='quiz'?'quiz':'recall';
    if(nextMode==='train'&&activeSession&&(activeSession.kind!==nextKind||['topic','section','search','scope','selection'].some(key=>prefs.train[key]!==nextPrefs[key])))activeSession=null;
    mode=nextMode;savedOnly=mode==='learn'&&params.get('view')==='saved';lessonLibrary=mode==='learn'&&params.get('view')==='lessons';prefs[mode]=nextPrefs;questionFromSearch=false;
    activeLearningPath='';if(mode==='learn'){prefs.learn.selection='all';}else practiceKind=nextKind;
-   restoreFilters();$('sessionLength').value=['5','10','20','all'].includes(params.get('size'))?params.get('size'):'10';$('advancedSettings').open=mode==='train'&&(prefs.train.scope!=='all'||!!prefs.train.search);libraryList=!!topic||params.get('view')==='list';render();if(focus)focusDestination();
+   restoreFilters();$('sessionLength').value=['5','10','20','all'].includes(params.get('size'))?params.get('size'):'10';$('advancedSettings').open=mode==='train'&&(prefs.train.scope!=='all'||!!prefs.train.search);libraryList=!!learningCollection||!!topic||params.get('view')==='list';render();if(focus)focusDestination();
   }else{render();if(focus)focusDestination();}
  }finally{restoringRoute=false;}
 }
@@ -4032,50 +4093,6 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
  const clean={...history.state};delete clean.languageSnapshot;history.replaceState(clean,'');
 }
 
-// Local collections contain only user titles and canonical question IDs, never job text.
-const jobCollections=(()=>{
- const ru=studioLocale==='ru',key='studio.jobCollections.v1';
- const t=ru?{title:'Мои подборки',close:'Закрыть',empty:'Сохраните вопросы после ИИ-подбора — они появятся здесь.',privacy:'Подборки хранятся только в этом браузере. Текст вакансии не сохраняется.',practice:'Практика',remove:'Удалить',rename:'Переименовать',save:'Сохранить',undo:'Отменить удаление',error:'Не удалось сохранить. Проверьте доступ к хранилищу браузера.',limit:'Можно сохранить до 50 подборок. Удалите ненужную.',name:'Название подборки',replace:'Новая практика заменит текущую сессию.',questions:'Вопросы'}:{title:'My collections',close:'Close',empty:'Save questions after AI matching to find them here.',privacy:'Collections stay in this browser only. The job description is not saved.',practice:'Practice',remove:'Delete',rename:'Rename',save:'Save',undo:'Undo deletion',error:'Could not save. Check browser storage access.',limit:'You can save up to 50 collections. Delete one you no longer need.',name:'Collection name',replace:'New practice replaces your current session.',questions:'Questions'};
- let dialog,items=[],deleted=null;
- function read(){try{const value=JSON.parse(localStorage.getItem(key));return value?.version===1&&Array.isArray(value.collections)?value.collections.slice(0,50).filter(x=>x&&typeof x.id==='string'&&typeof x.title==='string'&&Array.isArray(x.questionIds)).map(x=>({id:x.id.slice(0,80),title:x.title.slice(0,80),questionIds:[...new Set(x.questionIds)].filter(id=>byId.has(id)).slice(0,10),createdAt:typeof x.createdAt==='string'?x.createdAt:''})).filter(x=>x.questionIds.length):[];}catch{return [];}}
- function write(next){try{localStorage.setItem(key,JSON.stringify({version:1,collections:next}));items=next;return true;}catch{return false;}}
- function save(title,ids){
-  title=title.trim().slice(0,80);ids=[...new Set(ids)].filter(id=>byId.has(id)).slice(0,10);if(!title||!ids.length)return {error:t.name};
-  const current=read();if(current.some(x=>x.title===title&&x.questionIds.length===ids.length&&ids.every(id=>x.questionIds.includes(id))))return {ok:true};
-  if(current.length>=50)return {error:t.limit};
-  return write([{id:crypto.randomUUID(),title,questionIds:ids,createdAt:new Date().toISOString()},...current])?{ok:true}:{error:t.error};
- }
- function message(text){$('collectionsStatus').textContent=text;}
- function groups(ids){return topics.map(topic=>({topic,ids:topicQuestions(topic).map(q=>q.id).filter(id=>ids.includes(id))})).filter(group=>group.ids.length);}
- function render(){
-  $('collectionsList').innerHTML=items.length?items.map(x=>`<article class="collection-card" data-id="${esc(x.id)}"><h3>${esc(x.title)}</h3><p class="subtle">${t.questions}: ${x.questionIds.length}</p>${groups(x.questionIds).map(group=>`<details class="collection-topic"><summary>${esc(group.topic.title)} (${group.ids.length})</summary><ul>${group.ids.map(id=>`<li><button type="button" data-question="${esc(id)}">${esc(id)} · ${esc(byId.get(id).question)}</button></li>`).join('')}</ul><button type="button" data-action="practice-topic" data-topic="${esc(group.topic.id)}">${ru?'Практика по теме':'Practice this topic'}</button></details>`).join('')}<div class="collection-actions"><button type="button" data-action="practice">${ru?'Практика всей подборки':'Practice collection'}</button><button type="button" data-action="rename">${t.rename}</button><button type="button" data-action="delete">${t.remove}</button></div></article>`).join(''):`<p>${t.empty}</p>`;
-  $('collectionsUndo').hidden=!deleted;$('collectionsReplace').hidden=!activeSession;
- }
- function open(){
-  if(!dialog){
-   dialog=document.createElement('dialog');dialog.id='collectionsDialog';dialog.setAttribute('aria-labelledby','collectionsTitle');
-   dialog.innerHTML=`<div class="dialog-heading"><h2 id="collectionsTitle">${t.title}</h2><button id="collectionsClose" type="button">${t.close}</button></div><p class="subtle">${t.privacy}</p><p id="collectionsReplace" class="subtle">${t.replace}</p><div id="collectionsList"></div><p id="collectionsStatus" role="status"></p><button id="collectionsUndo" type="button" hidden>${t.undo}</button>`;
-   document.body.append(dialog);$('collectionsClose').onclick=()=>dialog.close();
-   $('collectionsUndo').onclick=()=>{const current=read();if(!deleted||current.some(x=>x.id===deleted.id))return;if(current.length>=50){message(t.limit);return;}if(write([deleted,...current])){deleted=null;render();message('');}else message(t.error);};
-   $('collectionsList').onclick=event=>{
-    const button=event.target.closest('button');if(!button)return;
-    if(button.dataset.question){dialog.close();openQuestion(button.dataset.question);return;}
-    const card=button.closest('.collection-card'),id=card?.dataset.id;items=read();const item=items.find(x=>x.id===id);if(!item){render();return;}
-    if(['practice','practice-topic'].includes(button.dataset.action)){const ids=button.dataset.action==='practice-topic'?item.questionIds.filter(id=>byId.get(id).topic===button.dataset.topic):item.questionIds;dialog.close();storeFilters();mode='train';savedOnly=false;lessonLibrary=false;restoreFilters();beginPractice(ids,'recall',item.title,'collection');}
-    if(button.dataset.action==='delete'){if(write(items.filter(x=>x.id!==id))){deleted=item;render();$('collectionsUndo').focus();}else message(t.error);}
-    if(button.dataset.action==='rename'){
-     const form=document.createElement('form');form.className='collection-rename';form.innerHTML=`<label>${t.name}<input required maxlength="80" value="${esc(item.title)}"></label><button type="submit">${t.save}</button>`;
-     button.disabled=true;card.append(form);form.querySelector('input').focus();
-     form.onsubmit=e=>{e.preventDefault();const title=form.querySelector('input').value.trim();if(!title)return;const current=read();if(write(current.map(x=>x.id===id?{...x,title}:x))){render();message('');$('collectionsTitle').setAttribute('tabindex','-1');$('collectionsTitle').focus();}else message(t.error);};
-    }
-   };
-  }
-  items=read();deleted=null;render();message('');dialog.showModal();$('collectionsClose').focus();
- }
- document.addEventListener('click',event=>{if(event.target.closest('#jobCollectionsNav'))open();});
- return {save,open};
-})();
-
 // Optional, memory-only job matching. Ordinary practice never depends on this service.
 (() => {
  const ru=studioLocale==='ru';
@@ -4085,7 +4102,7 @@ const jobCollections=(()=>{
   description:'Описание вакансии',count:'Максимум вопросов',find:'Подобрать вопросы',checking:'Проверяем доступность…',loading:'Подбираем вопросы… Это может занять до 30 секунд.',
   preview:'Проверьте подборку',review:'AI может ошибаться. Сопоставьте объяснение с цитатой из вакансии и оставьте подходящие вопросы.',required:'Обязательное требование',preferred:'Желательно',evidence:'Цитата из вакансии',reason:'Почему этот вопрос',
   apply:'Начать практику',replace:'Начало новой практики заменит текущую сессию. Сохранённые оценки останутся.',session:'Подготовка к вакансии',selected:n=>`Выбрано вопросов: ${n}`,empty:'Подходящих вопросов не найдено. Попробуйте описание с конкретными обязанностями и технологиями.',
-  invalid_input:'Описание вакансии должно содержать от 30 до 6 000 символов и не более 10 000 байт. Выберите от 1 до 10 вопросов.',
+  invalid_input:'Описание вакансии должно содержать от 30 до 6 000 символов и не более 10 000 байт. Выберите от 1 до 60 вопросов или отключите ограничение количества.',
   context_limit:'Описание слишком велико для модели. Сократите его до ключевых обязанностей и требований.',
   disabled:'Подбор по вакансии пока отключён. Учебные материалы и обычная практика доступны.',
   daily_limit:'Общий дневной лимит AI-подбора на сайте исчерпан. Учебные материалы и обычная практика доступны.',
@@ -4097,9 +4114,9 @@ const jobCollections=(()=>{
   entry:'Prepare for a job',close:'Close',intro:'Find questions from our library that fit a particular job.',
   privacy:'Selecting “Find relevant questions” sends this text to Cloudflare Workers AI. Remove personal and confidential information. The description is not saved in the app.',
   description:'Job description',count:'Maximum questions',find:'Find relevant questions',checking:'Checking availability…',loading:'Finding questions… This can take up to 30 seconds.',
-  preview:'Review your selection',review:'AI can make mistakes. Compare each reason with the quoted job requirement and keep the questions that fit.',required:'Required',preferred:'Preferred',evidence:'Job requirement',reason:'Why this question',
+  preview:'Review your selection',review:'AI can make mistakes. Compare each reason with the quoted job requirement and keep the questions that fit.',required:'Required',preferred:'Preferred',evidence:'Job requirement',
   apply:'Start interview practice',replace:'Starting new practice replaces your current session. Saved ratings remain.',session:'Job preparation',selected:n=>`${n} questions selected`,empty:'No relevant questions found. Try a description with specific responsibilities and technologies.',
-  invalid_input:'Enter a job description of 30 to 6,000 characters and at most 10,000 bytes. Choose between 1 and 10 questions.',
+  invalid_input:'Enter a job description of 30 to 6,000 characters and at most 10,000 bytes. Choose between 1 and 60 questions or turn off the question limit.',
   context_limit:'This description exceeds the model’s context allowance. Shorten it to the key responsibilities and requirements.',
   disabled:'Job matching is currently disabled. Learning and ordinary practice remain available.',
   daily_limit:'The site’s shared daily AI allowance has been used. Learning and ordinary practice remain available.',
@@ -4157,7 +4174,7 @@ const jobCollections=(()=>{
  }
  function showMatches(result,source,maximum){
   const rows=result?.matches;
-  if(!Array.isArray(rows)||rows.length>maximum||new Set(rows.map(row=>row?.id)).size!==rows.length||rows.some(row=>!row||!byId.has(row.id)||!['required','preferred'].includes(row.requirement_type)||typeof row.relevance_reason!=='string'||!row.relevance_reason.trim()||typeof row.requirement_evidence!=='string'||!row.requirement_evidence.trim()||!source.includes(row.requirement_evidence))){notify(t.invalid_output,true);return;}
+  if(!Array.isArray(rows)||rows.length>(maximum??60)||new Set(rows.map(row=>row?.id)).size!==rows.length||rows.some(row=>!row||!byId.has(row.id)||!['required','preferred'].includes(row.requirement_type)||typeof row.relevance_reason!=='string'||!row.relevance_reason.trim()||typeof row.requirement_evidence!=='string'||!row.requirement_evidence.trim()||!source.includes(row.requirement_evidence))){notify(t.invalid_output,true);return;}
   rows.sort((a,b)=>topics.findIndex(t=>t.id===byId.get(a.id).topic)-topics.findIndex(t=>t.id===byId.get(b.id).topic)||Number(a.requirement_type==='preferred')-Number(b.requirement_type==='preferred'));
   matches=rows;
   if(!rows.length){notify(t.empty);return;}
@@ -4180,7 +4197,7 @@ const jobCollections=(()=>{
  }
  function buildDialog(){
   dialog=document.createElement('dialog');dialog.id='jobDialog';dialog.setAttribute('aria-labelledby','jobTitle');
-  dialog.innerHTML=`<div class="dialog-heading"><h2 id="jobTitle">${esc(t.entry)}</h2><button type="button" id="closeJob">${esc(t.close)}</button></div><p class="job-intro">${esc(t.intro)}</p><form id="jobForm"><label for="jobDescription">${esc(t.description)}</label><textarea id="jobDescription" rows="7" maxlength="6000" required aria-describedby="jobPrivacy" autocomplete="off" spellcheck="false"></textarea><p id="jobPrivacy" class="subtle">${esc(t.privacy)}</p><div class="job-form-actions"><label for="jobCount">${esc(t.count)}<input id="jobCount" type="number" min="1" max="10" value="5" required inputmode="numeric"></label><button id="findJobQuestions" class="primary" type="submit">${esc(t.find)}</button></div></form><p id="jobStatus" role="status" aria-live="polite" aria-atomic="true"></p><section id="jobPreview" hidden aria-labelledby="jobPreviewTitle"><h3 id="jobPreviewTitle" tabindex="-1">${esc(t.preview)}</h3><p class="subtle">${esc(t.review)}</p><ul id="jobMatches"></ul><div class="job-apply"><p id="jobSelection" role="status"></p><p id="jobReplace" class="subtle" hidden>${esc(t.replace)}</p><button id="applyJob" type="button" class="primary">${esc(t.apply)}</button></div></section>`;
+  dialog.innerHTML=`<div class="dialog-heading"><h2 id="jobTitle">${esc(t.entry)}</h2><button type="button" id="closeJob">${esc(t.close)}</button></div><p class="job-intro">${esc(t.intro)}</p><form id="jobForm"><label for="jobDescription">${esc(t.description)}</label><textarea id="jobDescription" rows="7" maxlength="6000" required aria-describedby="jobPrivacy" autocomplete="off" spellcheck="false"></textarea><p id="jobPrivacy" class="subtle">${esc(t.privacy)}</p><div class="job-form-actions"><div class="job-count-settings"><label class="job-limit-toggle"><input id="jobLimitEnabled" type="checkbox" role="switch" checked><span>${ru?'Ограничить количество':'Limit question count'}</span></label><label for="jobCount" id="jobCountLabel">${esc(t.count)}<input id="jobCount" type="number" min="1" max="60" value="5" required inputmode="numeric"></label><p id="jobLimitHint" class="subtle" hidden>${ru?'Без заданного количества: AI выбирает релевантные вопросы. За один запрос анализируется до 60 кандидатов; подборка не гарантирует полного покрытия.':'No chosen count: AI selects relevant questions. Each request reviews up to 60 candidates; the selection is not a guarantee of complete coverage.'}</p></div><button id="findJobQuestions" class="primary" type="submit">${esc(t.find)}</button></div></form><p id="jobStatus" role="status" aria-live="polite" aria-atomic="true"></p><section id="jobPreview" hidden aria-labelledby="jobPreviewTitle"><h3 id="jobPreviewTitle" tabindex="-1">${esc(t.preview)}</h3><p class="subtle">${esc(t.review)}</p><ul id="jobMatches"></ul><div class="job-apply"><p id="jobSelection" role="status"></p><p id="jobReplace" class="subtle" hidden>${esc(t.replace)}</p><button id="applyJob" type="button" class="primary">${esc(t.apply)}</button></div></section>`;
   document.body.append(dialog);
   $('jobTitle').textContent=extra.entry;
   const feedback=document.createElement('div');feedback.innerHTML=`<div id="jobProgress" role="progressbar" aria-label="${esc(t.loading)}" hidden><span></span></div><details id="jobQuotaInfo" hidden><summary id="jobQuota"></summary><p>${esc(extra.quotaNote)}</p></details><details id="jobUsage" hidden><summary>${esc(extra.details)}</summary><p id="jobUsageText"></p></details>`;
@@ -4189,15 +4206,16 @@ const jobCollections=(()=>{
   $('jobMatches').before(saveArea);
   form=$('jobForm');description=$('jobDescription');count=$('jobCount');status=$('jobStatus');find=$('findJobQuestions');preview=$('jobPreview');list=$('jobMatches');apply=$('applyJob');selection=$('jobSelection');replace=$('jobReplace');
   $('closeJob').onclick=()=>dialog.close();
+  $('jobLimitEnabled').onchange=()=>{const limited=$('jobLimitEnabled').checked;count.disabled=!limited;$('jobCountLabel').hidden=!limited;$('jobLimitHint').hidden=limited;discardPreview();};
   $('jobCollectionName').oninput=updateSelection;
   $('saveJobCollection').onclick=()=>{const result=jobCollections.save($('jobCollectionName').value,[...list.querySelectorAll('input:checked')].map(input=>input.value));$('jobSaveStatus').textContent=result.ok?extra.saved:result.error;if(result.ok)$('saveJobCollection').disabled=true;};
   $('openJobCollections').onclick=()=>{dialog.close();jobCollections.open();};
-  dialog.addEventListener('close',()=>{cancel();description.value='';count.value='5';discardPreview();notify('');});
+  dialog.addEventListener('close',()=>{cancel();description.value='';count.value='5';count.disabled=false;$('jobLimitEnabled').checked=true;$('jobCountLabel').hidden=false;$('jobLimitHint').hidden=true;discardPreview();notify('');});
   form.addEventListener('input',()=>{discardPreview();if(pending&&pendingMethod==='POST'){cancel();find.disabled=!available;notify('');}});
   form.addEventListener('submit',async event=>{
    event.preventDefault();if(pending||!available)return;
-   const source=description.value.trim(),maximum=Number(count.value);
-   if(source.length<30||source.length>6000||new TextEncoder().encode(source).length>10000||!Number.isInteger(maximum)||maximum<1||maximum>10){notify(t.invalid_input,true);return;}
+   const source=description.value.trim(),maximum=$('jobLimitEnabled').checked?Number(count.value):null;
+   if(source.length<30||source.length>6000||new TextEncoder().encode(source).length>10000||(maximum!==null&&(!Number.isInteger(maximum)||maximum<1||maximum>60))){notify(t.invalid_input,true);return;}
    discardPreview();notify(t.loading);
    const result=await request('POST',{description:source,count:maximum,language:ru?'ru':'en'});
    if(result){showMatches(result,source,maximum);showUsage(result.usage);}

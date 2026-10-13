@@ -37,8 +37,8 @@ test('search stays lazy, ranks related answers first and respects acronym bounda
 test('portable payload stays within explicit uncompressed and gzip budgets', () => {
   const {gzipSync} = require('node:zlib');
   const html = fs.readFileSync('START_HERE.html');
-  // 350 bilingual questions, 104 code examples and 28 lessons measured in Oct 2026:
-  // 5.25 MB raw / 1.032 MB gzip. Keep modest headroom for authored content.
+  // 353 bilingual questions plus collection learning and assistant controls:
+  // 5.38 MB raw / 1.071 MB gzip, measured October 2026. Keep bounded headroom.
   assert.ok(html.length < 5_400_000, `HTML: ${html.length} bytes`);
-  assert.ok(gzipSync(html).length < 1_070_000, 'Compressed HTML exceeds 1.07 MB');
+  assert.ok(gzipSync(html).length < 1_080_000, 'Compressed HTML exceeds 1.08 MB');
 });

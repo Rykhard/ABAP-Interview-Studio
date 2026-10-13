@@ -43,11 +43,26 @@ test('strict input and output validation rejects coercion, extra fields, invente
   const [matching] = await modules;
   assert.deepEqual(matching.words('constructor __proto__'), ['constructor', '__proto__']);
   assert.deepEqual(matching.validateInput(input), input);
-  for (const invalid of [{ ...input, count: '5' }, { ...input, count: 11 }, { ...input, language: 'de' }, { ...input, description: 'short' }, { ...input, description: 'я'.repeat(6000) }, { ...input, catalog }]) assert.throws(() => matching.validateInput(invalid));
+  for (const invalid of [{ ...input, count: '5' }, { ...input, count: 61 }, { ...input, count: 0 }, { ...input, language: 'de' }, { ...input, description: 'short' }, { ...input, description: 'я'.repeat(6000) }, { ...input, catalog }]) assert.throws(() => matching.validateInput(invalid));
   assert.deepEqual(matching.validateMatches({ matches: [match] }, input, catalog), { matches: [match] });
   for (const invalid of [{ matches: [match, match] }, { matches: [{ ...match, id: 'UNKNOWN' }] }, { matches: [{ ...match, requirement_evidence: 'RAP skills' }] }, { matches: [{ ...match, extra: true }] }, { matches: [], coverage: 1 }]) assert.throws(() => matching.validateMatches(invalid, input, catalog));
   for (const text of ['{"matches":[],"matches":[]}', '{"matches":[{"id":"x","id":"y"}]}', '```json\n{}\n```', '{} trailing', '{"x":NaN}', '{"x":1,}', '{"x":01}']) assert.throws(() => matching.parseStrictJSON(text));
   assert.deepEqual(matching.parseStrictJSON('{"x":"escaped \\" quote","array":[1,true,null]}'), { x: 'escaped " quote', array: [1, true, null] });
+});
+
+test('automatic count permits relevant matches beyond ten while bounding schema and complete context', async () => {
+  const [matching] = await modules;
+  const canonical = JSON.parse(fs.readFileSync(path.join(__dirname, '../server/catalog.json'), 'utf8'));
+  const automatic = {...input, count: null};
+  assert.equal(matching.validateInput(automatic).count, null);
+  const built = matching.buildInference(canonical, automatic);
+  assert.ok(built.candidates.length > 10);
+  assert.equal(built.request.max_tokens, 7000);
+  assert.equal(built.request.response_format.json_schema.properties.matches.maxItems, built.candidates.length);
+  assert.ok(built.contextUpperBound <= matching.LIMITS.contextTokens);
+  const matches = built.candidates.slice(0,12).map(item => ({...match,id:item.id}));
+  assert.equal(matching.validateMatches({matches},automatic,built.candidates).matches.length,12);
+  assert.throws(()=>matching.validateMatches({matches},{...input,count:5},built.candidates));
 });
 
 test('retrieval supports Russian titles and bounds complete prompts conservatively', async () => {

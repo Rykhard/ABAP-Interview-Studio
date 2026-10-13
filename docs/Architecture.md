@@ -36,7 +36,7 @@ performance improvements.
 - Code and visual associations are indexed once by question ID rather than
   scanning all records on each rendered answer.
 - Motion updates existing scene objects and respects `prefers-reduced-motion`.
-- Tests budget portable HTML at 5.1 MB raw and 1 MB gzip. These are regression
+- Tests budget portable HTML at 5.4 MB raw and 1.08 MB gzip. These are regression
   limits, not a promise about page speed on every device.
 
 The current payload still includes both languages and all diagram sources.
