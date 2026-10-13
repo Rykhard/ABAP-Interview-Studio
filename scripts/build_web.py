@@ -33,7 +33,7 @@ def write_studio(root, modules, visual_metadata, quiz_items):
     ui_translations=read_json(root/'locales/ru/ui.json')
     app+='\n'+(root/'scripts/studio-language.js').read_text(encoding='utf-8')
     ru_app=translate_app(app, root, ui_translations)
-    job_app=(root/'scripts/studio-job.js').read_text(encoding='utf-8')
+    job_app=(root/'scripts/studio-collections.js').read_text(encoding='utf-8')+'\n'+(root/'scripts/studio-job.js').read_text(encoding='utf-8')
     app+='\n'+job_app
     ru_app+='\n'+job_app
     bootstrap=(root/'scripts/studio-data.js').read_text(encoding='utf-8')+'\n'+(root/'scripts/studio-locale-bootstrap.js').read_text(encoding='utf-8')

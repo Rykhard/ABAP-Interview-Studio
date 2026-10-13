@@ -23,6 +23,22 @@ function environment(db, run = async () => ({ response: { matches: [match] } }))
   return { JOB_PREP_ENABLED: 'true', JOB_RATE_SECRET: 'test-secret-'.repeat(4), JOB_DB: db, AI: { run } };
 }
 
+test('public quota reflects reservations and usage exposes only valid provider token counts', async t => {
+  const [, service] = await modules; const db = database(); t.after(() => db.sqlite.close());
+  const handler = service.createJobHandler(catalog, { log: () => {} });
+  const env = environment(db, async () => ({ response: { matches: [match] }, usage: { prompt_tokens: 200, completion_tokens: -3, total_tokens: '240', secret: 'private' } }));
+  const get = () => handler(new Request('https://studio.example/api/prepare-job'), env);
+  assert.equal((await (await get()).json()).quota.remaining, 8);
+  const result = await (await handler(request(), env)).json();
+  assert.deepEqual(result.usage, { prompt_tokens: 200 });
+  assert.equal(result.quota.remaining, 7); assert.equal(result.quota.used, 1);
+  assert.match(result.quota.resetAt, /T00:00:00\.000Z$/);
+  assert.equal((await (await get()).json()).quota.remaining, 7);
+  env.AI.run = async () => { throw new Error('provider failure'); };
+  const failed = await (await handler(request(), env)).json();
+  assert.equal(failed.quota.remaining, 6); assert.equal(failed.usage, undefined);
+});
+
 test('strict input and output validation rejects coercion, extra fields, invented evidence and duplicate IDs/keys', async () => {
   const [matching] = await modules;
   assert.deepEqual(matching.words('constructor __proto__'), ['constructor', '__proto__']);
@@ -124,7 +140,7 @@ test('provider errors never expose secrets or job descriptions in responses and 
   const result = await handler(request(), env);
   assert.equal(result.status, 503);
   const output = await result.text();
-  assert.deepEqual(JSON.parse(output), { error: { code: 'unavailable' } });
+  assert.deepEqual(JSON.parse(output).error, { code: 'unavailable' });
   for (const captured of [output, JSON.stringify(logs)]) {
     assert.ok(!captured.includes(secretMarker));
     assert.ok(!captured.includes(input.description));
@@ -155,13 +171,12 @@ test('concurrent duplicate requests consume only one reservation and one model c
   assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS total FROM job_requests').get().total, 1);
 });
 
-test('atomic SQLite guard caps global requests and enforces per-client rate without retries', async t => {
+test('atomic SQLite guard keeps the daily cap but allows more than three sequential client requests', async t => {
   const [, service] = await modules; const db = database(); t.after(() => db.sqlite.close()); let calls = 0;
   const handler = service.createJobHandler(catalog); const env = environment(db, async () => { calls++; return { response: { matches: [] } }; });
-  for (let index = 0; index < 3; index++) assert.equal((await handler(request(), env)).status, 200);
-  assert.equal((await (await handler(request(), env)).json()).error.code, 'rate_limited');
+  for (let index = 0; index < 4; index++) assert.equal((await handler(request(), env)).status, 200);
   const results = await Promise.all(Array.from({ length: 12 }, (_, index) => handler(request(input, { 'CF-Connecting-IP': `192.0.2.${index + 10}` }), env)));
-  assert.equal(results.filter(result => result.status === 200).length, 5); assert.equal(calls, 8);
+  assert.equal(results.filter(result => result.status === 200).length, 4); assert.equal(calls, 8);
   const status = await handler(new Request('https://studio.example/api/prepare-job'), env);
   const body = await status.json(); assert.equal(body.error.code, 'daily_limit'); assert.match(body.error.retryAt, /T00:00:00\.000Z$/);
 });
@@ -190,7 +205,7 @@ test('local timeout keeps bounded lease and reservation while provider may still
   assert.equal((await (await handler(request(), env)).json()).error.code, 'busy');
 });
 
-test('rolling client limit and inflight lease survive the UTC daily reset', async t => {
+test('inflight lease survives the UTC daily reset without imposing an hourly client limit', async t => {
   const [, service] = await modules; const db = database(); t.after(() => db.sqlite.close());
   let time = Date.parse('2026-10-13T23:59:58Z'); let release;
   const handler = service.createJobHandler(catalog, { now: () => time, log: () => {} });
@@ -202,7 +217,7 @@ test('rolling client limit and inflight lease survive the UTC daily reset', asyn
   release({ response: { matches: [] } }); await first;
   env.AI.run = async () => ({ response: { matches: [] } });
   for (let index = 0; index < 2; index++) assert.equal((await handler(request(), env)).status, 200);
-  assert.equal((await (await handler(request(), env)).json()).error.code, 'rate_limited');
+  assert.equal((await handler(request(), env)).status, 200);
 });
 
 test('body deadline is bounded and operational telemetry excludes private content and provider details', async t => {

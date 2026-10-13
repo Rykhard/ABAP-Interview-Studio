@@ -4,10 +4,8 @@ export const RESERVE_SQL = `INSERT INTO job_requests(id, client_hash, day, creat
 SELECT ?, ?, ?, ?, ?
 WHERE NOT EXISTS (SELECT 1 FROM job_daily_blocks WHERE day = ?)
 AND (SELECT COUNT(*) FROM job_requests WHERE day = ?) < ?
-AND (SELECT COUNT(*) FROM job_requests WHERE client_hash = ? AND created_at > ?) < 3
 AND NOT EXISTS (SELECT 1 FROM job_requests WHERE client_hash = ? AND lease_until > ?)`;
 const DAY = 86400000;
-const hour = 3600000;
 const leaseDuration = 90000;
 export const dailyReset = now => new Date(Math.floor(now / DAY) * DAY + DAY).toISOString();
 const dayKey = now => new Date(now).toISOString().slice(0, 10);
@@ -15,9 +13,9 @@ const dailyCap = env => Math.min(8, Math.max(1, Number.parseInt(env.JOB_DAILY_LI
 function response(value, status = 200) {
   return new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
 }
-function failure(code, retryAt) {
+function failure(code, retryAt, quota) {
   const status = { disabled: 503, invalid_input: 400, context_limit: 422, rate_limited: 429, daily_limit: 429, busy: 409, timeout: 504, invalid_output: 502, unavailable: 503 }[code] || 503;
-  const result = response({ error: { code, ...(retryAt ? { retryAt } : {}) } }, status);
+  const result = response({ error: { code, ...(retryAt ? { retryAt } : {}) }, ...(quota ? { quota } : {}) }, status);
   if (retryAt) result.headers.set('Retry-After', new Date(retryAt).toUTCString());
   return result;
 }
@@ -53,15 +51,15 @@ async function clientHash(request, secret) {
   const ip = request.headers.get('CF-Connecting-IP');
   if (!ip || ip.length > 64) throw new Error('unavailable');
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  // A stable pseudonym preserves the rolling hour and active lease across midnight.
+  // A stable pseudonym prevents overlapping requests across midnight.
   // An eligible POST deletes rows older than two days; there is no automatic SQL
   // expiration. No raw address or job text is stored.
   const hash = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(ip));
   return [...new Uint8Array(hash)].map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
-async function globalAvailable(db, day, cap) {
+async function readQuota(db, day, cap, started) {
   const state = await db.prepare('SELECT (SELECT COUNT(*) FROM job_requests WHERE day = ?) AS used, (SELECT COUNT(*) FROM job_daily_blocks WHERE day = ?) AS blocked').bind(day, day).first();
-  return !state.blocked && state.used < cap;
+  return { limit: cap, used: Number(state.used), remaining: state.blocked ? 0 : Math.max(0, cap - Number(state.used)), resetAt: dailyReset(started), providerBlocked: !!state.blocked };
 }
 export function createJobHandler(catalog, { timeoutMs = 25000, bodyTimeoutMs = 5000, now = Date.now, log = entry => console.info(JSON.stringify(entry)) } = {}) {
   prepareCatalog(catalog);
@@ -78,25 +76,27 @@ export function createJobHandler(catalog, { timeoutMs = 25000, bodyTimeoutMs = 5
         if (request.headers.get('Origin') !== new URL(request.url).origin || request.headers.get('Sec-Fetch-Site') === 'cross-site') return failure('invalid_input');
         try { input = await readBody(request, bodyTimeoutMs); } catch (error) { return failure(error?.message === 'body_timeout' ? 'timeout' : 'invalid_input'); }
       }
-      if (!await globalAvailable(db, day, dailyCap(env))) return failure('daily_limit', dailyReset(started));
-      if (request.method === 'GET') return response({ available: true });
+      let quota = await readQuota(db, day, dailyCap(env), started);
+      if (!quota.remaining) return failure('daily_limit', quota.resetAt, quota);
+      if (request.method === 'GET') return response({ available: true, quota });
       const inference = buildInference(catalog, input);
       metrics.candidateCount = inference.candidates.length;
       if (inference.contextLimited) return failure('context_limit');
       // An unrelated description can be answered deterministically without spending AI quota.
-      if (!inference.candidates.length) return response({ matches: [] });
+      if (!inference.candidates.length) return response({ matches: [], quota });
       const client = await clientHash(request, env.JOB_RATE_SECRET);
       const id = crypto.randomUUID();
       await db.prepare('DELETE FROM job_requests WHERE created_at < ?').bind(started - 2 * DAY).run();
       await db.prepare('DELETE FROM job_daily_blocks WHERE day < ?').bind(dayKey(started - 2 * DAY)).run();
-      const inserted = await db.prepare(RESERVE_SQL).bind(id, client, day, started, started + leaseDuration, day, day, dailyCap(env), client, started - hour, client, started).run();
+      const inserted = await db.prepare(RESERVE_SQL).bind(id, client, day, started, started + leaseDuration, day, day, dailyCap(env), client, started).run();
       if (!inserted.meta?.changes) {
-        if (!await globalAvailable(db, day, dailyCap(env))) return failure('daily_limit', dailyReset(started));
-        const state = await db.prepare('SELECT MAX(lease_until) AS lease, MIN(created_at) AS first_at FROM job_requests WHERE client_hash = ? AND created_at > ?').bind(client, started - hour).first();
-        if (state.lease > started) return failure('busy', new Date(state.lease).toISOString());
-        return failure('rate_limited', new Date((state.first_at || started) + hour).toISOString());
+        quota = await readQuota(db, day, dailyCap(env), started);
+        if (!quota.remaining) return failure('daily_limit', quota.resetAt, quota);
+        const state = await db.prepare('SELECT MAX(lease_until) AS lease FROM job_requests WHERE client_hash = ?').bind(client).first();
+        return failure('busy', new Date(Math.max(started + 1000, state.lease || 0)).toISOString(), quota);
       }
       reservation = id;
+      quota = await readQuota(db, day, dailyCap(env), started);
       let timer; let result;
       try {
         result = await Promise.race([
@@ -104,24 +104,24 @@ export function createJobHandler(catalog, { timeoutMs = 25000, bodyTimeoutMs = 5
           new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('local_deadline')), timeoutMs); })
         ]);
       } catch (error) {
-        if (error?.message === 'local_deadline') { retainLease = true; return failure('timeout'); }
+        if (error?.message === 'local_deadline') { retainLease = true; return failure('timeout', undefined, quota); }
         const code = providerFailure(error);
         if (code === 'daily_limit') {
           await db.prepare('INSERT OR IGNORE INTO job_daily_blocks(day) VALUES (?)').bind(day).run();
-          return failure(code, dailyReset(started));
+          return failure(code, dailyReset(started), { ...quota, remaining: 0, providerBlocked: true });
         }
-        return failure(code, code === 'rate_limited' ? new Date(started + 60000).toISOString() : undefined);
+        return failure(code, code === 'rate_limited' ? new Date(started + 60000).toISOString() : undefined, quota);
       } finally { clearTimeout(timer); }
       try {
         if (result?.usage && typeof result.usage === 'object') {
-          const usage = Object.fromEntries(['prompt_tokens', 'completion_tokens', 'total_tokens'].filter(key => Number.isFinite(result.usage[key]) && result.usage[key] >= 0).map(key => [key, result.usage[key]]));
+          const usage = Object.fromEntries(['prompt_tokens', 'completion_tokens', 'total_tokens'].filter(key => Number.isSafeInteger(result.usage[key]) && result.usage[key] >= 0).map(key => [key, result.usage[key]]));
           if (Object.keys(usage).length) metrics.usage = usage;
         }
         const data = typeof result?.response === 'string' ? parseStrictJSON(result.response) : result?.response;
         const validated = validateMatches(data, input, inference.candidates);
         metrics.matchCount = validated.matches.length;
-        return response(validated);
-      } catch { return failure('invalid_output'); }
+        return response({ ...validated, quota, ...(metrics.usage ? { usage: metrics.usage } : {}) });
+      } catch { return failure('invalid_output', undefined, quota); }
     } catch { return failure('unavailable'); }
     finally {
       if (reservation && !retainLease) {

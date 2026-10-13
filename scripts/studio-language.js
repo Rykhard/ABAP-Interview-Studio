@@ -31,7 +31,7 @@ if(languageSnapshot?.version===1&&languageSnapshot.path===location.pathname&&lan
    answerDefault=s.answerDefault==='answers'?'answers':'questions';answerOverrides.clear();s.answerOverrides.forEach(([key,value])=>answerOverrides.set(key,value));
    for(const [name,map] of Object.entries({answerWindows,lessonPositions,lessonChoices,studyViewChoices,exampleChoices,codeSteps,guidedPositions,visualChoices})){map.clear();(s.maps[name]||[]).forEach(([key,value])=>map.set(key,value));}
    restoreFilters();$('sessionLength').value=s.sessionLength;
-   if(activeSession)activeSession.title=activeSession.source==='job'?(studioLocale==='ru'?'Подготовка к вакансии':'Job preparation'):practiceContext();render();
+   if(activeSession&&activeSession.source!=='collection')activeSession.title=activeSession.source==='job'?(studioLocale==='ru'?'Подготовка к вакансии':'Job preparation'):practiceContext();render();
    requestAnimationFrame(()=>window.scrollTo({top:s.scrollY||0,behavior:'instant'}));
   }
  }catch{/* A stale snapshot must not prevent normal study. */}

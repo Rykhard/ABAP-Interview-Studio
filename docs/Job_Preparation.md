@@ -15,7 +15,7 @@ The portable `dist.zip` is **static only**. Uploading that archive through the d
 1. Keep `JOB_PREP_ENABLED=false` until the following setup and preview checks are complete. Missing bindings or a missing secret fail closed with a localized disabled message.
 2. Create a D1 database for the guard and bind it as `JOB_DB`. Apply `server/migrations/0001_job_guard.sql` to the intended database. Preview and production should use separate databases and secrets.
 3. Add a Workers AI binding named `AI` to the Pages environment. No REST API token is required in the application. Do not add an API token to browser code or build variables.
-4. Add `JOB_RATE_SECRET` as a Pages **secret**, using at least 32 random characters. It HMACs the connecting IP to enforce a shared client limit. Do not use the AI token as this secret.
+4. Add `JOB_RATE_SECRET` as a Pages **secret**, using at least 32 random characters. It HMACs the connecting IP to prevent overlapping requests. Do not use the AI token as this secret.
 5. Set `JOB_AI_MODEL` to `@cf/meta/llama-3.3-70b-instruct-fp8-fast` and `JOB_DAILY_LIMIT` to a value from 1 to 8 (default 8). Set `JOB_PREP_ENABLED=true` only for an authorized environment after validation.
 6. Verify the account's actual plan and Workers AI usage in the Cloudflare dashboard. This code does not change billing, select a paid fallback, or upgrade a plan. Other applications may consume the same account allowance. The local guard is not an account-wide billing control.
 
@@ -44,7 +44,15 @@ To exercise the Pages runtime with the feature disabled, run `npx wrangler pages
 
 The server accepts only JSON `{description, count, language}`: 30–6,000 trimmed characters, at most 10,000 UTF-8 bytes, count 1–10, and `en` or `ru`. Request bodies are limited to 16,000 bytes with a read deadline. The default UI maximum is five questions. One explicit submit makes at most one non-streaming AI call, with temperature zero, 2,300 output tokens and JSON Schema. There are no automatic retries.
 
-Each AI attempt reserves one shared D1 slot atomically, including failed or timed-out attempts. The default and maximum daily cap is eight attempts for the whole site, not eight per visitor. A client can reserve three attempts in a rolling hour. An active 90-second lease blocks overlapping submissions; a local inference timeout retains the lease because aborting the browser does not prove that the provider stopped. IP sharing can therefore affect users behind the same network.
+Each AI attempt reserves one shared D1 slot atomically, including failed or timed-out attempts. The default and maximum daily cap is eight attempts for the whole site, not eight per visitor. There is no application hourly client limit. An active 90-second lease blocks overlapping submissions; a local inference timeout retains the lease because aborting the browser does not prove that the provider stopped. IP sharing can therefore affect simultaneous requests behind the same network. Provider throttling can still return a rate-limit response.
+
+## Assistant, collections and usage
+
+The bilingual AI question assistant is available in the top toolbar, including during practice. Its card-and-spark icon animates on interaction and while a POST is pending. A separate indeterminate progress bar remains visible during inference; no percentage or invented processing stages are shown. Reduced-motion preferences disable both animations.
+
+Results are grouped by canonical topic, with required matches before preferred matches within each group. Users can save all checked questions under an editable title in **My collections**, available in the sidebar. Collections contain only title, canonical question IDs and creation time in local storage. They do not contain job text, quotations or AI reasons and do not synchronize between browsers. Each collection supports question links, practice of all questions or one topic, renaming, deletion and immediate undo. Storage failures remain visible and do not claim success.
+
+GET and POST responses expose a snapshot of the shared application allowance and UTC reset time. Successful POST responses expose only nonnegative safe-integer token counts actually returned by the provider. Unknown counts stay unknown. The UI distinguishes these per-request tokens from remaining site requests. Account-wide daily Neuron usage and remaining provider allocation belong in the owner's Cloudflare Workers AI dashboard; the public frontend has no management credential and does not fabricate a daily token balance.
 
 The guard's daily cap and verified Cloudflare error 3036 both produce `daily_limit`, a UTC-midnight reset timestamp, and a localized warning that ordinary practice remains available. A shared circuit prevents further inference that day after a provider daily-quota error. Capacity error 3040, ordinary rate limits, timeouts, disabled configuration and malformed output have separate recoverable states. The UI formats a known retry timestamp in the visitor's local time. It does not estimate remaining Neurons from the number of requests.
 

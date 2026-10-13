@@ -30,17 +30,25 @@
   invalid_output:'A reliable selection could not be produced. No questions were added. Try later or choose questions from the library.',
   unavailable:'AI matching is currently unavailable. Learning and ordinary practice remain available.',retry:date=>`Try again after ${date}.`,tomorrow:'Try again when the daily allowance resets.',
  };
+ const extra=ru?{entry:'ИИ-подбор вопросов',hint:'Вопросы под вашу вакансию',name:'Название подборки',save:'Сохранить подборку',saved:'Сохранено в «Мои подборки».',open:'Мои подборки',local:'Сохраняются только название и выбранные вопросы — в этом браузере.',details:'Расход запроса',unknown:'Провайдер не вернул данные о токенах.',tokens:'Токены: вход / выход / всего',shared:'Общий лимит сайта на сегодня',remaining:'Осталось',reset:'Обновление',quotaNote:'Лимит общий для посетителей. Неудачные вызовы тоже учитываются. Дополнительно действуют ограничения частоты и провайдера.'}:{entry:'AI question assistant',hint:'Questions matched to your job',name:'Collection name',save:'Save collection',saved:'Saved to My collections.',open:'My collections',local:'Only the title and selected questions are saved, in this browser.',details:'Request usage',unknown:'The provider did not return token usage.',tokens:'Tokens: input / output / total',shared:'Shared site allowance today',remaining:'Remaining',reset:'Resets',quotaNote:'Shared by all visitors. Failed calls also count. Rate and provider limits still apply.'};
  const entry=document.createElement('button');
- entry.id='prepareJob';entry.type='button';entry.className='job-entry';entry.textContent=t.entry;entry.setAttribute('aria-haspopup','dialog');
- document.querySelector('.modes').append(entry);
+ entry.id='prepareJob';entry.type='button';entry.className='job-entry';entry.innerHTML=`<svg class="assistant-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8H4v16h15v-2M8 5h12v15H8zM11 11h6m-6 4h4"/><path class="assistant-spark" d="m22 2 1.3 3.7L27 7l-3.7 1.3L22 12l-1.3-3.7L17 7l3.7-1.3z"/></svg><span>${esc(extra.entry)}<small>${esc(extra.hint)}</small></span>`;entry.setAttribute('aria-haspopup','dialog');
+ document.querySelector('.app-bar').append(entry);
  const sessionEntry=entry.cloneNode(true);sessionEntry.id='prepareJobSession';sessionEntry.className='job-session-entry';
  document.querySelector('.app-bar').append(sessionEntry);
  let dialog,form,description,count,status,find,preview,list,apply,selection,replace;
  let controller=null,requestVersion=0,pending=false,pendingMethod='',available=false,matches=[];
  function notify(message,error=false){status.textContent=message;status.dataset.error=String(error);}
- function discardPreview(){matches=[];if(preview){preview.hidden=true;list.replaceChildren();}}
- function updateSelection(){const total=list.querySelectorAll('input:checked').length;selection.textContent=t.selected(total);apply.disabled=total===0;}
- function cancel(){requestVersion++;controller?.abort();controller=null;pending=false;pendingMethod='';}
+ function discardPreview(){matches=[];if(preview){preview.hidden=true;list.replaceChildren();$('jobSaveStatus').textContent='';$('jobUsage').hidden=true;}}
+ function updateSelection(){const total=list.querySelectorAll('input:checked').length;selection.textContent=t.selected(total);apply.disabled=total===0;$('saveJobCollection').disabled=total===0||!$('jobCollectionName').value.trim();$('jobSaveStatus').textContent='';}
+ function busy(value){if(dialog){dialog.setAttribute('aria-busy',String(value));$('jobProgress').hidden=!value;}entry.dataset.busy=sessionEntry.dataset.busy=String(value);}
+ function cancel(){requestVersion++;controller?.abort();controller=null;pending=false;pendingMethod='';busy(false);}
+ function showQuota(quota){
+  if(!quota||!Number.isSafeInteger(quota.remaining)||!Number.isSafeInteger(quota.limit)||quota.remaining<0||quota.remaining>quota.limit)return;
+  const date=new Date(quota.resetAt);$('jobQuota').textContent=`${extra.shared}: ${extra.remaining.toLowerCase()} ${quota.remaining} / ${quota.limit}.`+(!Number.isNaN(date.getTime())?` ${extra.reset}: ${new Intl.DateTimeFormat(ru?'ru-RU':'en',{dateStyle:'short',timeStyle:'short'}).format(date)}.`:'');
+  $('jobQuotaInfo').hidden=false;
+ }
+ function showUsage(usage){const keys=['prompt_tokens','completion_tokens','total_tokens'];$('jobUsageText').textContent=keys.some(key=>Number.isSafeInteger(usage?.[key])&&usage[key]>=0)?`${extra.tokens}: `+keys.map(key=>Number.isSafeInteger(usage?.[key])&&usage[key]>=0?usage[key].toLocaleString(ru?'ru':'en'):'—').join(' / '):extra.unknown;$('jobUsage').hidden=false;}
  function errorMessage(error){
   const code=Object.hasOwn(t,error?.code)&&typeof t[error.code]==='string'?error.code:'unavailable';
   let message=t[code];
@@ -50,13 +58,14 @@
   return message;
  }
  async function request(method,body){
-  cancel();const version=requestVersion;controller=new AbortController();const current=controller;pending=true;pendingMethod=method;find.disabled=true;
+  cancel();const version=requestVersion;controller=new AbortController();const current=controller;pending=true;pendingMethod=method;find.disabled=true;busy(method==='POST');
   let timedOut=false;const timer=setTimeout(()=>{timedOut=true;current.abort();},method==='POST'?30000:8000);
   try{
    if(!/^https?:$/.test(location.protocol))throw {code:'unavailable'};
    const response=await fetch('/api/prepare-job',{method,signal:current.signal,credentials:'same-origin',cache:'no-store',headers:body?{'Content-Type':'application/json'}:undefined,body:body?JSON.stringify(body):undefined});
    const result=await response.json().catch(()=>{throw {code:'unavailable'};});
    if(version!==requestVersion||!dialog.open)return null;
+   showQuota(result?.quota);
    if(!response.ok||result?.error)throw result?.error||{code:'unavailable'};
    return result;
   }catch(error){
@@ -65,17 +74,19 @@
    notify(errorMessage(timedOut?{code:'timeout'}:error),true);return null;
   }finally{
    clearTimeout(timer);
-   if(version===requestVersion){pending=false;pendingMethod='';controller=null;find.disabled=!available;}
+   if(version===requestVersion){pending=false;pendingMethod='';controller=null;find.disabled=!available;busy(false);}
   }
  }
  function showMatches(result,source,maximum){
   const rows=result?.matches;
   if(!Array.isArray(rows)||rows.length>maximum||new Set(rows.map(row=>row?.id)).size!==rows.length||rows.some(row=>!row||!byId.has(row.id)||!['required','preferred'].includes(row.requirement_type)||typeof row.relevance_reason!=='string'||!row.relevance_reason.trim()||typeof row.requirement_evidence!=='string'||!row.requirement_evidence.trim()||!source.includes(row.requirement_evidence))){notify(t.invalid_output,true);return;}
-  rows.sort((a,b)=>Number(a.requirement_type==='preferred')-Number(b.requirement_type==='preferred'));
+  rows.sort((a,b)=>topics.findIndex(t=>t.id===byId.get(a.id).topic)-topics.findIndex(t=>t.id===byId.get(b.id).topic)||Number(a.requirement_type==='preferred')-Number(b.requirement_type==='preferred'));
   matches=rows;
   if(!rows.length){notify(t.empty);return;}
   list.replaceChildren();
+  let previousTopic='';
   rows.forEach((row,index)=>{
+   const topic=byId.get(row.id).topic;if(topic!==previousTopic){const heading=document.createElement('li');heading.className='job-topic-heading';const title=document.createElement('h4');title.textContent=byId.get(row.id).topicTitle;heading.append(title);list.append(heading);previousTopic=topic;}
    const card=document.createElement('li');card.className='job-match';
    const label=document.createElement('label'),checkbox=document.createElement('input'),content=document.createElement('span');
    checkbox.type='checkbox';checkbox.checked=true;checkbox.value=row.id;checkbox.id=`job-match-${index}`;checkbox.addEventListener('change',updateSelection);
@@ -86,14 +97,23 @@
    const quote=document.createElement('blockquote');quote.textContent=row.requirement_evidence;quote.setAttribute('aria-label',t.evidence);
    card.append(label,reason,quote);list.append(card);
   });
+  $('jobCollectionName').value=t.session+' · '+new Intl.DateTimeFormat(ru?'ru':'en',{dateStyle:'short'}).format(new Date());
   replace.hidden=!activeSession;preview.hidden=false;notify('');updateSelection();$('jobPreviewTitle').focus();
  }
  function buildDialog(){
   dialog=document.createElement('dialog');dialog.id='jobDialog';dialog.setAttribute('aria-labelledby','jobTitle');
   dialog.innerHTML=`<div class="dialog-heading"><h2 id="jobTitle">${esc(t.entry)}</h2><button type="button" id="closeJob">${esc(t.close)}</button></div><p class="job-intro">${esc(t.intro)}</p><form id="jobForm"><label for="jobDescription">${esc(t.description)}</label><textarea id="jobDescription" rows="7" maxlength="6000" required aria-describedby="jobPrivacy" autocomplete="off" spellcheck="false"></textarea><p id="jobPrivacy" class="subtle">${esc(t.privacy)}</p><div class="job-form-actions"><label for="jobCount">${esc(t.count)}<input id="jobCount" type="number" min="1" max="10" value="5" required inputmode="numeric"></label><button id="findJobQuestions" class="primary" type="submit">${esc(t.find)}</button></div></form><p id="jobStatus" role="status" aria-live="polite" aria-atomic="true"></p><section id="jobPreview" hidden aria-labelledby="jobPreviewTitle"><h3 id="jobPreviewTitle" tabindex="-1">${esc(t.preview)}</h3><p class="subtle">${esc(t.review)}</p><ul id="jobMatches"></ul><div class="job-apply"><p id="jobSelection" role="status"></p><p id="jobReplace" class="subtle" hidden>${esc(t.replace)}</p><button id="applyJob" type="button" class="primary">${esc(t.apply)}</button></div></section>`;
   document.body.append(dialog);
+  $('jobTitle').textContent=extra.entry;
+  const feedback=document.createElement('div');feedback.innerHTML=`<div id="jobProgress" role="progressbar" aria-label="${esc(t.loading)}" hidden><span></span></div><details id="jobQuotaInfo" hidden><summary id="jobQuota"></summary><p>${esc(extra.quotaNote)}</p></details><details id="jobUsage" hidden><summary>${esc(extra.details)}</summary><p id="jobUsageText"></p></details>`;
+  $('jobStatus').after(feedback);
+  const saveArea=document.createElement('div');saveArea.className='job-save';saveArea.innerHTML=`<label for="jobCollectionName">${esc(extra.name)}</label><input id="jobCollectionName" maxlength="80" autocomplete="off"><p class="subtle">${esc(extra.local)}</p><div class="collection-actions"><button type="button" id="saveJobCollection">${esc(extra.save)}</button><button type="button" id="openJobCollections">${esc(extra.open)}</button></div><p id="jobSaveStatus" role="status"></p>`;
+  $('jobMatches').before(saveArea);
   form=$('jobForm');description=$('jobDescription');count=$('jobCount');status=$('jobStatus');find=$('findJobQuestions');preview=$('jobPreview');list=$('jobMatches');apply=$('applyJob');selection=$('jobSelection');replace=$('jobReplace');
   $('closeJob').onclick=()=>dialog.close();
+  $('jobCollectionName').oninput=updateSelection;
+  $('saveJobCollection').onclick=()=>{const result=jobCollections.save($('jobCollectionName').value,[...list.querySelectorAll('input:checked')].map(input=>input.value));$('jobSaveStatus').textContent=result.ok?extra.saved:result.error;if(result.ok)$('saveJobCollection').disabled=true;};
+  $('openJobCollections').onclick=()=>{dialog.close();jobCollections.open();};
   dialog.addEventListener('close',()=>{cancel();description.value='';count.value='5';discardPreview();notify('');});
   form.addEventListener('input',()=>{discardPreview();if(pending&&pendingMethod==='POST'){cancel();find.disabled=!available;notify('');}});
   form.addEventListener('submit',async event=>{
@@ -102,7 +122,7 @@
    if(source.length<30||source.length>6000||new TextEncoder().encode(source).length>10000||!Number.isInteger(maximum)||maximum<1||maximum>10){notify(t.invalid_input,true);return;}
    discardPreview();notify(t.loading);
    const result=await request('POST',{description:source,count:maximum,language:ru?'ru':'en'});
-   if(result)showMatches(result,source,maximum);
+   if(result){showMatches(result,source,maximum);showUsage(result.usage);}
   });
   apply.onclick=()=>{
    const selected=[...list.querySelectorAll('input:checked')].map(input=>input.value).filter(id=>matches.some(match=>match.id===id));
@@ -111,7 +131,7 @@
   };
  }
  entry.onclick=sessionEntry.onclick=async()=>{
-  if(!dialog)buildDialog();available=false;find.disabled=true;discardPreview();dialog.showModal();description.focus();notify(t.checking);
+  if(!dialog)buildDialog();available=false;find.disabled=true;discardPreview();$('jobQuotaInfo').hidden=true;dialog.showModal();description.focus();notify(t.checking);
   const result=await request('GET');
   if(result){available=result.available===true||result.enabled===true;find.disabled=!available;notify(available?'':t.disabled,!available);}
  };
