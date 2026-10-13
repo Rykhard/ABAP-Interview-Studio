@@ -137,6 +137,8 @@ export function evidenceSupport(question, text) {
   // Shared verbs such as "review", "implement" or "optimize" are insufficient.
   const domain = question.id.split('-')[0];
   const domains = {
+    OO:/\babap\b|\boo\b|object.oriented|interface|class|method|constructor|inheritance|polymorphism|encapsulation|dependency|\btest|класс|метод|наследован|интерфейс/iu,
+    OODEEP:/\babap\b|\boo\b|object.oriented|interface|class|method|constructor|inheritance|polymorphism|encapsulation|dependency|\btest|класс|метод|наследован|интерфейс/iu,
     HTTP:/\bhttp\b|\brest\b|\bodata\b|\bjson\b|\bxml\b/iu,
     RFC:/\brfc\b|function module|parallel|background|функциональн|параллель/iu,
     INTF:/\bidoc|\bale\b|\baif\b|\bslt\b|replication|репликац/iu,
@@ -213,10 +215,11 @@ export function preparationSupport(question, text) {
   const education = /bachelor|master.s degree|spoken english|german language/iu.test(text);
   const canTeach = namedSkill && supportedTechnology && !education && ['core', 'applied'].includes(level);
   // Broad technology names alone do not explicitly request every mechanism.
-  const broad = new Set(['rap','cds','odata','btp','abap','oo','hana','http','rest','sql','pattern','fiori','key','service']);
+  const broad = new Set(['rap','cds','odata','btp','abap','oo','hana','http','rest','sql','pattern','fiori','key','service','test','testing']);
   const terms = new Set(words(text));
   const specific = words(question.title).filter(term => !genericEvidenceWords.has(term) && !broad.has(term) && terms.has(term));
-  if (level === 'advanced' && specific.length < 2) return null;
+  const preciseMechanism = specific.some(term => ['rollback','concurrency','etag','idoc','rfc','authorization','deadlock'].includes(term));
+  if (level === 'advanced' && specific.length < 2 && !preciseMechanism) return null;
   if (direct > 0) return { score: direct, relationship: specific.length ? 'direct' : 'foundation' };
   return canTeach ? { score: 0.4, relationship: 'foundation' } : null;
 }

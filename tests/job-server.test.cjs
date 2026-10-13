@@ -99,6 +99,8 @@ test('preparation plans widen foundations without inventing technologies or empl
   assert.equal(matching.preparationSupport(question('OPS-08'), 'Estimate custom development scope and costs.'), null);
   assert.equal(matching.preparationSupport(question('RICEFW-03'), 'Analyze customer logistics requirements.'), null);
   assert.equal(matching.preparationSupport(question('OPS-04'), 'Design, develop, test and deploy logistics solutions.'), null);
+  assert.equal(matching.preparationSupport(question('OO-17'), 'Create and review comprehensive solution concepts.'), null);
+  assert.equal(matching.preparationSupport(question('OO-17'), 'Strong ABAP development expertise.').relationship, 'foundation');
   const description = 'Required:\nStrong ABAP development expertise, testing and code review.\nNice to have:\nRAP and CDS.';
   const automatic = {description,count:null,language:'en'};
   const built = matching.buildInference(canonical, automatic);
