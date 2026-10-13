@@ -14,7 +14,7 @@
   ],
   "vars": {
     "JOB_PREP_ENABLED": "false",
-    "JOB_DAILY_LIMIT": "8",
+    "JOB_DAILY_LIMIT": "50",
     "JOB_AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
   }
 }

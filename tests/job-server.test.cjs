@@ -28,15 +28,15 @@ test('public quota reflects reservations and usage exposes only valid provider t
   const handler = service.createJobHandler(catalog, { log: () => {} });
   const env = environment(db, async () => ({ response: { matches: [match] }, usage: { prompt_tokens: 200, completion_tokens: -3, total_tokens: '240', secret: 'private' } }));
   const get = () => handler(new Request('https://studio.example/api/prepare-job'), env);
-  assert.equal((await (await get()).json()).quota.remaining, 8);
+  assert.equal((await (await get()).json()).quota.remaining, 50);
   const result = await (await handler(request(), env)).json();
   assert.deepEqual(result.usage, { prompt_tokens: 200 });
-  assert.equal(result.quota.remaining, 7); assert.equal(result.quota.used, 1);
+  assert.equal(result.quota.remaining, 49); assert.equal(result.quota.used, 1);
   assert.match(result.quota.resetAt, /T00:00:00\.000Z$/);
-  assert.equal((await (await get()).json()).quota.remaining, 7);
+  assert.equal((await (await get()).json()).quota.remaining, 49);
   env.AI.run = async () => { throw new Error('provider failure'); };
   const failed = await (await handler(request(), env)).json();
-  assert.equal(failed.quota.remaining, 6); assert.equal(failed.usage, undefined);
+  assert.equal(failed.quota.remaining, 48); assert.equal(failed.usage, undefined);
 });
 
 test('strict input and output validation rejects coercion, extra fields, invented evidence and duplicate IDs/keys', async () => {
@@ -190,10 +190,23 @@ test('atomic SQLite guard keeps the daily cap but allows more than three sequent
   const [, service] = await modules; const db = database(); t.after(() => db.sqlite.close()); let calls = 0;
   const handler = service.createJobHandler(catalog); const env = environment(db, async () => { calls++; return { response: { matches: [] } }; });
   for (let index = 0; index < 4; index++) assert.equal((await handler(request(), env)).status, 200);
-  const results = await Promise.all(Array.from({ length: 12 }, (_, index) => handler(request(input, { 'CF-Connecting-IP': `192.0.2.${index + 10}` }), env)));
-  assert.equal(results.filter(result => result.status === 200).length, 4); assert.equal(calls, 8);
+  const results = await Promise.all(Array.from({ length: 60 }, (_, index) => handler(request(input, { 'CF-Connecting-IP': `192.0.2.${index + 10}` }), env)));
+  assert.equal(results.filter(result => result.status === 200).length, 46); assert.equal(calls, 50);
   const status = await handler(new Request('https://studio.example/api/prepare-job'), env);
   const body = await status.json(); assert.equal(body.error.code, 'daily_limit'); assert.match(body.error.retryAt, /T00:00:00\.000Z$/);
+});
+
+test('configured caps stay bounded and increasing the cap preserves attempts already spent', async t => {
+  const [, service] = await modules; const db = database(); t.after(() => db.sqlite.close());
+  const handler = service.createJobHandler(catalog, { log: () => {} }); const env = environment(db);
+  env.JOB_DAILY_LIMIT = '1';
+  assert.equal((await handler(request(), env)).status, 200);
+  assert.equal((await handler(request(), env)).status, 429);
+  env.JOB_DAILY_LIMIT = '50';
+  const result = await (await handler(request(), env)).json();
+  assert.equal(result.quota.used, 2); assert.equal(result.quota.remaining, 48);
+  env.JOB_DAILY_LIMIT = '999';
+  assert.equal((await (await handler(new Request('https://studio.example/api/prepare-job'), env)).json()).quota.limit, 50);
 });
 
 test('provider daily exhaustion opens shared circuit; capacity and invalid output remain distinct', async t => {

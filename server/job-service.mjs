@@ -9,7 +9,9 @@ const DAY = 86400000;
 const leaseDuration = 90000;
 export const dailyReset = now => new Date(Math.floor(now / DAY) * DAY + DAY).toISOString();
 const dayKey = now => new Date(now).toISOString().slice(0, 10);
-const dailyCap = env => Math.min(8, Math.max(1, Number.parseInt(env.JOB_DAILY_LIMIT, 10) || 8));
+// An application abuse ceiling, not a guarantee of remaining provider capacity.
+// The Free-plan provider quota and shared exhaustion circuit remain authoritative.
+const dailyCap = env => Math.min(50, Math.max(1, Number.parseInt(env.JOB_DAILY_LIMIT, 10) || 50));
 function response(value, status = 200) {
   return new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
 }
