@@ -151,6 +151,10 @@ test('logistics and general development cannot authorize unrelated technology ev
   const estimation = built.selections.filter(item => item.startsWith('STORY-07@'));
   assert.ok(estimation.length > 0);
   assert.ok(estimation.every(item => built.evidence[Number(item.split('@')[1])].text.includes('Estimate')));
+  const support = (id,text)=>matching.evidenceSupport(canonical.find(item=>item.id===id),text);
+  assert.equal(support('ABAP-04','Analyze customer requirements in the areas of inbound and outbound logistics.'),0);
+  assert.equal(support('OPS-03','Design, develop, test and deploy SAP logistics modules.'),0);
+  assert.equal(support('OODEEP-11','Turn complex requirements into scalable solutions while shaping technical direction.'),0);
 });
 
 test('evidence schema offers bounded exact excerpts without rewriting language or punctuation', async () => {
