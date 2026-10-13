@@ -1,6 +1,6 @@
 [
  {"from":"${qs.length} ${qs.length===1?'question':'questions'}","to":"${localeCount(qs.length,'question')}"},
- {"from":"${all.length} questions &middot; ${topics.length} topics","to":"${localeCount(all.length,'question')} &middot; ${localeCount(topics.length,'topic')}"},
+ {"from":"${qs.length} questions &middot; ${visibleTopics.length} topics","to":"${localeCount(qs.length,'question')} &middot; ${localeCount(visibleTopics.length,'topic')}"},
  {"from":"${matched.length} questions","to":"${localeCount(matched.length,'question')}"},
  {"from":"${g.questions.length} questions","to":"${localeCount(g.questions.length,'question')}"},
  {"from":"`${matches.length} ${matches.length===1?'question':'questions'} found across all ${topics.length} topics`","to":"`Найдено: ${localeCount(matches.length,'question')}. Поиск по всем темам (${topics.length}).`"},

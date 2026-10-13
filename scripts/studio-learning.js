@@ -30,9 +30,15 @@ function topicStartingPath(topic){
  return `<section class="topic-start learning-path" aria-label="Suggested learning path"><div class="topic-start-heading"><h3>${esc(learningText(path,'title'))}</h3><p>${esc(learningText(path,'goal'))}</p></div><div class="learning-path-actions"><button class="primary" data-start-path="${path.topic}" data-path-question="${next}">${seen&&seen<path.questionIds.length?'Continue path':'Explore path'} &rarr;</button><span class="small subtle">${seen} / ${path.questionIds.length} opened &middot; Reading is not a mastery score.</span></div><details><summary>View learning path <span class="small">(${path.questionIds.length})</span></summary><ol>${path.questionIds.map((id,index)=>`<li><span class="topic-start-number">${index+1}</span><div>${pathQuestionLink(id,path)}${learningBadge(byId.get(id))}</div></li>`).join('')}</ol><p class="small subtle">This path includes several levels. Filters apply to the question library below.</p></details></section>`;
 }
 function learningEntry(){return `<div class="learning-entry" role="group" aria-label="Choose a study goal"><span>What would you like to do?</span><button data-learning-entry="basics">Learn the basics</button><button data-learning-entry="interview">Prepare for an interview</button></div>`;}
+function catalogLevelStatus(){
+ const level=learningLevels.get($('scope').value);
+ return level?`<div class="catalog-level-state"><span>Learning level: <strong>${esc(learningText(level,'title'))}</strong></span><button data-clear-catalog-level>Show all levels</button></div>`:'';
+}
 function activePathFor(q){const path=learningPaths.get(activeLearningPath);return path?.questionIds.includes(q.id)?path:null;}
 function questionSequence(q){
  const path=activePathFor(q);if(path)return path.questionIds;
+ const selection=questionReturn?.ids?.filter(id=>byId.has(id));
+ if(selection?.includes(q.id))return selection;
  const section=topicById.get(q.topic).sections.find(item=>item.id===q.section);
  // Preserve the return selection, including level, when browsing a filtered list.
  const scope=questionReturn?.prefs?.scope||'all';
@@ -50,6 +56,9 @@ function learningCheckpoint(q){
  return `<section class="learning-checkpoint"><h4>Check your understanding</h4><p>${esc(learningText(check,'prompt'))}</p><details><summary>Compare your explanation</summary><p>${esc(learningText(check,'answer'))}</p></details><p class="small subtle">Explain your reasoning before revealing the answer. Opening a question does not mean you have mastered it.</p><button data-practice-path="${path.topic}">Practice this path</button></section>`;
 }
 function bindLearningControls(){
+ document.querySelector('[data-clear-catalog-level]')?.addEventListener('click',()=>{
+  learningSettings.level='all';prefs.learn.scope='all';saveLearningSettings();restoreFilters();render();routeSelection();$('heading').focus({preventScroll:true});
+ });
  document.querySelectorAll('[data-start-path]').forEach(button=>button.onclick=()=>{activeLearningPath=button.dataset.startPath;openQuestion(button.dataset.pathQuestion);});
  document.querySelectorAll('[data-learning-path]').forEach(link=>link.onclick=event=>{event.preventDefault();activeLearningPath=link.dataset.learningPath;openQuestion(link.dataset.openQuestion);});
  document.querySelectorAll('[data-prerequisite]').forEach(link=>link.onclick=event=>{event.preventDefault();activeLearningPath='';openQuestion(link.dataset.openQuestion);});

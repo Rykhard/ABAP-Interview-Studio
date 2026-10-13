@@ -39,7 +39,8 @@ function questionActions(q){return `<div class="question-toolbar"><button data-s
 let questionReturn=null;
 function captureQuestionReturn(){
  if(restoringRoute||mode!=='learn'||document.querySelector('main.single-question'))return;
- storeFilters();questionReturn={prefs:{...prefs.learn},libraryList,savedOnly,lessonLibrary,scrollY:window.scrollY};
+ const ids=[...$('view').querySelectorAll('.question-group article[id^="q-"]')].map(card=>card.id.slice(2));
+ storeFilters();questionReturn={prefs:{...prefs.learn},libraryList,savedOnly,lessonLibrary,ids,scrollY:window.scrollY};
 }
 function returnToQuestions(q){
  activeLearningPath='';
