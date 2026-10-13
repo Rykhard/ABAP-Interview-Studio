@@ -138,6 +138,7 @@ export function evidenceSupport(question, text) {
     MODEL:/\bcds\b|\bdcl\b|\brap\b/iu,
     ODATA:/odata|fiori/iu,
     BTP:/\bbtp\b|side.by.side|cloud/iu,
+    CLOUD:/\bbtp\b|cloud|extensib|extension|released|clean core|расширен/iu,
     CORE:/clean core|clean abap|extensib|extension|released|\batc\b|custom.code|расширен/iu,
     GOV:/clean core|extensib|extension|released|\batc\b|custom.code|расширен/iu,
     PAT:/pattern|factory|builder|facade|singleton|strategy|decorator|observer|command pattern|chain of responsibility|паттерн|шаблон/iu

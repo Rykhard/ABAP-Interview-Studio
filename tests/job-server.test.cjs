@@ -141,6 +141,7 @@ test('logistics and general development cannot authorize unrelated technology ev
   const built = matching.buildInference(canonical,{description,count:null,language:'en'});
   assert.ok(!built.selections.some(item => item.startsWith('INTF-03@')));
   assert.ok(!built.selections.some(item => item.startsWith('OO-08@')));
+  assert.ok(!built.selections.some(item => item.startsWith('CLOUD-08@')));
   const rap = built.selections.filter(item => item.startsWith('RAP-01@'));
   assert.ok(rap.length > 0);
   assert.ok(rap.every(item => built.evidence[Number(item.split('@')[1])].priority === 'preferred'));
