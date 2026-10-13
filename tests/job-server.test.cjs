@@ -157,6 +157,7 @@ test('logistics and general development cannot authorize unrelated technology ev
   assert.equal(support('OODEEP-11','Turn complex requirements into scalable solutions while shaping technical direction.'),0);
   assert.equal(support('BASE-04',"Bachelor's degree in Computer Science or a comparable field."),0);
   assert.equal(support('OPS-13','A pragmatic approach balances delivery speed and long-term sustainability.'),0);
+  assert.equal(support('STORY-04','Support continuous improvement of development practices and solution quality.'),0);
 });
 
 test('evidence schema offers bounded exact excerpts without rewriting language or punctuation', async () => {

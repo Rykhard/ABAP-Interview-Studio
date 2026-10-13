@@ -128,6 +128,7 @@ for (const term of 'requirement decision concept approach risk quality support p
 const technologyEvidence = [ /\brap\b/iu, /\bcds\b/iu, /\bodata\b/iu, /\bbtp\b/iu, /\bidocs?\b|\bale\b/iu, /\brfc\b/iu, /\bamdp\b/iu, /\bmvc\b/iu, /\bunit\b|\btest(?:ing|s)?\b|тест/iu, /clean core/iu, /key[- ]user/iu, /\bfiori\b/iu, /\bhttp\b|\brest\b/iu, /\bjson\b/iu, /\bxml\b/iu, /\bsql\b|\badbc\b/iu ];
 export function evidenceSupport(question, text) {
   if (/bachelor|master.s degree|spoken english|german language|степень бакалавра/iu.test(text)) return 0;
+  if (/\bperformance\b/i.test(question.title) && !/performance|runtime|profil|slow|latency|memory|производит/iu.test(text)) return 0;
   if (/\bincident\b/i.test(question.title) && !/incident|production support|production defect|инцидент/iu.test(text)) return 0;
   if (/^(ABAP|BASE)-/.test(question.id) && !/\babap\b|table|field[- ]symbol|reference|parameter|exception|constructor|sy-subrc|таблиц|ссылк/iu.test(text)) return 0;
   if (/\bEML\b/.test(question.title) && !/\beml\b|\brap\b/iu.test(text)) return 0;
